@@ -1,0 +1,63 @@
+% nova-publishing / zpo doi inject — standard anchor for Zenodo paper DOI.
+% Copy this file into your paper directory and \input it after \usepackage{hyperref}.
+% Usage:
+%   \input{nova_zenodo_doi_placeholder}    % in preamble or after \begin{document}
+%   \NovaZenodoAfterTitle                  % immediately after \maketitle
+%
+% To inject DOI: zpo doi inject --artifact <publication-id> --apply
+% The tool writes the DOI between the % NOVA_ZPO_DOI_BEGIN / END markers.
+%
+\makeatletter
+\providecommand{\NovaZenodoIfDoiEmpty}[1]{%
+  \if\relax\detokenize{#1}\relax
+    \expandafter\@firstoftwo
+  \else
+    \expandafter\@secondoftwo
+  \fi}
+\makeatother
+%
+\providecommand{\NovaZenodoPreprintMark}{\textbf{Preprint.}}
+%
+\providecommand{\NovaZenodoArchivalLine}{%
+  \expandafter\NovaZenodoIfDoiEmpty\expandafter{\NovaZenodoDOI}%
+  {\textit{Archival version (Zenodo):} \emph{[DOI pending publication]}}%
+  {\textit{Archival version (Zenodo):}~%
+  \begingroup
+  \edef\NovaZenodo@href{\endgroup\noexpand\href
+    {https://doi.org/\NovaZenodoDOI}{https://doi.org/\NovaZenodoDOI}}%
+  \NovaZenodo@href}%
+}
+%
+\providecommand{\NovaZenodoHubArchivalLine}{%
+  \expandafter\NovaZenodoIfDoiEmpty\expandafter{\NovaZenodoHubDOI}%
+  {}%
+  {\textit{UGP series hub (Zenodo):}~%
+  \begingroup
+  \edef\NovaZenodo@hrefhub{\endgroup\noexpand\href
+    {https://doi.org/\NovaZenodoHubDOI}{https://doi.org/\NovaZenodoHubDOI}}%
+  \NovaZenodo@hrefhub}%
+}
+%
+\providecommand{\NovaZenodoAfterTitle}{%
+  \par\smallskip
+  \begingroup\centering\small
+  \NovaZenodoPreprintMark
+  \par\smallskip
+  \NovaZenodoArchivalLine
+  \par
+  \NovaZenodoHubArchivalLine
+  \par
+  \endgroup\smallskip
+}
+%
+\providecommand{\NovaZenodoInAbstract}{%
+  \par\smallskip\noindent\NovaZenodoArchivalLine
+}
+%
+% NOVA_ZPO_DOI_BEGIN
+\def\NovaZenodoDOI{}
+% NOVA_ZPO_DOI_END
+%
+% NOVA_ZPO_HUB_DOI_BEGIN
+\def\NovaZenodoHubDOI{}
+% NOVA_ZPO_HUB_DOI_END

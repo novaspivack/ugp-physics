@@ -1,0 +1,329 @@
+\documentclass[10pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,longtable,array}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{siunitx}
+
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black}
+\sisetup{detect-all,per-mode=symbol}
+\urlstyle{tt}
+\setlength{\emergencystretch}{3em}
+
+\title{\bfseries Supplementary Information\\[4pt]
+\large A Deterministic Number-Theoretic Framework\\for the Standard Model Parameter Spectrum}
+\author{Nova Spivack}
+\date{}
+
+\begin{document}
+\maketitle
+
+This document collects the computational artifacts, pre-committed blind-prediction records, and machine-checked theorem inventory for the main paper.  Every computation listed here is reproducible from the public repositories (\texttt{ugp-physics} and \texttt{ugp-lean}); every artifact is SHA-256 certified at the time of its creation.  For extended research-programme content beyond this paper's scope --- including structural mass relations, topological-signature framing, cryptographic null-discipline tier analyses, and the full Lean-library theorem inventory --- see the companion papers listed in \S\ref{sec:companion} below.
+
+% =====================================================================
+%  SI Table S1: Computational Artifacts Manifest
+% =====================================================================
+\section*{SI Table~S1: Computational Artifacts Manifest}
+
+\begin{longtable}{@{} p{1.4cm} p{5.0cm} p{4.0cm} p{3.4cm} @{}}
+\caption{Computational artifacts cited in the main paper.  ``SC'' = Supplementary Computation.  All artifacts reside in \texttt{papers/01\_SM/canonical\_run/} unless otherwise noted.  SHA-256 prefixes are over the full artifact file (8 hex characters shown).  Full artifact descriptions, per-script invocation commands, and SHA-256 hashes for additional structural-analysis runs are catalogued in \texttt{papers/01\_SM/PROVENANCE.md} and \texttt{papers/01\_SM/REPRODUCE.md} in the companion repository.}
+\label{tab:si_manifest} \\
+\toprule
+\textbf{SC ID} & \textbf{Description} & \textbf{Artifact file} & \textbf{SHA-256 prefix} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{SC ID} & \textbf{Description} & \textbf{Artifact file} & \textbf{SHA-256 prefix} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+
+\multicolumn{4}{l}{\textit{Core SM predictions (v3)}} \\[2pt]
+SC-A & 1000-permutation null suite; canonical UCL fit primary $\sigma$ falls outside the entire shuffled-null distribution (min permutation $\sigma > 5.6 \times 10^{-2}$ vs canonical baseline $\sigma = 2.95 \times 10^{-5}$) & \nolinkurl{nulls_suite_1000.json} & \texttt{aec7aad3\ldots} \\
+SC-B & Dual-path coefficient comparison; empirical UCL~2.3 vs.\ structural Elegant Kernel at \SI{1.83}{\percent} max / \SI{0.96}{\percent} RMS & \nolinkurl{dual_path_comparison.json} & \texttt{47ec8a60\ldots} \\
+SC-D & $\alpha_s(M_Z) = 0.11822$ blind prediction at $+0.24\sigma$ of PDG 2024 ($+0.36\sigma$ of PDG 2022 at pre-commitment time); see pre-commitment trail in Appendix~F of main paper & \nolinkurl{alpha_s_prediction.json} & \texttt{288bac48\ldots} \\
+SC-E & Engine-parameter sensitivity analysis (robustness) & \nolinkurl{engine_param_sensitivity.json} & \texttt{a805ff7b\ldots} \\
+SC-F & $S_3$-overlap seesaw sensitivity (neutrino-sector disclosure) & \nolinkurl{s3_overlap_seesaw.json} & \texttt{76147232\ldots} \\
+SC-G & TE2.2 Residual Classification Conjecture computational certificate (12/34,560 universes pass PSC-Layer-I sieve; all carry SM signature) & \nolinkurl{te22_rcc_certificate.json} & \texttt{0a4dbb6a\ldots} \\
+SC-H & LOO / $k$-fold cross-validation methodology for UCL fit; structural CV deviation $\le 1.83\%$ max, $0.96\%$ RMS; all 9 features mutually necessary & \nolinkurl{loo_ucl_validation.json} & \texttt{5221ba23\ldots} \\
+SC-I & $\alpha_w$, $\sin^2\theta_W$ gauge-sector validation & \nolinkurl{alpha_w_prediction.json} & \texttt{2ea93b20\ldots} \\
+SC-J & $E_{\mathrm{base}}$ first-principles audit (identifies empirical inputs for engine parameters; Open Problem~(ii) in main paper \S1.1) & \nolinkurl{ebase_first_principles_audit.json} & \texttt{10701d35\ldots} \\
+SC-K & Charged-lepton structural anchor $m_e \approx \delta\cdot b_1$~keV at $+2.05$~ppm ($p = 0.004$ under integer-relation null) & \nolinkurl{comp_p01_K*.json} & \texttt{08f3c8e4\ldots} \\
+SC-L & Koide $S_3$ equal-norm $\to$ quadric reformulation; see also SC-GGG & \nolinkurl{comp_p01_L*.json} & \texttt{741fa438\ldots} \\
+SC-V & Pre-committed blind $m_W = g_2 v/2$ tree-level prediction; missed PDG by $+36\sigma$ (Open Problem~(viii); honest falsification) & \nolinkurl{comp_p01_V*.json} & \texttt{f52b9d33\ldots} \\
+SC-GGG & Koide cyclotomic-12 closed-form numerical verification ($m_\tau$ from $(m_e, m_\mu)$ at $0.91\sigma_{\rm PDG}$) & \nolinkurl{comp_p01_GGG_koide_closed_form.json} & \texttt{143de686\ldots} \\
+SC-S3 & Combinatorial-saturation null baseline (transcendental basis saturates at \SI{88}{\percent} hit rate at 10~ppm) & \nolinkurl{comp_p01_S3*.json} & \texttt{148f55a6\ldots} \\[6pt]
+
+\multicolumn{4}{l}{\textit{$N_c$ structural chain (\S1.1 contribution~3 and \S3.7 of main paper)}} \\[2pt]
+SC-EBF11 & Koide angle structural search; discovers $a$-value pattern $\{1,9,5\} = \{N_c^0, N_c^2, (N_c^2+1)/2\}$ & \nolinkurl{comp_p01_EBF_11*.json} & \texttt{c262b672\ldots} \\
+SC-EBF12 & Top-quark $a$-value from $N_c$; structural derivation of $\delta = 7$, $b_1 = 73$ & \nolinkurl{comp_p01_EBF_12*.json} & \texttt{6fd5645b\ldots} \\
+SC-EBF13 & strand\_count $= (N_c^2-1)/4 = 2$; $\theta_{\rm Koide} = 2/9$ from $N_c = 3$ & \nolinkurl{comp_p01_EBF_13*.json} & \texttt{4d634f57\ldots} \\[6pt]
+
+\multicolumn{4}{l}{\textit{VV from GUT group theory (\S3.4 of main paper)}} \\[2pt]
+SC-EBF14 & One-loop RGE test of VV coefficient identification (MAP result --- confirms $N_c$ identification is algebraic) & \nolinkurl{comp_p01_EBF_14*.json} & \texttt{c73405fd\ldots} \\
+SC-EBF16 & Exact Weyl-dimension-formula verification for $A_4 = \mathrm{SU}(5)$ and $D_5 = \mathrm{SO}(10)$; structural derivation of $\alpha_d$, $\beta_d$, $\gamma_d$ & \nolinkurl{comp_p01_EBF_16*.json} & \texttt{9108c5ac\ldots} \\[6pt]
+
+\multicolumn{4}{l}{\textit{Neutrino structural prediction (\S7.3 of main paper)}} \\[2pt]
+SC-EBF18 & Discovery of $m_\nu \propto b^{29/9}$ structure; 0.4\% mass-squared ratio match & \nolinkurl{comp_p01_EBF_18*.json} & \texttt{b9e71c1c\ldots} \\
+SC-EBF19 & Null test: 8/3654 integer triples $\{b_1 < b_2 < b_3\} \subset [2,30]$ hit within 1\% & \nolinkurl{comp_p01_EBF_19*.json} & \texttt{a10f2e92\ldots} \\
+SC-EBF21 & Three independent structural decompositions of $29/9$ & \nolinkurl{comp_p01_EBF_21*.json} & \texttt{71fd4f3a\ldots} \\
+SC-EBF22 & Full mechanism: $m_\nu = E_D^2 b^{29/9}/M_{\rm GUT}$ with $E_D = v_H/29$; $\sum m_\nu = 56$~meV & \nolinkurl{comp_p01_EBF_22*.json} & \texttt{695f8470\ldots} \\
+SC-EBF24 & SO(10) CG analysis; verifies $\dim(126) = 2N_c^2\delta$; third decomposition $(d_{45}-d_{16})/N_c^2 = 29/9$ & \nolinkurl{comp_p01_EBF_24*.json} & \texttt{3ef35f8c\ldots} \\[6pt]
+
+\multicolumn{4}{l}{\textit{Referee-closure null-discipline bundles (\S4, \S5, \S7.2.1 of main paper)}} \\[2pt]
+SC-RC1-URC & URC bounded-uniqueness enumeration: 1.6M depth-$\le 3$ expressions over UGP-structural atoms; UGP-claimed closures outside top-50; 30 feature-randomisation nulls each finding a better best residual $\Rightarrow$ A/D upheld (Open Problem (iii)) & \nolinkurl{comp_p01_RC1_urc_bounded_enumeration.json} & \texttt{bf5281c3\ldots} \\
+SC-RC1-HL & Higgs $\lambda = \varphi/(4\pi)$ bounded-uniqueness enumeration (UGP atoms $+$ $\pi, 4\pi$): $\lambda$-claim at $0.5\%$ outside top-50; null median $\sim 0.0007\%$ $\Rightarrow$ A/D upheld (Open Problem (iv)) & \nolinkurl{comp_p01_RC1_higgs_lambda_uniqueness.json} & \texttt{42a693e5\ldots} \\
+SC-RC1-VV & One-loop SM Yukawa RG test from SO(10) $10+126$ pattern at $M_{\rm GUT}$; naive log-linear $Y_d = C Y_u^{13/9} Y_l^{-7/6}$ returns $\sim 557\%$ max residual (null median $\sim 152\%$); aligns with archival one-loop negatives in the supplementary analysis log; VV coefficients stand as GUT group-theoretic Lean-certified (Open Problem (vii$''$)) & \nolinkurl{comp_p01_RC1_vv_rg_anomalous_closure.json} & \texttt{508f72bd\ldots} \\
+SC-RC1-CKM & CKM UGP-restricted Wilson-coefficient search: 20{,}000 draws from 13-atom UGP moduli library with $Z_6$ phases; best max-element residual $40.3\%$; feature-randomised null reaches $23.8\%$ median (null beats UGP), corroborating the Wilson-coefficient upgrade stress test. Primary QLC-based CKM at $3.3\%$ RMS stands as paper's CKM derivation (Open Problem (v)) & \nolinkurl{comp_p01_RC1_ckm_ugp_restricted_search.json} & \texttt{d4a21842\ldots} \\[6pt]
+
+\multicolumn{4}{l}{\textit{Open-Problem graduated closures (EPIC\_038 follow-up; see main paper Open-Problem registry)}} \\[2pt]
+SC-OP-II & Engine-parameter MDL uniqueness enumeration over UGP-structural atoms; certifies Open Problem~(ii) closure at A/D & \nolinkurl{comp_p01_op_ii_engine_mdl_uniqueness.json} & \texttt{b8af23d2\ldots} \\
+SC-OP-II-V & Engine-parameter validation (sensitivity-aware confirmation paired with SC-OP-II) & \nolinkurl{comp_p01_op_ii_engine_validation.json} & \texttt{c2028753\ldots} \\
+SC-OP-III & URC confinement-scale loop-expansion uniqueness scan over $\Lambda \in [0.2,0.4]$~GeV; documents partial closure of Open Problem~(iii) & \nolinkurl{comp_p01_op_iii_urc_confinement.json} & \texttt{56f08c56\ldots} \\
+SC-OP-IV & Higgs $\lambda = \varphi/(4\pi)$ MDL uniqueness enumeration over UGP atoms; closes Open Problem~(iv) at A/D & \nolinkurl{comp_p01_op_iv_higgs_lambda_mdl_uniqueness.json} & \texttt{4e1f29d7\ldots} \\
+SC-OP-IV-S & Higgs $\lambda$ sensitivity scan paired with SC-OP-IV (robustness leg) & \nolinkurl{comp_p01_op_iv_higgs_sensitivity.json} & \texttt{84dbecb5\ldots} \\
+SC-OP-V & CKM ratio uniqueness analysis under UGP-restricted moduli; companion to SC-RC1-CKM for Open Problem~(v) & \nolinkurl{comp_p01_op_v_ckm_ratio_uniqueness.json} & \texttt{d282bcb2\ldots} \\
+SC-OP-VII & Koide $S_3$ closed-form uniqueness audit; structural certification supporting Open Problem~(vii) closure & \nolinkurl{comp_p01_op_vii_koide_s3.json} & \texttt{fe9fb5ac\ldots} \\
+SC-OP-VIII & $m_W$ residual decomposition: PDG value sensitivity, SM/PDG tension analysis, $\rho$-pathway verification, three-loop estimate; documents full closure at $-0.42\sigma$ (PDG 2024) & \nolinkurl{comp_p01_AAA_mw_residual_decomposition.json} + \nolinkurl{comp_p01_op_viii_mw_sirlin.json} & \texttt{e6b760e7\ldots} \\
+
+\end{longtable}
+
+\paragraph{Scope note.}
+This table lists the core artifacts for claims appearing in the main paper.  The full set of 24 structural-analysis scripts (\texttt{comp\_p01\_EBF\_01} through \texttt{comp\_p01\_EBF\_24}) with complete descriptions and SHA-256 hashes is catalogued in \texttt{papers/01\_SM/PROVENANCE.md}.  Step-by-step reproduction commands for all scripts are in \texttt{papers/01\_SM/REPRODUCE.md}.
+
+% =====================================================================
+%  SI Table S2: Pre-Committed Blind Predictions
+% =====================================================================
+\section*{SI Table~S2: Pre-Committed Blind Predictions and PSC-Calibrated Benchmarks}
+
+\begin{longtable}{@{} p{3.5cm} p{3.6cm} p{3.8cm} p{3.9cm} @{}}
+\caption{Gauge-coupling results from the Lean-certified bare rationals $(g_1^2, g_2^2, g_3^2) = (16/125,\,2329/5400,\,41\,075\,281/27\,648\,000)$.  The two genuinely blind pre-committed predictions ($\alpha_s$ and $m_W$) are cryptographically verifiable via the Git commit history of the \texttt{ugp-lean} and \texttt{ugp-physics} repositories; see Appendix~F of the main paper for commit hashes, timestamps, and Zenodo DOIs.  The $\alpha_{\rm EM}$ row is a PSC-calibrated result (TE$_1$.P), not a blind prediction; see \S5.3 of the main paper.  A falsifiable research program has blind predictions on both sides of the success/failure line; this is the beginning of such a pattern.}
+\label{tab:si_blind_predictions} \\
+\toprule
+\textbf{Observable} & \textbf{UGP prediction} & \textbf{vs.\ CODATA/PDG} & \textbf{Status} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Observable} & \textbf{UGP prediction} & \textbf{vs.\ CODATA/PDG} & \textbf{Status} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+
+$\alpha_{\rm EM}$ (Thomson, TE$_1$.P) & $7.29737 \times 10^{-3}$ & $+2.39$~ppm of CODATA & \textbf{PSC-calibrated result} (TE$_1$.P three-parameter fit anchored on base-$137$ from UGP $\{0,3,7\}$; bare $g_1^{2,\rm bare}/(4\pi)$ alone gives $+0.50\%$; not a blind chain from bare rationals; SC-I) \\
+$\alpha_s(M_Z)$ (SC-D) & $0.11822$ & $+0.24\sigma$ of PDG 2024 ($0.1180 \pm 0.0009$); $+0.36\sigma$ vs PDG 2022 ($0.11790 \pm 0.00090$) & \textbf{Genuinely blind pre-committed prediction} (\textit{consistent-with}, not diagnostic; PDG band $\sim 1\%$; pre-committed in \texttt{ugp-lean} 43~days before PDG comparison) \\
+$m_W$ tree-level (SC-V) & $80.85$~GeV (from $g_2 v/2$, pre-committed) & $+36\sigma$ miss (PDG $80.379 \pm 0.012$~GeV) & \textbf{Clean blind falsification of the naive tree-level pipeline} (Open Problem~(viii); honest disclosure) \\
+$m_W$ two-loop $+$ threshold (SC-ZZ) & $80.364$~GeV (two-loop SM gauge running from the same bare $g_2^{2,\,\mathrm{bare}}$, with proper $6{\to}5$ flavour threshold matching at $m_t$) & $\mathbf{-0.42\sigma}$ vs PDG 2024 world average $80.3692 \pm 0.0133$; $-1.28\sigma$ vs older PDG $80.379 \pm 0.012$; 13~MeV gap fully accounted for by SM/PDG W-mass tension (UGP is 9.7~MeV closer to PDG than SM EW fit) & \textbf{Closed within PDG $1\sigma$} using PDG 2024 world average (\path{comp_p01_ZZ_mw_threshold_and_self_consistent.json}, pre-commit SHA-256 \texttt{eb4ff13b\ldots}; null test: 500 random $M_2 \in [30,45]$~GeV, UGP $M_2 = 37.4$ at 52nd percentile; gap decomposition: \path{comp_p01_AAA_mw_residual_decomposition.json}) \\[4pt]
+$\Delta m^2_{21}/\Delta m^2_{31}$ (neutrino, SC-EBF18) & $0.02936$ (Braid Atlas $b = \{5,11,19\}$, exponent $29/9$) & $0.16\sigma$ from NuFIT 6.0 ($0.02951 \pm 0.00098$); $0.52\%$ dev; $1.58\sigma$ from PDG 2024 world avg; normal hierarchy automatic & \textbf{Parameter-free structural prediction} (zero free parameters; see \S7.3 of main paper and companion paper~\cite{SpivackNeutrino}) \\
+$\lambda_H = \varphi/(4\pi)$ (Higgs quartic, SM-18) & $0.12876$ (MDL-unique at MDL\,$=4$ over UGP atoms) & $0.26\sigma$ from SM tree-level value $0.12928 \pm 0.002$ (PDG 2024); $0.40\%$ dev & \textbf{New confirmed result} (Category~A$_{\rm MDL}$; MDL-uniqueness certificate; independent of $G_F$; see \S8.5 of main paper) \\
+
+\end{longtable}
+
+% =====================================================================
+%  SI Table S3: Lean Machine-Checked Theorems
+% =====================================================================
+\section*{SI Table~S3: Lean Machine-Checked Theorems}
+
+The following Lean~4 theorems underpin the Category~A structural claims of the main paper.  All reside in the \texttt{ugp-lean} library~\cite{ugp-lean} with universal axiom signature $[\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}]$ (standard Mathlib baseline) and zero \texttt{sorry} in all tactic proofs.\footnote{The library additionally contains two analytic number theory lemmas (\texttt{dickman\_equidistribution\_in\_APs} and \texttt{crt\_equidistribution\_within\_regime}) declared as \texttt{axiom}s citing Tenenbaum III.6; these do not appear in the axiom closure of any physics theorem in this table.  Running \texttt{\#print axioms} on any theorem below returns exactly the standard Mathlib signature.}  The library comprises see companion formalization paper~\cite{SpivackUGPFormalization}; this table is scoped to the core set underpinning this paper's claims.  The full theorem inventory is catalogued in the companion formalization paper~\cite{SpivackUGPFormalization}.
+
+\begin{longtable}{@{} p{3.8cm} p{4.8cm} p{4.8cm} @{}}
+\caption{Core Lean-certified theorems supporting the main paper's Category~A claims.}
+\label{tab:si_lean} \\
+\toprule
+\textbf{Theorem} & \textbf{Module} & \textbf{Statement} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Theorem} & \textbf{Module} & \textbf{Statement} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+
+\multicolumn{3}{l}{\textit{RSUC and Ridge Minimality}} \\[2pt]
+\nolinkurl{rsuc_theorem} & \nolinkurl{Classification.FormalRSUC} & At $n=10$, the prime-locked mirror-dual ridge sieve has exactly two survivors $\{(24,42),(42,24)\}$; MDL selects the Lepton Seed $(1, 73, 823)$ up to mirror equivalence \\
+\nolinkurl{n10_is_minimal_admissible_ridge} & \nolinkurl{Compute.SieveBelow10} & $n = 10$ is the smallest admissible ridge level (\texttt{native\_decide}) \\[4pt]
+
+\multicolumn{3}{l}{\textit{GTE and Quarter-Lock}} \\[2pt]
+\nolinkurl{canonical_orbit_triples} & \nolinkurl{GTE} & Cascade $(1,73,823) \to (9,42,1023) \to (5,275,65535)$ step-verified \\
+\nolinkurl{quarterLockLaw} & \nolinkurl{QuarterLock} & $k_M = k_{\mathrm{gen2}} + \tfrac{1}{4}k_{L^2}$ (unconditional algebraic identity) \\
+\nolinkurl{k_L2_eq} & \nolinkurl{ElegantKernel} & $k_{L^2} = \delta/2^{n-1} = 7/512$ \\[4pt]
+
+\multicolumn{3}{l}{\textit{9/9 UCL Elegant Kernel unconditional closure}} \\[2pt]
+\nolinkurl{thm_ucl1_fully_unconditional} & \nolinkurl{ElegantKernel.Unconditional} & $k_{\mathrm{gen2}} = -\varphi/2$ \\
+\nolinkurl{thm_ucl2_fully_unconditional} & \nolinkurl{ElegantKernel.Unconditional} & $k_{\mathrm{gen}} = \varphi\cos(\pi/10)$ \\
+\nolinkurl{thm_ucl4_fully_unconditional} & \nolinkurl{ElegantKernel.Unconditional} & $k_L$ closure \\
+\nolinkurl{thm_ucl5_fully_unconditional} & \nolinkurl{ElegantKernel.Unconditional} & $k_{\mathrm{const}}$ centering identity \\
+\nolinkurl{thm_ucl_3} & \nolinkurl{ElegantKernel.MuTriple} & M\"obius triple $(k_a, k_b, k_c) = (1/8, -3/2, 4/3)$ via Vandermonde uniqueness \\[4pt]
+
+\multicolumn{3}{l}{\textit{Bare gauge couplings (underpinning $\alpha_{\rm EM}$ and $\alpha_s$ predictions)}} \\[2pt]
+\nolinkurl{g1Sq_bare_eq} & \nolinkurl{Phase4.GaugeCouplings} & $g_1^{2,\,\mathrm{bare}} = 16/125$ \\
+\nolinkurl{g2Sq_bare_eq} & \nolinkurl{Phase4.GaugeCouplings} & $g_2^{2,\,\mathrm{bare}} = 2329/5400$ \\
+\nolinkurl{g3Sq_bare_eq} & \nolinkurl{Phase4.GaugeCouplings} & $g_3^{2,\,\mathrm{bare}} = 41\,075\,281/27\,648\,000$ \\[4pt]
+
+\multicolumn{3}{l}{\textit{$L_{\mathrm{model}}$ cosmological identity}} \\[2pt]
+\nolinkurl{L_model_eq_log_residual} & \nolinkurl{LModelDerivation} & $L_{\mathrm{model}} = \log_2((D_1 \cdot 5^3)/3)$ from discrete charge $D_1 = 2^4$, golden volume $5^3$, orbit length 3 \\[4pt]
+
+\multicolumn{3}{l}{\textit{Pentagon--Hexagon Bridge and TT cascade formal closure}} \\[2pt]
+\nolinkurl{k_gen_pentagon_hexagon_bridge} & \nolinkurl{ElegantKernel.Unconditional.KGenFullClosure} & $k_{\rm gen} + k_{\rm gen2} = \varphi(\cos(\pi/10) - \cos(\pi/3))$ \\
+\nolinkurl{claim_C_formal} & \nolinkurl{MassRelations.ClaimCBridge} & TT mass cascade $=$ SU(3) Weyl rotation at $\pi/6$ per generation with $2^g$ doubling \\
+\nolinkurl{pentagon_hexagon_TT_unified_bridge} & \nolinkurl{MassRelations.ClaimCBridge} & Five structural facts packaged: pentagon--hexagon bridge, $\beta = \pi/8$, cascade identification \\
+\nolinkurl{beta_eq_alpha_div_c2_su3} & \nolinkurl{MassRelations.UpLeptonCyclotomic} & $\beta = \alpha/C_2(\mathrm{SU}(3)) = (\pi/6)/(4/3) = \pi/8$ \\[4pt]
+
+\multicolumn{3}{l}{\textit{$N_c$ structural chain (\S1.1 contribution~3 and \S3.7 of main paper)}} \\[2pt]
+\nolinkurl{N_c_determines_everything} & \nolinkurl{MassRelations.KoideAngle} & $\delta$, $b_1$, $a_{\rm top}$, strand count, and $\theta_{\rm Koide} = 2/9$ all follow from $N_c = 3$ \\
+\nolinkurl{koide_angle_from_N_c_pure} & \nolinkurl{MassRelations.KoideAngle} & $\theta = (N_c^2-1)/(4N_c^2) = 2/9$ unconditionally from $N_c = 3$ via strand-count identity \\
+\nolinkurl{delta_from_N_c} & \nolinkurl{MassRelations.KoideAngle} & $\delta = N_c + (N_c^2-1)/2 = 7$ \\
+\nolinkurl{strand_count_eq_su_nc_adj_div_4} & \nolinkurl{MassRelations.KoideAngle} & strand\_count $= \dim(\mathrm{SU}(N_c)_{\rm adj})/4 = (N_c^2-1)/4 = 2$ \\
+\nolinkurl{top_a_from_N_c} & \nolinkurl{MassRelations.KoideAngle} & $a_{\rm top} = N_c^4 - a_\tau = 76$ \\[4pt]
+
+\multicolumn{3}{l}{\textit{VV down-quark coefficients from GUT group theory (\S3.4 of main paper)}} \\[2pt]
+\nolinkurl{VV_from_GUT_group_theory} & \nolinkurl{MassRelations.DownRational} & $\alpha_d = 1 + \mathrm{rank}(\mathrm{SU}(5))/N_c^2$; $\beta_d = -(1+Y_{Q_L})$; $\gamma_d = -\dim(45)/\dim(126) = -5/14$ \\[4pt]
+
+\multicolumn{3}{l}{\textit{Neutrino seesaw structural closure (\S7.3 of main paper)}} \\[2pt]
+\nolinkurl{nuSeesawExponent} & \nolinkurl{MassRelations.KoideAngle} & $29/9 = N_c + \theta_{\rm Koide}$ \\
+\texttt{nu\_seesaw\_exponent\_\allowbreak{}three\_decompositions} & \nolinkurl{MassRelations.KoideAngle} & Three independent decompositions: $(N_c^3+s)/N_c^2 = (4N_c^2-\delta)/N_c^2 = (d_{45}-d_{16})/N_c^2$ \\
+\nolinkurl{dim_126_SO10_eq_two_Nc_sq_delta} & \nolinkurl{MassRelations.KoideAngle} & $\dim(126_{\mathrm{SO}(10)}) = 2N_c^2\delta = 126$ (cross-sector bridge) \\
+\nolinkurl{neutrino_seesaw_structural_closure} & \nolinkurl{MassRelations.KoideAngle} & All seesaw structural identities packaged in one conjunction \\
+\nolinkurl{delta\_b1\_is\_mersenne\_Nc\_sq} & \nolinkurl{MassRelations.KoideAngle} & $\delta b_1 = 2^{N_c^2}-1 = 511$ (electron mass factor is the $N_c^2$-th Mersenne number) \\
+\nolinkurl{mersenne\_ladder\_three\_values} & \nolinkurl{MassRelations.KoideAngle} & $\delta b_1 = 2^9-1$, $c_2 = 2^{10}-1$, $c_3 = 2^{16}-1$ (all three Mersenne values certified) \\[4pt]
+
+\multicolumn{3}{l}{\textit{Koide cyclotomic-12 closed form (companion paper~\cite{Spivack2026_Koide})}} \\[2pt]
+\nolinkurl{cos_sq_pi_div_twelve} & \nolinkurl{MassRelations.KoideClosedForm} & $\cos^2(\pi/12) = (2 + \sqrt{3})/4$ \\
+\nolinkurl{koide_solved_form_root} & \nolinkurl{MassRelations.KoideClosedForm} & Positive root $z = 2(x+y) + \sqrt{3}\sqrt{x^2 + 4xy + y^2}$ satisfies the Koide quadratic \\
+\nolinkurl{koide_angle_from_gte_structure} & \nolinkurl{MassRelations.KoideAngle} & $\theta_{\rm UGP} = 2/a_\mu = 2/9$ from the muon GTE $a$-value \\[4pt]
+
+\multicolumn{3}{l}{\textit{Braid Atlas charge theorem (companion paper~\cite{SpivackBraidAtlas})}} \\[2pt]
+\nolinkurl{sm_charge_leptons} & \nolinkurl{BraidAtlas.ChargeTheorem} & $Q = W_g / N_c$: leptons ($Q=-1$) and neutrinos ($Q=0$) certified; quark fractional charges certified via \texttt{sm\_quarks\_fractional\_charge} \\
+\nolinkurl{anomaly_cancellation_forces_Nc_3} & \nolinkurl{BraidAtlas.ChargeTheorem} & Anomaly equation $N_c(N_c-3)=0$ forces $N_c=3$ under $N_c>0$; fractional-charge corollary (\texttt{nc\_eq\_3\_\allowbreak from\_fractional\_charge}) gives an independent confirmation \\
+\nolinkurl{sm_quarks_fractional_charge} & \nolinkurl{BraidAtlas.ChargeTheorem} & $N_c \nmid 2$ and $N_c \nmid -1$ certifies fractional quark charges \\
+\nolinkurl{sm_winding_numbers_from_Nc} & \nolinkurl{BraidAtlas.ChargeDerivation} & SM winding set $\{N_c{-}1,{-}1,0,{-}N_c\}$ at $N_c=3$ from $\mathrm{SU}(N_c{+}2)$ hypercharge bookkeeping \\
+\nolinkurl{y_ql_unifies_vv_and_winding} & \nolinkurl{BraidAtlas.ChargeDerivation} & Hypercharge $Y_{Q_L} = 1/(2N_c)$ ties VV slope and braid winding numerator \\[4pt]
+
+\multicolumn{3}{l}{\textit{RCC gauge classification (\texttt{PSC.RCCInfiniteFamilies})}} \\[4pt]
+\nolinkurl{rcc_all_classical_families} & \nolinkurl{PSC.RCCInfiniteFamilies} & Bundled failure modes for infinite classical Lie families \(B_n,C_n,D_n,A_n\) at PSC Layers I--II (\texttt{BraidAtlas}-adjacent PSC programme) \\[4pt]
+
+\multicolumn{3}{l}{\textit{EW boson c-values and Coxeter-conductor tower law}} \\[2pt]
+\nolinkurl{ew_boson_c_value_theorem} & \nolinkurl{BraidAtlas.EWBosons} & Composite: $c(W)=N_c(N_c{+}1){-}1=11$, $c(Z)=N_c(N_c{+}1)=12$, $c(H)=N_c(N_c{+}1){+}1=13$; consecutive window; all from $N_c=3$ and GTE orbital constants at $n=10$ \\
+\nolinkurl{ew_c_consecutive_window} & \nolinkurl{BraidAtlas.EWBosons} & $c(Z)=c(W)+1$ and $c(H)=c(Z)+1$: unique consecutive triple in GTE orbital constants \\
+\nolinkurl{ew_c_window_unique} & \nolinkurl{BraidAtlas.EWBosons} & $\{c(W),c(Z),c(H)\}=\{11,12,13\}$ is the unique consecutive integer triple drawn from $n=10$ orbital constants \\
+\nolinkurl{e7_tower_law_complete} & \nolinkurl{BraidAtlas.CoxeterConductorTowerLaw} & $\cos(\pi/9)$ irreducible of degree~3; $\varphi(120)=32$; $3\nmid 32$ $\Rightarrow$ $\mathbb{Q}(\cos(\pi/9))\not\subset\mathbb{Q}(\zeta_{120})$: E7 Toda mass ratios lie outside the UGP cyclotomic field (falsifier) \\[4pt]
+
+\multicolumn{3}{l}{\textit{GTE-P7 dark matter quantum numbers}} \\[2pt]
+\nolinkurl{gte_p7_electric_charge_zero} & \nolinkurl{BraidAtlas.ChargeTheorem} & $W_{g,\mathrm{mirror}} = 0$ $\Rightarrow$ $Q_{\mathrm{GTE\text{-}P7}} = W_{g,\mathrm{mirror}}/N_c = 0$ (electrically neutral) \\
+\nolinkurl{gte_p7_quantum_numbers_neutral} & \nolinkurl{BraidAtlas.ChargeTheorem} & Composite: $W_g{=}0$, $N_c\mid W_g$; GTE-P7 is SM-neutral (colour-singlet, zero electric charge) \\
+\nolinkurl{mirror_triple_residue} & \nolinkurl{GTE.GeneralTheorems} & Mirror triple $(1,73,2137;g{=}1)$: $\mathrm{mod}(2137,73)=20$ matches canonical lepton residue (same algebraic orbit) \\
+\nolinkurl{mirror_triple_prime_lock} & \nolinkurl{GTE.GeneralTheorems} & $73\times 29 + 20 = 2137$: mirror triple satisfies the same prime-lock constraint as the canonical lepton triple \\[4pt]
+
+\multicolumn{3}{l}{\textit{$S_3$-balanced Koide identity (companion paper~\cite{Spivack2026_Koide})}} \\[2pt]
+\nolinkurl{koide_v1_sq_eq_three} & \nolinkurl{MassRelations.KoideAngle} & $|v_1|^2 = (\sum v_g)^2/3 = 3$ for every $\theta$ (trivial-representation norm) \\
+\nolinkurl{koide_v2_sq_eq_three} & \nolinkurl{MassRelations.KoideAngle} & $|v_2|^2 = \sum v_g^2 - |v_1|^2 = 3$ for every $\theta$ (standard-2-rep norm) \\
+\nolinkurl{koide_equal_norm} & \nolinkurl{MassRelations.KoideAngle} & $|v_1|^2 = |v_2|^2 = 3$ for all $\theta$: the $S_3$-balance condition is a universal ring identity \\[4pt]
+
+\multicolumn{3}{l}{\textit{Mersenne ladder (GTE.MersenneLadder module)}} \\[2pt]
+\nolinkurl{c3_phys_formula} & \nolinkurl{GTE.MersenneLadder} & $c_3 = 2^{n+2N_c}-1 = 65535$ connects the Mersenne exponent to the QCD colour rank \\
+\nolinkurl{evenStepC_phys_at_n10_Nc3} & \nolinkurl{GTE.MersenneLadder} & \texttt{evenStepC\_phys 10 3 = 65535} verified by \texttt{norm\_num} \\
+\nolinkurl{kprime_is_minimal_double_fib_above_n} & \nolinkurl{GTE.MersenneLadder} & $k'=16 = 2F(6)$ is the unique minimal double Fibonacci number $> n=10$
+(\texttt{no\_double\_fib\_between\allowbreak\_n\_and\_kprime}) \\
+\nolinkurl{c3_phys_entangled_with_c2} & \nolinkurl{GTE.MersenneLadder} & $\gcd(c_2, c_3) = 3 > 1$ (cross-generation entanglement preserved under T\_phys) \\[4pt]
+
+\multicolumn{3}{l}{\textit{GTE fiber bundle and orbit stability}} \\[2pt]
+\nolinkurl{lepton_orbit_a_values_distinct} & \nolinkurl{GTE.FiberBundle} & The canonical lepton orbit a-values $\{1,9,5\}$ are all distinct (uniquely identify generation) \\
+\nolinkurl{canonical_lepton_type_all_generations} & \nolinkurl{GTE.FiberBundle} & Canonical lepton fiber type = ChargedLepton across all 3 generations \\
+\nolinkurl{ugp_residue_is_conserved} & \nolinkurl{GTE.LinearResponse} & Zero-mode $c \bmod b = 15$ conserved at all ridge hits \\
+\nolinkurl{fib_transverse_decay_sq} & \nolinkurl{GTE.LinearResponse} & $\psi^2 < 1$: transverse perturbations to the canonical orbit decay (orbit is stable RG fixed point) \\[4pt]
+
+\multicolumn{3}{l}{\textit{Null-discipline: Algebraic Saturation Barrier}} \\[2pt]
+\nolinkurl{urc_basis_is_saturated} & \nolinkurl{UgpPhysicsLean.NullDiscipline.SaturationBarrier} & The URC basis of $1{,}596{,}939$ algebraic expressions has satDensity $> 0.01$ (from $e^{319} \ge 320$; zero sorry) \\
+\nolinkurl{vv_formula_passes_gate} & \nolinkurl{UgpPhysicsLean.NullDiscipline.SaturationBarrier} & VV functional form: null density $10^{-5} < 1\%$ — passes saturation gate \\
+\nolinkurl{vv_coefficients_fail_gate} & \nolinkurl{UgpPhysicsLean.NullDiscipline.SaturationBarrier} & VV coefficient values: $54.3\% > 1\%$ null rate — fail gate (Class~C, not theorem-grade) \\[4pt]
+
+\multicolumn{3}{l}{\textit{Null-discipline: Theorem Eligibility Criterion (TEC)}} \\[2pt]
+\nolinkurl{IsTheoremEligible} & \nolinkurl{UgpPhysicsLean.NullDiscipline.TheoremEligibility} & Four-gate predicate: PassesNullGate $\wedge$ StabilityGate $\wedge$ PredictiveGate $\wedge$ ConnectiveGate \\
+\nolinkurl{vv_formula_is_theorem_eligible} & \nolinkurl{UgpPhysicsLean.NullDiscipline.TheoremEligibility} & VV functional form passes all 4 TEC gates (theorem-grade) \\
+\nolinkurl{vv_coefficients_are_classC} & \nolinkurl{UgpPhysicsLean.NullDiscipline.TheoremEligibility} & VV coefficient values: $54.3\%$ null rate $\Rightarrow$ Class~C (not theorem-grade) \\
+\nolinkurl{charge_winding_is_theorem_grade} & \nolinkurl{UgpPhysicsLean.NullDiscipline.TheoremEligibility} & $Q = W_g/N_c$ is theorem-grade (Theorem C-W passes all 4 gates) \\
+\nolinkurl{classC_and_classE_exclusive} & \nolinkurl{UgpPhysicsLean.NullDiscipline.TheoremEligibility} & Class~C and Class~E are mutually exclusive \\[4pt]
+
+\multicolumn{3}{l}{\textit{Turing universality}} \\[2pt]
+\nolinkurl{ugp_is_turing_universal} & \nolinkurl{Universality.TuringUniversal} & The UGP substrate is Turing universal via a native Rule-110 embedding \\[6pt]
+
+\multicolumn{3}{l}{\textit{CKM $\theta_{23}$ structural ratio}} \\[2pt]
+\nolinkurl{ridge_eq_D1_mul_mersenne} & \nolinkurl{MassRelations.CKMTheta23} & $R_n = D_1 \cdot M_{n-4}$ for all $n \ge 4$ where $M_k = 2^k - 1$ \\
+\nolinkurl{ckm_theta23_ratio_at_n10} & \nolinkurl{MassRelations.CKMTheta23} & $\tau(R_{10})/D_1 = 15/8$ \\
+\nolinkurl{ckm_theta23_ratio_uniqueness} & \nolinkurl{MassRelations.CKMTheta23} & $15/8$ ratio is unique to $n = 10$ in $[5, 20]$ \\
+\nolinkurl{op_v_ckm_theta23_closure} & \nolinkurl{MassRelations.CKMTheta23} & Bundled OP(v) closure certificate \\[4pt]
+
+\multicolumn{3}{l}{\textit{Koide $S_3$ discrete arithmetic-mean identity}} \\[2pt]
+\nolinkurl{lepton_a_arithmetic_mean} & \nolinkurl{MassRelations.KoideS3DiscreteIdentities} & $2 \cdot a_\tau = a_e + a_\mu$ (i.e., $2 \cdot 5 = 1 + 9$) \\
+\nolinkurl{lepton_a_discrete_S3_identity} & \nolinkurl{MassRelations.KoideS3DiscreteIdentities} & Bundled discrete shadow of $S_3$ balance \\[4pt]
+
+\multicolumn{3}{l}{\textit{PSC three-route capstone (parametric carrier; supports OP(i))}} \\[2pt]
+\nolinkurl{ThreeRouteBundle} & \nolinkurl{UgpPhysicsLean.PSC.ThreeRouteForcing} & Prop-only carrier for [G\"odel + Landauer + Norfleet] forcing routes \\
+\nolinkurl{psc_three_route_capstone} & \nolinkurl{UgpPhysicsLean.PSC.ThreeRouteForcing} & Conditional capstone iff PSC (parametric, no smuggling) \\
+
+\end{longtable}
+
+\paragraph{Companion formalization paper.}
+The full zero-sorry \texttt{ugp-lean} library --- including the structural mass relations (TT cyclotomic up-to-lepton identity; $\alpha = \pi/6$ from $A_2$ Weyl geometry; $\beta = \pi/8$ from Cartan-torus potential; Froggatt-Nielsen UV completion; VV down-type log-linear relation; $N_c$ structural chain; VV GUT group-theory derivation; neutrino seesaw structural closure; braid charge derivations (\texttt{BraidAtlas.ChargeDerivation}); PSC RCC classification layer (\texttt{PSC.RCCInfiniteFamilies})), the Koide Newton-step $S_3$-equivariant flow, and the end-to-end \texttt{PhysicalMasses} bridge --- is published as an independent formal-methods contribution~\cite{SpivackUGPFormalization}.  The full theorem inventory is in that companion paper; this SI Table~S3 is the subset that directly underpins this paper's claims.
+
+% =====================================================================
+%  Companion papers
+% =====================================================================
+\section*{Companion Papers}
+\label{sec:companion}
+
+Several distinct research contributions related to this paper are published separately to keep each manuscript focused:
+
+\begin{sloppypar}
+\begin{itemize}
+\item \textbf{Koide Cyclotomic-12 Closed Form and $N_c$ Structural Derivation}~\cite{Spivack2026_Koide}: standalone paper presenting (i)~the Koide closed form and its cyclotomic-12 identification as elementary facts about the charged-lepton mass spectrum (independent of UGP), (ii)~the structural derivation of the Koide phase $\theta = (N_c^2-1)/(4N_c^2) = 2/9$ from the QCD colour rank $N_c = 3$ (Lean-certified), and (iii)~the connection to the neutrino seesaw exponent $29/9$.  Full derivation, $S_3$-equivariant Newton-step dynamical realisation, and Lean-formalisation details.  Source: \nolinkurl{papers/18_koide_cyclotomic/}.
+
+\item \textbf{Cyclotomic-12 Mass Structure}~\cite{Spivack2026_CyclotomicMass}: companion paper presenting the TT and VV structural mass relations, $A_2$ Weyl-chamber geometric origin of $\alpha=\pi/6$, Froggatt-Nielsen UV completion, VV coefficient structural derivation from SU(5)/SO(10) group theory, and three null-discipline tests on the VV down-sector coefficients.  Together with the main paper and the Koide companion, this determines all nine charged-fermion masses from two scalar inputs.  Source: \nolinkurl{papers/19_cyclotomic_mass_structure/}.
+
+\item \textbf{Neutrino Mass-Squared Ratio from the Braid Atlas}~\cite{SpivackNeutrino}: companion paper presenting the full derivation of $\Delta m^2_{21}/\Delta m^2_{31} = 0.02936$ from Braid Atlas $b$-values $\{5,11,19\}$ with exponent $29/9$; three independent structural decompositions; Dirac scale $E_D = v_H/29$; null tests and preregistered falsification criteria for JUNO, DUNE, CMB-S4, and LEGEND-1000.  Source: \nolinkurl{papers/22_neutrino_masses/}.
+
+\item \textbf{Braid Atlas}~\cite{SpivackBraidAtlas}: the universal arithmetic-to-topology dictionary $\Psi$ mapping GTE triples to braid-group elements, with theorems deriving SM quantum numbers (family, generation, spin, charge) from braid topological invariants.  Source of the right-handed neutrino $b$-values $\{5, 11, 19\}$.
+
+\item \textbf{UGP formal-methods paper}~\cite{SpivackUGPFormalization}: the \texttt{ugp-lean} library as a stand-alone formal-methods contribution, with the complete zero-sorry theorem inventory, zero-\texttt{sorry} accounting, and detailed build/reproducibility instructions.
+
+\end{itemize}
+\end{sloppypar}
+
+% =====================================================================
+%  Reproduction
+% =====================================================================
+\section*{Reproduction}
+
+\begin{sloppypar}
+Every artifact in SI Table~S1 can be regenerated by running the corresponding Python script in \nolinkurl{papers/01_SM/canonical_run/} of the public \texttt{ugp-physics} repository.  All scripts are self-contained (dependencies: Python~3.9+, NumPy, and optionally SciPy/SymPy) and produce deterministic output.  The primary verifier (all SM predictions) is invoked as:
+\end{sloppypar}
+\begin{verbatim}
+cd UGP_GTE_SM_Verifier
+python3 UGP_GTE_SM_Verifier.py \
+  --preset-fullstack --n 10 --full-derivation 1
+\end{verbatim}
+\begin{sloppypar}
+The structural-analysis scripts (SC-EBF11 through SC-EBF24) are each independently invocable from \texttt{papers/01\_SM/canonical\_run/}; step-by-step commands are in \texttt{papers/01\_SM/REPRODUCE.md}.  SHA-256 of each output JSON must match the prefix listed in Table~S1 (timestamps in JSON payloads may differ; SHA-256 is computed over the prediction block for blind tests).
+\end{sloppypar}
+
+Every Lean theorem in SI Table~S3 can be verified by:
+\begin{verbatim}
+git clone https://github.com/novaspivack/ugp-lean
+cd ugp-lean
+lake build
+\end{verbatim}
+\begin{sloppypar}
+A clean build completes with zero \texttt{sorry} warnings and the standard Mathlib axiom signature.  The specific commit supporting the $\alpha_s$ blind prediction is \texttt{27e6823} (timestamp: 2026-03-05 14:09:28 EST).  The pre-commitment trail for the 43-day gap is documented in Appendix~F of the main paper.
+\end{sloppypar}
+
+\paragraph{Scope note.}
+This Supplementary Information document is scoped to the claims of the main paper.  Additional structural results (TT/VV mass relations, the Tier~I/II/III null framework, the Braid Atlas topological signature, and the $m_W$ SM-machinery recovery analyses) are documented in the companion papers listed above.  The SC-RC1 artifact group (SC-RC1-URC, SC-RC1-HL, SC-RC1-VV, SC-RC1-CKM) in Table~S1 bundles null-disciplined computations supporting the Open-Problem disclosures in \S4, \S5, and \S7.2.1 of the main paper: they \emph{confirm} the A/D status of the URC closures, the Higgs~$\lambda$ identification, the VV-Lagrangian open item, and the CKM Wilson-coefficient upgrade pathway, rather than promoting any of them to Category~A.  This upholds the existing paper classifications with explicit computational backing instead of verbal hedges.
+
+\bibliographystyle{plain}
+\bibliography{../bib/Spivack_Papers_Bibliography}
+
+\end{document}

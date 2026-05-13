@@ -1,0 +1,754 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>UWCA Micro‑Gadget Demo — ECA + Mod‑p Arithmetic</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { --pad: 12px; --gap: 10px; --bg:#0b0c10; --fg:#e6edf3; --mut:#9aa7b4; }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.37 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,'Helvetica Neue',Arial,sans-serif; }
+  header { position: sticky; top: 0; z-index: 10; background:#0f1116cc; backdrop-filter: blur(6px); border-bottom:1px solid #1f2630; }
+  .bar { display:grid; grid-template-columns: 1fr auto; gap: var(--gap); align-items:center; padding: var(--pad); }
+  .controls { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: var(--gap); }
+  .ctl { display:flex; gap:8px; align-items:center; }
+  .ctl label { min-width: 100px; color: var(--mut); }
+  input[type="number"], input[type="text"], select { width:100%; background:#0b0d12; color:var(--fg); border:1px solid #263041; border-radius:8px; padding:6px 8px; }
+  input[type="range"] { width:100%; accent-color:#58a6ff; }
+  input[type="checkbox"] { transform: translateY(1px); }
+  button { background:#1f6feb; color:white; border:none; border-radius:8px; padding:8px 12px; font-weight:600; cursor:pointer; }
+  button.secondary { background:#2d333b; color:#c9d1d9; }
+  button:disabled { opacity:.55; cursor:not-allowed; }
+  main { padding: var(--pad); display:grid; grid-template-columns: 1fr 420px; gap: var(--gap); }
+  #canvasWrap, #microWrap { border:1px solid #1f2630; border-radius:10px; overflow:auto; background:#000; }
+  canvas { display:block; image-rendering: pixelated; }
+
+  .row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .pill { padding:2px 8px; border-radius:999px; border:1px solid #2a3444; background:#0e1117; font-size:12px; color:#b8c4cf; }
+
+  aside { border:1px solid #1f2630; border-radius:10px; overflow:hidden; background:#0b0d12; display:flex; flex-direction:column; }
+  .paneHead { padding:10px 12px; border-bottom:1px solid #1f2630; font-weight:600; }
+  .paneBody { padding:10px 12px; display:flex; flex-direction:column; gap:10px; max-height: 50vh; overflow:auto; }
+  #traceBox { background:#000; color:#c9d1d9; font:12px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; border:1px solid #2a3444; border-radius:8px; padding:8px; height:320px; overflow:auto; white-space:pre; }
+
+  footer { color:#9aa7b4; padding: 8px var(--pad) 16px; font-size:12px; grid-column: 1 / -1; }
+
+  /* Modal */
+  .modal { position: fixed; inset: 0; background: #0009; display: none; align-items: center; justify-content: center; }
+  .modal.open { display: flex; }
+  .modalCard { width: min(900px, 92vw); max-height: 85vh; overflow:auto; background:#0b0d12; border:1px solid #1f2630; border-radius:12px; padding:16px 18px; }
+  .modalCard h2 { margin: 0 0 8px 0; font-size: 18px; }
+  .modalCard h3 { margin: 14px 0 6px; font-size: 15px; }
+  .modalCard p  { margin: 6px 0; color:#cbd5e1; }
+  .modalCard code { background:#0e1117; border:1px solid #2a3444; padding:1px 4px; border-radius:6px; }
+  .closeRow { display:flex; justify-content:flex-end; margin-top: 12px; }
+</style>
+</head>
+<body>
+  <header>
+    <div class="bar">
+      <h1>UWCA Micro‑Gadget Demo — ECA + Mod‑p Arithmetic</h1>
+    </div>
+  </header>
+
+  <main>
+    <div>
+      <div id="canvasWrap"><canvas id="cv" width="1024" height="800"></canvas></div>
+      <div style="margin-top:10px">
+        <div class="row">
+          <span class="pill">k=<span id="kLab">0</span></span>
+          <span class="pill">mode=<span id="modeLab">direct</span></span>
+          <span class="pill">render=<span id="renderLab">space</span></span>
+          <span class="pill">rule=<span id="ruleLab">110</span></span>
+          <span class="pill">arithOp=<span id="arithLab">add</span></span>
+        </div>
+      </div>
+
+      <div style="margin-top:10px">
+        <h3 style="margin:8px 0;font-size:14px;color:#cfd8e3">Micro‑scope (passes)</h3>
+        <div id="microWrap"><canvas id="micro" width="1024" height="144"></canvas></div>
+        <div class="row" style="margin-top:6px">
+          <span class="pill">Passes shown: <span id="passLab">—</span></span>
+          <span class="pill">Last: <span id="passDesc">—</span></span>
+        </div>
+      </div>
+    </div>
+
+    <aside>
+      <div class="paneHead">Controls</div>
+      <div class="paneBody">
+        <div class="controls" style="grid-template-columns: 1fr;">
+          <div class="ctl"><label>Width</label><input id="width" type="number" min="32" max="4096" step="1" value="512"></div>
+          <div class="ctl"><label>Rows</label><input id="rows" type="number" min="1" max="200000" step="1" value="800"></div>
+          <div class="ctl"><label>Cell px</label><input id="cellPx" type="number" min="1" max="16" step="1" value="2"></div>
+          <div class="ctl"><label>Speed</label><input id="speed" type="range" min="1" max="120" value="60"></div>
+
+          <div class="ctl"><label>Mode</label>
+            <select id="mode">
+              <option value="direct" selected>Direct CA (lookup)</option>
+              <option value="uwca">UWCA Emulation (minterms)</option>
+              <option value="uwca-arith">UWCA‑Arith (mod‑p gadgets)</option>
+            </select>
+          </div>
+          <div class="ctl"><label>Render</label>
+            <select id="render">
+              <option value="space" selected>Space (rows downward)</option>
+              <option value="time">Time (one column, passes across)</option>
+            </select>
+          </div>
+
+          <div class="ctl" id="ecaControls">
+            <label>Rule</label>
+            <select id="rulePreset">
+              <option value="110" selected>110 (universal)</option>
+              <option value="30">30 (chaotic)</option>
+              <option value="54">54 (complex)</option>
+              <option value="62">62</option>
+              <option value="90">90 (XOR/fractal)</option>
+              <option value="150">150 (XOR)</option>
+              <option value="184">184 (traffic)</option>
+              <option value="0">0</option>
+              <option value="255">255</option>
+            </select>
+          </div>
+          <div class="ctl"><label>Rule #</label><input id="rule" type="number" min="0" max="255" value="110"></div>
+
+          <div class="ctl" id="arithControls" style="display:none">
+            <label>Operation</label>
+            <select id="arithOp">
+              <option value="add" selected>add: NEXT = (L + C) mod p</option>
+              <option value="sub">sub:  NEXT = (L − C) mod p</option>
+              <option value="cmp">cmp:  NEXT = [L &lt; C] (per‑p)</option>
+            </select>
+          </div>
+
+          <div class="ctl"><label>Wrap</label><input id="wrap" type="checkbox" checked></div>
+          <div class="ctl"><label>Density</label><input id="density" type="range" min="0" max="100" value="50"></div>
+          <div class="ctl"><label>Seed</label>
+            <select id="seedKind">
+              <option value="random" selected>Random</option>
+              <option value="single">Single 1 in center</option>
+              <option value="periodic">Periodic (1010…)</option>
+              <option value="block">Block (1s block)</option>
+            </select>
+          </div>
+
+          <div class="ctl">
+            <button id="startBtn">Start</button>
+            <button id="stopBtn" class="secondary" disabled>Stop</button>
+            <button id="resetBtn" class="secondary">Reset</button>
+            <button id="testBtn" class="secondary">Run Tests</button>
+          </div>
+          <div class="ctl">
+            <button id="copyBtn" class="secondary">Copy CSV</button>
+            <button id="csvBtn" class="secondary">Download CSV</button>
+            <button id="explainBtn" class="secondary">Explanation</button>
+          </div>
+
+          <div class="ctl"><label>Prime view</label>
+            <select id="primeView">
+              <option value="all" selected>All primes</option>
+              <option value="cycle">Cycle primes</option>
+              <option value="p3">p=3</option>
+              <option value="p5">p=5</option>
+              <option value="p17">p=17</option>
+              <option value="p19">p=19</option>
+              <option value="p257">p=257</option>
+            </select>
+          </div>
+          <div class="ctl"><label>Zero=black</label><input id="zeroBlack" type="checkbox"></div>
+          <div class="ctl"><label>Binarize</label><input id="binarize" type="checkbox"></div>
+          <div class="ctl"><label>Δ overlay</label><input id="delta" type="checkbox"></div>
+        </div>
+      </div>
+
+      <div class="paneHead">Trace</div>
+      <div class="paneBody">
+        <div id="traceBox"></div>
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    <b>Direct</b> = standard Wolfram 1‑D binary CA (radius‑1).
+    <b>UWCA Emulation</b> = the same CA computed via local minterm rails and OR‑accumulation.
+    <b>UWCA‑Arith</b> = a residue‑wise mod‑p local gadget demo (using primes p∈{3,5,17,19,257}); neighbours provide (L,C) rails, passes perform add/sub/compare per‑prime, then commit.
+    View toggles: choose prime focus, zero=black, binarize residues, and Δ overlay to highlight per‑step changes.
+  </footer>
+
+  <!-- Modal: Explanation -->
+  <div class="modal" id="modal">
+    <div class="modalCard">
+      <h2>What are these modes showing?</h2>
+      <h3>Direct CA (lookup)</h3>
+      <p>Classic Wolfram 1‑D binary cellular automata. Each new cell depends on its left/center/right neighbours via an 8‑bit rule #. One pass computes the next row.</p>
+
+      <h3>UWCA Emulation (minterms)</h3>
+      <p>Same CA, but realised as a local, multi‑pass micro‑rule:
+        (1) **distribute** neighbour rails (L/C/R),
+        (2) compute the **minterm** rails that match the rule’s 1‑patterns,
+        (3) **OR‑reduce** minterms into NEXT, then **commit** the next row.
+        This shows how a local circuit/schedule can implement global CA behaviour (universality witness via Rule‑110).</p>
+
+      <h3>UWCA‑Arith (mod‑p gadgets)</h3>
+      <p>A toy version of the arithmetic UWCA layer. Each site carries residues for primes p∈{3,5,17,19,257}. Neighbour coupling is used to fetch (L,C) operands; passes perform local mod‑p
+          <code>add</code>/<code>sub</code>/<code>cmp</code> rails per prime, then a commit pass. It mirrors the building blocks (adders, comparators) used in the real UGP/UWCA substrate.</p>
+
+      <h3>Viewing options (arith mode)</h3>
+      <p><b>Prime view</b>: show <i>All</i> primes stacked, <i>Cycle</i> through primes each generation, or focus a single prime rail (p=3,5,17,19,257).</p>
+      <p><b>Zero=black</b>: render residue 0 as pure black (useful for sparse, structured patterns).</p>
+      <p><b>Binarize</b>: threshold residues to {0,1} by mapping non‑zero→1 — makes wavefronts and arithmetic cones crisp.</p>
+      <p><b>Δ overlay</b>: highlight sites whose shown residue changed this step; unchanged sites are dimmed. Works for both binary CA and arith mode.</p>
+
+      <p>Switch the <b>Render</b> control to <b>Time</b> to see passes sweep horizontally; in <b>Space</b> each row is a generation.</p>
+
+      <div class="closeRow"><button id="closeModal" class="secondary">Close</button></div>
+    </div>
+  </div>
+
+<script>
+/* -------------------- Utilities -------------------- */
+const el = id => document.getElementById(id);
+const clamp = (x,lo,hi) => Math.max(lo, Math.min(hi, x|0));
+const sum = arr => arr.reduce((a,b)=>a+b,0);
+
+const PRIMES = [3,5,17,19,257];
+// view toggles (queried live each render)
+const view = {
+  get primeView(){ return el('primeView')?.value || 'all'; },
+  get zeroBlack(){ return !!el('zeroBlack')?.checked; },
+  get binarize(){ return !!el('binarize')?.checked; },
+  get delta(){ return !!el('delta')?.checked; }
+};
+
+/* -------------------- CA Core (binary radius‑1) -------------------- */
+function ecaNextBit(rule, L, C, R){
+  const idx = (L<<2)|(C<<1)|R;  // 7..0 (111..000)
+  return (rule >> idx) & 1;
+}
+function directStep(cur, rule, wrap){
+  const n = cur.length, nxt = new Uint8Array(n);
+  for (let i=0;i<n;i++){
+    const L = wrap ? cur[(i-1+n)%n] : (i===0 ? 0 : cur[i-1]);
+    const C = cur[i];
+    const R = wrap ? cur[(i+1)%n] : (i===n-1 ? 0 : cur[i+1]);
+    nxt[i] = ecaNextBit(rule, L, C, R);
+  }
+  return nxt;
+}
+
+/* -------------------- UWCA Emulation (minterms) -------------------- */
+function mintermList(rule){
+  const list = [];
+  for (let idx=0; idx<8; idx++){
+    if ((rule>>idx)&1){
+      list.push([(idx>>2)&1,(idx>>1)&1,idx&1]); // [L,C,R]
+    }
+  }
+  return list;
+}
+function uwcaEmulateStep(cur, rule, wrap){
+  const n = cur.length;
+  const L = new Uint8Array(n), C = new Uint8Array(n), R = new Uint8Array(n);
+  for (let i=0;i<n;i++){
+    L[i] = wrap ? cur[(i-1+n)%n] : (i===0 ? 0 : cur[i-1]);
+    C[i] = cur[i];
+    R[i] = wrap ? cur[(i+1)%n] : (i===n-1 ? 0 : cur[i+1]);
+  }
+  const passes = [{name:'L/C/R rails', desc:'Neighbour distribution', out: C}];
+  const mts = mintermList(rule);
+  const minrails = [];
+  for (let k=0;k<mts.length;k++){
+    const [Lm,Cm,Rm] = mts[k];
+    const out = new Uint8Array(n);
+    for (let i=0;i<n;i++){
+      const okL = Lm ? L[i]===1 : L[i]===0;
+      const okC = Cm ? C[i]===1 : C[i]===0;
+      const okR = Rm ? R[i]===1 : R[i]===0;
+      out[i] = (okL & okC & okR) ? 1 : 0;
+    }
+    minrails.push(out);
+    passes.push({name:`M${k}`, desc:`minterm ${Lm}${Cm}${Rm}`, out});
+  }
+  const NEXT = new Uint8Array(n);
+  for (const rail of minrails){ for (let i=0;i<n;i++) NEXT[i] |= rail[i]; }
+  passes.push({name:'OR', desc:'OR‑reduce → NEXT', out: NEXT});
+  return {passes, nextRow: NEXT};
+}
+
+/* -------------------- UWCA‑Arith (mod‑p local gadgets) -------------
+   Each site holds residues (mod p) for p∈PRIMES (5 rails per site).
+   Neighbours supply L/C rails; passes compute per‑prime local operations:
+   add/sub: r = (L ± C) mod p
+   cmp:     r = 1 if L<C else 0   (per‑prime flag; final shown as parity across primes)
+   This demonstrates the local‑gadget flavour used by your arithmetic UWCA.
+-------------------------------------------------------------------- */
+function initResidueField(width, density){
+  const field = Array.from({length: PRIMES.length}, ()=> new Uint16Array(width)); // one rail per prime
+  for (let pi=0; pi<PRIMES.length; pi++){
+    const p = PRIMES[pi];
+    for (let i=0;i<width;i++){
+      // randomise residues with density skew to make patterns visible
+      field[pi][i] = Math.random() < density ? (Math.random()*p)|0 : 0;
+    }
+  }
+  return field; // [ rail_p0[], rail_p1[], ... ]
+}
+function shiftLeftRail(rail, wrap){
+  const n = rail.length, out = new Uint16Array(n);
+  for (let i=0;i<n;i++){
+    out[i] = wrap ? rail[(i-1+n)%n] : (i===0 ? 0 : rail[i-1]);
+  }
+  return out;
+}
+function arithPasses(stateResidues, op, wrap){
+  const n = stateResidues[0].length;
+  const passes = [];
+  // Pass 1: distribute L/C per prime
+  const Lrails = stateResidues.map(rail => shiftLeftRail(rail, wrap));
+  passes.push({name:'L rails', desc:'Left neighbour residues', out: Lrails});
+
+  // Pass 2..: per‑prime op
+  const outRails = stateResidues.map((Crail, pi) => {
+    const p = PRIMES[pi], Lrail = Lrails[pi];
+    const out = new Uint16Array(n);
+    if (op==='add'){
+      for (let i=0;i<n;i++) out[i] = (Lrail[i] + Crail[i]) % p;
+    } else if (op==='sub'){
+      for (let i=0;i<n;i++) out[i] = ((Lrail[i] - Crail[i]) % p + p) % p;
+    } else { // cmp
+      for (let i=0;i<n;i++) out[i] = (Lrail[i] < Crail[i]) ? 1 : 0;
+    }
+    return out;
+  });
+  passes.push({name:op, desc:`per‑prime ${op}`, out: outRails});
+
+  // Commit: next residues become outRails
+  return {passes, nextResidues: outRails};
+}
+
+/* -------------------- Rendering -------------------- */
+const cv = el('cv'), ctx = cv.getContext('2d', {alpha:false});
+const micro = el('micro'), mx = micro.getContext('2d', {alpha:false});
+let curRow = new Uint8Array(512);        // for CA modes
+let residueField = null;                 // for arith mode: [rail_p0[], ...]
+let k = 0, running = false, rafId = 0;
+let prevRow = null;
+let prevResidueField = null; // same shape as residueField when used
+
+function setupCanvas(){
+  const W = clamp(+el('width').value, 32, 4096);
+  const rows = clamp(+el('rows').value, 1, 200000);
+  const px = clamp(+el('cellPx').value, 1, 16);
+  const render = el('render').value;
+  // Canvas for main view
+  if (render === 'space'){ cv.width = W*px; cv.height = rows*px; }
+  else { cv.width = W*px; cv.height = 144; }
+  ctx.fillStyle = '#000'; ctx.fillRect(0,0,cv.width, cv.height);
+
+  // Micro canvas
+  micro.width = W*px; micro.height = 144;
+  mx.fillStyle='#000'; mx.fillRect(0,0,micro.width,micro.height);
+}
+
+/* --- Space renderers --- */
+function paintRowSpaceBinary(y, row){
+  const px = clamp(+el('cellPx').value, 1, 16);
+  const useDelta = view.delta;
+  for (let i=0;i<row.length;i++){
+    let on = row[i]===1;
+    if (useDelta && prevRow){
+      const changed = row[i] !== prevRow[i];
+      ctx.fillStyle = changed ? (on ? '#e6edf3' : '#2f3742') : '#0b0c10';
+    } else {
+      ctx.fillStyle = on ? '#e6edf3' : '#0b0c10';
+    }
+    ctx.fillRect(i*px, y*px, px, px);
+  }
+}
+
+function hslForResidue(pi, r){
+  const p = PRIMES[pi];
+  const zeroBlack = view.zeroBlack;
+  const bin = view.binarize;
+  const baseH = [210,130,20,280,0][pi]; // per‑prime hue
+  if (bin){
+    if (r===0) return zeroBlack ? '#000' : `hsl(${baseH} 65% 18%)`;
+    return `hsl(${baseH} 65% 78%)`;
+  }
+  if (r===0 && zeroBlack) return '#000';
+  const l = 23 + (75-23) * (p>1 ? r/(p-1) : 0);
+  return `hsl(${baseH} 65% ${l}%)`;
+}
+
+function paintRowSpaceResidues(y, field){
+  const px = clamp(+el('cellPx').value, 1, 16);
+  const W = field[0].length;
+  const pv = view.primeView;
+  const delta = view.delta;
+
+  // Helper to check change
+  const changedAt = (pi, i)=>{
+    if (!delta) return true; // draw normally
+    if (!prevResidueField) return true;
+    return field[pi][i] !== prevResidueField[pi][i];
+  };
+
+  if (pv === 'all'){
+    // stack primes vertically inside each row (1px bands)
+    for (let pi=0; pi<PRIMES.length; pi++){
+      const rail = field[pi], y0 = y*px + (pi % Math.max(1,px));
+      for (let i=0;i<W;i++){
+        const ch = changedAt(pi,i);
+        ctx.fillStyle = ch ? hslForResidue(pi, rail[i]) : '#07090d';
+        ctx.fillRect(i*px, y0, px, 1);
+      }
+    }
+  } else {
+    // choose a single prime to render full‑height row
+    const primeMap = {p3:0,p5:1,p17:2,p19:3,p257:4};
+    const pi = pv==='cycle' ? (k % PRIMES.length) : primeMap[pv];
+    const rail = field[pi];
+    for (let i=0;i<W;i++){
+      const ch = changedAt(pi,i);
+      ctx.fillStyle = ch ? hslForResidue(pi, rail[i]) : '#0b0c10';
+      ctx.fillRect(i*px, y*px, px, px);
+    }
+  }
+}
+
+/* --- Time renderers --- */
+function paintTimeStripeBinary(x, row){
+  const px = clamp(+el('cellPx').value, 1, 16);
+  const useDelta = view.delta;
+  for (let i=0;i<row.length;i++){
+    let on = row[i]===1;
+    if (useDelta && prevRow){
+      const changed = row[i] !== prevRow[i];
+      ctx.fillStyle = changed ? (on ? '#e6edf3' : '#2f3742') : '#0b0c10';
+    } else {
+      ctx.fillStyle = on ? '#e6edf3' : '#0b0c10';
+    }
+    ctx.fillRect(x*px, i*px, px, px);
+  }
+}
+
+function paintTimeStripeResidues(x, field){
+  const px = clamp(+el('cellPx').value, 1, 16);
+  const W = field[0].length;
+  const pv = view.primeView;
+  const delta = view.delta;
+
+  const changedAt = (pi, i)=>{
+    if (!delta) return true;
+    if (!prevResidueField) return true;
+    return field[pi][i] !== prevResidueField[pi][i];
+  };
+
+  if (pv === 'all'){
+    const h = cv.height;
+    const bandH = Math.floor(h / PRIMES.length) || 1;
+    for (let pi=0; pi<PRIMES.length; pi++){
+      const rail = field[pi], y0 = pi*bandH;
+      for (let i=0;i<W;i++){
+        const ch = changedAt(pi,i);
+        ctx.fillStyle = ch ? hslForResidue(pi, rail[i]) : '#07090d';
+        ctx.fillRect(x*px, y0 + (i % bandH), px, 1);
+      }
+    }
+  } else {
+    const primeMap = {p3:0,p5:1,p17:2,p19:3,p257:4};
+    const pi = pv==='cycle' ? (k % PRIMES.length) : primeMap[pv];
+    const rail = field[pi];
+    for (let i=0;i<W;i++){
+      const ch = changedAt(pi,i);
+      ctx.fillStyle = ch ? hslForResidue(pi, rail[i]) : '#0b0c10';
+      ctx.fillRect(x*px, i*px, px, px);
+    }
+  }
+}
+
+/* --- Micro panel --- */
+function paintMicroBinary(passes){
+  const px = clamp(+el('cellPx').value, 1, 16);
+  mx.fillStyle='#000'; mx.fillRect(0,0,micro.width,micro.height);
+  const bandH = 16;
+  let y=0;
+  for (let p=0;p<passes.length && y+bandH<=micro.height; p++){
+    const rail = passes[p].out;
+    // rail may be Uint8Array (binary) or array of rails (arith)
+    if (rail instanceof Uint8Array){
+      for (let i=0;i<rail.length;i++){
+        mx.fillStyle = rail[i] ? '#7ee787' : '#161b22';
+        mx.fillRect(i*px, y, px, bandH-1);
+      }
+    } else if (Array.isArray(rail)){
+      // For arith: compress per‑prime rails into a luminance band
+      const n = rail[0].length;
+      for (let i=0;i<n;i++){
+        // brightness by average residue across primes
+        let acc = 0;
+        for (let pi=0; pi<rail.length; pi++){
+          const pmod = PRIMES[pi]-1 || 1;
+          acc += (rail[pi][i] % PRIMES[pi]) / pmod;
+        }
+        const g = Math.floor(30 + 200*(acc/rail.length));
+        mx.fillStyle = `rgb(${g},${g},${g})`;
+        mx.fillRect(i*px, y, px, bandH-1);
+      }
+    }
+    y += bandH;
+  }
+  el('passLab').textContent = passes.length;
+  el('passDesc').textContent = (passes[passes.length-1]||{desc:'—'}).desc;
+}
+
+/* -------------------- Step & Loop -------------------- */
+function stepOnce(){
+  const rule = clamp(+el('rule').value, 0, 255);
+  const wrap = el('wrap').checked;
+  const mode = el('mode').value;
+  const render = el('render').value;
+  const op = el('arithOp').value;
+
+  let nextRow = null, passes = null, nextResidues = null;
+
+  if (mode === 'direct'){
+    nextRow = directStep(curRow, rule, wrap);
+  } else if (mode === 'uwca'){
+    const emu = uwcaEmulateStep(curRow, rule, wrap);
+    nextRow = emu.nextRow; passes = emu.passes;
+  } else {
+    // Arithmetic residues mode
+    const ar = arithPasses(residueField, op, wrap);
+    nextResidues = ar.nextResidues; passes = ar.passes;
+  }
+
+  // keep previous state for Δ overlay
+  prevRow = curRow ? curRow.slice() : null;
+  prevResidueField = residueField ? residueField.map(r=>r.slice()) : null;
+
+  // Advance state BEFORE painting so overlay compares new vs previous
+  if (mode === 'uwca-arith'){
+    residueField = nextResidues;
+  } else {
+    curRow = nextRow;
+  }
+
+  // Paint the NEW state, comparing to prev*
+  if (mode === 'uwca-arith'){
+    if (render === 'space') paintRowSpaceResidues(k, residueField);
+    else                    paintTimeStripeResidues(k, residueField);
+    paintMicroBinary(passes);
+  } else {
+    if (render === 'space') paintRowSpaceBinary(k, curRow);
+    else                    paintTimeStripeBinary(k, curRow);
+    if (mode === 'uwca' && passes) paintMicroBinary(passes);
+    else { mx.fillStyle='#000'; mx.fillRect(0,0,micro.width,micro.height); el('passLab').textContent='—'; el('passDesc').textContent='—'; }
+  }
+
+  // Trace
+  const tr = el('traceBox');
+  if (mode === 'uwca-arith'){
+    const activ = sum(residueField[0]); // just show prime-3 rail sum as a quick stat
+    tr.textContent += (tr.textContent?'\n':'') + `${(k+1).toString().padStart(6)}  mode=${mode}  op=${op}  p3-sum=${activ}`;
+  } else {
+    tr.textContent += (tr.textContent?'\n':'') + `${(k+1).toString().padStart(6)}  mode=${mode.padEnd(6)}  rule=${rule.toString().padStart(3)}  active=${sum(curRow)}/${curRow.length}`;
+  }
+  tr.scrollTop = tr.scrollHeight;
+
+  k++; el('kLab').textContent = k;
+}
+
+function loop(){
+  if (!running) return;
+  const spd = clamp(+el('speed').value, 1, 120);
+  const steps = Math.ceil(spd/60);
+  for (let i=0;i<steps;i++) stepOnce();
+  rafId = requestAnimationFrame(loop);
+}
+
+/* -------------------- Controls -------------------- */
+function initSeed(){
+  const W = clamp(+el('width').value, 32, 4096);
+  const kind = el('seedKind').value;
+  const dens = (+el('density').value)/100;
+
+  // CA states
+  curRow = new Uint8Array(W);
+  if (kind === 'random'){
+    for (let i=0;i<W;i++) curRow[i] = (Math.random() < dens) ? 1 : 0;
+  } else if (kind === 'single'){
+    curRow[Math.floor(W/2)] = 1;
+  } else if (kind === 'periodic'){
+    for (let i=0;i<W;i++) curRow[i] = i%2;
+  } else if (kind === 'block'){
+    const L = Math.max(1, Math.floor(W*dens));
+    const s = Math.floor((W-L)/2);
+    for (let i=s; i<s+L; i++) curRow[i] = 1;
+  }
+
+  // Arithmetic residues
+  residueField = initResidueField(W, dens);
+}
+
+function resetAll(){
+  setupCanvas();
+  initSeed();
+  k=0; el('kLab').textContent='0';
+  el('modeLab').textContent = el('mode').value;
+  el('renderLab').textContent = el('render').value;
+  el('ruleLab').textContent = el('rule').value;
+  el('arithLab').textContent = el('arithOp').value;
+  el('traceBox').textContent='';
+  prevRow = null;
+  prevResidueField = null;
+}
+
+function togglePanels(){
+  const onArith = (el('mode').value === 'uwca-arith');
+  el('ecaControls').style.display = onArith ? 'none' : '';
+  el('arithControls').style.display = onArith ? '' : 'none';
+}
+
+el('startBtn').onclick = ()=>{ if (running) return; running=true; el('startBtn').disabled=true; el('stopBtn').disabled=false; loop(); };
+el('stopBtn').onclick  = ()=>{ running=false; el('startBtn').disabled=false; el('stopBtn').disabled=true; cancelAnimationFrame(rafId); };
+el('resetBtn').onclick = ()=>{ el('stopBtn').click(); resetAll(); };
+
+['width','rows','cellPx','mode','render','wrap','seedKind','density','arithOp','primeView','zeroBlack','binarize','delta'].forEach(id=>{
+  el(id).addEventListener('change', ()=>{ if (!running){ togglePanels(); resetAll(); }});
+});
+el('rulePreset').addEventListener('change', ()=>{ el('rule').value = el('rulePreset').value; el('ruleLab').textContent = el('rule').value; if (!running) resetAll(); });
+el('rule').addEventListener('change', ()=>{ el('ruleLab').textContent = el('rule').value; if (!running) resetAll(); });
+
+el('copyBtn').onclick = async ()=>{
+  let csv;
+  if (el('mode').value === 'uwca-arith'){
+    // export prime-3 residues as a quick sample
+    const rail = residueField[0];
+    csv = 'index,residue_p3\n' + Array.from(rail).map((v,i)=>`${i},${v}`).join('\n');
+  } else {
+    csv = 'index,value\n' + curRow.map((v,i)=>`${i},${v}`).join('\n');
+  }
+  try{ await navigator.clipboard.writeText(csv); }catch(e){}
+};
+el('csvBtn').onclick = ()=>{
+  let csv, name;
+  if (el('mode').value === 'uwca-arith'){
+    const rows = [];
+    const W = residueField[0].length;
+    rows.push(['index', ...PRIMES.map(p=>`p${p}`)].join(','));
+    for (let i=0;i<W;i++){
+      rows.push([i, ...PRIMES.map((p,pi)=>residueField[pi][i])].join(','));
+    }
+    csv = rows.join('\n'); name = 'uwca_arith_snapshot.csv';
+  } else {
+    csv = 'index,value\n' + curRow.map((v,i)=>`${i},${v}`).join('\n');
+    name = 'ca_snapshot.csv';
+  }
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download=name;
+  document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 0);
+};
+
+el('testBtn').onclick = ()=>{
+  // stop the animation so state is stable while testing
+  try{ el('stopBtn').click(); }catch(e){}
+  const tr = el('traceBox');
+  const msg = runEquivalenceTests();
+  tr.textContent += (tr.textContent ? '\n' : '') + msg;
+  tr.scrollTop = tr.scrollHeight;
+};
+
+/* -------------------- Tests (Direct vs UWCA equivalence) -------------------- */
+function arraysEqual(a,b){
+  if (!a || !b || a.length !== b.length) return false;
+  for (let i=0;i<a.length;i++) if (a[i] !== b[i]) return false;
+  return true;
+}
+function randomRow(n, density){
+  const arr = new Uint8Array(n);
+  for (let i=0;i<n;i++) arr[i] = (Math.random() < density) ? 1 : 0;
+  return arr;
+}
+function firstDiff(a,b){
+  const n = Math.min(a.length, b.length);
+  for (let i=0;i<n;i++) if (a[i]!==b[i]) return i;
+  return -1;
+}
+function runEquivalenceTests(){
+  // A mix of classic rules including 110; you can change/extend freely.
+  const RULES = [110, 0, 255, 30, 54, 62, 90, 150, 184];
+  const WRAPS = [true, false];
+  const WIDTHS = [8, 17, 64, 257];
+  const DENS = [0.0, 0.1, 0.5, 0.9, 1.0];
+  const TRIALS = 10;
+
+  const t0 = (typeof performance!=='undefined' ? performance.now() : Date.now());
+  let cases = 0;
+  let failures = [];
+
+  // Always include current UI rule/width as a targeted check
+  const uiRule = clamp(+el('rule').value, 0, 255);
+  const uiWidth = clamp(+el('width').value, 32, 4096);
+  for (const wrap of WRAPS){
+    for (let t=0;t<TRIALS;t++){
+      const row = randomRow(uiWidth, 0.5);
+      const direct = directStep(row, uiRule, wrap);
+      const uw = uwcaEmulateStep(row, uiRule, wrap).nextRow;
+      cases++;
+      if (!arraysEqual(direct, uw)){
+        const i = firstDiff(direct, uw);
+        failures.push({rule:uiRule, wrap, width:uiWidth, trial:t, idx:i});
+        break;
+      }
+    }
+  }
+
+  // Battery across multiple rules, widths, densities, wrap modes
+  outer: for (const rule of RULES){
+    for (const wrap of WRAPS){
+      for (const W of WIDTHS){
+        for (const d of DENS){
+          for (let t=0;t<TRIALS;t++){
+            const row = randomRow(W, d);
+            const direct = directStep(row, rule, wrap);
+            const uw = uwcaEmulateStep(row, rule, wrap).nextRow;
+            cases++;
+            if (!arraysEqual(direct, uw)){
+              const i = firstDiff(direct, uw);
+              failures.push({rule, wrap, width:W, density:d, trial:t, idx:i});
+              break outer; // stop at first counterexample
+            }
+          }
+        }
+      }
+    }
+  }
+
+  const t1 = (typeof performance!=='undefined' ? performance.now() : Date.now());
+  const ms = Math.round(t1 - t0);
+
+  if (failures.length === 0){
+    return `TESTS: ✅ All ${cases} cases passed (directStep ≡ uwcaEmulateStep). Time=${ms}ms`;
+  } else {
+    const f = failures[0];
+    return `TESTS: ❌ Failure: rule=${f.rule}, wrap=${f.wrap}, width=${f.width},`
+         + (f.density!==undefined?` density=${f.density},`:'')
+         + ` trial=${f.trial}, firstDiff@i=${f.idx}. Checked ${cases} cases in ${ms}ms`;
+  }
+}
+
+/* -------------------- Modal -------------------- */
+const modal = el('modal');
+el('explainBtn').onclick = ()=> modal.classList.add('open');
+el('closeModal').onclick = ()=> modal.classList.remove('open');
+modal.addEventListener('click', (e)=>{ if (e.target===modal) modal.classList.remove('open'); });
+
+/* -------------------- Boot -------------------- */
+togglePanels();
+resetAll();
+</script>
+</body>
+</html>

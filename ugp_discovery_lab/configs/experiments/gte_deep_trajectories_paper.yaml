@@ -1,0 +1,20 @@
+# Long GTE trajectories for downstream paper experiments (RG / basin analyses).
+# 4 canonical seeds × 3 law variants × 2 windows = 24 tasks
+# Each task generates 50,000 GTE steps (~0.1s per task → 24 tasks in ~3s on 12 workers)
+experiment:
+  name: gte_deep_trajectories
+  description: "Generate 50K-step GTE trajectories for all 4 canonical seeds, 3 laws, 2 windows"
+  steps: 50000
+  windows: [10, 11]
+  seeds:
+    - [1, 73, 823]
+    - [1, 73, 2137]
+    - [2, 89, 1597]
+    - [3, 97, 2203]
+  laws:
+    - {c_policy: mersenne, b_policy: fib,   a_policy: gte, mirror: d2}
+    - {c_policy: mersenne, b_policy: lucas,  a_policy: gte, mirror: d2}
+    - {c_policy: repunit,  b_policy: fib,   a_policy: gte, mirror: d2, repunit_base: 3}
+  report:
+    export_md: true
+    export_json: true

@@ -1,0 +1,59 @@
+suite:
+  name: ci_golden
+  description: "Fast deterministic CI suite for PR gating"
+  
+  experiments:
+    - name: quarterlock_anchor
+      config: "configs/experiments/quarterlock_anchor.yaml"
+      description: "Validate Quarter-Lock coefficient against regression"
+      inputs:
+        runs: ["UGP_discovery_lab_runs/**/LE_gte_*_summary.json"]
+      fit:
+        model: "kM = kG + alpha*kL"
+        target_value: "1/4"
+        tol_abs: 1e-5
+        min_points: 200
+
+    - name: dihedral_consistency
+      config: "configs/experiments/dihedral_consistency.yaml"
+      description: "Test dihedral plane consistency"
+      inputs:
+        runs: ["UGP_discovery_lab_runs/**/dihedral_lock_*_summary.json"]
+      fit:
+        min_points: 200
+        min_r2: 0.996
+        pslq_max_denominator: 64
+        algebraic_basis: ["sqrt2","sqrt3","phi","sqrt(2+sqrt2)","(sqrt6+sqrt2)/2"]
+      hypotheses:
+        - form: "alpha = 1/(2*cos(pi/n))"
+        - form: "alpha = rational"
+        - form: "alpha = algebraic_combination"
+
+    - name: lock_stability
+      config: "configs/experiments/lock_stability.yaml"
+      description: "Minimal stability test across parameter space"
+      params:
+        seeds:
+          - [1,73,823]
+          - [1,73,2137]
+        windows: [10, 11]
+        laws:
+          - { c_policy: mersenne, b_policy: fib, a_policy: gte, mirror: d2 }
+      fit:
+        quarterlock: { tol: 1e-5 }
+        dihedral:    { min_r2: 0.996, pslq_max_denominator: 64 }
+        index:       { tolerance: 0, min_support: 8 }
+      report:
+        heatmaps: false
+        export_md: true
+
+  run:
+    workers: 4
+    timeout: 300
+    checkpoint_threshold: 50
+    
+  diagnostics:
+    - name: regression_check
+      description: "Ensure no regression in core constants"
+    - name: stability_gate
+      description: "Verify stability across minimal parameter space"

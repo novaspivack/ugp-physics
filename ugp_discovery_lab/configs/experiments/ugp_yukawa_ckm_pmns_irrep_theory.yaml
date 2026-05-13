@@ -1,0 +1,117 @@
+# Configuration for S3 Irrep Decomposition Theoretical Implementation
+# Based on expert analysis: A1⊕E⊕A2 irrep decomposition to fix structural failures
+
+experiment:
+  name: ugp_yukawa_ckm_pmns_irrep_theory
+  description: "S3 irrep decomposition theoretical implementation with A1⊕E⊕A2 content"
+  inputs:
+    runs:
+      - "canonical_gte_triples.json"  # Uses canonical GTE triples
+
+# Theoretical Framework
+theoretical_framework:
+  irrep_decomposition: true
+  A1_symmetric_content: true
+  E_2dim_misalignment: true
+  A2_antisymmetric_orientation: true
+  kernel_locked_scales_phases: true
+  left_handed_vectors_only: true
+
+# S3 Irrep Definitions
+irrep_definitions:
+  A1:
+    definition: "Symmetric harmonic mean average of face features"
+    purpose: "Magnitude geometry and symmetric content"
+    phase: "Real (phi_A1 = 0)"
+    scale_source: "Face weights from |k_a|, |k_b|, |k_c|"
+  
+  E:
+    definition: "2-dimensional irrep with e1=a-b, e2=(a+b-2c)/√3"
+    purpose: "Misalignment geometry for Cabibbo and mixing"
+    phase: "Generational phase (phi_E = k_gen)"
+    scale_source: "Quarter-Lock magnitude |k_M|"
+  
+  A2:
+    definition: "Linear oriented Vandermonde Δ=(a-b)(b-c)(c-a)"
+    purpose: "Orientation and CP structure"
+    phase: "Oriented phase (phi_A2 = k_gen + k_gen2)"
+    scale_source: "Orientation cost |k_M|/φ"
+
+# Kernel Constants (Elegant Kernel)
+kernel_constants:
+  phi: 1.618033988749895  # golden ratio
+  k_L2: 0.013671875  # 7/512
+  k_gen2: -0.8090169943749475 # -phi/2
+  k_gen: 1.5707963267948966 # pi/2
+  k_a: 0.125 # 1/8
+  k_b: -1.5 # -3/2
+  k_c: 1.3333333333333333 # 4/3
+  k_M: -0.8056640625 # k_gen2 + 0.25*k_L2
+
+# Kernel-Locked Scales
+kernel_scales:
+  w_A1: "sqrt(|k_a| * |k_b| * |k_c|)"  # Face weights
+  w_E: "|k_M|"  # Quarter-Lock magnitude
+  w_A2: "|k_M|/φ"  # Orientation cost
+
+# Kernel-Locked Phases
+kernel_phases:
+  phi_A1: 0.0  # A1 can be real
+  phi_E: "k_gen"  # E uses generational phase
+  phi_A2: "k_gen + k_gen2"  # A2 uses oriented phase
+
+# Options
+options:
+  neutrino_model: "majorana"  # "majorana" (Takagi) or "dirac" (Hermitian Gram)
+  down_sector_permutation_policy: "optimize"  # "optimize" (scan 6 perms) or "fixed"
+  down_sector_perm_fixed: [0, 1, 2]  # used only if policy == "fixed"
+  pdg_targets_ckm: [0.2245, 0.041, 0.00365]  # |Vus|, |Vcb|, |Vub| for score logging
+
+# PDG Experimental Targets for comparison
+pdg_targets:
+  # CKM mixing elements
+  Vus: 0.2245
+  Vcb: 0.041
+  Vub: 0.00365
+  # PMNS mixing angles (degrees)
+  theta12: 33.44  # Solar mixing angle
+  theta13: 8.57    # Reactor mixing angle  
+  theta23: 49.2    # Atmospheric mixing angle
+
+# Analysis parameters
+analysis:
+  left_handed_metric: "kernel_locked_G_left"
+  irrep_feature_extraction: "A1_E_A2_decomposition"
+  mass_operator_construction: "hermitian_symmetric_with_irreps"
+  mixing_matrix_construction: "unitary_from_eigenvectors"
+  pdg_ordering: true
+
+# Output configuration
+output:
+  save_matrices: true
+  save_angles: true
+  save_eigenvalues: true
+  save_vectors: true
+  save_permutation_choice: true
+  save_irrep_features: true
+  save_kernel_scales: true
+  save_experimental_errors: true
+  format: "json"
+
+# Validation
+validation:
+  unitary_check: true
+  pdg_ordering_check: true
+  eigenvalue_ordering: true
+  jarlskog_invariant_check: true
+  experimental_error_calculation: true
+  irrep_content_validation: true
+  kernel_locking_validation: true
+
+# Performance monitoring
+performance:
+  track_irrep_contributions: true
+  track_kernel_scale_effects: true
+  enable_detailed_logging: true
+  irrep_analysis: true
+  theoretical_framework_validation: true

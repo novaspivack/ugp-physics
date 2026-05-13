@@ -1,0 +1,167 @@
+experiments:
+  # Core integrity and bias detection
+  - name: negative_control_bias
+    inputs:
+      runs: ["UGP_discovery_lab_runs/**/experiment_results.json"]
+    integrity:
+      fail_on_warning: true
+      require_real_data: true
+    report:
+      export_md: true
+      export_json: true
+
+  # Quarter-lock anchor validation
+  - name: quarterlock_anchor
+    inputs:
+      runs: ["UGP_discovery_lab_runs/**/experiment_results.json"]
+    fit:
+      tol_abs: 1.0e-5
+      target_alpha: 0.25
+    integrity:
+      fail_on_warning: true
+      require_real_data: true
+    report:
+      export_md: true
+      export_json: true
+
+  # Claims gate system - all three validation tests
+  - name: derivation_consistency
+    inputs:
+      sourceA:
+        - "UGP_discovery_lab_runs/**/rg_sweep_summary.json"
+      sourceB:
+        - "UGP_discovery_lab_runs/**/kernel_fit_alpha_summary.json"
+    fit:
+      tol_abs: 1.0e-4
+      min_pairs: 20
+    integrity:
+      fail_on_warning: true
+      require_real_data: true
+    report:
+      export_md: true
+      export_json: true
+
+  - name: persistence_cv
+    inputs:
+      runs:
+        - "UGP_discovery_lab_runs/**/rg_sweep_summary.json"
+    cv:
+      K: 5
+      cv_max_delta: 1.0e-4
+    integrity:
+      fail_on_warning: true
+      require_real_data: true
+    report:
+      export_md: true
+      export_json: true
+
+  - name: null_surrogates
+    inputs:
+      runs:
+        - "UGP_discovery_lab_runs/**/rg_sweep_summary.json"
+    tests:
+      n_perm: 500
+      p_thresh: 0.01
+    integrity:
+      fail_on_warning: true
+      require_real_data: true
+    report:
+      export_md: true
+      export_json: true
+
+  # Core UGP analysis experiments
+  - name: rg_sweep
+    inputs:
+      runs:
+        - "UGP_discovery_lab_runs/**/experiment_results.json"
+    rg:
+      iterations: 8
+      crop_policy: "center"
+      rescale_policy: "normalize"
+      tol_plane: 1e-4
+      tol_param: 1e-4
+      tol_cycle: 1e-5
+    param_grid:
+      seeds:
+        - [1, 73, 823]
+        - [1, 73, 2137]
+        - [2, 89, 1597]
+      windows: [8, 10, 12]
+      laws:
+        - { c_policy: mersenne, b_policy: fib, a_policy: gte, mirror: d2 }
+        - { c_policy: mersenne, b_policy: lucas, a_policy: gte, mirror: d2 }
+    integrity:
+      fail_on_warning: true
+      require_real_data: true
+    report:
+      export_md: true
+      export_json: true
+
+  - name: dihedral_consistency
+    inputs:
+      runs:
+        - "UGP_discovery_lab_runs/**/experiment_results.json"
+    orders: [4, 6, 8, 10, 12]
+    fit:
+      min_points: 1000
+      tolerance: 1e-4
+      precision_bits: 200
+      pslq_max_coeff: 20
+    integrity:
+      fail_on_warning: true
+      require_real_data: true
+    report:
+      export_md: true
+      export_json: true
+
+  # Seed partition analysis
+  - name: rg_seed_partition
+    inputs:
+      runs:
+        - "UGP_discovery_lab_runs/**/rg_sweep_summary.json"
+    labels:
+      alpha_bins:
+        - [-0.09, -0.08, "A"]
+        - [ 0.07,  0.08, "B"]
+        - [ 0.26,  0.27, "C"]
+    integrity:
+      fail_on_warning: true
+      require_real_data: true
+    report:
+      export_md: true
+      export_json: true
+
+  # Lightweight Noether alternatives
+  - name: sparse_poly_invariants
+    inputs:
+      runs:
+        - "UGP_discovery_lab_runs/**/experiment_results.json"
+    search:
+      degree_max: 3
+      trials: 200
+      subset_size: 5
+      lambda_l1: 1.0e-4
+      tol_max_abs_dJ: 1.0e-8
+      tol_mean_abs_dJ: 1.0e-9
+    nulls:
+      n_perm: 200
+    integrity:
+      fail_on_warning: true
+      require_real_data: true
+    report:
+      export_md: true
+      export_json: true
+
+  - name: permutation_tests
+    inputs:
+      runs:
+        - "UGP_discovery_lab_runs/**/experiment_results.json"
+    tests:
+      n_permutations: 200
+      metrics: ["correlation", "mutual_info", "transfer_entropy"]
+    integrity:
+      fail_on_warning: true
+      require_real_data: true
+    report:
+      export_md: true
+      export_json: true
