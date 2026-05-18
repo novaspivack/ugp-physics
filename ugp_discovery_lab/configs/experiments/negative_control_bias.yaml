@@ -1,0 +1,24 @@
+experiment:
+  name: negative_control_bias
+  description: "Ensure biased generators are detected and stopped by integrity system"
+
+generator:
+  type: "biased_linear"
+  params:
+    alpha: 0.25              # This should trigger suspicious field check
+    noise: 0.0
+    relationship: "k_M = k_G + alpha * k_L"  # This should trigger dependency check
+
+integrity:
+  fail_on_warning: true      # Should fail on any integrity warnings
+  strict_mode: true
+
+run:
+  steps: 1000
+  window: 64
+  seed: [42, 173, 823]
+
+report:
+  export_md: true
+  export_json: true
+  include_integrity_report: true

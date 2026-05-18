@@ -1,0 +1,143 @@
+# Configuration for UGP Seesaw Integration Experiment
+# Fit-free, kernel-locked seesaw mechanism for PMNS θ₂₃ precision
+
+experiment:
+  name: ugp_seesaw_integration
+  description: "Fit-free, kernel-locked seesaw mechanism integration for PMNS θ₂₃ precision while preserving CKM accuracy"
+  inputs:
+    runs:
+      - "canonical_gte_triples.json"
+
+# Seesaw Integration Framework
+seesaw_framework:
+  fit_free: true
+  kernel_locked: true
+  ckm_preservation: true
+  discrete_scan_only: true
+
+# Seesaw Parameters (All Kernel-Locked)
+seesaw_parameters:
+  # UGP kernel constants (exact)
+  phi: 1.618033988749895  # Golden ratio
+  k_L2: 0.013671875       # 7/512
+  k_gen2: -0.8090169943749475  # -φ/2
+  k_gen: 1.5707963267948966    # π/2
+  residual_kraft_length: 9.382  # L_residual
+  
+  # Seesaw coefficients (computed from kernel)
+  # σ = ln(2) * L_residual
+  # η = k_L (computed)
+  # ζ = k_L / φ (computed)
+
+# CKM Parameters (Pinned from Excellent Results)
+ckm_parameters:
+  tau0_scale: 1.5
+  epsilon_scale: 0.8
+  epsilon_prime_scale: 4.0
+  norm_method: "frobenius"
+  perm_choice: [0, 2, 1]
+
+# Discrete Choices (No Fits)
+discrete_choices:
+  # E generator basis choices
+  E_basis_up: ["e1", "e2", "e1_plus_e2", "e1_minus_e2"]
+  E_basis_nu: ["e1", "e2", "e1_plus_e2", "e1_minus_e2"]
+  
+  # κ direction in E-plane: angle = (k_gen + k_gen2) + m*(2π/3)
+  kappa_angles: [0, 1, 2]  # m ∈ {0,1,2}
+  
+  # φ-bias on τ_E for neutrino sector (discrete)
+  phi_bias_nu: [1.0, 1.618033988749895, 0.6180339887498948]  # {1, φ, 1/φ}
+
+# Optimization Targets
+optimization_targets:
+  primary_target: "PMNS θ₂₃ precision"
+  secondary_targets:
+    - "Preserve CKM accuracy"
+    - "Maintain PMNS θ₁₂ and θ₁₃ accuracy"
+  
+  success_criteria:
+    pmns_theta23_error: "< 10%"
+    pmns_theta12_error: "< 10%"
+    pmns_theta13_error: "< 10%"
+    overall_pmns_error: "< 8%"
+
+# Theoretical Constraints
+theoretical_constraints:
+  seesaw_type: "Type-I"
+  neutrino_model: "Majorana"
+  mass_matrix_properties:
+    M_D: "3×3 complex"
+    M_R: "3×3 complex symmetric positive"
+    M_ν: "3×3 complex symmetric (seesaw)"
+  
+  flow_constraints:
+    charged_leptons: "Full flow (A1⊕E⊕A2)"
+    neutrino_dirac: "Full flow (A1⊕E⊕A2)"
+    neutrino_majorana: "Short symmetric flow only"
+  
+  kernel_locked_coefficients:
+    sigma: "ln(2) * L_residual"
+    eta: "k_L"
+    zeta: "k_L / φ"
+
+# Expected Results
+expected_results:
+  pmns_improvements:
+    theta23: "Target: 14.63% → <10% error"
+    theta12: "Maintain: ~5.25% error"
+    theta13: "Maintain: ~5.40% error"
+  
+  seesaw_mechanism:
+    dirac_mass_scale: "Theory-determined from UGP"
+    majorana_mass_scale: "Normalized to unit operator norm"
+    seesaw_scale: "Automatic from M_R normalization"
+  
+  ckm_preservation:
+    quark_sectors: "Pinned (unchanged)"
+    mixing_angles: "Maintain excellent accuracy"
+
+# Analysis Configuration
+analysis:
+  output_matrices: true
+  output_masses: true
+  output_flows: true
+  detailed_timing: true
+  
+  validation_checks:
+    unitarity: true
+    takagi_factorization: true
+    seesaw_consistency: true
+    numerical_stability: true
+
+# Output Configuration
+output:
+  artifacts:
+    - "seesaw_results.json"
+    - "pmns_matrix.csv"
+    - "neutrino_masses.csv"
+    - "seesaw_parameters.json"
+    - "discrete_scan_results.csv"
+  
+  reports:
+    - "seesaw_integration_report.md"
+    - "pmns_improvement_analysis.md"
+
+# Validation
+validation:
+  claims_gate:
+    independence_test: true
+    null_surrogate_test: true
+    persistence_cross_validation: true
+  
+  theoretical_consistency:
+    kernel_locked_verification: true
+    seesaw_mechanism_validation: true
+    flow_evolution_check: true
+
+# Performance
+performance:
+  parallel_execution: true
+  max_workers: 8
+  memory_optimization: true
+  numerical_stability_checks: true

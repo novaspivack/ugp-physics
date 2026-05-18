@@ -1,0 +1,40 @@
+# TE1.X baseline configuration derived from TE1.E Lambda runs
+# Source datasets:
+# - MFRR/TE_1_VALIDATION_PROGRAM/TE_1.E_Lambda/results/run_20251110_230054
+
+solver:
+  module: frw_psi_scan
+  zmax: 2.0
+  nsteps: 1200
+  psi0: 0.002
+  psi_dot0: 0.0
+  integrator: dop853
+  tolerance:
+    abs: 1.0e-10
+    rel: 1.0e-10
+
+parameters:
+  lambda_psi: [0.70]
+  alpha_1: [1.00]
+  alpha_2: [0.25]
+  omega_m0: 0.315
+  omega_r0: 9.0e-5
+  h0: 0.674
+
+sweeps:
+  - name: baseline
+    lambda_psi: [0.68, 0.70, 0.72]
+    alpha_1: [0.95, 1.00, 1.05]
+    alpha_2: [0.15, 0.25, 0.35]
+    notes: "Matches TE1.E Lambda grid for direct comparison"
+
+outputs:
+  directory: results/frw_runs/baseline
+  store_history: true
+  capture_entropy: true
+  capture_wa: true
+
+entropy_coupling:
+  enabled: true
+  deltaS_source: ../../TE_1.R_CONTINOUS_MODEL/results/fluctuation/summary.json
+  normalization: pt

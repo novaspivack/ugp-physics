@@ -1,0 +1,45 @@
+experiment:
+  name: rg_sweep
+  description: "Extended RG exploration across policies and seeds"
+  
+  inputs:
+    runs:
+      - "UGP_discovery_lab_runs/exp_*/results/reports/experiment_results.json"
+      - "UGP_discovery_lab_runs/exp_*/results/reports/*_results.json"
+  
+  rg:
+    iterations: 12
+    crop_policy: "center"
+    rescale_policy: "normalize"
+    tol_plane: 1e-4
+    tol_param: 1e-4
+    tol_cycle: 1e-5
+    
+  param_grid:
+    seeds:
+      - [1, 73, 823]
+      - [1, 73, 2137]
+      - [2, 89, 1597]
+      - [3, 97, 2203]
+    windows: [8, 9, 10, 11, 12, 13, 14, 15]
+    laws:
+      - { c_policy: mersenne, b_policy: fib,   a_policy: gte, mirror: d2 }
+      - { c_policy: mersenne, b_policy: lucas, a_policy: gte, mirror: d2 }
+      - { c_policy: mersenne, b_policy: fib,   a_policy: gte, mirror: d4 }
+      - { c_policy: mersenne, b_policy: fib,   a_policy: gte, mirror: d5 }
+      - { c_policy: mersenne, b_policy: fib,   a_policy: gte, mirror: d6 }
+      - { c_policy: repunit,  repunit_base: 3, b_policy: fib, a_policy: gte, mirror: d2 }
+      - { c_policy: repunit,  repunit_base: 3, b_policy: lucas, a_policy: gte, mirror: d2 }
+      
+  fit:
+    model: "kM = kG + alpha*kL"
+    
+  run:
+    steps: 1000
+    window: 64
+    seed: [42, 173, 823]
+    
+  report:
+    export_md: true
+    export_json: true
+    plots: true

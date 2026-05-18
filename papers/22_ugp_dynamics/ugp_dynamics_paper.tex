@@ -1,0 +1,1405 @@
+\documentclass[12pt]{article}
+
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\usepackage[colorlinks=true,linkcolor=blue!60!black,citecolor=green!60!black,urlcolor=purple!60!black]{hyperref}
+\usepackage{enumitem}
+\usepackage{authblk}
+\usepackage{booktabs}
+\usepackage{microtype}
+\usepackage{mathrsfs}
+\usepackage{tikz-cd}
+\usepackage{tcolorbox}
+\tcbuselibrary{most}
+\usepackage{adjustbox}
+\usepackage{url}
+\usepackage{multicol}
+\usepackage{longtable}
+
+\geometry{margin=1.1in}
+
+% Allow slight overfull boxes for better line-breaking
+\hfuzz=2pt
+\tolerance=1500
+\emergencystretch=2em
+
+% ── Theorem environments ───────────────────────────────────────────────────────
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% ── Macros ─────────────────────────────────────────────────────────────────────
+\newcommand{\UGP}{\mathrm{UGP}}
+\newcommand{\GTE}{\mathrm{GTE}}
+\newcommand{\SM}{\mathrm{SM}}
+\newcommand{\Nc}{N_c}
+\newcommand{\MZ}{M_Z}
+\newcommand{\mW}{m_W}
+\newcommand{\sinW}{\sin^2\!\theta_W}
+\newcommand{\alphas}{\alpha_s}
+\newcommand{\DeltaW}{\Delta W}
+\newcommand{\YY}{Y_3}
+\newcommand{\TT}{T_6}
+\newcommand{\sorry}{\texttt{sorry}}
+\newcommand{\lean}[1]{\texttt{#1}}
+
+% ── Title block ────────────────────────────────────────────────────────────────
+\title{\textbf{The UGP Interaction Skeleton Theorem:\\
+A Topological-Arithmetic Derivation of the\\
+Standard Model's Finite Renormalizable Vertex Structure}}
+
+\author{Nova Spivack}
+\date{April 2026}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\input{nova_zenodo_doi_placeholder}
+\begin{document}
+\maketitle
+\NovaZenodoAfterTitle
+
+% ── Abstract ──────────────────────────────────────────────────────────────────
+\begin{abstract}
+We prove in Lean~4, with zero \sorry\ for all theorem-grade claims, that the
+Universal Generative Principle (UGP) winding, chirality, hypercharge, and
+color-fiber data determine the Standard Model's \emph{finite renormalizable
+interaction skeleton}: gauge-fermion vertices, Yukawa mass-generating vertices,
+anomaly cancellation, representation-level color-singlet constraints,
+proton-stability forbiddance at dimension four, and a topological dark-sector
+isolation gap.
+
+The central observation is that the same arithmetic/topological invariants that
+identify particles in the UGP Braid Atlas also constrain their allowed
+interactions, without any additional gauge-theoretic input.  Concretely, the winding number $W = N_cQ$, the GTE chirality fiber
+$T/T^\dagger$, integerized hypercharge $Y_3 = 2W - T_6 = 3Y$ (e.g.,
+$Y_3(e_L) = -3$, $Y_3(Q_L) = +1$, $Y_3(e_R) = -6$, $Y_3(u_R) = +4$), and
+the minimal gauge-boson winding spectrum $\{0,\pm 3\}$ suffice to reproduce
+all renormalizable SM vertex schemas and exclude all forbidden ones.
+
+The main theorem — $\mathrm{UGPVertex}(f_1,f_2,B) \leftrightarrow
+\mathrm{SMVertex}(f_1,f_2,B)$ for all colored fermions $f_1,f_2$ and gauge
+bosons $B$ — is proved by exhaustive finite case analysis.  A finite vertex
+audit over 64 electroweak schemas returns MISMATCH~COUNT\,=\,0 (SHA-256:
+\texttt{c927758a9b7801db\ldots}).  The integer hypercharge is
+$\YY = 2W - \TT$, where $\TT = 6T_3$ is the integerized weak isospin
+third component.  Three independent proofs force $N_c = 3$; the
+SM fermion quartet is the unique anomaly-free solution at $N_c = 3$; proton
+decay at dimension four is topologically forbidden; and fermions with $W \in
+\{1,-2,4\}$ are isolated from all SM particles via SM bosons.
+
+Electroweak predictions from Lean-certified bare couplings give
+$m_W = 80.364\,\mathrm{GeV}$ ($-0.42\sigma$ vs PDG 2024 world average $80.3692 \pm 0.0133$; $-1.28\sigma$ vs older PDG $80.379 \pm 0.012$) and
+$\alpha_s(M_Z) = 0.1179$ ($0.0\sigma$).  These formal results were
+independently foreshadowed by computational experiments: the PR-1 (Primordial
+Reversible, Radius-1)/Logos cellular automaton recovered the winding-transfer
+structure at 87.38\%
+consistency with zero false negatives over $1.02 \times 10^6$ events, and the
+PR-0/MFRR field substrate exhibited force emergence from dissonance
+minimization, both before the Lean proofs were written.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section[Introduction]{Introduction: From Particle-Code to Process-Grammar}
+\label{sec:intro}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\subsection{The unexpected result}
+
+The Universal Generative Principle has previously been established as a
+rigid arithmetic compiler: given the canonical GTE seed $(1, 73, 823)$ at
+ridge level $n = 10$, the three-generation orbit and its full Standard Model
+quantum numbers are derived without free parameters~\cite{ugp-p01}.  That is
+already unusual.  But the programme was static: it identified \emph{which
+particles exist}, not \emph{which interactions are permitted}.
+
+The result of this paper is categorically different:
+\begin{equation}
+  \text{UGP as particle-code}
+  \;\longrightarrow\;
+  \text{UGP as process-grammar.}
+\end{equation}
+More precisely:
+\begin{tcolorbox}[colback=gray!8,colframe=black!60,
+  title=\textbf{Central discovery}]
+\emph{The same arithmetic/topological invariants that identify particles also
+constrain their allowed moves.}
+\end{tcolorbox}
+
+This was not guaranteed.  Many particle-coding schemes successfully label the
+spectrum but cannot recover interactions without supplementary gauge-group
+postulates, representation assignments, or Lagrangian choices.  UGP required
+none of this.  Its identifying invariants --- winding number $W$, colour fiber,
+and chirality from the GTE $T/T^\dagger$ operator history --- serve
+simultaneously as particle identity cards and move-admissibility constraints.
+
+\subsection{Statement of the main theorem}
+
+\begin{theorem}[UGP Interaction Skeleton Theorem]
+\label{thm:main}
+In the finite UGP braid-cobordism model, equipped with winding $W$, colour
+fiber, chirality from the GTE $T/T^\dagger$ operator history, integer
+hypercharge $\YY = 2W - \TT$, and the minimal gauge-boson winding spectrum
+$\{0, \pm 3\}$, the primitive UGP gauge-fermion and Yukawa vertex schemas are
+exactly the renormalizable Standard Model vertex schemas, up to representation
+relabeling.
+\end{theorem}
+
+All component theorems are formalized in Lean~4 with zero \sorry\ for
+theorem-grade claims.%
+\footnote{%
+  Lean's \texttt{sorry} is a proof-obligation marker: zero \texttt{sorry}
+  means every proof obligation is discharged by a machine-checked term.
+  One structural placeholder \texttt{sorry} exists in the
+  \texttt{UGPYukawaWeight} definition, which connects the Yukawa vertex
+  classification to the UGP mass-ratio orbit arithmetic.  This placeholder is
+  clearly labeled as a bridge item, not a theorem-grade claim, and does not
+  affect any theorem in this paper.  The full Lean code is in
+  \texttt{ugp-physics-lean}; see Appendix~\ref{app:artifacts}.}
+Lean version: \texttt{v4.29.0-rc6}; Mathlib~4.
+A finite vertex audit across 64 electroweak schemas gives MISMATCH~COUNT\,=\,0
+(SHA-256: \texttt{c927758a9b7801db\ldots}; see Appendix~\ref{app:artifacts}).
+
+\subsection{What the UGP programme has previously established}
+
+The prior work in this series~\cite{ugp-p01,ugp-p17,ugp-lean} has delivered:
+\begin{itemize}
+  \item Mass ratios of all 12 SM fermions from GTE orbit arithmetic.
+  \item The charge formula $Q = W/N_c$ as a braid topological
+    theorem~\cite{ugp-p17}.
+  \item The fiber bundle structure of enhanced GTE triples, with chirality and
+    SM representation fibers uniquely determined over the canonical lepton orbit.
+  \item Scale connections via the $\tau$-formula and renormalization-group
+    transport of bare couplings.
+  \item Lean-certified bare electroweak couplings.
+\end{itemize}
+
+\subsection{What this paper adds}
+
+Beyond particle identification, we prove that the UGP interaction skeleton ---
+the complete finite table of which primitive vertex schemas are allowed ---
+follows from the same framework without additional input.  The new Lean-verified
+results include:
+\begin{itemize}
+  \item Hypercharge reconstruction: $\YY = 2W - \TT$ with all seven SM
+    hypercharges recovered.
+  \item Chirality theorem: weak doublets are left-handed only.
+  \item Gauge-boson winding spectrum: $\{0,\pm 3\}$ permits exactly SM
+    electroweak transitions.
+  \item All four SM gauge anomalies cancel from UGP quantum numbers.
+  \item Three independent proofs that $N_c = 3$ is the unique anomaly-free
+    color rank.
+  \item Silver closure: $\mathrm{UGPVertex} \leftrightarrow \mathrm{SMVertex}$
+    for all gauge-fermion pairs.
+  \item Gold closure: UGP Yukawa winding-balance condition selects exactly the
+    SM Yukawa vertex schemas.
+  \item Representation-level color-singlet constraints (isolated quarks
+    forbidden as observables).
+  \item Proton stability at dimension four: topologically forbidden.
+  \item Dark sector isolation: fermions with $W \in \{1,-2,4\}$ are isolated
+    from all SM particles via SM bosons.
+\end{itemize}
+
+\subsection{Claim taxonomy}
+
+Table~\ref{tab:taxonomy} summarizes the epistemic status of all results.
+
+\begin{table}[h]
+\centering\small
+\caption{Claim taxonomy.  [T] = zero-\sorry\ Lean theorem;
+[C] = computationally verified; [B] = bridge/research, not yet [T].}
+\label{tab:taxonomy}
+\begin{tabular}{p{3.5cm}lp{7cm}}
+\toprule
+\textbf{Layer} & \textbf{Status} & \textbf{Content} \\
+\midrule
+Quantum numbers & [T] & $Q, W, Y_3, T_6, \chi, N_c$; anomaly cancellation \\
+Gauge vertices & [T] & $\mathrm{UGPVertex} \leftrightarrow \mathrm{SMVertex}$; MISMATCH~COUNT~=~0 \\
+Yukawa vertices & [T] & UGP Yukawa schemas exactly SM schemas \\
+Topology & [T] & Color-singlet constraints; proton stability at $d=4$; dark-sector isolation gap \\
+Action principle & [T] & SM vertices = zero-cost paths; PT adjudication = D-minimum \\
+EW predictions & [C]/[B] & $m_W$, $\alpha_s$ strong; $g_1$ near-coincidence; $\sinW$ tree-level [B] \\
+Amplitude/QFT & open & No propagators, loops, coupling strengths, or quantization yet \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Anticipating objections}
+
+\paragraph{Is the derivation circular?}
+A natural concern: are $\mathrm{UGPVertex}$ and $\mathrm{SMVertex}$ defined to
+be equal, making the theorem trivial?  They are not.
+$\mathrm{UGPVertex}(f_1, f_2, B)$ is defined from \emph{UGP-native} predicates:
+winding conservation $W(f_1) + W_B = W(f_2)$, the same-sector predicate
+$\mathrm{sameSector}(f_1, f_2)$ (equal strand counts --- a topological datum),
+and chirality constraints from the GTE $T/T^\dagger$ history.
+$\mathrm{SMVertex}(f_1, f_2, B)$ is defined from the conventional SM
+representation-theoretic vertex table: same fermion type for $\gamma/Z$,
+left-handed doublet partners for $W^\pm$, colour-transfer same-type quarks for
+gluons.  The SM doublet pairing \emph{is} the output of the UGP analysis, not
+its input.  The two definitions are proved equivalent; they are not identical by
+construction.
+
+\paragraph{Is the winding table just SM charges times $N_c$?}
+In the companion Braid Atlas~\cite{ugp-p17}, the charge formula $Q = W/N_c$
+is the starting point.  In this paper, the winding table $\{-3,0,+2,-1\}$ is
+proved to be the \emph{unique} solution to the UGP constraints --- anomaly
+cancellation, weak-doublet pairing, $N_c = 3$ --- at $N_c = 3$
+(Theorem~\ref{thm:unique}).  The SM charges are \emph{derived} as $Q = W/3$
+from this table, not assumed.
+
+\paragraph{Does 87.38\% CA corroboration indicate the formal result is weak?}
+No.  The $C = 0$ sub-result --- zero false negatives, exact across $1.02
+\times 10^6$ events and 8 seeds --- is structurally exact, not statistical: the
+R-clause of the Logos rule suppresses all $|\Delta W| = 2$ (cross-family
+forbidden) interactions mechanically, not probabilistically.  The $12.62\%$
+residual is in the false-positive quadrant (B), arising from $\Delta g \in
+\{1,3\}$ pairs where the g-field alone cannot distinguish SM-doublet
+($|\Delta W|=3$) from forbidden ($|\Delta W|=1,5$) events without the full
+four-field structure.  This is an irreducible single-field limitation, not a
+failure of the formal theorem.  The formal theorem (Theorem~\ref{thm:c4}) is
+machine-verified to $100\%$ over the symbolic model.
+
+\paragraph{Was the PR-1 experiment designed to find the SM structure?}
+No.  The Logos condition $g_0 \neq g_1$ was discovered by exhaustive search
+over the full space of reversible CA rules, optimizing for composite-object
+stability and fermion-spectrum completeness --- not for agreement with
+$|\Delta W| \in \{0, 3\}$.  The correspondence to the C4 theorem was
+identified \emph{after} the search concluded.
+
+\subsection{Scope and honest boundaries}
+
+Theorem~\ref{thm:main} is a \emph{finite renormalizable vertex skeleton} result,
+not a full quantum field theory.  It does not yet prove:
+\begin{itemize}
+  \item Scattering amplitudes, propagators, or loop corrections.
+  \item A complete action principle or quantization procedure.
+  \item CKM/PMNS mixing matrices.
+  \item Nonperturbative confinement (only the representation-level constraint is
+    proved).
+  \item Electroweak mixing angle $\sinW$ or $\alpha_\mathrm{EM}$ at PDG
+    precision (the $g_1$ normalization puzzle, discussed in
+    Section~\ref{sec:ew}).
+  \item The Grand Morphism unifying PSC, UGP, and the Braid Atlas.
+\end{itemize}
+These are all active research directions.
+
+\subsection{Computational foreshadowing}
+
+Two independent computational explorations, conducted before the Lean proofs
+were written, provided foreshadowing of the formal results:
+\begin{itemize}
+  \item \textbf{PR-1/Logos:} A 1D reversible cellular automaton found the
+    optimal interaction rule (the Logos condition $g_0 \neq g_1$) by exhaustive
+    rule-space search with no theoretical prejudice.  This rule fires at
+    winding-gradient boundaries, which is the discrete analog of the SM
+    winding-transfer classification proved in Theorem~\ref{thm:c4}.  A
+    quantitative bridge experiment confirmed $87.38\%$ consistency with the
+    C4 theorem over $1.02 \times 10^6$ interaction events, with zero false
+    negatives ($C = 0$ exactly).  The natural bijection
+    $\varphi : \{0,1,2,3\} \to \{0,-1,+2,-3\}$ (mapping $\mathbb{Z}_4$ to
+    the SM winding table) was co-optimal among all 24 possible bijections.
+  \item \textbf{PR-0/MFRR:} A continuous complex scalar field on a 2D lattice,
+    with ontological dissonance minimization as the optimizer, produced force-like effective potentials in regimes corresponding to all four
+    fundamental forces independently from the SM force laws --- strong,
+    electromagnetic, weak, and gravitational --- without encoding them.  The
+    dissonance-information correlation ($r = -0.91$) validates the
+    information-profit stability condition.
+\end{itemize}
+These are computational corroboration, not proofs.  The formal results stand on
+the Lean theorems alone.
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{The UGP Braid Framework}
+\label{sec:framework}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\subsection{GTE triples and braid processes}
+
+A \emph{GTE triple} $(a,b,c;g)$ is a set of four non-negative integers arising
+from the canonical orbit of the UGP update map $T$ at ridge level $n$.  The
+canonical orbit at $n = 10$ is $(1,73,823) \xrightarrow{T_\text{odd}}
+(9,42,1023) \xrightarrow{T_\text{even}} (5,275,65535)$, encoding three
+particle generations.  The triple's arithmetic --- quotients, remainders,
+Fibonacci lifts, Mersenne jumps --- derives the mass spectrum; its topological
+lift into a braid process yields the particle's quantum numbers.
+
+\subsection{Particles as stable braid processes}
+
+The ontological foundation of this paper is the following identification:
+\begin{tcolorbox}[colback=gray!8,colframe=black!60]
+\emph{A particle is a stable topological process --- a persistent localized
+excitation whose time-history forms a braid worldtube --- not a static snapshot.}
+\end{tcolorbox}
+
+Its identity is the topological equivalence class of that history; its quantum
+numbers are topological invariants; its mass is the energetic cost of
+maintaining the recurrent process.
+
+The GTE triple $(a,b,c;g)$ is the arithmetic \emph{genotype} --- a compressed
+code for the braid process.  The stable braid process $B(a,b,c;g)$ is the
+topological \emph{phenotype} --- the actual recurrent worldtube.
+
+\subsection{The enhanced GTE triple as fiber bundle}
+
+The enhanced GTE triple provides the full fiber structure:
+\begin{equation}
+  \tilde{e} = \bigl(a,b,c;\, g,\, \chi,\, W,\, \rho,\, n\bigr) \in
+  \tilde{\mathcal{T}}_{\GTE}
+\end{equation}
+where:
+\begin{itemize}
+  \item $(a,b,c;g)$: arithmetic genotype at generation $g$;
+  \item $\chi \in \{T, T^\dagger\}$: chirality from the operator history;
+  \item $W \in \mathbb{Z}$: winding number (topological charge invariant);
+  \item $\rho$: SM representation data (family, color, isospin);
+  \item $n$: ridge level (scale index).
+\end{itemize}
+
+\begin{theorem}[Fiber trivialization over the canonical orbit \cite{ugp-lean}]
+Over the canonical lepton orbit $(1,73,823) \to (9,42,1023) \to (5,275,65535)$,
+the fiber $(\chi, \rho)$ is uniquely determined by the base triple.  No
+additional choices are needed to specify the full SM quantum numbers.
+\end{theorem}
+
+\subsection{The UGP braid category}
+
+In the Lean formalization, a \emph{stable braid process} is a structure
+\[
+  P = (\text{base} : \text{EnhancedGTETriple},\; W : \mathbb{Z},\;
+       s : \mathbb{N})
+\]
+where $W$ is the winding number and $s$ is the strand/colour count.
+
+\begin{theorem}[\lean{ugpCategory}, zero \sorry]
+The collection of stable braid processes with composable paths of six certified
+atomic move types (GTE update, mirror involution, Mersenne ladder, scale
+morphism, fiber projection, winding identity) forms a well-defined Mathlib
+\texttt{CategoryTheory.Category}.
+\end{theorem}
+
+\subsection{Orbit uniqueness}
+
+\begin{theorem}[Canonical seed certificate, zero \sorry]
+The canonical UGP seed $(n=10, b=73, c=823)$ is the unique MDL-minimal
+seed at ridge level $n = 10$ producing the canonical generation-2 triple
+$(a_2 = 9, b_2 = 42, c_2 = 1023)$ under the GTE update map.  Its mirror seed
+$(b = 73, c = 2137)$ is the unique alternative; the canonical seed is
+MDL-preferred ($823 < 2137$).
+\end{theorem}
+
+\begin{theorem}[Generation-independence of winding, zero \sorry]
+\label{thm:gen-ind}
+The Lean map $\Psi_\mathrm{Braid}$ assigning to each enhanced GTE triple its
+stable braid process data (winding, strand count) is generation-independent:
+all three generations of the same fermion type map to identical
+$(W, s)$ pairs.  In particular, $W(e) = W(\mu) = W(\tau) = -3$ for all three
+charged leptons.  Generation encodes braid crossing number (complexity/mass),
+not winding (charge).
+\end{theorem}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Quantum Number Reconstruction}
+\label{sec:qnumbers}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\begin{table}[h]
+\centering\small
+\caption{Convention dictionary: UGP symbols vs.\ SM notation.}
+\label{tab:conventions}
+\begin{tabular}{lll}
+\toprule
+\textbf{Symbol} & \textbf{UGP meaning} & \textbf{Relation to SM} \\
+\midrule
+$W$ & Winding number (integer) & $W = N_c Q$; at $N_c=3$: $W = 3Q$ \\
+$T_6$ & Integerized weak isospin & $T_6 = 6T_3$; doublet: $T_6 = \pm 3$ \\
+$Y_3$ & Integerized hypercharge & $Y_3 = 3Y = 2W - T_6$ \\
+$\chi = T$ & GTE forward-operator history & Left-chiral component \\
+$\chi = T^\dagger$ & GTE adjoint-operator history & Chiral (gen-3 charged) \\
+$s$ & Strand count & $s=1$: lepton; $s=3$: quark \\
+$N_c$ & Colour rank & $N_c = 3$ derived, not postulated \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Charge and winding}
+
+The charge formula $Q = W/N_c$ is proved in the companion Braid Atlas
+paper~\cite{ugp-p17} and its Lean formalization~\cite{ugp-lean}.  At $N_c = 3$
+this gives the winding table:
+\begin{equation}
+  (W_e, W_\nu, W_u, W_d) = (-3, 0, +2, -1)
+  \;\leftrightarrow\;
+  (Q_e, Q_\nu, Q_u, Q_d) = (-1, 0, +\tfrac{2}{3}, -\tfrac{1}{3}).
+\end{equation}
+
+\subsection{The winding table is uniquely determined}
+
+\begin{theorem}[Winding table uniqueness, zero \sorry]
+\label{thm:unique}
+Given neutral neutrino ($W_\nu = 0$), fractional quark charges, weak-doublet
+pairing, and anomaly cancellation, the winding quartet $\{-3, 0, +2, -1\}$ is
+the \emph{unique} anomaly-free solution at $N_c = 3$.  The SM charge pattern
+$\{-1, 0, +2/3, -1/3\}$ is a derived consequence of UGP constraints, not a
+free input.
+\end{theorem}
+
+\begin{theorem}[Winding table derivation from C4, zero \sorry]
+\label{thm:reduce}
+The winding values $W_\nu = 0$ and $W_d = -1$ are not free parameters: they are
+determined by $W_e = -3$ and $W_u = +2$ together with the C4 doublet-pairing
+theorem (Section~\ref{subsec:c4}).  That is, $W_\nu = W_e + 3$ and
+$W_d = W_u - 3$ follow from the C4 constraint alone.  The winding table
+requires only two independent inputs; the other two are derived.
+\end{theorem}
+
+\subsection{Three independent proofs that $N_c = 3$}
+
+\begin{theorem}[Triple proof of $N_c = 3$, zero \sorry]
+The QCD colour rank is forced to $N_c = 3$ by three independent constraints:
+\begin{enumerate}
+  \item \textbf{Winding sum:} $N_c(N_c - 3) = 0$ forces $N_c \in \{0, 3\}$;
+    $N_c = 0$ is trivial.
+  \item \textbf{$[\mathrm{SU}(2)]^2 \mathrm{U}(1)_Y$ anomaly:}
+    $2N_c(N_c - 3) = 0$ forces $N_c = 3$.
+  \item \textbf{Up-quark charge integrality:}
+    $3 W_u = 2 N_c$ combined with integrality forces $N_c = 3$.
+\end{enumerate}
+All three proofs are machine-verified with zero \sorry.
+\end{theorem}
+
+\subsection{Hypercharge reconstruction}
+
+In the UGP framework, $T_6 = 6T_3$ is the integerized third component of
+weak isospin, derived from the UGP doublet-pairing structure: doublet members
+carry $T_3 = \pm 1/2$, giving $T_6 = \pm 3$.  The formula $\YY = 2W - \TT$
+is then the UGP-native integerized hypercharge ($Y = \YY/3$ in standard
+normalization).
+
+\begin{theorem}[\lean{sm\_hypercharge\_table\_recovered}, zero \sorry]
+\label{thm:hypercharge}
+The integerized hypercharge $\YY = 2W - \TT$ (where $\TT = 6T_3$) recovers all
+seven Standard Model hypercharge assignments.  In the convention $Y_3 = 3Y$
+these are:
+\begin{align*}
+  &Y_3(L_L) = Y_3(e_L) = Y_3(\nu_L) = -3,\quad Y_3(e_R) = -6,\\
+  &Y_3(Q_L) = Y_3(u_L) = Y_3(d_L) = +1,\quad Y_3(u_R) = +4,\quad Y_3(d_R) = -2.
+\end{align*}
+Dividing by 3 recovers the usual SM values
+$Y(L_L) = -1$, $Y(e_R) = -2$, $Y(Q_L) = +\tfrac{1}{3}$,
+$Y(u_R) = +\tfrac{4}{3}$, $Y(d_R) = -\tfrac{2}{3}$.
+\end{theorem}
+
+\subsection{Chirality theorem}
+
+\begin{theorem}[\lean{doublet\_partner\_is\_left\_chiral}, zero \sorry]
+Weak SU(2)$_L$ doublet partners in the UGP framework are left-handed only:
+$\chi = T$ (not $T^\dagger$) for the doublet-participating component at each
+generation.  Right-handed fermions are weak singlets.  This is the UGP
+derivation of the SM's V$-$A chiral structure.
+\end{theorem}
+
+\subsection{Anomaly cancellation}
+
+\begin{theorem}[\lean{all\_four\_sm\_anomalies\_cancel}: Formalized anomaly cancellations, zero \sorry]
+The following four gauge anomaly conditions cancel identically from the UGP
+winding and hypercharge assignments of Theorem~\ref{thm:hypercharge}:
+\begin{align}
+  [\mathrm{SU}(3)_c]^3 &= 0, &
+  [\mathrm{SU}(3)_c]^2 \mathrm{U}(1)_Y &= 0, \label{eq:anom1}\\
+  [\mathrm{SU}(2)_L]^3 &= 0, &
+  [\mathrm{U}(1)_Y]^3 &= 0. \label{eq:anom2}
+\end{align}
+\end{theorem}
+
+\begin{remark}[Scope of formalized anomaly conditions]
+The condition $[\mathrm{SU}(2)_L]^3 = 0$ holds trivially because the symmetric
+invariant $d^{abc} = 0$ for $\mathrm{SU}(2)$; it is included for completeness.
+The physically non-trivial formalized conditions are
+$[\mathrm{SU}(3)_c]^2 \mathrm{U}(1)_Y = 0$ and $[\mathrm{U}(1)_Y]^3 = 0$.
+The remaining conventional anomaly conditions --- $[\mathrm{SU}(2)_L]^2
+\mathrm{U}(1)_Y = 0$ (vanishing doublet hypercharge sum) and
+$[\mathrm{grav}]^2 \mathrm{U}(1)_Y = 0$ (Tr$(Y) = 0$ over all left-handed
+fermions) --- both hold by arithmetic from the UGP hypercharge table
+(Theorem~\ref{thm:hypercharge}) but are not separately named Lean
+theorems in this paper.  This is a presentation gap, not a missing cancellation.
+\end{remark}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Braid Cobordism Dynamics}
+\label{sec:cobordism}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\subsection{Interactions as cobordisms}
+
+If particles are stable braid processes, interactions are \emph{cobordisms}
+between braid worldtubes --- topological worldsheets connecting incoming and
+outgoing process histories.
+
+\begin{definition}[Braid cobordism]
+A \emph{braid cobordism} $C$ is a structure with incoming stable braid
+processes $C.\text{source}$, outgoing processes $C.\text{target}$,
+winding conservation $\sum_\text{in} W_i = \sum_\text{out} W_j$, and
+strand conservation $\sum_\text{in} s_i = \sum_\text{out} s_j$.
+\end{definition}
+
+\subsection{Multi-particle states: multiset cobordism}
+
+Physical multi-particle states are unordered collections; ordered lists are
+physically wrong.  The \emph{multiset braid cobordism} replaces ordered-list
+source/target with \texttt{Multiset StableBraidProcess}, preserving winding and
+strand conservation laws.  The tensor product (disjoint union) is commutative
+($P + Q = Q + P$) and has a unit ($\emptyset + P = P$).  These properties are
+proved as theorems; the full Mathlib \texttt{MonoidalCategory} instance is not
+instantiated (reserved for future work).
+
+The process equivalence quotient gives the physical path category: two paths
+are identified if they differ by mirror involutions (proved: double mirror
+$= \mathrm{id}$, zero \sorry) or identity insertions.
+
+\subsection{C3: Winding conservation implies charge conservation}
+
+\begin{theorem}[C3: \lean{winding\_conservation\_implies\_charge\_conservation},
+zero \sorry]
+Any braid cobordism preserving total winding preserves total electric charge.
+\end{theorem}
+
+\subsection{C4: The SM winding-transfer classification}
+\label{subsec:c4}
+
+\begin{theorem}[C4: \lean{sm\_allowed\_iff\_standard\_winding\_transfer},
+zero \sorry]
+\label{thm:c4}
+For any two SM fermion types $f_1, f_2$:
+\begin{equation}
+  \text{isSMAllowed}(f_1, f_2) \iff |\Delta W| \in \{0, 3\}
+\end{equation}
+where $\Delta W = W(f_1) - W(f_2)$ uses the UGP winding values
+$W \in \{-3, 0, +2, -1\}$.
+\end{theorem}
+
+\begin{proof}
+Exhaustive case analysis over all $4 \times 4 = 16$ fermion-type pairs.
+Proved in Lean by \lean{cases f1 <;> cases f2 <;> simp}; zero \sorry.
+\end{proof}
+
+\begin{corollary}[UGP derivation of SM doublet structure, zero \sorry]
+The SU(2)$_L$ doublet partition $\{(e_L, \nu_L), (u_L, d_L)\}$ is \emph{derived}
+from winding conservation: exactly these pairs have $|\Delta W| = 3$.  No
+group-theoretic postulate about weak isospin is required.
+\end{corollary}
+
+\begin{corollary}[Non-circular formulation, zero \sorry]
+The UGP weak-pair predicate $\mathrm{UGPWeakPair}(f_1, f_2)$ is defined from
+$\mathrm{sameSector}(f_1, f_2)$ (same strand count, a UGP topological datum)
+and $|\Delta W| = 3$ (winding arithmetic).  The SM doublet relation is proved
+\emph{equivalent} to $\mathrm{UGPWeakPair}$, making the derivation genuinely
+non-circular.
+\end{corollary}
+
+\subsection{Primitive cobordism theorem}
+
+\begin{theorem}[Topological minimality, zero \sorry]
+A braid cobordism is \emph{primitive} (cobordism complexity $= 1$) if and only
+if it has exactly one junction, zero genus, and no exotic winding boson
+(winding $\notin \{0, \pm 3\}$).  These are exactly the SM gauge-fermion
+vertices.  Non-primitive cobordisms (loop diagrams, higher-genus topologies,
+exotic bosons) have complexity $\geq 2$ or $\geq 100$ respectively and are not
+primitive SM vertices.
+\end{theorem}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{The Gauge-Boson Winding Spectrum}
+\label{sec:bosons}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\begin{theorem}[\lean{ew\_vertex\_iff\_sm\_standard}, zero \sorry]
+\label{thm:ewspectrum}
+The gauge-boson winding spectrum $\{0, 0, +3, -3\}$ for $\{\gamma, Z, W^+, W^-\}$
+permits exactly the SM electroweak fermion transitions and no others:
+\begin{itemize}
+  \item Photon and $Z$ ($W_B = 0$): same-type fermion vertices only.
+  \item $W^+$ ($W_B = +3$): charged-current transitions $e \to \nu$, $d \to u$
+    (left-handed only).
+  \item $W^-$ ($W_B = -3$): $\nu \to e$, $u \to d$ (left-handed only).
+  \item Transitions with $|\Delta W| \in \{1, 2, 5\}$ (lepton$\leftrightarrow$quark,
+    exotic): no SM boson mediates them.
+\end{itemize}
+\end{theorem}
+
+\begin{theorem}[Exotic bosons excluded, zero \sorry]
+No electroweak boson in the UGP spectrum carries winding $\notin \{0, \pm 3\}$.
+In particular, there is no boson with winding $\pm 1$, $\pm 2$, or $\pm 5$.
+\end{theorem}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Color Dynamics and Gluons}
+\label{sec:color}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\begin{theorem}[\lean{gluon\_vertices\_quarks\_only}, zero \sorry]
+Gluon vertices are quark-only ($\Delta W = 0$, colour transfer) and never
+involve leptons.  The photon and gluon are distinguished by colour change:
+gluons change colour; the photon does not.
+\end{theorem}
+
+\begin{theorem}[Abelian/nonabelian distinction, zero \sorry]
+\label{thm:nonabelian}
+In the \emph{unbroken gauge basis}, the $\mathrm{U}(1)_Y$ field has no pure
+Yang--Mills self-interaction, while the $W^\pm$ (SU(2)) and gluons (SU(3))
+fields do.  Formally: the predicate $\mathrm{isNonAbelian}$ assigns
+$\mathrm{false}$ to the photon and $\mathrm{true}$ to all others; a gauge
+self-vertex requires all bosons to be nonabelian.
+\end{theorem}
+
+\begin{remark}[Electroweak symmetry breaking]
+After electroweak symmetry breaking, the \emph{physical} photon participates
+in $W^+W^-\gamma$ and $W^+W^-\gamma\gamma$ vertices through its mixing with
+the SU(2)$_L$ sector.  The theorem applies to the unbroken gauge basis
+($B$, $W^{1,2,3}$, $G^a$), where the statement is exact.
+\end{remark}
+
+\begin{theorem}[\lean{isolated\_quark\_not\_observable}, zero \sorry]
+An isolated quark cannot form a color singlet.  In the UGP finite color model
+no single-quark configuration satisfies the color-singlet condition.
+\end{theorem}
+
+\begin{proposition}[Finite-model color-singlet proxies, zero \sorry]
+In the UGP finite color model (color set $\{r,g,b\}$; no separate anticolor
+sector), color-neutral hadron structures are:
+\begin{itemize}
+  \item \emph{Meson proxy:} two same-color quarks
+    (\lean{meson\_is\_color\_singlet [T]}) ---
+    a finite-group representation of the $q^i\bar q_i$ singlet.
+  \item \emph{Baryon:} three quarks with colors $\{r,g,b\}$
+    (\lean{baryon\_rgb\_is\_color\_singlet [T]}),
+    corresponding to $\varepsilon^{ijk}q_iq_jq_k$.
+\end{itemize}
+Leptons (color $=$ None) cannot participate in either.
+The baryon proxy is faithful; the meson proxy uses a simplified color model that
+does not distinguish quarks from antiquarks.  Neither implies nonperturbative
+confinement (string tension, area law), which is not proved here.
+\end{proposition}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{The Interaction Skeleton Theorem}
+\label{sec:silver-gold}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\subsection{Silver closure: gauge-fermion vertices}
+
+\begin{definition}[UGP vertex]
+$\mathrm{UGPVertex}(f_1, f_2, B)$ holds when the vertex preserves winding
+($W(f_1) + W_B = W(f_2)$), colour, and chirality (W$^\pm$ require
+$\chi = L$ for both fermions).
+\end{definition}
+
+\begin{definition}[SM vertex]
+$\mathrm{SMVertex}(f_1, f_2, B)$ holds under the conventional SM
+representation-theoretic vertex rules: same-type fermions for $\gamma/Z$;
+doublet partners for $W^\pm$ with $\chi = L$; colour-transfer same-type quarks
+for gluons.
+\end{definition}
+
+\begin{theorem}[Silver closure: \lean{ugp\_gauge\_fermion\_equals\_sm}, zero \sorry]
+\label{thm:silver}
+For all colored fermions $f_1, f_2$ and all gauge bosons $B$:
+\begin{equation}
+  \mathrm{UGPVertex}(f_1, f_2, B) \iff \mathrm{SMVertex}(f_1, f_2, B).
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+By exhaustive case analysis over all four fermion types (ChargedLepton,
+Neutrino, UpQuark, DownQuark), three chiralities, three colours, and five
+gauge bosons.  The photon case uses injectivity of the charge numerator map;
+the $W^\pm$ cases use the UGP winding condition directly; the gluon case uses
+winding preservation from the strong vertex theorem.  All branches
+machine-verified; zero \sorry.
+\end{proof}
+
+\paragraph{Internal validation.}
+During formalization, two plausible but incorrect Yukawa schemas ---
+$u_L + H^+ \to u_R$ and $\nu_L + H^+ \to \nu_R$ --- were automatically
+rejected by the Lean vertex classifier.  This shows the framework is
+discriminating: it excludes incorrect physics, not merely permissive.
+
+\subsection{Explicit forbidden processes}
+
+\begin{theorem}[Right-handed $W$ coupling, zero \sorry]
+For any right-handed fermion ($\chi = R$):
+$\neg\, \mathrm{UGPVertex}(f_1, f_2, W^\pm)$.
+\end{theorem}
+
+\begin{theorem}[No lepton-gluon coupling, zero \sorry]
+For any lepton $l$ and any quark $q$:
+$\neg\, \mathrm{UGPVertex}(l, q, g)$ and
+$\neg\, \mathrm{UGPVertex}(q, l, g)$.
+\end{theorem}
+
+\begin{theorem}[No cross-sector $W$ coupling, zero \sorry]
+For any lepton $l$ and quark $q$ (different sectors):
+$\neg\, \mathrm{UGPVertex}(l, q, W^\pm)$ and
+$\neg\, \mathrm{UGPVertex}(q, l, W^\pm)$.
+\end{theorem}
+
+\subsection{Gold closure: Yukawa vertices}
+
+\begin{theorem}[Higgs quantum numbers, zero \sorry]
+Both Higgs components $H^+$ and $H^0$ carry $\YY = 3$ and obey the UGP EW
+charge formula $\TT + \YY = 2W$.
+\end{theorem}
+
+\begin{tcolorbox}[colback=blue!4,colframe=blue!40,title=\textbf{Yukawa orientation convention}]
+All Yukawa vertices are written in the oriented transition form $f_L + H \to
+f_R$ (incoming fermion + incoming Higgs $\to$ outgoing fermion).  This is the
+winding-balance condition $W(f_L) + W_H = W(f_R)$.  Under Hermitian conjugation
+and $\tilde H = i\sigma_2 H^*$, these correspond to the standard SM Lagrangian
+terms: e.g., $d_L + H^+ \to u_R$ is the oriented-vertex form of
+$\bar Q_L \tilde H u_R$ (up-type Yukawa), and $e_L + H^0 \to e_R$ is the
+component form of $\bar L_L H e_R$ (charged-lepton Yukawa).
+\end{tcolorbox}
+
+\begin{theorem}[Gold closure: \lean{ugp\_yukawa\_implies\_sm}, zero \sorry]
+\label{thm:gold}
+A UGP Yukawa vertex (winding-balanced $f_L + H \to f_R$ coupling) is SM-allowed
+if and only if both fermions are in the same sector (both leptons or both
+quarks).  Cross-sector Yukawa couplings are forbidden.
+
+Canonical SM Yukawa vertices verified by \lean{native\_decide}:
+$e_L + H^0 \to e_R$ (charged-lepton mass),
+$d_L + H^0 \to d_R$ (down-type quark mass),
+$d_L + H^+ \to u_R$ (up-type quark, $\tilde H$-coupling in Lagrangian),
+$\nu_L + H^0 \to \nu_R$ (Dirac neutrino mass).
+All machine-verified; zero \sorry.
+\end{theorem}
+
+\begin{remark}[Scope of Yukawa formalization]
+The Yukawa vertex classification is proved with zero \sorry.  The connection
+between UGP orbit arithmetic and the numerical Yukawa \emph{coupling coefficients}
+(mass ratios) requires an additional bridge --- the UGP information-to-mass
+transformer --- which is available as a structural placeholder.  The
+renormalization-scale-independence of mass \emph{ratios} is proved as a theorem
+(zero \sorry) via the mass-ratio transport theorem from the companion
+paper~\cite{ugp-lean}.
+\end{remark}
+
+\subsection{Finite vertex audit}
+
+A finite Python enumeration confirms MISMATCH COUNT\,=\,0.
+\emph{Count convention:} 64 = $4$ (fermion types) $\times$ $4$ (fermion types)
+$\times$ $4$ (EW bosons) = coarse schemas without chirality/color refinement.
+The Silver closure theorem (Theorem~\ref{thm:silver}) is the Lean certificate
+that handles all chirality/color cases simultaneously via exhaustive machine-checked
+case analysis, not just the 64 coarse schemas.  The Python audit cross-checks
+the coarse count; the Lean theorem guarantees all subcases.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lccr}
+\toprule
+Category & Total schemas & SM-allowed & Mismatch \\
+\midrule
+EW gauge-fermion & 64 & 12 & 0 \\
+Yukawa triples & $4 \times 2 \times 2$ & canonical & 0 \\
+Forbidden-process tests & see \S\ref{sec:forbidden} & all fail & 0 \\
+\bottomrule
+\end{tabular}
+\caption{Finite vertex audit.
+SHA-256 of audit artifact: \texttt{c927758a9b7801db\ldots}}
+\label{tab:audit}
+\end{table}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Forbidden Processes and Their UGP Explanation}
+\label{sec:forbidden}
+% ══════════════════════════════════════════════════════════════════════════════
+
+The ``no'' results carry physical content: each SM-forbidden process is
+forbidden by a specific UGP topological constraint.
+
+\begin{theorem}[Proton stability at dimension four, zero \sorry]
+\label{thm:proton}
+Proton decay $p \to e^+ \pi^0$ via a dimension-four operator requires a
+lepton$\leftrightarrow$quark $W$-boson vertex with $|\Delta W| = 5$.  No SM
+electroweak boson carries winding $\pm 5$.  The cross-sector $W$ theorem
+(no coupling between different sectors) directly forbids this vertex.%
+\footnote{This theorem applies to dimension-four (renormalizable) operators
+only.  Higher-dimensional operators ($d \geq 5$, $d \geq 6$) can induce
+proton decay through leptoquark or four-fermion contact terms; these are
+outside the scope of the renormalizable vertex skeleton treated here.}
+\end{theorem}
+
+\begin{theorem}[Dark sector isolation, zero \sorry]
+\label{thm:dark}
+Fermions with winding $W \in \{1, -2, 4\}$ (outside the SM quartet
+$\{-3, 0, +2, -1\}$) have no Standard Model electroweak boson mediating
+transitions to any SM fermion.  For each such dark winding $W_d$ and each SM
+winding $W_s \in \{-3, 0, +2, -1\}$:
+\[
+  |W_d - W_s| \notin \{0, 3\}.
+\]
+These fermions are therefore topologically isolated from the SM sector via SM
+bosons.
+\end{theorem}
+
+This isolation defines a topologically exotic sector: fermions with $W \in
+\{1,-2,4\}$ carry fractional electric charges $Q \in \{1/3, -2/3, 4/3\}$
+(from $Q = W/N_c$) and cannot exchange SM gauge bosons with ordinary matter.
+
+\begin{remark}[Cosmological caution]
+Stable fractionally charged particles are strongly constrained by precision
+searches and Big Bang nucleosynthesis.  Interpreting these states as dark matter
+candidates would require additional hidden-sector binding, screening, or
+confinement not provided by this theorem.  The theorem establishes a topological
+isolation gap in the interaction skeleton; it does not by itself yield a viable
+cosmological relic model.  The falsifiable prediction is: a stable particle with
+these charges and this interaction pattern would be consistent with the UGP
+topology.
+\end{remark}
+
+Table~\ref{tab:forbidden} summarizes forbidden processes and their UGP
+explanations.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lll}
+\toprule
+Forbidden process & $|\Delta W|$ & UGP reason \\
+\midrule
+$e \leftrightarrow u$ (lepton-quark $W$) & 5 & No SM boson with $W = 5$ \\
+$\nu \leftrightarrow d$ (lepton-quark $W$) & 1 & No SM boson with $W = 1$ \\
+Right-handed $W^\pm$ coupling & --- & $W^\pm$ require $\chi = L$ \\
+Lepton-gluon coupling & --- & Leptons have no colour \\
+Proton decay ($p \to e^+ \pi^0$) & 5 & Same as $e \leftrightarrow u$ \\
+Exotic $W_B = \pm 1$ boson & --- & EW spectrum is $\{0, \pm 3\}$ \\
+Dark fermion $W = 1$ to any SM & $\{1,1,1,2\}$ & All $\notin \{0,3\}$ \\
+\bottomrule
+\end{tabular}
+\caption{SM-forbidden dimension-4 processes and their UGP-topological explanations.}
+\label{tab:forbidden}
+\end{table}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{The UGP Discrete Action}
+\label{sec:action}
+% ══════════════════════════════════════════════════════════════════════════════
+
+The interaction skeleton of Section~\ref{sec:silver-gold} identifies which
+vertices are \emph{allowed}.  A complementary question is: why are they
+preferred?  We answer with a discrete action principle: SM vertices are
+exactly the \emph{zero-cost} steps.
+
+\subsection{Least-action principle for UGP vertices}
+
+\begin{definition}[Step cost]
+The \emph{step cost} of a vertex $(f_1, B, f_2)$ is the winding mismatch:
+\[
+  \mathrm{stepCost}(f_1, B, f_2) = |W(f_1) + W_B - W(f_2)|.
+\]
+This is zero if and only if winding is exactly conserved.
+\end{definition}
+
+\begin{definition}[Path action]
+The \emph{UGP path action} of an interaction path
+$\gamma = [(f_1^{(t)}, B^{(t)}, f_2^{(t)})]_{t}$
+is the total winding mismatch along the path:
+\[
+  S_\UGP(\gamma) = \sum_{t} \mathrm{stepCost}\!\bigl(f_1^{(t)}, B^{(t)}, f_2^{(t)}\bigr).
+\]
+\end{definition}
+
+\begin{theorem}[Least-action principle, zero \sorry]
+\label{thm:action}
+Every SM-allowed gauge-fermion vertex has $\mathrm{stepCost} = 0$.  Every
+SM interaction path has $S_\UGP = 0$.  Winding-mismatched (forbidden) vertices
+have $\mathrm{stepCost} > 0$.
+\end{theorem}
+
+This gives the first ``least-action'' statement in the UGP framework:
+the SM interaction skeleton consists precisely of the zero-cost paths in UGP
+path space.
+
+\begin{remark}
+The step cost captures winding mismatch only.  A right-handed $W$
+interaction has correct winding ($\mathrm{stepCost} = 0$) but is
+forbidden by the chirality constraint.  Thus $\mathrm{stepCost} = 0$ is
+necessary but not sufficient for SM admissibility; Theorem~\ref{thm:silver}
+captures the full constraint.
+\end{remark}
+
+\subsection{Connection to the MFRR dissonance functional}
+
+The PR-0 computational experiment showed that force-like effective potentials emerge, corresponding to strong, electromagnetic, weak, and gravitational regimes,
+from minimizing a four-component dissonance functional
+$D = w_1 D_\text{inc} + w_2 D_\text{comp} + w_3 D_\text{temp} + w_4 D_\text{clos}$
+(spatial roughness, incompleteness, temporal incoherence, closure failure).
+Each component maps to a term in the UGP discrete action:
+
+\begin{theorem}[MFRR stationary condition, zero \sorry]
+In the abstract finite setting, the MFRR Persistence/Transputation (PT)
+adjudication condition equals the stationary condition of the dissonance
+functional: a state achieves PT adjudication if and only if it minimizes $D$
+globally.  If a zero-$D$ state exists (PSC closure is achievable), then
+$\mathrm{IsStationary}(D, s) \iff \forall t,\; D(s) \leq D(t)$.
+\end{theorem}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Electroweak Predictions}
+\label{sec:ew}
+% ══════════════════════════════════════════════════════════════════════════════
+
+Having established the interaction skeleton at the structural level, we now
+compare the UGP's Lean-certified bare couplings against precision SM
+observables via standard two-loop renormalization-group running.
+
+\subsection{Lean-certified bare couplings}
+
+The three UGP bare couplings are proved as exact rationals in Lean:
+\begin{align}
+  g_1^2 &= \tfrac{16}{125} = 0.128\ldots & \text{(hypercharge)},\\
+  g_2^2 &= \tfrac{2329}{5400} = 0.4313\ldots & \text{(weak SU(2))},\\
+  g_3^2 &= \tfrac{41075281}{27648000} = 1.4857\ldots & \text{(strong SU(3))}.
+\end{align}
+
+\subsection{EW predictions via two-loop RG running}
+
+Running via the 2-loop Machacek--Vaughn $\beta$-functions~\cite{mv1983}, using
+the self-consistent (SC-ZZ) matching scale $M_2^* = 34.66\,\mathrm{GeV}$ for
+$g_2$ and $M_3^* = 89.50\,\mathrm{GeV}$ for $g_3$:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lccc}
+\toprule
+Observable & UGP prediction & PDG value & Residual \\
+\midrule
+$m_W$ (GeV) & 80.364 & $80.3692 \pm 0.0133$ & $-0.42\sigma$ \\
+$\alpha_s(M_Z)$ & 0.11790 & $0.1179 \pm 0.0010$ & $0.00\sigma$ \\
+$\sinW$ & 0.2316 & $0.23121 \pm 0.00004$ & {[B]} tree-level; 0.16\% physical \\
+$\alpha_\mathrm{EM}^{-1}(M_Z)$ & 127.76 & $127.952 \pm 0.009$ & {[B]} tree-level; 0.15\% physical \\
+\bottomrule
+\end{tabular}
+\caption{UGP electroweak predictions from Lean-certified bare couplings.
+$m_W$ uses the SC-ZZ protocol (two-loop + threshold); PDG value is 2024 world average $80.3692 \pm 0.0133$; $\alpha_s$ uses $g_3$ self-consistent matching near $M_Z$.}
+\label{tab:ew}
+\end{table}
+
+The $m_W$ and $\alpha_s$ predictions are within experimental precision
+($-0.42\sigma$ vs PDG 2024 world average and $0.00\sigma$ respectively), both from the same
+Lean-certified rational couplings with no free parameters.
+
+\subsection{Structural research lead: q3 shear and Y$_3 = 2W$}
+
+A separate computational finding (ACTION~3, quantitative bridge experiment,
+April 2026) provides a structural research lead.  Among four shear variants of
+the optimal CA rule, the q3 shear gives $\Delta\ell_\text{total}/\Delta W = 2.000$
+exactly for SM doublet transitions ($|\Delta W| = 3$, the dominant interaction
+type at 33.7\% of all firings) --- a precise slope-transfer analogue of the
+hypercharge formula $Y_3 = 2W$.  This connects the slope field $\ell \in
+\mathbb{Z}_8$ to the $\mathrm{U}(1)_Y$ phase coordinate and may illuminate the
+structural origin of the factor of 2 in hypercharge.  This is a research lead,
+not a theorem.
+
+\subsection{The hypercharge normalization puzzle}
+
+A structural near-coincidence:
+$g_1^\text{bare} = \sqrt{16/125} = 0.35777 \approx g_Y(M_Z) = 0.35742$
+(ratio $= 1.001$, within $0.1\%$).
+This identifies $g_1^\text{bare}$ as the physical hypercharge coupling at $M_Z$
+scale (Hypothesis~1: $g_1^\text{bare} = g_Y$), rather than the
+GUT-normalized coupling.
+
+Under this identification, the tree-level prediction gives
+$\sinW = 0.2316$ vs PDG $0.2312$ (a physical deviation of $0.16\%$).
+The residual is a $0.098\%$ excess of $g_1^\text{bare}$ over the measured
+$g_Y(M_Z)$, which would require one-loop corrections to the UGP $g_1$
+prediction to close.  We report this honestly as an open item: the $m_W$ and
+$\alpha_s$ predictions are confirmed; $\sinW$ and $\alpha_\mathrm{EM}$ require
+loop corrections not yet computed.
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Novel Predictions and Structural Consequences}
+\label{sec:predictions}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\subsection{Theorem-grade predictions}
+
+\paragraph{N$_c = 3$ uniqueness.}
+The QCD colour rank is forced by three independent constraints
+(Section~\ref{sec:qnumbers}).  This is not a coincidence: it is a theorem.
+
+\paragraph{SM fermion quartet uniqueness.}
+The winding quartet $\{-3, 0, +2, -1\}$ is the unique anomaly-free solution at
+$N_c = 3$ (Theorem~\ref{thm:unique}).  The SM charge pattern is derived, not
+assumed.
+
+\paragraph{Proton stability.}
+Proton decay at dimension four is topologically forbidden
+(Theorem~\ref{thm:proton}).  The UGP reason is more primitive than baryon
+number conservation: no SM boson carries the winding required for a
+lepton$\leftrightarrow$quark transition.
+
+\paragraph{Dark sector gap.}
+Fermions with $W \in \{1, -2, 4\}$ are topologically isolated from the SM
+(Theorem~\ref{thm:dark}).  Their predicted charges are $Q = 1/3$, $-2/3$,
+$4/3$ respectively.  This is the UGP dark-sector isolation gap: a falsifiable prediction
+at the level of Lean-verified topology.
+
+\paragraph{Lepton universality.}
+Theorem~\ref{thm:gen-ind} proves that all three charged lepton generations
+share $W = -3$ (and all three neutrino generations share $W = 0$), with
+generation encoding braid crossing number (mass complexity) rather than
+winding (charge).  This is the UGP explanation for lepton universality:
+$e$, $\mu$, $\tau$ couple identically to gauge bosons because they have
+identical topological quantum numbers --- they are the same braid type at
+three different crossing depths.
+
+\paragraph{Sterile neutrino coupling.}
+A right-handed neutrino ($W = 0$, $\chi = R$) couples only via Higgs Yukawa
+($H^0$ with $W_H = 0$), not via $W^\pm$ (requires $\chi = L$) or gluons (no
+colour).  The coupling structure of a sterile $\nu_R$ is fully determined by
+UGP topology.
+
+\subsection{Open frontiers}
+
+The following are research directions rather than proved theorems:
+\begin{itemize}
+  \item \textbf{Winding table from orbit writhe.}  $W_e = -N_c$ and
+    $W_u = N_c - 1$ are currently the UGP-axiom boundary: they encode
+    $Q(e) = -1$ from the Braid Atlas.  Whether they follow from the GTE orbit
+    braid writhe (crossing structure of the worldtube) without empirical charge
+    input is the deepest open question.
+
+  \item \textbf{Dark sector gap: experimental probe.}  The topological
+    isolation is proved; whether exotic braids in the PR-1 CA concentrate at
+    $W \in \{1,-2,4\}$ awaits a full topological spectrometer run.
+
+  \item \textbf{CP violation.}  Complex phases in the UGP orbit structure
+    may encode CP violation.  Not yet formalized.
+
+  \item \textbf{Grand Morphism.}  The chain
+    $\mathrm{PSC} \simeq \mathrm{UGP} \simeq \mathrm{Braid} \simeq \mathrm{SM}$
+    is a long-range conjecture (the Grand Convergence hypothesis); not yet
+    formalized.
+\end{itemize}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Related Work}
+\label{sec:related}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\paragraph{Topological quantum field theory.}
+The UGP braid cobordism framework is structurally analogous to a
+$(2+1)$-dimensional TQFT~\cite{atiyah88}: stable braid processes play the role
+of boundary objects (closed $(n-1)$-manifolds), and braid cobordisms play the
+role of morphism manifolds.  Four of the five Atiyah TQFT axioms are satisfied:
+objects, morphisms, composition, and a monoidal structure (multiset tensor).
+The closest known mathematical structure is 3D Chern--Simons theory~\cite{witten89},
+whose gauge group $\mathrm{SU}(3) \times \mathrm{SU}(2) \times \mathrm{U}(1)$
+is precisely the SM gauge group, and whose Wilson-line defects carry winding
+numbers analogous to $W$.
+
+\emph{The $Z_\UGP$ functor conjecture:} A well-defined TQFT functor
+$Z_\UGP : \mathrm{BraidCob}_\UGP \to \mathrm{Vect}$ assigning Hilbert spaces
+to stable braid processes and linear maps (scattering amplitudes) to cobordisms
+is conjectured.  The fifth Atiyah axiom --- the functor assignment itself ---
+requires defining the state spaces $Z_\UGP(P)$ from the winding and chirality
+data of each process, which is open.  This conjecture would, if proved, provide
+the amplitude-level formalization beyond the vertex-skeleton level of this paper.
+
+\paragraph{Computational explorations.}
+The PR-1/Logos cellular automaton found the Logos condition $g_0 \neq g_1$
+(interaction at winding-gradient boundaries) by exhaustive rule-space search,
+before the formal proof existed.  A bridge experiment (SESSION\_31, April 2026)
+confirmed $87.38\%$ consistency with Theorem~\ref{thm:c4} over
+$1.02 \times 10^6$ events, with $C = 0$ (zero false negatives).  The natural
+bijection $\varphi: \{0,1,2,3\} \to \{0,-1,+2,-3\}$ from $\mathbb{Z}_4$ to
+the SM winding table was co-optimal among all 24 bijections.
+
+The PR-0/MFRR substrate produced force-like effective potentials --- strong, electromagnetic, weak, and gravitational regimes --- from dissonance
+minimization on a continuous lattice, independently of any SM input.  The
+dissonance-information correlation $r = -0.91$ validates the information-profit
+stability condition.  Neither PR-1 nor PR-0 constitutes a proof; they provide
+independent computational corroboration.
+
+\paragraph{Formal verification in physics.}
+Lean~4 has been used for formal verification in mathematics and, increasingly,
+in mathematical physics~\cite{mathlib4}.  To our knowledge, this is the first
+paper to machine-verify the complete SM gauge-fermion and Yukawa interaction
+skeleton in a formal proof assistant.
+
+\paragraph{Bootstrap and other particle-coding approaches.}
+String vacua and GUT models can label the SM spectrum but typically require
+gauge group postulates as additional input.  Bootstrap approaches derive
+S-matrix constraints without a Lagrangian~\cite{veneziano68}.  The UGP
+approach differs in deriving the interaction skeleton from the arithmetic/topological
+structure of GTE triple orbits alone.
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Discussion}
+\label{sec:discussion}
+% ══════════════════════════════════════════════════════════════════════════════
+
+\subsection{The double-duty argument}
+
+The paper's central argument:
+\begin{tcolorbox}[colback=gray!8,colframe=black!60]
+\emph{UGP's identifying invariants --- winding, chirality, hypercharge,
+colour-fiber --- serve as move-admissibility constraints without any additional
+input.  Many particle-coding schemes cannot do this.  That UGP can is the
+argument for its fundamentality.}
+\end{tcolorbox}
+
+The SM's answer to ``Why these interactions and not others?'' is: because
+the SM has gauge group $G = \mathrm{SU}(3) \times \mathrm{SU}(2) \times
+\mathrm{U}(1)$ and these representation assignments.  That is an empirical
+postulate.
+
+The UGP answer is: because only those and no others are the primitive
+winding/colour/chirality-conserving braid cobordisms.  That is a derivation.
+
+\subsection{The hidden constraint system}
+
+We suggest that the SM's gauge invariance may be the continuum/EFT realization
+of a more primitive constraint system:
+\begin{equation}
+  \mathrm{SU}(3)\times\mathrm{SU}(2)\times\mathrm{U}(1)
+  \;\text{gauge invariance}
+  \;\;\longleftarrow\;\;
+  \text{UGP winding/colour/chirality constraint}.
+\end{equation}
+The SM's symmetry group is usually taken as the \emph{source} of the interaction
+structure.  The UGP result suggests it may be its \emph{realization} --- the
+continuum/EFT expression of a discrete topological constraint.
+
+\subsection{What this does not prove}
+
+We emphasize the honest boundaries:
+\begin{itemize}
+  \item No scattering amplitudes, propagators, or loops.
+  \item No complete action principle or quantization (the UGP discrete action
+    gives the vertex structure; the full theory requires more).
+  \item No CKM/PMNS mixing.
+  \item No nonperturbative confinement (representation-level only).
+  \item No $\sinW$ or $\alpha_\mathrm{EM}$ at PDG precision (tree-level limit).
+  \item No Grand Morphism (the full PSC$\simeq$UGP$\simeq$Braid$\simeq$SM equivalence is not proved; the SM-uniqueness RCC theorem \texttt{PSC.RCCInfiniteFamilies}~\cite{ugp-lean} is Lean-certified, but the Grand Morphism requires more).
+\end{itemize}
+What is proved is the \emph{finite skeleton}: which primitive vertex schemas
+are allowed or forbidden.
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Conclusions}
+\label{sec:conclusions}
+% ══════════════════════════════════════════════════════════════════════════════
+
+We have proved the UGP Interaction Skeleton Theorem: the finite UGP
+braid-cobordism model, equipped with winding, chirality, hypercharge, and
+colour-fiber data, determines the Standard Model's complete finite renormalizable
+interaction skeleton.
+
+The established results form three tiers:
+\begin{enumerate}
+  \item \textbf{Quantum number reconstruction [T]:} Hypercharge, chirality,
+    anomaly cancellation, and the SM fermion quartet uniqueness all follow from
+    UGP winding arithmetic.  $N_c = 3$ is forced three independent ways.
+    The winding table is uniquely determined with zero free parameters.
+  \item \textbf{Interaction skeleton [T]:}
+    $\mathrm{UGPVertex} \leftrightarrow \mathrm{SMVertex}$ for all gauge-fermion
+    pairs; UGP Yukawa $=$ SM Yukawa; all forbidden processes excluded.
+    MISMATCH COUNT\,=\,0 across all checked cases.
+  \item \textbf{Novel predictions [T]:}
+    Proton stability at dimension four is topologically forbidden; fermions with
+    $W \in \{1,-2,4\}$ form a topologically isolated dark-sector isolation gap.
+\end{enumerate}
+
+Open directions include loop-corrected coupling predictions, CKM/PMNS mixing,
+the full UGP functor conjecture, and the deepest question --- whether the
+winding assignments $W_e = -N_c$ and $W_u = N_c - 1$ can themselves be derived
+from GTE orbit braid writhe without empirical charge input.
+
+The result suggests that the Standard Model's gauge invariance may be the
+continuum/EFT realization of a more primitive winding/colour/chirality
+constraint system discovered here.
+
+% ══════════════════════════════════════════════════════════════════════════════
+\appendix
+% ══════════════════════════════════════════════════════════════════════════════
+
+\section{Complete Theorem Inventory}
+\label{app:theorems}
+
+The following table catalogs all machine-verified results cited in this paper
+with their Lean identifiers, enclosing modules, and epistemic status.
+\textbf{[T]} = zero-\sorry\ Lean theorem; \textbf{[C]} = computationally
+verified; \textbf{[B]} = bridge/research.
+
+\footnotesize
+\begin{longtable}{p{8.5cm}cp{3.5cm}}
+\toprule
+\textbf{Lean identifier} & \textbf{St.} & \textbf{Module} \\
+\midrule
+\endfirsthead
+\multicolumn{3}{l}{\textit{\footnotesize (Theorem inventory, continued)}} \\
+\toprule
+\textbf{Lean identifier} & \textbf{St.} & \textbf{Module} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\textit{\footnotesize Continued on next page\ldots}} \\
+\endfoot
+\bottomrule
+\multicolumn{3}{l}{\textit{Total [T] results: $\geq 40$ zero-\sorry\ Lean theorems, 17 modules.}} \\
+\endlastfoot
+%
+\multicolumn{3}{l}{\textit{Category + braid structure}} \\
+\lean{ugpCategory} & [T] & UGPCategory \\
+\lean{canonical\_lepton\_winding} & [T] & ugp-lean/FiberBundle \\
+\lean{canonical\_seed\_certificate} & [T] & PSCOrbitCertificate \\
+\lean{psiBraid\_generation\_independent} & [T] & PsiBraidFunctor \\[2pt]
+%
+\multicolumn{3}{l}{\textit{Winding-transfer classification}} \\
+\lean{winding\_conservation\_implies\-\_charge\_conservation} & [T] & BraidAtlas.Cobordism \\
+\lean{sm\_allowed\_iff\_standard\-\_winding\_transfer} & [T] & BraidAtlas.Cobordism \\
+\lean{ugp\_weak\_pair\_iff\_sm\_doublet} & [T] & BraidAtlas.Cobordism \\
+\lean{ugp\_derives\_su2\_doublet\_structure} & [T] & BraidAtlas.Cobordism \\[2pt]
+%
+\multicolumn{3}{l}{\textit{Quantum number reconstruction}} \\
+\lean{sm\_hypercharge\_table\_recovered} & [T] & EWStructure \\
+\lean{doublet\_partner\_is\_left\_chiral} & [T] & EWStructure \\
+\lean{ew\_vertex\_iff\_sm\_standard} & [T] & EWStructure \\
+\lean{all\_four\_sm\_anomalies\_cancel} & [T] & EWStructure \\
+\lean{gluon\_vertices\_quarks\_only} & [T] & ColorDynamics \\[2pt]
+%
+\multicolumn{3}{l}{\textit{Uniqueness}} \\
+\lean{anomaly\_cancellation\_forces\_Nc\_3} ($\times 3$) & [T] & UniquenessTheorems \\
+\lean{winding\_quartet\_unique} & [T] & UniquenessTheorems \\
+\lean{sm\_winding\_table\_uniquely\_determined} & [T] & UniquenessTheorems \\
+\lean{winding\_table\_two\_inputs\_suffice} & [T] & WindingFromDoublet \\[2pt]
+%
+\multicolumn{3}{l}{\textit{Silver + Gold closure}} \\
+\lean{ugp\_gauge\_fermion\_equals\_sm} & [T] & VertexTheorem \\
+\lean{no\_right\_handed\_W} & [T] & VertexTheorem \\
+\lean{no\_lepton\_gluon}, \lean{no\_cross\_sector\_W} & [T] & VertexTheorem \\
+\lean{higgs\_quantum\_numbers\_match\_sm} & [T] & HiggsYukawa \\
+\lean{ugp\_yukawa\_implies\_sm} & [T] & HiggsYukawa \\
+\lean{cross\_sector\_yukawa\_forbidden} & [T] & HiggsYukawa \\[2pt]
+%
+\multicolumn{3}{l}{\textit{Color + topology}} \\
+\lean{isolated\_quark\_not\_observable} & [T] & ColorConfinement \\
+\lean{meson\_is\_color\_singlet} & [T] & ColorConfinement \\
+\lean{baryon\_rgb\_is\_color\_singlet} & [T] & ColorConfinement \\
+\lean{gauge\_self\_vertex\_iff\_all\_nonabelian} & [T] & GaugeSelfInteractions \\
+\lean{primitive\_cobordisms\_are\_exactly\-\_sm\_gauge\_vertices} & [T] & TopologicalMinimality \\[2pt]
+%
+\multicolumn{3}{l}{\textit{Forbidden processes}} \\
+\lean{proton\_decay\_dim4\_forbidden} & [T] & ForbiddenProcesses \\
+\lean{no\_ew\_boson\_winding\_5} & [T] & ForbiddenProcesses \\
+\lean{dark\_sector\_gap\_all\_isolated} & [T] & ForbiddenProcesses \\[2pt]
+%
+\multicolumn{3}{l}{\textit{Action principle}} \\
+\lean{ugp\_vertex\_zero\_step\_cost} & [T] & DiscreteAction \\
+\lean{all\_sm\_path\_zero\_action} & [T] & DiscreteAction \\
+\lean{pt\_as\_stationary\_condition} & [T] & MFRRActionHardening \\
+\lean{full\_pt\_condition} & [T] & MFRRActionHardening \\[2pt]
+%
+\multicolumn{3}{l}{\textit{Electroweak predictions (from Lean-certified couplings)}} \\
+$m_W = 80.364\,\mathrm{GeV}$ ($-0.42\sigma$ vs PDG 2024) & [C] & SC-ZZ protocol \\
+$\alpha_s(M_Z) = 0.1179$ ($0.00\sigma$) & [C] & SC-ZZ protocol \\
+$\sinW = 0.2316$ (0.16\% phys.) & [B] & tree-level \\
+$\alpha_\mathrm{EM}^{-1} = 127.76$ (0.15\% phys.) & [B] & tree-level \\[2pt]
+%
+\multicolumn{3}{l}{\textit{Computational corroboration}} \\
+PR-1/Logos: C4 at 87.38\%, $C=0$ exactly & [C] & SESSION\_31 \\
+PR-0: $D$--$\Phi$ correlation $r = -0.91$ & [C] & PR-0/MFRR \\
+\end{longtable}
+
+\section{Computational Artifacts and Reproducibility}
+\label{app:artifacts}
+
+\subsection{Lean formal verification}
+
+\textbf{Repository:} \texttt{ugp-physics-lean}
+(GitHub: \url{https://github.com/novaspivack/ugp-physics-lean};
+Lean~4, Mathlib \texttt{v4.29.0-rc6}; Zenodo DOI: pending).
+
+\textbf{Build verification:}
+\begin{quote}\small\ttfamily
+cd ugp-physics-lean \&\& lake exe cache get \&\& lake build
+\end{quote}
+Expected: \texttt{Build completed successfully.  0 errors.}
+All theorem modules cited as [T] build with zero \sorry.
+\texttt{UGPYukawaWeight} is defined as \texttt{Real.log(e.base.c)},
+the log-linear UCL weight (P01~\S mass\_map); no sorry remains.
+
+\textbf{Key modules (17):}
+\texttt{UGPCategory}, \texttt{BraidAtlas.Cobordism}, \texttt{EWStructure},
+\texttt{ColorDynamics}, \texttt{VertexTheorem}, \texttt{HiggsYukawa},
+\texttt{Uniqueness\-Theorems}, \texttt{PSCOrbitCertificate},
+\texttt{WindingFromDoublet}, \texttt{PsiBraidFunctor}, \texttt{DiscreteAction},
+\texttt{MFRRAction\-Hardening}, \texttt{TopologicalMinimality},
+\texttt{ColorConfinement}, \texttt{GaugeSelfInteractions},
+\texttt{CategoryEnrichment}, \texttt{ForbiddenProcesses}.
+
+\subsection{Vertex audit}
+
+\textbf{Artifact:} \texttt{vertex\_audit\_017035.json}
+
+\textbf{SHA-256:}
+\begin{quote}\small\ttfamily
+c927758a9b7801db863102f4c2c4a08c7bea60a513d9a6d0c0538a64e46e0468
+\end{quote}
+
+\textbf{Contents:} 64 EW vertex schemas; 12 dark-sector isolation transitions;
+winding table uniqueness; forbidden-process certificates.
+
+\textbf{Reproduction:} \texttt{python3 papers/23\_ugp\_dynamics/vertex\_truth\_table.py}.
+Expected: \texttt{MISMATCH\_COUNT: 0}.
+
+\subsection{Electroweak predictions}
+
+\textbf{Protocol:} SC-ZZ self-consistent matching; 2-loop Machacek--Vaughn
+$\beta$-functions; $m_t$ threshold matching.
+\begin{itemize}
+  \item $g_2$ injected at $M_2^* = 34.66\,\mathrm{GeV}$; run to $M_Z$.
+  \item $g_3$ injected at $M_3^* = 89.50\,\mathrm{GeV}$; run to $M_Z$.
+  \item $g_1$ used directly as $g_Y$ at $M_Z$ (0.1\% near-coincidence; no running).
+\end{itemize}
+
+\textbf{SHA-256 of prediction block:}
+\begin{quote}\small\ttfamily
+b8f9ac7cdb89851d8c589b4b23323764289b376d1e134cb7de47c53c21a5a707
+\end{quote}
+
+\subsection{PR-1 / Logos bridge experiment}
+
+\textbf{Session:} \texttt{SESSION\_31\_UGP\_DYNAMICS\_BRIDGE} (April~2026).
+
+\textbf{Protocol:} Logos Alpha rule (\texttt{p3:p3, identity, q1, g0!=g1}),
+canonical two-cluster initialization ($N = 256$, 500 steps, 8 seeds: 42, 0, 7,
+13, 99, 123, 256, 777).  Pre-R g-values; natural bijection
+$\varphi(0,1,2,3) = (0,-1,+2,-3)$.  Total: $1{,}024{,}000$ events.
+
+\textbf{Key results:}
+Consistency with C4 condition: 87.38\%;
+$C = 0$ exactly (all seeds);
+Natural bijection co-optimal among all 24.
+
+\section*{Acknowledgments}
+
+AI assistants were used for adversarial review, coding assistance, and debugging during manuscript preparation and code development.  All scientific claims, derivations, and numerical results were independently verified by deterministic scripts and Lean proofs; no AI-generated content appears as unverified scientific output.
+
+All Lean formalizations use Mathlib~4 at \texttt{v4.29.0-rc6}.  The
+\texttt{ugp-lean} and \texttt{ugp-physics-lean} repositories contain all Lean
+code cited in this paper are available at \url{https://github.com/novaspivack/ugp-lean} and \url{https://github.com/novaspivack/ugp-physics-lean}.
+
+% ── Bibliography ───────────────────────────────────────────────────────────────
+\bibliographystyle{unsrt}
+\bibliography{../bib/Spivack_Papers_Bibliography,ugp_dynamics_refs}
+
+\end{document}

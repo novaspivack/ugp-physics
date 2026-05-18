@@ -1,0 +1,61 @@
+experiment:
+  name: ugp_seesaw_pmns_derivation
+  description: "UGP-Native Seesaw Mechanism for PMNS Matrix Derivation - Complete Specification Implementation"
+  inputs:
+    runs:
+      - "canonical_gte_triples.json"
+
+options:
+  # Locked Perfect CKM Configuration (NON-NEGOTIABLE)
+  locked_ckm_configuration:
+    tau0_scale: 1.5
+    epsilon_scale: 0.8
+    epsilon_prime_scale: 4.0
+    normalization_method: "frobenius"
+    down_sector_permutation: [0, 2, 1]
+  
+  # Right-handed Neutrino Triples for Seesaw Mechanism
+  nu_R_triples:
+    nu_e_R: [1, 823, 1]    # Swapped b,c from ν_L
+    nu_mu_R: [9, 1023, 1]  # Swapped b,c from ν_L
+    nu_tau_R: [5, 65535, 1] # Swapped b,c from ν_L
+  
+  # PDG Target Values
+  pdg_targets:
+    ckm_angles: [33.44, 8.57, 49.2]  # degrees
+    pmns_angles: [33.44, 8.57, 49.0]  # degrees
+    ckm_elements: [0.2245, 0.041, 0.00365]
+  
+  # Seesaw Mechanism Parameters
+  seesaw_configuration:
+    M_D_construction: "geometric_overlap"  # Geometric overlap between ν_L and ν_R
+    M_R_construction: "symmetric_gram_matrix"  # Symmetric Gram matrix of ν_R
+    seesaw_formula: "M_eff = -M_D M_R⁻¹ M_Dᵀ"
+    diagonalization_method: "takagi_factorization"
+    
+  # Validation Criteria
+  validation_criteria:
+    ckm_error_threshold: 0.05  # <5% error for CKM preservation
+    pmns_error_threshold: 0.20  # <20% error for PMNS achievement
+    breakthrough_threshold: 0.15  # <15% average PMNS error for breakthrough
+    
+  # Numerical Stability
+  numerical_stability:
+    regularization_factor: 1e-6
+    overflow_protection: true
+    nan_inf_detection: true
+    fallback_to_identity: true
+
+# Analysis Configuration
+analysis:
+  detailed_output: true
+  save_intermediate_matrices: true
+  generate_validation_report: true
+  breakthrough_analysis: true
+  
+# Output Configuration  
+output:
+  save_results: true
+  save_matrices: true
+  save_validation: true
+  format: "json"

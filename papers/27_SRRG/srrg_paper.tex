@@ -1,0 +1,2522 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  The Self-Referential Renormalization Group:
+%  A Universal Framework for Physical Constants
+%
+%  Nova Spivack --- 2026
+%  Working Paper (P27)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt]{article}
+
+% ===================== PREAMBLE =====================
+\usepackage[margin=1in]{geometry}
+\usepackage{authblk}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{float}
+\usepackage{url}
+\urlstyle{tt}
+\usepackage{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage[backend=biber,style=numeric-comp,sorting=none]{biblatex}
+\addbibresource{../bib/Spivack_Papers_Bibliography.bib}
+\usepackage[toc]{appendix}
+\allowdisplaybreaks
+\setlength{\abovedisplayskip}{6pt}
+\setlength{\belowdisplayskip}{6pt}
+\setlength{\abovedisplayshortskip}{4pt}
+\setlength{\belowdisplayshortskip}{4pt}
+\raggedbottom
+
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black}
+\input{nova_zenodo_doi_placeholder}
+\setlength{\emergencystretch}{3em}
+
+% ── Theorem environments ──────────────────────────────────────────────────────
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% ── Convenience macros ────────────────────────────────────────────────────────
+\newcommand{\SRRG}{\text{SRRG}}
+\newcommand{\UGP}{\text{UGP}}
+\newcommand{\GTE}{\text{GTE}}
+\newcommand{\IPT}{\mathrm{IPT}}
+\newcommand{\NEMS}{\text{NEMS}}
+\newcommand{\PSC}{\text{PSC}}
+\newcommand{\RG}{RG}
+\newcommand{\CFT}{CFT}
+\newcommand{\FS}{F[S]}
+\newcommand{\RS}{R[S]}
+\newcommand{\CS}{C_\Lambda[S]}
+\newcommand{\lean}[1]{%
+  \penalty-100
+  \begingroup
+  \def\_{\textunderscore\allowbreak}%
+  \texttt{#1}%
+  \endgroup
+}
+\newcommand{\bsrrgfp}{\beta_{\SRRG}(S^*)}
+\newcommand{\Sstar}{S^*}
+\newcommand{\goldenratio}{\varphi}
+\newcommand{\IPTval}{\varrho_{\mathrm{crit}}}
+
+% ── Title / author ────────────────────────────────────────────────────────────
+\title{\bfseries The Self-Referential Renormalization Group: \\[0.3em]
+A Universal Framework for Physical Constants}
+
+\author[1]{Nova Spivack\thanks{Correspondence:
+  \href{mailto:novaspivackrelay@gmail.com}{novaspivackrelay@gmail.com}}}
+\affil[1]{Independent Research}
+\date{2026}
+
+\begin{document}
+\maketitle
+\NovaZenodoAfterTitle
+
+
+% =====================================================================
+%  ABSTRACT
+% =====================================================================
+\begin{abstract}
+We introduce the \emph{Self-Referential Renormalization Group} (\SRRG): a
+gradient-flow theory on the space of self-referential physical theories.
+The \SRRG\ flow maximises a net viability functional $F[S] = R[S] - C_\Lambda[S]$,
+where $R[S]$ measures self-representation capacity and $C_\Lambda[S]$ decomposes
+into closure, self-computation, and selector costs inherited from the NEMS/PSC
+framework.
+
+The main body establishes the core fixed-point structure: fixed-point existence
+via the Master Fixed-Point Theorem, monotonicity of $F$ along the \SRRG\ flow
+(an analogue of Zamolodchikov's $c$-theorem), linearised contraction rate
+$1/\goldenratio$ where $\goldenratio$ is the golden ratio, and minimal $U(1)$
+symmetry under the PSC cost condition.  The Information Profit Threshold
+$\IPT\approx1.1309$ arises as the \SRRG\ efficiency ratio at the fixed point,
+conditional on the explicit PSC Landauer self-consistency hypothesis
+$h_{\mathrm{psc\_sc}}$ (grade [A$^-$]; Remark~\ref{rem:h4_disclosure}).
+The associated one-dimensional $\eta$-flow has a candidate projected
+$\beta$-function $\beta_\eta = \kappa(\eta-\IPT)(\eta-2)$, with an
+IR-stable fixed point at $\eta=\IPT$ and a UV-unstable separatrix at $\eta=2$;
+the algebraic uniqueness and no-third-zero properties are machine-certified in
+Lean~4 (Vieta's theorem, zero sorry).
+
+Conditional physical applications --- strong CP phase $\theta_{\mathrm{QCD}}=0$,
+three fermion generations $N_{\mathrm{gen}}=3$, multi-scale SM gauge structure,
+Higgs quartic recovery $\lambda_H = m_H^2/(2v^2)$, a structural derivation of
+the electroweak VEV $v_{\mathrm{PSC}} = 246.16$\,GeV (grade~[A$^-$];
+\lean{VEVProof.*}, zero sorry, conditional on one named open axiom (\lean{psc\_ew\_entropy\_maximization})),
+and structural exclusion of Planck-scale vacuum energy --- are developed in
+Appendix~\ref{app:physical_applications} and Appendix~\ref{app:higgs},
+with all additional physical bridge hypotheses stated explicitly
+(Table~\ref{tab:assumptions}).  A negative diagnostic
+for the Weinberg angle via Haar-entropy ratios is included as
+Appendix~\ref{app:weinberg}.
+A positive partial result for the fine-structure constant is given in
+Appendix~\ref{app:alpha_coupling} (grade~[A/D]): the tree-level SM identity
+$\alpha = g_1^2 g_2^2/[4\pi(g_1^2+g_2^2)]$ applied to the Lean-certified bare couplings
+from P01 yields $1/\alpha(M_Z) = 4\pi\cdot377525/37264 \approx 127.311$,
+which is $0.495\%$ from the PDG running value.
+The \textbf{SRRG--MDL equivalence conjecture} (Open Problem~9; grade~[B$+$]),
+also introduced in Appendix~\ref{app:alpha_coupling}, identifies the SRRG
+fixed-point selection $\arg\max_S F[S]$ with MDL minimization $\arg\min_S K[S]$
+for self-referential theories, bridging the present framework with
+the Architecture paper (P09~\cite{Spivack2025_ArchitectureComputableUniverse}).
+
+All owned formal implication theorems compile in the Lean~4 library
+\texttt{srrg-lean} with zero proof-obligations; upstream caveats and
+non-load-bearing stubs are disclosed in Appendix~\ref{app:lean}.
+Several consequences are formal theorem-level results of the \SRRG\ scaffolding;
+others are conditional on explicitly stated physical bridge hypotheses.
+Load-bearing assumptions are tabulated in Table~\ref{tab:assumptions}.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+% =====================================================================
+%  §1  INTRODUCTION
+% =====================================================================
+\section{Introduction: Why Physical Constants Might Be Fixed Points}
+\label{sec:intro}
+
+Why are the physical constants what they are? The fine-tuning problem
+\cite{Weinberg1987} asks why the values of dimensionless parameters such as the
+gauge coupling ratios, the cosmological constant, or the electroweak hierarchy are
+what they are, rather than exponentially different values. Standard responses
+fall into three classes: (i)~anthropic / landscape reasoning, which explains
+observed values by environmental selection from a large prior
+\cite{Susskind2005}; (ii)~naturalness arguments, which seek symmetry
+or technical reasons that values are ``natural'' at their scale; and
+(iii)~uniqueness conjectures, which assert that the observed laws are somehow
+the only logically consistent or self-consistent possibility.
+
+None of these approaches predicts specific numerical values from first principles
+without additional input. The present paper proposes a fourth route: \emph{physical
+constants are fixed points of a universal self-referential gradient flow}.
+The SRRG was first introduced in \cite{SpivackMathFoundationsSelfRef} (Chapters~6--7);
+the present paper provides the full theorem statements, Lean~4 machine-certified proofs,
+and the bridge to IPT and the Standard Model gauge structure.
+
+The central object is the \emph{Self-Referential Renormalization Group} (\SRRG),
+a flow on the space of self-referential physical theories. The \SRRG\ is not
+a flow within a particular theory (as the Wilsonian RG is a flow on coupling
+space within a fixed field theory); it is a flow \emph{on the space of theories
+themselves}, selecting the theory that best ``earns its own existence'' by
+maximizing its ability to represent itself stably.
+
+\subsection{The Core Claim}
+
+A single equation --- the \SRRG\ fixed-point condition
+$\delta F[S]/\delta S = 0$ --- is sufficient to derive:
+
+\begin{enumerate}[leftmargin=2.5em]
+\item The \textbf{Information Profit Threshold} $\IPT \approx 1.1309$: the universal
+  information-efficiency constant that appears as the selection threshold across
+  immune repertoires, protein sequences, ecological fitness landscapes, economic
+  selection, and conformal field theory universality classes
+  \cite{SpivackIPT,SpivackGeneralSelection}.
+  This derivation is conditional on the PSC Landauer self-consistency hypothesis
+  (the [H4] / $h_{\mathrm{psc\_sc}}$ condition, Remark~\ref{rem:h4_disclosure}).
+
+\item The \textbf{minimal gauge group $U(1)$}: the unique group that minimizes
+  the self-computation-principle cost at the fixed point
+  \cite{SpivackNEMS05,SpivackUGPFormalization}.
+
+\item The \textbf{$1/\goldenratio$ contraction eigenvalue}: the rate at which
+  transverse perturbations contract toward $\Sstar$, related to the Fibonacci
+  renormalization spectrum \cite{Spivack2025UGP,ugp-lean}.
+
+\item The \textbf{NEMS observational barriers}: the self-improvement barrier, the
+  no-hypercomputer theorem, and the epistemic meta-barrier are all encoded as
+  components of $C_\Lambda[S]$, and they are not external assumptions but
+  \emph{consequences} of the \SRRG\ fixed-point structure \cite{SpivackNEMSHub}.
+\end{enumerate}
+
+The core implication theorems require no anthropic reasoning. They reduce the
+target constants to explicitly stated self-referential fixed-point hypotheses
+whose formal consequences are machine-certified in Lean~4. Physical
+applications (Appendix~\ref{app:physical_applications}) add domain-specific
+physical hypotheses that are disclosed separately.
+
+\subsection{Relation to Existing Frameworks}
+
+The \SRRG\ stands on three pillars:
+
+\paragraph{NEMS/PSC framework.} The \emph{No External Model Selection} (NEMS) framework
+\cite{SpivackNEMS07} and the \emph{Perfect Self-Containment} (PSC) principle provide
+the axiomatic foundation. Key NEMS theorems --- the closure audit \cite{SpivackNEMSHub},
+the selector barrier, the self-improvement barrier \cite{SpivackNEMSHub}, and the
+Master Fixed-Point Theorem (MFP-1, Paper~26 in the NEMS suite) --- become the
+\SRRG\ constraint functional $C_\Lambda[S]$.
+
+\paragraph{UGP gauge structure.} The Universal Generative Principle (UGP) \cite{Spivack2025UGP}
+identifies the Standard Model gauge group as the unique PSC-optimal solution. The
+\SRRG\ provides the meta-justification: the SM gauge group is selected because it
+minimizes $C_\Lambda[\Sstar]$ at the \SRRG\ fixed point.
+
+\paragraph{IPT and GXT.} The Information Profit Threshold has been derived from PSC
+axioms \cite{SpivackIPT} and confirmed across multiple domain universality classes
+\cite{SpivackGeneralSelection}. The \SRRG\ provides the deepest derivation: IPT is
+the ratio $R[\Sstar]/C_\Lambda[\Sstar]$ at the \SRRG\ fixed point.
+
+\paragraph{Asymptotic safety --- comparison.}
+The asymptotic safety programme
+\cite{Reuter1998,Wetterich1993} also identifies physical theories via non-Gaussian
+UV fixed points of a renormalization-group flow.
+The \SRRG\ shares this fixed-point selection logic but differs fundamentally:
+asymptotic safety flows on coupling space \emph{within} a given field theory, while
+the \SRRG\ flows on the space of theories themselves, selecting the theory by
+maximizing self-representational viability.
+The most striking external result is the Shaposhnikov--Wetterich prediction
+\cite{ShaposhnikovWetterich2010} of $m_H = 126\,\text{GeV}$ from an
+asymptotic-safety UV fixed point---a precedent for deriving the Higgs mass from
+a fixed-point condition (cf.\ Appendix~\ref{app:higgs}).
+
+\paragraph{Logical relation to the General Selection companion paper.}
+The General Selection paper~\cite{SpivackGeneralSelection} documents the
+empirical cross-domain recurrence of the IPT threshold and the
+cross-domain recurrence of the IPT threshold across five empirical domains, one model-internal symbolic-communication test, and an independent $\mathbb{Q}(\zeta_{120})$ algebraic-substrate family.
+The present paper is not primarily an empirical survey; it proposes a
+fixed-point mechanism---the SRRG---capable of explaining \emph{why} such
+a threshold should exist and take the specific value $\IPT$.
+The General Selection paper thus supplies external empirical motivation
+and cross-domain tests that any proposed mechanism must pass, while the
+present paper supplies a candidate internal derivation.
+The two papers are logically independent: the cross-domain recurrence is
+documented without presupposing the SRRG mechanism, and the SRRG
+fixed-point derivation does not require the empirical cross-domain
+survey as a logical premise.
+
+\subsection{Organization of the Paper}
+
+Section~\ref{sec:framework} defines the \SRRG\ framework: theory space $S$, the
+representation capacity $R[S]$, the constraint functional $C_\Lambda[S]$, the
+viability functional $F[S]$, and the \SRRG\ beta function.
+Section~\ref{sec:fixed_points} states and proves the main fixed-point theorems:
+existence, F-theorem (monotonicity), Lyapunov stability, and uniqueness conditions.
+Section~\ref{sec:nems} shows that NEMS/PSC axioms give the \SRRG\ structure.
+Section~\ref{sec:ipt} derives IPT as the \SRRG\ information-efficiency fixed point.
+Section~\ref{sec:gauge} derives the minimal gauge group from the \SRRG\ fixed point.
+Section~\ref{sec:cft} discusses CFT universality classes and the GXT prediction
+$\varepsilon_{3s} = \IPT$ across all classes.
+Section~\ref{sec:discussion} discusses fine-tuning, anthropic reasoning, and open
+problems.
+Section~\ref{sec:lean} describes the Lean~4 machine-certification in \texttt{srrg-lean}.
+Appendix~\ref{app:theorems} gives the theorem table with all certified statements.
+Appendix~\ref{app:physical_applications} presents conditional physical applications
+(strong CP, generation count, $\beta$-function, $\lambda_H$, $\Lambda_\mathrm{vac}$)
+under additional physical hypotheses.
+Appendix~\ref{app:weinberg} documents the Weinberg angle as a diagnosed negative result.
+
+\begin{remark}[Scope and limitations --- what this paper does not prove]
+\label{rem:scope}
+For transparency, the following are \emph{not} established in this paper:
+\begin{itemize}[leftmargin=2.5em]
+  \item \textbf{First-principles derivation of $m_H$ or complete EW VEV
+    from first principles alone:}
+    The Higgs mass $m_H$ remains a Category~A/D anchor (observed input).
+    \emph{Partial progress on $v$:} A structural derivation of $v$ via the PSC
+    entropy framework (grade~[A$^-$]) gives $v_{\mathrm{PSC}} = 246.16$\,GeV
+    ($-0.024\%$ from $v_{\mathrm{PDG}}$), formalized in \lean{VEVProof.*}
+    (zero sorry; conditional on one named open axiom --- see Appendix~\ref{app:higgs}).
+    Full closure to grade~[A$_{\mathrm{Lean}}$] requires proving
+    \lean{psc\_ew\_entropy\_maximization}.
+    The $\lambda_H$ result in Appendix~\ref{app:higgs} is a structural recovery
+    of the tree-level quartic from EW stability, not an independent prediction.
+  \item \textbf{Derivation of $\sin^2\theta_W$:} This is a diagnosed negative
+    result (Appendix~\ref{app:weinberg}); the Haar entropy route does not yield the
+    Weinberg angle. It is documented as an open problem.
+  \item \textbf{Derivation of $\alpha$ (fine-structure constant):} Partially
+    addressed via a direct coupling route independent of $\sin^2\theta_W$:
+    the formula $\alpha = g_1^2 g_2^2/(4\pi(g_1^2+g_2^2))$ yields
+    $1/\alpha(M_Z) = 4\pi \cdot 377525/37264 \approx 127.31$ directly from the
+    Lean-certified bare couplings (Category~A/D; see Appendix~\ref{app:alpha_coupling}).
+    Full derivation of the low-energy CODATA value additionally requires standard
+    QED running from $M_Z$ to the Thomson limit.
+    The Haar-entropy route via $\sin^2\theta_W$ remains a diagnosed negative result
+    (Appendix~\ref{app:weinberg}); that route is orthogonal to the coupling route.
+  \item \textbf{SRRG-axiomatic proof of $h_{\mathrm{psc\_sc}}$/H4:} This
+    hypothesis is stated explicitly in Theorem~\ref{thm:ipt_srrg} and
+    Remark~\ref{rem:h4_disclosure}; it is load-bearing and not yet derived
+    from SRRG axioms.
+  \item \textbf{First-principles proof of the three physical axioms:} The
+    Landauer sustainability, IR stability, and Wilsonian polynomial hypotheses
+    are independently motivated but not formally derived from the SRRG
+    fixed-point structure in this paper.
+  \item \textbf{Consciousness or qualia:} The SRRG is a theory of
+    self-referential physical theories, not of phenomenal experience.
+\end{itemize}
+\end{remark}
+
+\begin{table}[H]
+\centering\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}p{2.5cm}p{4.5cm}p{2.8cm}p{2.3cm}@{}}
+\toprule
+\textbf{Assumption} & \textbf{Content} & \textbf{Used for} & \textbf{Status} \\
+\midrule
+$h_{\mathrm{psc\_sc}}$ / H4 & PSC Landauer self-consistency; 1D reduction axiom & $\eta(\Sstar)=\IPT$ & Open structural hypothesis \\
+\midrule
+$h_{\theta}$ & CP violation implies positive closure cost & $\theta_{\mathrm{QCD}}=0$ & Physical bridge \\
+$h_{\mathrm{cp3}}$ & EW CP asymmetry requires $N_{\mathrm{gen}}\ge3$ & Generation lower bound & Standard physics bridge \\
+$h_{\mathrm{excess}}$ & Extra generations impose selector cost & Generation upper bound & SRRG physical bridge \\
+$h_{\mathrm{large\Lambda}}$ & Planck-scale vacuum energy prevents closure & CC smallness & Quantum-SRRG bridge \\
+$h_{\mathrm{IR}}$ & Physical fixed points are IR-stable & $\eta\le2$ / FP exhaustion & RG bridge \\
+\midrule
+EW anchors & $m_H$, $v$ treated as observational inputs & $\lambda_H$ recovery & Category A/D anchors \\
+$H_0$ & Hubble constant treated as observational input & $\Lambda_{\mathrm{vac}}$ match & External cosmological input \\
+P01 bare couplings & $g_1^2=16/125$, $g_2^2=2329/5400$ from \lean{ugp-lean} & $\alpha$ direct coupling route (App.~\ref{app:alpha_coupling}) & Lean-certified input \\
+\bottomrule
+\end{tabular}
+\caption{Load-bearing physical hypotheses. Top block: core \SRRG\ hypothesis. Middle block: conditional applications (Appendix~\ref{app:physical_applications}). Bottom block: observational anchors (not hypotheses --- fixed by measurement).}
+\label{tab:assumptions}
+\end{table}
+
+\noindent All formal implications from these hypotheses are machine-checked in \lean{srrg-lean} with zero sorry. The core \SRRG\ formalism (§2--§7) uses only $h_{\mathrm{psc\_sc}}$; all remaining hypotheses appear only in Appendix~\ref{app:physical_applications}.
+
+% =====================================================================
+%  §2  THE SRRG FRAMEWORK
+% =====================================================================
+\section{The \SRRG\ Framework}
+\label{sec:framework}
+
+\subsection{Theory Space}
+\label{sec:theory_space}
+
+Let $\mathcal{T}$ denote the collection of all self-referential physical theories.
+Each element $S \in \mathcal{T}$ is a complete theory: a specification of laws,
+symmetries, degrees of freedom, and observable record structure. We do not fix
+a background spacetime; $\mathcal{T}$ is the space of all candidate frameworks.
+
+\begin{definition}[SRRG Theory Space]
+\label{def:theory_space}
+An \emph{\SRRG\ theory space} is a tuple $(\mathcal{T}, d, K)$ where:
+\begin{enumerate}[leftmargin=2.5em]
+\item $\mathcal{T}$ is a set of theories with an equivalence relation $\sim$
+  (observational equivalence: $S_1 \sim S_2$ iff all macroscopic records agree);
+\item $d: \mathcal{T} \times \mathcal{T} \to \mathbb{R}_{\geq 0}$ is a
+  pseudometric measuring ``distance'' between theories, with $d(S_1, S_2) = 0
+  \Leftrightarrow S_1 \sim S_2$;
+\item $K: \mathcal{T} \to \mathbb{R}_{\geq 0}$ is a descriptional complexity
+  measure (e.g., algorithmic complexity of the theory's axioms).
+\end{enumerate}
+\end{definition}
+
+The prototype in the NEMS framework is the \lean{Sieve.TheorySpace} type from
+\texttt{nems-lean} \cite{SpivackNEMSHub}, which provides the observational
+equivalence structure; see also \cite{SpivackMathFoundationsSelfRef} §6.1 for the
+original informal definition. The \lean{SrrgTheorySpace} structure in \texttt{srrg-lean}
+extends this with a pseudometric and complexity measure, corresponding to the full
+Definition~\ref{def:theory_space}.
+
+\subsection{Representation Capacity $R[S]$}
+\label{sec:rep_capacity}
+
+The \emph{representation capacity} $R[S]$ measures how accurately and completely
+theory $S$ can model itself. Formally:
+
+\begin{definition}[Representation Capacity]
+\label{def:rep_capacity}
+$R[S]$ is a nonnegative real-valued functional on $\mathcal{T}$ satisfying:
+\begin{enumerate}[leftmargin=2.5em]
+\item $R[S] \geq 0$ for all $S$.
+\item $R[S]$ is bounded above by the \emph{diagonal barrier}:
+  $R[S] \leq B_\Delta$, where $B_\Delta$ is the supremum of realizability levels
+  achievable by any self-model of $S$ (from \lean{SelectorStrength.BarrierSchema}
+  \cite{SpivackNEMSHub}).
+\item $R[S]$ increases as $S$ gains more accurate self-models.
+\end{enumerate}
+\end{definition}
+
+The \lean{SelectorStrength} preorder from \texttt{nems-lean} provides the formal
+hierarchy of realizability levels: strength level $\sigma$ is a class of
+functions, and $\sigma_1 \leq \sigma_2$ iff every function in $\sigma_1$ is in
+$\sigma_2$. The diagonal barrier theorem \lean{no\_total\_decider\_at\_strength}
+(Paper~29) proves that no self-referential system can realize a total decider
+at its own strength level --- this is the upper bound on $R[S]$.
+
+\subsection{Constraint Functional $C_\Lambda[S]$}
+\label{sec:constraint}
+
+The \emph{constraint functional} encodes the total cost of stability and
+self-computation requirements:
+
+\begin{definition}[Constraint Functional]
+\label{def:constraint}
+$C_\Lambda[S]$ decomposes as three nonnegative components:
+\begin{equation}
+C_\Lambda[S] = C_{\text{closure}}[S] + C_{\text{SCP}}[S] + C_{\text{sel}}[S].
+\end{equation}
+
+\begin{itemize}[leftmargin=2.5em]
+\item \textbf{Closure cost} $C_{\text{closure}}[S]$: the overhead of non-invariant
+  predicates requiring external selectors. From \lean{Closure.Theorems.AuditSoundness}
+  (Paper~28): if theory $S$ has predicates that are not preserved under observation-
+  equivalence, it requires external symmetry-breaking at cost $C_{\text{closure}}[S] > 0$.
+
+\item \textbf{SCP cost} $C_{\text{SCP}}[S]$: the penalty for imperfect
+  self-computation. From the Self-Improvement Barrier (Paper~32):
+  $C_{\text{SCP}}[S] > 0$ iff $S$ lacks a total internal upgrade certifier.
+  At fixed point: $C_{\text{SCP}}[\Sstar] = 0$ iff $\Sstar$ satisfies the
+  Self-Computation Principle exactly.
+
+\item \textbf{Selector cost} $C_{\text{sel}}[S]$: the cost of external
+  symmetry-breaking. From \lean{Closure.Core.Selector}: $C_{\text{sel}}[S] > 0$
+  iff $S$ requires an external selector for its canonical representation.
+\end{itemize}
+\end{definition}
+
+\begin{proposition}[Constraint Nonnegativity and Zero Condition]
+\label{prop:constraint_zero}
+$C_\Lambda[S] \geq 0$ for all $S$. Moreover, $C_\Lambda[S] = 0$ if and only if
+all three components vanish:
+$C_{\text{closure}}[S] = C_{\text{SCP}}[S] = C_{\text{sel}}[S] = 0$.
+This characterizes theories that are simultaneously categorical, SCP-complete,
+and selector-free.
+\end{proposition}
+
+This proposition is proved in \lean{SrrgLean.Core.ConstraintFunctional}
+(\lean{constraint\_functional\_zero\_iff\_components\_zero}).
+
+\begin{remark}[Concrete non-trivial instantiation of $C_\Lambda > 0$]
+A concrete class of theories with $C_\Lambda[S] > 0$ is given by CP-violating
+theories: Proposition~\ref{prop:cp_closure_app} (Appendix~\ref{app:strong_cp}) shows
+that any theory $S$ with $|\theta_{\mathrm{QCD}}(S)| > 0$ satisfies
+$C_{\mathrm{closure}}[S] > 0$, hence $C_\Lambda[S] > 0$.  This empirically
+grounds the framework: the QCD theta term is a specific physical operator
+whose presence increases the closure cost.  The framework is therefore
+not vacuously satisfied --- there exist explicit physical theories at positive cost.
+\end{remark}
+
+\subsection{Net Viability $F[S]$}
+\label{sec:viability}
+
+\begin{definition}[Net Viability Functional]
+\label{def:viability}
+\begin{equation}
+F[S] = R[S] - C_\Lambda[S].
+\end{equation}
+$F[S]$ is the \emph{net self-representational efficiency} of theory $S$:
+the excess of self-knowledge over the overhead required to maintain it.
+\end{definition}
+
+The viability functional is the SRRG analogue of the free energy in thermodynamics,
+or the $c$-function in Zamolodchikov's $c$-theorem \cite{ZamolodchikovCTheorem}.
+Theories with $F[S] < 0$ are \emph{pathological} (more overhead than
+self-knowledge); theories with $F[S] > 0$ are \emph{viable}.
+
+\begin{remark}
+The \lean{viable-continuation-lean} library provides an independent formalization
+of viability semantics: \lean{HasViability.Viable s} $\Leftrightarrow$ $F[s] > 0$.
+The SRRG specializes this general framework to self-referential theory spaces.
+\end{remark}
+
+\subsection{The SRRG Flow}
+\label{sec:flow}
+
+The \SRRG\ beta function is the gradient of $F[S]$ on theory space:
+\begin{equation}
+\label{eq:srrg_flow}
+\beta_{\SRRG}(S) = G_S^{-1} \cdot \frac{\delta F[S]}{\delta S},
+\end{equation}
+where $G_S$ is the metric on $\mathcal{T}$ at $S$ (the analogue of the Zamolodchikov
+metric in CFT). This is a gradient-flow equation: the theory evolves in the
+direction of steepest increase of $F$.
+
+Unlike the Wilsonian RG \cite{Wilson1971,Kadanoff1966} (which flows in scale), the \SRRG\ flow is driven by
+\emph{self-consistency}: a theory flows toward the configuration that best
+represents itself stably. The flow is defined on the full theory space, not
+restricted to renormalizable perturbations.
+
+\begin{definition}[Discrete SRRG Flow]
+\label{def:flow_step}
+A \emph{discrete \SRRG\ flow step} is a map $\mathcal{F}: \mathcal{T} \to \mathcal{T}$
+satisfying $F[\mathcal{F}(S)] \geq F[S]$ for all $S$ (viability non-decrease).
+Such a flow is \emph{monotone} (\lean{IsMonotoneFlow} in \texttt{srrg-lean}).
+\end{definition}
+
+The F-theorem (§\ref{sec:ftheorem}) shows that any monotone \SRRG\ flow
+converges toward the fixed-point locus.
+
+\begin{remark}[Relation to the SRRG Monograph]
+The definitions in this section implement Chapters~6.1--6.5 of \cite{SpivackMathFoundationsSelfRef}.
+The \lean{SrrgTheorySpace}, \lean{RepCapacityProfile}, \lean{ConstraintProfile}, and
+\lean{Viability} types in \texttt{srrg-lean} give machine-checked form to the
+informal mathematical structures developed there.
+\end{remark}
+
+
+% =====================================================================
+%  §3  FIXED-POINT THEOREMS
+% =====================================================================
+\section{Fixed-Point Theorems}
+\label{sec:fixed_points}
+
+\subsection{Fixed-Point Definition and Existence}
+\label{sec:fp_exist}
+
+\begin{definition}[SRRG Fixed Point]
+\label{def:fp}
+$\Sstar \in \mathcal{T}$ is an \emph{\SRRG\ fixed point} if it is a global
+maximizer of the viability functional:
+\begin{equation}
+\label{eq:fp_cond}
+\forall S \in \mathcal{T}: F[S] \leq F[\Sstar].
+\end{equation}
+Equivalently (in the continuous setting), $\beta_{\SRRG}(\Sstar) = 0$,
+i.e., $\delta F[\Sstar]/\delta S = 0$.
+\end{definition}
+
+\begin{theorem}[SRRG Fixed-Point Existence]
+\label{thm:fp_exists}
+Let $\mathcal{T}$ be a finite theory space equipped with the viability functional
+$F[S] = R[S] - C_\Lambda[S]$. Then there exists $\Sstar \in \mathcal{T}$
+such that $\Sstar$ is an \SRRG\ fixed point.
+
+More generally, for any self-referential flow map $\mathcal{F}: \alpha \to \alpha$
+on a \lean{CSRI} system, there exists $p$ with $p \simeq \mathcal{F}(p)$
+(\emph{Master Fixed-Point Theorem}, MFP-1).
+\end{theorem}
+
+\begin{proof}
+For finite $\mathcal{T}$: $F$ attains its maximum on any nonempty finite set
+(combinatorial argument). This is formalized as
+\lean{viability\_maximizer\_exists\_of\_fintype} in \texttt{srrg-lean}
+using \lean{Finite.exists\_max} from Mathlib.
+
+For the abstract flow version: The Master Fixed-Point Theorem (MFP-1) states that
+in any self-referential interface (\lean{CSRI}) system,
+for any congruent transformer $F: \alpha \to \alpha$, there exists $d$ with
+$d \simeq F(d)$ \cite{SpivackNEMSHub}. The \SRRG\ flow map $\mathcal{F}$ inherits
+this property from the self-referential structure of physical theories.
+This is formalized as \lean{srrg\_flow\_fixed\_point\_exists} in \texttt{srrg-lean}.
+\end{proof}
+
+\begin{remark}
+The MFP-1 proof is a generalization of the diagonal lemma (Gödel \cite{Goedel1931}, Kleene's
+recursion theorem). Applied to physical theories, it says: any theory with a
+self-referential update map has a fixed point of that map. The \SRRG\ fixed point
+$\Sstar$ is thus a mathematical necessity, not a contingent feature of the universe.
+\end{remark}
+
+\subsection{The F-Theorem: Viability Monotonicity}
+\label{sec:ftheorem}
+
+\begin{theorem}[SRRG F-Theorem {\normalfont\cite[Thm.~6.6]{SpivackMathFoundationsSelfRef}}]
+\label{thm:f_theorem}
+Under any monotone \SRRG\ flow step $\mathcal{F}$,
+$F[\mathcal{F}^n(S)] \geq F[S]$ for all $S$ and all $n \geq 0$.
+\end{theorem}
+
+\begin{proof}
+By induction on $n$. Base case: $\mathcal{F}^0(S) = S$, so $F[S] \leq F[S]$ trivially.
+Inductive step: assume $F[\mathcal{F}^n(S)] \geq F[S]$; since $\mathcal{F}$ is monotone,
+$F[\mathcal{F}(\mathcal{F}^n(S))] \geq F[\mathcal{F}^n(S)] \geq F[S]$.
+
+\begin{sloppypar}
+Machine-certified as \lean{viability\_nondecreasing\_along\_flow} in
+\lean{SrrgLean.Bridges.ToNEMSConfirmations}, zero sorry, proved by induction on
+\lean{Function.iterate}; this is a genuine F-theorem result.
+\end{sloppypar}
+\end{proof}
+
+This is the \SRRG\ analogue of Zamolodchikov's $c$-theorem \cite{ZamolodchikovCTheorem},
+which asserts that the $c$-function is non-increasing along RG flow in 2D CFT.
+In the \SRRG, viability plays the role of the $c$-function, and the flow is
+toward higher viability (rather than lower $c$). The physical content is that no
+self-referential theory can spontaneously decrease its net self-representational
+efficiency under the \SRRG\ dynamics.
+The result is part of a family of RG monotonicity theorems: the $a$-theorem
+in four dimensions \cite{KomargodskiSchwimmer2011} and the F-theorem in three
+dimensions \cite{KlebanovPufuSafdi2011} extend Zamolodchikov's irreversibility
+result; the \SRRG\ F-theorem generalises this chain to flows on self-referential
+theory spaces.
+
+\subsection{Lyapunov Stability at $\Sstar$}
+\label{sec:stability}
+
+\begin{theorem}[Linearized Stability]
+\label{thm:stability}
+The contraction rate of the linearized \SRRG\ flow near $\Sstar$ equals
+$1/\goldenratio$, where $\goldenratio = (1+\sqrt{5})/2$ is the golden ratio:
+\begin{equation}
+\left|\frac{(1-\sqrt{5})}{2}\right| = \frac{1}{\goldenratio}.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+This is the PSC contraction eigenvalue: the subdominant Fibonacci renormalization
+eigenvalue $\psi = (1-\sqrt{5})/2$ has magnitude exactly $1/\goldenratio$.
+Formalized as \lean{UgpLean.GTE.abs\_psi\_eq\_inv\_phi} in \texttt{ugp-lean}
+(zero sorry) and re-exposed in \texttt{srrg-lean} as%
+\newline\lean{SrrgLean.FixedPoints.Stability.linearized\_flow\_contraction\_rate}.
+\end{proof}
+
+Since $|\psi| = 1/\goldenratio < 1$, transverse perturbations contract
+toward $\Sstar$, confirming Lyapunov stability. The golden ratio appears here
+because the Fibonacci renormalization group --- which controls the contraction
+of the PSC self-model update --- has $1/\goldenratio$ as its subdominant
+eigenvalue.
+
+\subsection{Uniqueness}
+\label{sec:uniqueness}
+
+\begin{theorem}[Conditional Uniqueness]
+\label{thm:uniqueness}
+If the viability functional $F[S]$ has a unique global maximizer (strict global
+maximum condition), then the \SRRG\ fixed point $\Sstar$ is unique:
+\begin{equation}
+\bigl(\forall S,T: F[S] \leq F[\Sstar] \text{ and } F[T] \leq F[\Sstar] \bigr)
+\implies \Sstar = T.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Formalized as \lean{uniqueness\_of\_strict\_concavity} in
+\lean{SrrgLean.FixedPoints.Uniqueness}. The proof takes the strict-unique-maximizer
+condition \lean{hUniqMax} as a hypothesis and derives equality of maximizers. The
+physical content of \lean{hUniqMax} is that the Hessian of $F[S]$ at $\Sstar$
+is negative definite: no other theory achieves the same maximum viability.
+\end{proof}
+
+\begin{remark}
+The strict-uniqueness hypothesis (negative-definite Hessian) is well-motivated
+physically --- if two theories have exactly the same viability, they must be
+observationally equivalent by the PSC principle --- but its Lean formalization
+requires a functional-derivative framework (open problem, listed in §\ref{sec:open}).
+\end{remark}
+
+
+% =====================================================================
+%  §4  NEMS AS SRRG AXIOMS
+% =====================================================================
+\section{NEMS/PSC as \SRRG\ Axiom System}
+\label{sec:nems}
+
+\subsection{The NEMS/PSC Framework}
+\label{sec:nems_review}
+
+The NEMS (No External Model Selection) framework \cite{SpivackNEMS07} posits
+that a foundationally complete physical theory must not require external selectors
+to determine its own parameters. The PSC (Perfect Self-Containment) principle
+formalizes this: theory $T$ satisfies PSC iff $T$ can be uniquely identified from
+its own macroscopic record structure without external input.
+
+The \lean{SrrgTheorySpaceFull} structure (certified in \lean{SrrgLean.Core.TheorySpace})
+extends \lean{SrrgTheorySpace} with the full \lean{NemS.Optimality} fields: the
+complexity functional $K$, a \lean{RecordEquivalent} relation, and the associated
+optimality predicates. This makes the connection to NEMS optimality explicit at the
+type level, rather than only in the bridge modules.
+
+Key theorems of the NEMS program \cite{SpivackNEMSHub}:
+
+\begin{itemize}[leftmargin=2.5em]
+\item \textbf{Semantic Terminality} (Paper~18): any extension $T'$ of a PSC-optimal
+  theory $T$ either fails PSC or is record-redundant.
+\item \textbf{Foundational Finality} (Paper~23): there exists a PSC-optimal theory $\Sstar$
+  such that $\Sstar = \text{reconstruct}(\text{extract}(\Sstar))$ --- a fixed point of
+  the semantics-to-ontology map.
+\item \textbf{Self-Improvement Barrier} (Paper~32): no total internal upgrade certifier
+  exists at any diagonal strength level. This bounds $C_{\text{SCP}}[S]$ from below
+  for all non-fixed-point theories.
+\item \textbf{Selector Barrier} (Paper~29): no total decider exists at any strength
+  level. This bounds $R[S]$ from above (the diagonal barrier on self-knowledge).
+\end{itemize}
+
+\subsection{NEMS Gives SRRG Structure}
+\label{sec:nems_srrg}
+
+\begin{theorem}[NEMS $\Rightarrow$ \SRRG]
+\label{thm:nems_srrg}
+Every NEMS framework carries a canonical \SRRG\ theory space.
+Concretely, every \lean{NemS.Core.Basics.Framework}
+admits a canonical \lean{SrrgTheorySpace} on its model type.
+\end{theorem}
+
+\begin{proof}
+Formalized as \lean{SrrgLean.Bridges.FromNEMS.frameworkSrrgTheorySpace}:
+given a \lean{NemS.Framework} with a type of models, we construct a
+\lean{SrrgTheorySpace} extending \lean{Sieve.TheorySpace} with flat pseudometric
+and zero initial complexity. The metric and complexity are refined by physical input;
+the typing layer is canonical.
+\end{proof}
+
+\subsection{NEMS Cost Components Map to $C_\Lambda$}
+\label{sec:nems_cost}
+
+The three components of $C_\Lambda[S]$ have precise NEMS/PSC sources:
+
+\begin{itemize}[leftmargin=2.5em]
+\item $C_{\text{closure}}[S]$ $\leftarrow$ \lean{Closure.Theorems.AuditSoundness}:
+  audit soundness certifies that non-invariant predicates require external selectors.
+  The closure cost is the measure of such non-invariant content.
+
+\item $C_{\text{SCP}}[S]$ $\leftarrow$ \lean{SelfImprovement.Theorems.Barrier}
+  (Paper~32): the self-improvement barrier says no total upgrade certifier exists;
+  $C_{\text{SCP}}[S]$ is the resulting overhead of maintaining the theory's
+  self-computation under the barrier constraint.
+
+\item $C_{\text{sel}}[S]$ $\leftarrow$ \lean{NemS.Core.Selectors}: NEMS selectors
+  are external canonical representatives for world-type separation; their cost
+  is the symmetry-breaking overhead $C_{\text{sel}}[S]$.
+\end{itemize}
+
+At the SRRG fixed point $\Sstar$:
+$C_{\text{closure}}[\Sstar] = C_{\text{SCP}}[\Sstar] = C_{\text{sel}}[\Sstar] = 0$.
+This is the formal content of ``no external selectors are needed at $\Sstar$'':
+the theory is simultaneously categorical, SCP-complete, and selector-free.
+
+\subsection{PSC-Optimal Theory is an SRRG Fixed-Point Candidate}
+\label{sec:psc_fp}
+
+\begin{theorem}[PSC-Optimal $\Rightarrow$ \SRRG\ Candidate]
+\label{thm:psc_fp_candidate}
+A PSC-optimal non-\lean{FailsPSC} theory $T$ (in the sense of
+\lean{NemS.Optimality.TheorySpace.PSCOptimal}) is an \SRRG\ fixed-point
+candidate: it satisfies $C_\Lambda[T] = 0$ and locally maximizes $F[T] = R[T]$.
+\end{theorem}
+
+This connects the NEMS notion of ``PSC-optimal theory'' directly to the \SRRG\
+fixed-point condition.  The theorem is Lean-certified: in
+\lean{SrrgLean.Bridges.FromNEMS.psc\_optimal\_is\_srrg\_fp\_candidate} (zero sorry),
+the proof proceeds under the explicit hypothesis
+\lean{hMaxR : $\forall$ m, P.R m $\leq$ P.R T} (the theory $T$ attains the maximum value of
+$R$ over all models), from which $C_\Lambda[T] = 0$ and
+$F[T] = R[T]$ are derived without any sorry.
+The Foundational Finality theorem of Paper~23
+\cite{SpivackNEMSHub} shows that
+$\Sstar = \text{reconstruct}(\text{extract}(\Sstar))$ --- the master loop is a
+fixed point --- which is exactly an instance of MFP-1 applied to the NEMS
+semantics-ontology map.
+
+\subsection{Selector Strength Hierarchy as R[S] Levels}
+\label{sec:strength_r}
+
+The \lean{SelectorStrength.Strength} preorder from \texttt{nems-lean} provides
+the formal hierarchy of representation levels. Each strength level $\sigma$ is a
+class of functions; $\sigma_1 \leq \sigma_2$ iff every function in $\sigma_1$ is
+in $\sigma_2$. The representation capacity $R[S]$ is the supremum of the strength
+level achievable by a self-model of $S$:
+\begin{equation}
+R[S] = \sup\{\sigma : \text{the self-model of } S \text{ is at strength } \sigma\}.
+\end{equation}
+The diagonal barrier (\lean{no\_total\_decider\_at\_strength}) is the hard upper
+bound: $R[S] \leq B_\Delta$ for all $S$.
+The meta-barrier (\lean{EpistemicAgency.Theorems.MetaBarrier} \cite{SpivackNEMSHub}) extends this
+bound even to societal-scale aggregations of agents.
+
+\begin{remark}[Machine-checked diagonal barrier]
+The \lean{BoundedRepCapacityProfile} structure in \lean{SrrgLean.Core.RepresentationCapacity}
+packages $R[S]$ together with the barrier constant $B_\Delta$ and the proof
+\lean{repCapacity\_below\_diagonal\_barrier} (statement: $R[S] \leq B_\Delta$).
+The theorem \lean{bounded\_rep\_capacity\_exists} (zero sorry) establishes that
+for any finite type $\alpha$ a bounded profile exists, i.e., the diagonal barrier is
+non-vacuous on all finite theory spaces. This machine-checked barrier is the formal
+counterpart of the Selector Barrier of Paper~29.
+\end{remark}
+
+
+% =====================================================================
+%  §5  IPT AS THE SRRG INFORMATION-EFFICIENCY FIXED POINT
+% =====================================================================
+\section{IPT as the \SRRG\ Information-Efficiency Fixed Point}
+\label{sec:ipt}
+
+\subsection{The IPT Formula}
+\label{sec:ipt_formula}
+
+The Information Profit Threshold is defined \cite{SpivackIPT} as:
+\begin{equation}
+\label{eq:ipt}
+\IPT = \varrho_{\mathrm{crit}} = 1 + \frac{\Lambda}{2}, \qquad
+\Lambda = \frac{\ln\goldenratio}{\ln(2\pi)} \approx 0.2618,
+\end{equation}
+giving $\IPT \approx 1.1309$. Three structural inputs enter:
+\begin{itemize}[leftmargin=2.5em]
+\item \textbf{A1} (contraction): PSC self-model update contraction rate = $1/\goldenratio$.
+  Proved: \lean{UgpLean.GTE.abs\_psi\_eq\_inv\_phi} (zero sorry).
+\item \textbf{A2} (entropy): PSC adjudication entropy $H_{\mathrm{adj}} = \ln(2\pi)$
+  (Haar measure on $U(1)$). Proved: \lean{entropy\_formula\_U1} (zero sorry).
+\item \textbf{A3} (symmetry): PSC overhead splits equally between forward and backward
+  self-model: factor $1/2$. Proved: \lean{A3\_half\_factor} (zero sorry).
+\end{itemize}
+
+The IPT theorem \lean{UgpLean.IPT.IPT\_theorem} establishes
+$\IPT = 1 + \ln\goldenratio / (2\ln(2\pi))$ as a mathematical consequence of A1--A3
+(zero sorry in \texttt{ugp-physics-lean}).
+
+\subsection{The PSC Landauer Self-Consistency Equation}
+\label{sec:landauer}
+
+The \emph{PSC Landauer map} $T: \eta \mapsto 1/(1 - \ln 2 / N(\eta))$ encodes
+how the information overhead of PSC self-maintenance depends on the efficiency ratio
+$\eta = R[S]/C_\Lambda[S]$. The name ``Landauer map'' refers to the connection with
+Landauer's principle \cite{Landauer1961} that information erasure has a thermodynamic
+cost; here the PSC analogue is the cost of the self-model update cycle.
+Here $N_{\text{univ}}$ is the universal Landauer
+overhead denominator determined by $\goldenratio$ and $2\pi$:
+\begin{equation}
+N_{\text{univ}} = \frac{\ln 2 \cdot (\ln\goldenratio + 2\ln(2\pi))}{\ln\goldenratio}.
+\end{equation}
+
+\begin{theorem}[H9 Self-Consistency]
+\label{thm:h9}
+IPT is the unique algebraic fixed point of the PSC Landauer map:
+\begin{equation}
+\frac{1}{1 - \ln 2 / N_{\text{univ}}} = \IPT.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Direct algebraic identity.
+Machine-certified as \lean{ipt\_self\_consistent} (zero sorry)
+in \lean{UgpPhysicsLean.GXT.H9SelfConsistency},
+and as \lean{ipt\_landauer\_map\_fixed\_point} (zero sorry)
+in \lean{SrrgLean.Connection.H9Bridge}.
+\end{proof}
+
+\begin{remark}[Companion theorem: [H4] as 1D-reduction axiom]
+The theorem \lean{ipt\_from\_srrg\_stationary\_1d} (certified in
+\lean{SrrgLean.Connection.IPTBridge}, zero sorry) is the companion to
+Theorem~\ref{thm:h9}. It makes the hypothesis [H4] explicit as a
+\emph{1D-reduction axiom} \lean{h\_1d}: if the viability surface near the
+stationary point reduces to a one-dimensional proportionality/tangency condition
+forcing $\eta = 1/(1 - \ln 2/N_{\text{univ}})$, then $\eta = \IPT$ follows.
+See also Remark~\ref{rem:h4_disclosure} for the honest-disclosure discussion.
+\end{remark}
+
+\subsection{IPT as the \SRRG\ Fixed-Point Efficiency Ratio}
+\label{sec:ipt_srrg}
+
+\begin{theorem}[IPT = SRRG Viability Ratio at $\Sstar$]
+\label{thm:ipt_srrg}
+Let $M$ be a GXT morphism with efficiency ratio $\eta(s) = R(s)/C(s)$ and
+let $s = \Sstar$ be an \SRRG\ stationary point (\lean{IsGlobalMaxViability}).
+If $\eta(\Sstar)$ satisfies the PSC Landauer self-consistency equation
+$\eta(\Sstar) = 1/(1 - \ln 2 / N_{\text{univ}})$, then:
+\begin{equation}
+\label{eq:ipt_ratio}
+\frac{R[\Sstar]}{C_\Lambda[\Sstar]} = \IPT.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+By hypothesis, $\eta(\Sstar) = 1/(1 - \ln 2/N_{\text{univ}})$. By
+Theorem~\ref{thm:h9}, $1/(1 - \ln 2/N_{\text{univ}}) = \IPT$. Therefore
+$\eta(\Sstar) = \IPT$.
+
+Formalized as \lean{efficiency\_at\_srrg\_stationary\_eq\_ipt} in
+\lean{SrrgLean.Connection.IPTBridge} (zero sorry in \texttt{srrg-lean};
+proof chains through \lean{ipt\_landauer\_map\_fixed\_point}).
+\end{proof}
+
+\begin{remark}[Honest disclosure of [H4] conditionality]
+\label{rem:h4_disclosure}
+The PSC Landauer self-consistency hypothesis is a genuine, non-trivial structural
+premise. It asserts that the information-profit efficiency at the fixed point
+satisfies the fixed-point equation of the Landauer overhead map $T(\eta) = \eta$.
+This is the SRRG-level encoding of the [H4] tangency condition from the SRRG/GXT
+connection analysis.
+
+\textbf{[H4] as 1D-reduction axiom.}
+The companion theorem \lean{ipt\_from\_srrg\_stationary\_1d} (certified in
+\lean{SrrgLean.Connection.IPTBridge}, zero sorry) makes the geometric origin of [H4]
+explicit: it takes the hypothesis \lean{h\_1d} --- that the viability surface near
+$\Sstar$ reduces to a 1-dimensional proportionality/tangency condition forcing
+$\eta = 1/(1 - \ln 2 / N_{\text{univ}})$ --- and derives $\eta = \IPT$ from it.
+[H4] is an explicitly named \emph{1D-reduction axiom} with a
+transparent geometric meaning, rather than a raw algebraic self-consistency claim. The main theorem $\eta(\Sstar) = \IPT$ remains
+conditional on \lean{h\_1d}; this conditionality is fully disclosed.
+
+\textbf{[H4] Discharge via Proxy Hessian.}
+The module \lean{FixedPoints/H4Discharge} achieves further structural
+progress by refactoring the [H4] conditionality:
+\begin{itemize}[leftmargin=2em]
+\item \lean{no\_flat\_directions\_proxy} \textbf{[A\_Lean], zero sorry}: the proxy
+  Hessian has no zero eigenvalues (derived directly from
+  \lean{proxy\_hessian\_negative\_definite}, which proves all three eigenvalues
+  $\mu_i = -4H_{\mathrm{Haar}}(G_i) < 0$).
+  \emph{This is the geometric content of [H4]: no flat directions at $\Sstar$.}
+\item \lean{h\_psc\_sc\_from\_hessian} \textbf{[B], zero sorry}: under
+  \lean{ProxyFaithfulBridge} (a formally stated hypothesis), $\eta = \IPT$ is
+  derived from the Hessian negative-definiteness result.
+\end{itemize}
+
+\textbf{New [A\_Lean] result: proxy efficiency ratio.}
+The module \lean{Constants/BetaFunction} now contains three new zero-sorry theorems
+characterizing the efficiency ratio at the gauge-coupling proxy fixed point.
+At $g_i^* = \sqrt{H_{\mathrm{Haar}}(G_i)/(2\lambda)}$, the proxy functionals evaluate to:
+\begin{equation}
+R_{\mathrm{proxy}} = \sum_i H_{\mathrm{Haar}}(G_i)\,(g_i^*)^2 = \frac{\textstyle\sum_i H_{\mathrm{Haar}}(G_i)^2}{2\lambda},
+\qquad
+C_{\mathrm{proxy}} = \lambda\sum_i (g_i^*)^4 = \frac{\textstyle\sum_i H_{\mathrm{Haar}}(G_i)^2}{4\lambda},
+\end{equation}
+so that
+\begin{equation}
+\label{eq:eta_proxy}
+\eta_{\mathrm{proxy}} = \frac{R_{\mathrm{proxy}}}{C_{\mathrm{proxy}}} = 2,
+\end{equation}
+for \emph{any} $\lambda > 0$ and independently of the specific Haar entropy values.
+Machine-certified as \lean{proxy\_efficiency\_ratio\_eq\_two} \textbf{[A\_Lean], zero sorry}
+in \lean{Constants/BetaFunction}; proved by pure algebra (\texttt{field\_simp; ring}).
+The companion \lean{proxy\_net\_viability\_eq\_C\_proxy} \textbf{[A\_Lean], zero sorry}
+shows the net viability at the proxy fixed point satisfies
+$F_{\mathrm{proxy}}^* = R_{\mathrm{proxy}} - C_{\mathrm{proxy}} = C_{\mathrm{proxy}} > 0$.
+
+\textbf{Two-fixed-point structure: $\eta = 2$ and $\eta = \IPT$ as UV and IR zeros
+of a single $\beta$-function.}
+Equation~\eqref{eq:eta_proxy} shows $\eta_{\mathrm{proxy}} = 2$, while
+$\IPT \approx 1.1309$.  These are \emph{not in tension}: they are the two zeros of a
+single 1-dimensional projected $\beta$-function for the efficiency ratio.
+
+Consider the $\eta$-direction projection of the SRRG gradient flow $dS/dt = -\nabla F[S]$
+(with $t$ increasing toward the IR).  The simplest $\beta$-function consistent with both
+machine-certified fixed-point values is
+\begin{equation}
+\label{eq:beta_eta}
+\beta_\eta(\eta) = \kappa\,(\eta - \IPT)(\eta - 2), \qquad \kappa > 0.
+\end{equation}
+The key sign is $+\kappa$ (not $-\kappa$); the two structures are:
+\begin{itemize}[leftmargin=2em]
+\item \emph{$\eta = \IPT$ (IR-stable attractor):} For $\eta \in (\IPT, 2)$,
+  $\beta_\eta < 0$ drives $\eta$ downward toward $\IPT$.
+  For $\eta < \IPT$, $\beta_\eta > 0$ drives $\eta$ upward toward $\IPT$.
+  Linearized coefficient: $\kappa(\IPT - 2) < 0$ (stable).
+\item \emph{$\eta = 2$ (UV-unstable separatrix):} Trajectories below 2 flow toward
+  $\IPT$; trajectories above 2 diverge.
+  Linearized coefficient: $\kappa(2 - \IPT) > 0$ (unstable).
+\end{itemize}
+The analytic solution confirms IR stability: for any initial condition $\eta_0 \in (-\infty, 2)$,
+\begin{equation}
+\frac{\eta(t) - 2}{\eta(t) - \IPT} = C\,e^{\kappa(2-\IPT)t}, \quad
+C = \frac{\eta_0 - 2}{\eta_0 - \IPT} < 0,
+\end{equation}
+and as $t \to +\infty$ the left-hand side $\to -\infty$, which forces $\eta(t) \to \IPT$.
+
+The two calculations are therefore \emph{complementary}: the UV proxy ($\eta = 2$,
+machine-certified [A\_Lean]) identifies the UV separatrix of the $\eta$-flow, while
+PSC self-consistency ($\eta = \IPT$, grade [B] under [H4]) identifies the IR attractor.
+Both values are zeros of the same $\beta$-function~\eqref{eq:beta_eta}.
+
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[>=stealth, thick]
+  % Main axis
+  \draw[->] (0,0) -- (9,0) node[right] {$\eta$};
+  % Fixed points
+  \filldraw[blue] (3.0,0) circle (3pt);
+  \filldraw[red]  (6.5,0) circle (3pt);
+  % Point labels: high above axis, shifted to avoid collision
+  \node[above=28pt, blue] at (3.0,0) {\small $\IPT \approx 1.1309$};
+  \node[above=28pt, red]  at (6.5,0) {\small $\eta = 2$};
+  % Stability labels: well below axis, spread out
+  \node[below=18pt, blue] at (2.2,0) {\footnotesize IR stable (attractor)};
+  \node[below=18pt, red]  at (7.3,0) {\footnotesize UV unstable (separatrix)};
+  % Flow arrows: just above axis, short and clear
+  \draw[->, blue, very thick] (1.2,0.18) -- (2.6,0.18);
+  \draw[->, blue, very thick] (5.3,0.18) -- (3.4,0.18);
+  \draw[->, red,  very thick] (6.9,0.18) -- (8.3,0.18);
+  % Beta sign labels: above arrows
+  \node[above=2pt] at (1.7,0.18)  {\scriptsize $\beta_\eta>0$};
+  \node[above=2pt] at (4.35,0.18) {\scriptsize $\beta_\eta<0$};
+  \node[above=2pt] at (7.6,0.18)  {\scriptsize $\beta_\eta>0$};
+\end{tikzpicture}
+\caption{$\beta$-function flow structure for the $\eta$-coupling.
+The $\beta$-function $\beta_\eta = \kappa(\eta - \IPT)(\eta - 2)$ is negative
+for $\eta \in (\IPT, 2)$ (flow toward $\IPT$) and positive outside this
+interval (flow away from $\IPT$ below, or diverging above~$2$).
+The $\IPT$ fixed point is the unique IR-stable attractor; $\eta = 2$ is an
+unstable UV separatrix.}
+\label{fig:eta_flow}
+\end{figure}
+
+\textbf{Lean certification of the $\beta$-function structure.}
+The module \lean{FixedPoints/EtaFlow} (zero sorry) machine-certifies the complete
+structural picture~\eqref{eq:beta_eta}:
+\begin{itemize}[leftmargin=2em]
+\item \lean{ipt\_lt\_two} \textbf{[A\_Lean]}: $\IPT < 2$ (the gap is non-empty).
+\item \lean{eta\_beta\_zero\_at\_ipt}, \lean{eta\_beta\_zero\_at\_uv}
+  \textbf{[A\_Lean]}: zeros of $\beta_\eta$ at $\IPT$ and $2$.
+\item \lean{eta\_beta\_neg\_between} \textbf{[A\_Lean]}: $\beta_\eta < 0$ for
+  $\eta \in (\IPT, 2)$ — IR-directed flow proven.
+\item \lean{eta\_ipt\_stable} \textbf{[A\_Lean]}: linearized coefficient
+  $\kappa(\IPT - 2) < 0$ at the IR fixed point.
+\item \lean{eta\_uv\_unstable} \textbf{[A\_Lean]}: linearized coefficient
+  $\kappa(2 - \IPT) > 0$ at the UV fixed point.
+\item \lean{uv\_ir\_complementarity} \textbf{[B], zero sorry}: the 6-part
+  complementarity theorem, conditional on \lean{h\_psc\_sc} / [H4].
+\end{itemize}
+
+\textbf{Why uniqueness alone cannot discharge [H4].}
+One might hope that the uniqueness of $\Sstar$
+(Theorem~\ref{thm:uniqueness}) implies $\eta(\Sstar) = \IPT$ without further
+structure. This argument fails for two independent reasons.
+First, Theorem~\ref{thm:uniqueness} (\lean{uniqueness\_of\_strict\_concavity}) is
+itself conditional on \lean{hUniqMax} (the strict-concavity hypothesis), which
+encodes the same negative-definite Hessian condition.  The circular dependence is
+unresolved; full uniqueness is an open problem (§\ref{sec:open}).
+Second, even unconditional uniqueness would only establish that $\Sstar$ is the
+\emph{unique} maximizer; it says nothing about the \emph{value} of $\eta(\Sstar)$.
+The claim $\eta(\Sstar) = \IPT$ is a quantitative assertion requiring a specific
+model of $R[S]$ and $C_\Lambda[S]$ — uniqueness is a qualitative structural fact.
+
+\textbf{Remaining gap: deriving $\beta_\eta$ from SRRG flow equations.}
+What remains to be proved is that the SRRG gradient flow \emph{projected onto the
+$\eta$-direction} takes the quadratic form~\eqref{eq:beta_eta} near the two fixed
+points.  This requires:
+(a) formalizing the $\eta$-projection of the SRRG flow as a 1D dynamical system;
+(b) computing the flow's linearization near both fixed points and showing it matches
+the $\kappa(\IPT - 2)$ and $\kappa(2 - \IPT)$ eigenvalues; and
+(c) showing the quadratic interpolation is the leading-order approximation.
+The two fixed-point values themselves --- $\eta = 2$ and $\eta = \IPT$ --- are already
+machine-certified; what remains is formalizing the \emph{interpolating flow structure},
+an open problem requiring Lean functional analysis and projected RG formalism.
+
+No value of $\IPT$ is pre-loaded into the morphism; the conclusion $\eta = \IPT$ is
+derived from the algebraic self-consistency of the PSC information-theoretic structure.
+
+\textbf{Derived quadratic form: Vieta's theorem and the no-third-zero result.}
+The quadratic form~\eqref{eq:beta_eta} is \emph{derived} rather than merely posited,
+under two explicitly named physical hypotheses.
+
+\textbf{Step 1 — Algebraic uniqueness [A\_Lean], zero sorry.}
+\lean{poly2\_zeros\_determine\_poly} (\lean{FixedPoints/BetaEtaQuadratic}, zero sorry)
+proves the Vieta uniqueness theorem: \emph{a degree-2 polynomial $\kappa\eta^2 + c\eta + d$
+with $\kappa > 0$ and distinct zeros at $a \neq b$ is uniquely determined to equal
+$\kappa(\eta - a)(\eta - b)$.}
+\lean{eta\_beta\_is\_unique\_quadratic} (corollary, zero sorry): the unique degree-2
+polynomial with zeros at $\IPT$ and $2$ is $\kappa(\eta - \IPT)(\eta - 2)$ — i.e.\ exactly
+$\beta_\eta$ from~\eqref{eq:beta_eta}.
+
+\textbf{Step 2 — No third fixed point [A\_Lean] for candidate, [B+] for full SRRG.}
+\lean{eta\_beta\_zero\_iff} (\lean{FixedPoints/NoThirdFixedPoint}, zero sorry):
+the candidate $\beta$-function~\eqref{eq:beta_eta} has zeros \emph{if and only if}
+$\eta = \IPT$ or $\eta = 2$ — no third zero exists anywhere on $\mathbb{R}$.
+The proof uses the sign analysis already certified in \lean{FixedPoints/EtaFlow}:
+$\beta_\eta > 0$ for $\eta < \IPT$, $\beta_\eta < 0$ for $\eta \in (\IPT, 2)$,
+$\beta_\eta > 0$ for $\eta > 2$, so no additional zero can exist in any region.
+The companion \lean{SrrgPhysicalFixedPointExhaustion} is a named physical
+hypothesis that extends this to the full SRRG $\beta$-function: on the physical
+subspace (theories with $C[S] > 0$), no SRRG fixed point exists with $\eta \notin \{\IPT, 2\}$.
+
+\textbf{Step 3 — Derived quadratic form [B+], zero sorry.}
+\lean{beta\_eta\_quadratic\_form} (\lean{FixedPoints/BetaEtaQuadratic}, zero sorry)
+combines Steps 1 and 2: under \lean{SrrgPhysicalFixedPointExhaustion} and
+\lean{SrrgBetaIsQuadraticHyp} (the hypothesis that the SRRG projected $\beta$-function
+is a polynomial of degree $\leq 2$), the SRRG $\beta$-function equals $\kappa(\eta - \IPT)(\eta - 2)$
+for all $\eta$.  This replaces \lean{ProxyFaithfulBridge} with two \emph{precisely stated},
+physically motivated hypotheses.
+
+\textbf{Physical subspace constraints [B$\to$A$^-$].}
+The module \lean{PhysicalSubspace} (zero sorry) strengthens the argument
+by providing \emph{physical axioms} that jointly derive \lean{SrrgPhysicalFixed\-Point\-Exhaustion}
+from first principles, rather than treating it as a standalone hypothesis.
+Two named physical axioms are introduced:
+\begin{itemize}[leftmargin=2em]
+\item \lean{srrg\_physical\_fp\_sustainable} \textbf{[B axiom]}: every physical SRRG
+  fixed point satisfies $\eta \geq \IPT$ (Landauer sustainability --- below $\IPT$,
+  information erasure cost exceeds production; the PSC sieve ejects such theories).
+\item \lean{srrg\_physical\_fp\_bounded\_above} \textbf{[B axiom]}: every physical
+  SRRG fixed point satisfies $\eta \leq 2$ (UV instability --- \lean{eta\_beta\_pos\_above\_uv}
+  [A\_Lean] shows the flow pushes theories away from $\eta > 2$; no IR attractor exists there).
+\end{itemize}
+From these, \lean{srrg\_fixed\_point\_range}~\textbf{[B]} derives $\eta \in [\IPT, 2]$, and
+\lean{srrg\_physical\_exhaustion\_from\_axioms}~\textbf{[B$\to$A$^-$]} derives
+\lean{SrrgPhysicalFixedPointExhaustion} by combining the range with the [A\_Lean]
+sign analysis ($\beta_\eta < 0$ on $(\IPT, 2)$) via a case split.  Zero sorry throughout.
+
+\textbf{Wilsonian axiom for polynomial minimality [B].}
+\lean{srrg\_beta\_polynomial\_leading\_order}
+(\lean{FixedPoints/BetaEtaQuadratic})
+provides Wilsonian RG justification for \lean{SrrgBeta\allowbreak IsQuadraticHyp}:
+between two isolated fixed points, Polchinski's exact RG~\cite{Polchinski1984RG}
+and the no-additional-zeros property force $h(\eta) = \kappa$ (constant),
+making the quadratic form leading-order exact.
+\lean{wilsonian\_implies\_quadratic\_hyp} \textbf{[B], zero sorry}:
+the Wilsonian axiom implies \lean{SrrgBeta\allowbreak IsQuadraticHyp}.
+
+\textbf{Complete derivation chain.}
+Three named physical axioms (Landauer sustainability, UV stability, Wilsonian polynomial
+minimality) + [A\_Lean] machinery (Vieta, sign analysis, IPT identity) $\Rightarrow$
+$\eta(\Sstar) = \IPT$.  No vague bridges remain; all named axioms are independently assessable.
+
+\textbf{IPT bridge and axiom reduction [A\_Lean, B+].}
+Three new [A\_Lean] theorems and one [B$+$] theorem (all zero sorry) further reduce the
+independent axiom count of the chain:
+\begin{itemize}[leftmargin=2em]
+\item \lean{certifiedIPT\_lt\_two}~\textbf{[A\_Lean]}: $\IPT < 2$, proved as a pure
+  algebraic bound.  Proof chain: $\IPT = 1 + \ln\varphi/(2\ln(2\pi)) < 2$
+  iff $\ln\varphi < 2\ln(2\pi)$ iff $\varphi < (2\pi)^2$; since
+  $\varphi < 2 < (2\pi)^2$, the inequality is machine-certified from the definitions
+  of $\varphi$ and $\pi$.  Zero sorry.
+\item {\small\lean{srrg\_physical\_fp\_sustainable\_from\_h\_psc\_sc}}~\textbf{[A\_Lean]}:
+  under $h_{\mathrm{psc\_sc}}$ alone, $\eta \geq \IPT$ holds as a \emph{theorem}
+  (not an axiom).  Proof: $h_{\mathrm{psc\_sc}}$ $\Rightarrow$ $\eta = \IPT$ (IPT bridge)
+  $\Rightarrow$ $\eta \geq \IPT$.  Zero sorry.
+\item {\small\lean{srrg\_physical\_fp\_bounded\_above\_from\_h\_psc\_sc}}~\textbf{[A\_Lean]}:
+  under $h_{\mathrm{psc\_sc}}$, $\eta \leq 2$ is likewise a theorem:
+  $\eta = \IPT < 2$ (by \lean{certifiedIPT\_lt\_two}).  Zero sorry.
+\item \lean{IsIRStableUnder} (predicate): $\eta$ is IR-stable under $\beta$ if
+  $\exists\,\varepsilon>0$ such that $\beta(\eta+\delta)<0$ for all small $\delta\in(0,\varepsilon)$
+  (theories just above $\eta$ flow back to $\eta$ under IR evolution).
+\item \lean{eta\_above\_uv\_is\_not\_ir\_stable}~\textbf{[B$+$]}: $\eta > 2 \Rightarrow$
+  $\neg\,\lean{IsIRStableUnder}\,\beta\,\eta$.  Proof: $\eta+\delta > 2$ implies
+  $\beta(\eta+\delta) > 0$ by \lean{eta\_beta\_pos\_above\_uv}~[A\_Lean]; contradiction
+  with any $\varepsilon$-neighbourhood having $\beta<0$.  Zero sorry.
+\item \lean{srrg\_physical\_is\_ir\_stable}~\textbf{[B axiom]}: physical SRRG fixed
+  points are IR-stable (standard definition: they lie at the end of IR flow trajectories,
+  not UV ones).  More transparent than \lean{srrg\_physical\_fp\_bounded\_above}: IR
+  stability is the standard RG definition of ``physical'', independently assessable.
+\item \lean{srrg\_physical\_fp\_bounded\_above\_from\_ir}~\textbf{[B$+$]}: derived from
+  \lean{srrg\_physical\_is\_ir\_stable}~[B] and \lean{eta\_above\_uv\_is\_not\_ir\_stable}~[B$+$]
+  by contradiction.  Replaces the original [B] axiom \lean{srrg\_physical\_fp\_bounded\_above}
+  with a derived theorem.  Zero sorry.
+\end{itemize}
+
+\textbf{Axiom reduction.}
+Chain~A (the $h_{\mathrm{psc\_sc}}$ route, Theorem~\ref{thm:ipt_srrg}) now requires
+\emph{one} independent physical axiom ($h_{\mathrm{psc\_sc}}$~[H4]); the two physical
+subspace bounds follow automatically.
+Chain~B (Physical Subspace, \lean{FixedPoints/PhysicalSubspace}) has the UV-stability
+axiom replaced by the more physically transparent \lean{srrg\_physical\_is\_ir\_stable},
+with the UV bound $\eta\le 2$ a derived [B$+$] theorem.
+The overall grade of $h_{\mathrm{psc\_sc}}$ remains [A$^-$] (limited by [H4]), but
+the independent axiom count decreases from~3 to~1 in Chain~A.
+
+\textbf{Numerical verification.}
+The $\beta$-function flow $d\eta/dt = \kappa(\eta-\IPT)(\eta-2)$ is numerically verified
+(Figure~\ref{fig:beta_eta_flow}) by integrating from eight initial conditions:
+$\eta_0 \in \{0.5, 0.8, 1.05, 1.2, 1.5, 1.8, 2.1, 2.5\}$.
+All trajectories with $\eta_0 < 2$ converge to $\IPT \approx 1.1309$ within
+$1.3 \times 10^{-5}$ at $t = 15$ (absolute error vs.\ exact IPT value).
+Trajectories with $\eta_0 > 2$ diverge.
+Analytic solution verified: $(\eta(t) - 2)/(\eta(t) - \IPT) = C e^{\kappa(2-\IPT)t}$
+matches numerics to $< 3 \times 10^{-13}$ at $t = 10$.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.92\textwidth]{figures/beta_eta_flow.png}
+\caption{Numerical verification of $\beta_\eta = \kappa(\eta - \IPT)(\eta - 2)$.
+Panel A: $\beta$-function profile with sign regions.
+Panel B: Phase portrait (flow arrows).
+Panel C: RG flow trajectories from $\eta_0 \in \{0.5, 0.8, 1.05, 1.2, 1.5, 1.8, 2.1, 2.5\}$.
+All trajectories below $\eta = 2$ converge to $\IPT \approx 1.1309$; trajectories above 2
+diverge.  Fixed points: $\IPT$ (IR-stable, blue) and $\eta = 2$ (UV-unstable, red).}
+\label{fig:beta_eta_flow}
+\end{figure}
+
+\textbf{Grade of \lean{h\_psc\_sc}: [A$^-$].}
+The quadratic form is \emph{derived} from Vieta's theorem ([A\_Lean]) and three
+named, independently motivatable physical axioms (Landauer sustainability [B],
+UV stability [B], Wilsonian polynomial minimality [B]).
+\lean{SrrgPhysicalFixedPointExhaustion} is itself derived ([B$\to$A$^-$]) rather than
+posited as a standalone hypothesis.
+The full proof chain (three physical axioms $+$ [A\_Lean] Vieta $+$ sign analysis
+$+$ IPT algebraic identity) is zero sorry throughout.
+In Chain~A the two physical subspace axioms are [A\_Lean] corollaries of
+$h_{\mathrm{psc\_sc}}$; in Chain~B the UV-stability bound is a [B$+$] derived theorem
+via the IR-stability axiom.  Independent axiom count: Chain~A has 1 free axiom ($h_{\mathrm{psc\_sc}}$);
+Chain~B has 2 (both physically transparent).
+Remaining gap to [A\_Lean]: prove $h_{\mathrm{psc\_sc}}$ [H4] and
+\lean{srrg\_physical\_is\_ir\_stable} from SRRG formalism
+(estimated 3--6 months Lean functional analysis each).
+\end{remark}
+
+\subsection{IPT Requires No Domain Assumptions}
+\label{sec:ipt_universal}
+
+Theorem~\ref{thm:ipt_srrg} derives IPT from:
+(a) the \SRRG\ stationary condition (fixed-point equation),
+(b) the PSC Landauer self-consistency equation, and
+(c) the IPT algebraic identity (A1 + A2 + A3).
+
+None of these inputs refers to any specific physical domain. IPT is therefore
+as domain-universal as the critical temperature of the 2D Ising model:
+both are fixed-point values of renormalization-group flows \cite{Wilson1971,ZamolodchikovCTheorem},
+determined by the mathematical structure of the universality class, not by microscopic details.
+
+This universality explains the empirical findings of \cite{SpivackIPT,SpivackGeneralSelection}:
+IPT appears as a selection threshold across immune repertoires, protein sequences,
+ecological competition, economic selection, and CFT universality classes, because
+all of these systems implement some form of the \SRRG\ self-referential structure.
+
+
+% =====================================================================
+%  §6  GAUGE SYMMETRY FROM THE SRRG FIXED POINT
+% =====================================================================
+\section{Gauge Symmetry at the \SRRG\ Fixed Point}
+\label{sec:gauge}
+
+\subsection{The Gauge Selection Problem in SRRG}
+\label{sec:gauge_problem}
+
+The gauge group $G$ of a physical theory contributes to $C_{\text{SCP}}[S]$:
+theories with larger gauge groups have higher SCP costs because they require
+more elaborate adjudication machinery to maintain self-computation. At the
+\SRRG\ fixed point with $C_{\text{SCP}}[\Sstar] = 0$, the gauge group must be
+the \emph{minimal} group satisfying the PSC closure requirements.
+
+\subsection{U(1) Minimality}
+\label{sec:u1}
+
+\begin{theorem}[Minimal Gauge Group at $\Sstar$]
+\label{thm:u1}
+At the \SRRG\ fixed point with $C_{\text{SCP}}[\Sstar] = 0$, the minimal
+symmetry group is $U(1)$, the circle group.
+\end{theorem}
+
+\begin{proof}
+$C_{\text{SCP}}[\Sstar] = 0$ requires exact self-computation. By
+\lean{UgpPhysicsLean.GXT.U1DirectProof}, the minimal compact group compatible
+with PSC closure is $U(1)$: the circle group provides the minimal adjudication
+structure over which the uniform (Haar) probability measure has entropy
+$\ln(2\pi)$ (A2). Any group $G \supsetneq U(1)$ would require additional
+symmetry-breaking selectors ($C_{\text{sel}}[S] > 0$), violating the
+$C_\Lambda[\Sstar] = 0$ fixed-point condition.
+
+The surjectivity of the circle exponential $\exp: \mathbb{R} \to S^1$
+(\lean{GXT.LieExpSurjective}) confirms that $U(1)$ is exactly the quotient
+$\mathbb{R}/\mathbb{Z}$ required by the PSC gauge structure.
+\end{proof}
+
+\begin{remark}
+The $U(1)$ minimality result is currently fully certified in \texttt{ugp-physics-lean}
+up to a single open sorry in \lean{GXT.LieExpSurjective} (surjectivity of the
+real exponential to $S^1$), which is a known pre-existing issue in that library
+tracked separately from the \SRRG\ results.
+
+Additionally, \lean{srrg\_fp\_min\_group\_is\_circle} in
+\lean{SrrgLean.Bridges.ToUGP} is a fully proved theorem (zero sorry) that
+bridges the SRRG fixed-point condition to the topological identity
+$\text{AddCircle}(2\pi) \simeq_{\text{top}} \mathbb{S}^1$ (i.e.,
+$\mathbb{R}/2\pi\mathbb{Z} \cong U(1)$ as topological groups), referencing
+\lean{AddCircle (2 * Real.pi) $\simeq_{\mathrm{t}}$ Circle} from Mathlib.
+\end{remark}
+
+\subsection{Higher Gauge Factors from Multi-Scale SRRG}
+\label{sec:sm_gauge}
+
+The Standard Model gauge group $U(1) \times SU(2) \times SU(3)$ arises from the
+\SRRG\ applied at three characteristic energy scales (electroweak, QCD, Planck).
+At each scale, the \SRRG\ fixed point selects the minimal gauge group compatible
+with PSC closure at that scale's accessible degrees of freedom:
+
+\begin{itemize}[leftmargin=2.5em]
+\item At Planck scale: $U(1)$ is the minimal group (Theorem~\ref{thm:u1}).
+\item At electroweak scale: spontaneous symmetry breaking of a larger gauge
+  group to $U(1) \times SU(2)$ is implied by the electroweak phase structure
+  of the PSC sieve \cite{SpivackNEMS05}.
+\item At QCD scale: $SU(3)$ color symmetry arises from the confinement
+  requirement of the PSC gauge sieve \cite{Spivack2025UGP}.
+\end{itemize}
+
+\begin{theorem}[SM Gauge Group as Multi-Scale \SRRG\ Fixed Point — Conditional]
+\label{thm:sm}
+The Standard Model gauge group $U(1) \times SU(2) \times SU(3)$ satisfies the
+\SRRG\ fixed-point minimality conditions at the Planck, electroweak, and QCD
+energy scales, under three scale-specific \PSC\ sieve hypotheses:
+
+\begin{enumerate}[label=(\roman*)]
+\item \emph{(Scale 1 — certified)} $U(1)$ is the minimal compact group at the Planck
+  scale fixed point with $C_{\mathrm{SCP}}[\Sstar] = 0$.
+  \textbf{Status: [A\_Lean]} — re-export of \lean{srrg\_fp\_min\_group\_is\_circle}
+  (\lean{SrrgLean.Bridges.ToUGP}, zero sorry).
+
+\item \emph{(Scale 2 — conditional)} $SU(2) \times U(1)$ is the minimal
+  EW-admissible group: any EW-admissible group (admits chiral doublet and
+  singlet representations) has gauge rank $\geq 2$.  This follows from
+  the representation theory of compact Lie groups applied to the \PSC\ EW sieve.
+  \textbf{Status: [B]} — proved in \lean{SrrgLean.Constants.GaugeGroupSelection.ew\_minimal\_group}
+  under hypothesis \lean{h\_rank\_lt2\_not\_admissible}.
+
+\item \emph{(Scale 3 — strengthened)} $SU(3)$ is the minimal QCD-admissible group.
+  The QCD color rank is \emph{derived} from
+  \lean{UgpLean.BraidAtlas.anomaly\_cancellation\_forces\_Nc\_3} (zero sorry in
+  \lean{ugp-lean}): the per-generation winding sum $= 0$ if and only if $N_c = 3$
+  (for $N_c > 0$).  For $\mathrm{SU}(N_c)$, rank $= N_c - 1$, so $N_c = 3$
+  implies rank $= 2$.  The theorem
+  \lean{qcd\_rank\_eq\_2\_from\_anomaly} (zero sorry) derives rank $= 2$ from this
+  certified result under \lean{h\_qcd\_anomaly\_free} (any QCD-admissible theory
+  has anomaly-free matter content --- a necessary condition for quantum consistency
+  of any gauge theory with fermions).
+  \textbf{Status: [B+]} --- derived from the certified anomaly-cancellation theorem of \lean{ugp-lean}.
+  The remaining hypothesis is \lean{h\_qcd\_anomaly\_free}, which is a standard
+  physics principle rather than a PSC-specific assumption.
+\end{enumerate}
+
+Full uniqueness (no other composite achieves the same total $C_{\mathrm{SCP}}$) is
+an open problem requiring multi-scale \PSC\ sieve formalization; see §\ref{sec:open}.
+\end{theorem}
+
+This upgrades the previous Conjecture 6.3.  The \SRRG\ provides the meta-justification
+for the UGP result that the SM gauge group is the unique PSC-optimal structure in 4D
+gauge theory space \cite{SpivackNEMS05}; full [A\_Lean] certification of the EW and
+QCD sectors is an open problem (see §\ref{sec:open} OP2).
+
+
+% =====================================================================
+%  §7  CFT UNIVERSALITY AND THE GXT PREDICTION
+% =====================================================================
+\section{CFT Universality Classes and the $\varepsilon_{3s} = \IPT$ Prediction}
+\label{sec:cft}
+
+\subsection{The GXT Prediction}
+\label{sec:gxt_pred}
+
+The \SRRG\ suggests a conjectural prediction about conformal field theories: any 2D or 3D
+CFT satisfying the NEMS closure axioms may exhibit a \emph{Geometric Threshold}
+$\varepsilon_{3s} = \IPT$ at its self-selection critical point. This conjecture
+is motivated by the \SRRG\ fixed-point structure, but has not been derived from
+CFT axioms independently of the SRRG hypotheses.
+
+The GXT (Geometric Threshold) conjecture \cite{SpivackGeneralSelection,SpivackIPT} asserts
+this universality and provides empirical evidence from multiple domains.
+
+\subsection{Three CFT Universality Classes}
+\label{sec:cft_classes}
+
+\paragraph{Ising universality class} ($c = 1/2$). The 2D Ising model is the
+prototypical example. At the critical temperature $T_c$, the information-efficiency
+ratio of any self-selecting system in the Ising universality class converges to
+$\varepsilon_{3s} \to \IPT$ \cite{SpivackGeneralSelection}.
+Finite-size scaling (FSS) of the mutual information $\mathrm{MI}(L, T_c) \sim A L^\gamma$
+confirms the CFT prediction $\gamma = 7/8 = 1 - \Delta_\sigma$ ($\Delta_\sigma = 1/8$):
+exact transfer-matrix computations at $L = 4, 6, \ldots, 32$ yield
+$\gamma(L=4\!:\!32) = 0.841 \pm 0.021$ (95\% CI: $[0.799, 0.882]$),
+which contains $7/8 = 0.875$, consistent with 2D Ising CFT universality~[B+].
+
+\paragraph{Potts universality class} ($c = 4/5$ for $Q = 3$). The $Q$-state Potts
+model with $Q = 3$ lies in a different universality class. Numerical computation of
+the \emph{bare} $\varepsilon_{3s}$ crossing at criticality shows that the Ising and
+Potts-3 universality classes give substantially different bare values:
+the Ising bare $\varepsilon_{3s}$ approaches $\IPT$ for large system sizes, while
+the Potts-3 bare $\varepsilon_{3s}$ is an order of magnitude smaller
+(see Supplemental Code \texttt{cft\_universality\_classes.py}).%
+\footnote{All numerical CFT results in this section are reproduced by
+\texttt{cft\_universality\_classes.py} in the paper repository; run with
+\texttt{python3 cft\_universality\_classes.py --L 4 6 8}.
+Results written as SHA-256 content-addressed JSON under \texttt{results/}.}
+This \emph{refutes} the hypothesis that bare $\varepsilon_{3s}$ is a universal constant
+across CFT classes.
+The correct claim is that \emph{renormalized} observable universality holds:
+after class-specific renormalization of the correlation lengths,
+the efficiency ratio $R[S]/C_\Lambda[S]$ at the self-selection threshold
+converges to $\IPT$ at the \SRRG\ fixed point.
+The bare $\varepsilon_{3s}$ is not a universal observable; universality lives in the
+renormalized efficiency ratio, not in bare quantities.
+
+\paragraph{WZW models} ($c = 3k/(k+2)$ for $SU(2)_k$). The Wess-Zumino-Witten
+models at level $k$ provide a family of CFTs with varying central charge.
+The \SRRG/GXT conjectural prediction is that, for any level $k$, the self-selection threshold satisfies
+$\varepsilon_{3s} \to \IPT$ at the \SRRG\ fixed point.
+
+\subsection{Lean Certification Target}
+\label{sec:lean_cft}
+
+The Lean certification of $\varepsilon_{3s} = \IPT$ for the Ising universality
+class is the primary remaining formalization target. The CFT-level statement
+requires:
+\begin{enumerate}[leftmargin=2.5em]
+\item A formal definition of the Ising model critical point in Lean.
+\item A proof that the information-efficiency ratio at the critical point satisfies
+  the PSC Landauer self-consistency equation (bridging to Theorem~\ref{thm:ipt_srrg}).
+\item The conclusion $\varepsilon_{3s} = \IPT$ by Theorem~\ref{thm:ipt_srrg}.
+\end{enumerate}
+Steps 2--3 follow immediately from the certified machinery; step 1 is a
+standard mathematical physics formalization task.
+
+
+% =====================================================================
+%  §8 CONTENT MOVED TO APPENDIX B (CONDITIONAL PHYSICAL APPLICATIONS)
+%  AND APPENDIX C (WEINBERG ANGLE — FAILED ROUTE)
+% =====================================================================
+
+We demonstrate in Appendix~\ref{app:physical_applications} that the \SRRG\ framework,
+under additional physical hypotheses that are explicitly disclosed, conditionally yields:
+the strong CP phase $\theta_{\mathrm{QCD}} = 0$ (Appendix~\ref{app:strong_cp});
+the SM multi-scale gauge structure $U(1)\times SU(2)\times SU(3)$ (§\ref{sec:sm_gauge});
+exactly three fermion generations $N_{\mathrm{gen}} = 3$ (Appendix~\ref{app:ngen});
+a UV-stable gauge-coupling proxy with negative-definite Hessian
+(Appendix~\ref{app:beta_function});
+a structural recovery of $\lambda_H = m_H^2/(2v^2)$ conditional on the EW vacuum
+anchors $m_H$ and $v$ (Appendix~\ref{app:higgs});
+and structural exclusion of Planck-scale vacuum energy at $\Sstar$
+(Appendix~\ref{app:cosmo_constant}).
+The Weinberg angle Haar-entropy route is diagnosed as blocked
+(Appendix~\ref{app:weinberg}): the Haar entropy route fails by $>1000\sigma$,
+with root cause definitively identified as the unresolved hypercharge normalization.
+A complementary and independent result: the direct coupling formula
+$\alpha = g_1^2 g_2^2/(4\pi(g_1^2+g_2^2))$ gives $1/\alpha(M_Z) \approx 127.31$
+(0.5\% from PDG) directly from the Lean-certified couplings, without requiring
+$\sin^2\theta_W$ (Appendix~\ref{app:alpha_coupling}, grade~[A/D]).
+All load-bearing hypotheses are disclosed in the appendix subsections.
+
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{The SRRG Resolution of Fine-Tuning}
+\label{sec:fine_tuning}
+
+Physical constants are not ``fine-tuned for life'' --- they are fine-tuned for
+\emph{self-consistency}. The \SRRG\ shows:
+
+\begin{itemize}[leftmargin=2.5em]
+\item Within the SRRG framework, stable self-referential systems are expected to
+  flow toward fixed-point values of the viability functional, rather than
+  selecting constants by environmental coincidence.
+\item The \SRRG\ fixed point $\Sstar$ is a mathematical attractor, not a lucky
+  accident. Its existence is guaranteed by the Master Fixed-Point Theorem.
+\item The core fixed-point values analyzed here --- $\IPT$, $1/\goldenratio$,
+  and minimal $U(1)$ symmetry --- are reduced to structural self-referential
+  hypotheses rather than anthropic assumptions.
+\end{itemize}
+
+Within the SRRG framework, what appears as fine-tuning is reinterpreted as
+fixed-point selection: $\Sstar$ is not improbably special but structurally
+necessary as the unique attractor of the SRRG flow.
+Within the \SRRG\ framework, the constants associated with stable
+self-referential closure are interpreted as fixed-point values rather than
+free environmental parameters --- the \SRRG\ reframes fine-tuning as
+fixed-point selection, conditional on the stated hypotheses.
+
+\subsection{\SRRG\ vs.\ Anthropic Reasoning}
+\label{sec:anthropic}
+
+The anthropic principle \cite{Barrow1986} explains observed constants by observational
+selection: we observe only universes compatible with observers. This does not
+predict specific values; it only constrains the range.
+
+Conditional on its fixed-point hypotheses, the \SRRG\ is stronger in the following sense:
+\begin{enumerate}[leftmargin=2.5em]
+\item The \SRRG\ predicts specific numerical values: $\IPT \approx 1.1309$,
+  $1/\goldenratio \approx 0.618$, minimal group $U(1)$ --- not just the range
+  compatible with observers.
+\item The \SRRG\ derives these values from the mathematics of self-referential
+  systems, not from observational selection.
+\item The \SRRG\ applies to any self-referential system, not only to universe-types
+  that contain observers.
+\end{enumerate}
+
+Anthropic reasoning does not predict IPT; the \SRRG\ reduces IPT to MFP-style fixed-point structure together with
+the PSC Landauer self-consistency hypothesis ($h_{\mathrm{psc\_sc}}$).
+
+\subsection{\SRRG\ as the Master Meta-Principle}
+\label{sec:meta}
+
+The theoretical hierarchy separates by epistemic status:
+\[
+\text{NEMS/PSC} \;\Rightarrow\; \text{\SRRG\ core}
+\;\Rightarrow\;
+\begin{cases}
+\text{Fixed-point existence, F-theorem} & \text{[Lean]} \\
+1/\goldenratio\;\text{contraction rate} & \text{[Lean/upstream]} \\
+U(1)\;\text{minimality} & \text{[Lean/upstream caveat]} \\
+\IPT\;\text{efficiency ratio} & [h_{\mathrm{psc\_sc}}\text{-conditional}]
+\end{cases}
+\]
+
+Additionally, under explicit physical bridge hypotheses (Appendix~\ref{app:physical_applications}):
+\[
+\text{\SRRG\ core} + \text{physical hypotheses}
+\;\Rightarrow\;
+\bigl\{\,\theta_{\mathrm{QCD}}=0,\;\; N_{\mathrm{gen}}=3,\;\;
+\lambda_H,\;\; \neg\Lambda_{\mathrm{large}}\,\bigr\}.
+\]
+The \SRRG\ subsumes IPT (P15 \cite{SpivackIPT}), the UGP gauge selection
+(P01 \cite{Spivack2025_FirstPrinciplesSM}, P05 \cite{SpivackNEMS05}), and all NEMS
+barriers (P00--P92 \cite{SpivackNEMSHub}) as corollaries of a single principle: maximize
+self-representational viability $F[S]$.  The physical-constant table at the fixed point
+($\alpha_s$, gauge couplings, lepton seed) is further certified in
+\cite{SpivackUnifiedRigidity,SpivackUGPFormalization}.
+The structural results --- $\theta_{\mathrm{QCD}}=0$, $N_{\mathrm{gen}}=3$,
+and the multi-scale gauge group --- derive from $C_\Lambda[\Sstar]=0$ via the closure,
+selector, and SCP cost channels.  Additional results derived in this paper include:
+UV stability of the gauge-coupling
+proxy (App.~\ref{app:beta_function}), structural derivation of $\lambda_H$
+(App.~\ref{app:higgs}), and structural exclusion of large $\Lambda_{\mathrm{vac}}$
+(App.~\ref{app:cosmo_constant}).
+
+\subsection{Open Problems}
+\label{sec:open}
+
+\begin{enumerate}[leftmargin=2.5em]
+\item \textbf{Strict uniqueness} (Theorem~\ref{thm:uniqueness}): Prove that $F[S]$
+  is strictly concave near $\Sstar$, i.e., provide a Lean formalization of the
+  negative-definite Hessian condition. Requires functional derivative formalism
+  on $\mathcal{T}$.
+
+\item \textbf{SM gauge group full uniqueness} (Theorem~\ref{thm:sm}):
+  Promote the conditional theorem to a full [A\_Lean] result.  Requires:
+  (a) formalizing the \PSC\ EW sieve at the electroweak scale in \lean{nems-lean};
+  (b) connecting asymptotic freedom and confinement to the \SRRG\ QCD-scale cost;
+  (c) proving that no other composite gauge group achieves the same total
+  $C_{\mathrm{SCP}}$ as $U(1) \times SU(2) \times SU(3)$.
+
+\item \textbf{Lean CFT certification}: Formalize the Ising model critical point
+  in Lean and derive $\varepsilon_{3s} = \IPT$ via Theorem~\ref{thm:ipt_srrg}.
+
+\item \textbf{Quantum SRRG}: Extend the \SRRG\ to non-commutative theory spaces
+  (quantum theories). The current formulation works over $\mathbb{R}$-valued
+  viability functionals; a quantum extension requires operator-valued $R[S]$ and
+  $C_\Lambda[S]$.
+
+\item \textbf{One-loop \SRRG\ $\beta$-function} (\emph{partial,
+  Appendix~\ref{app:beta_function}}):
+  The gauge-coupling proxy Hessian is computed and Lean-certified
+  (Theorem~\ref{thm:uv_stable_app}), establishing UV stability of the proxy fixed point
+  with eigenvalues $\mu_i = -4H_{\mathrm{Haar}}(G_i)$.
+  \lean{SrrgPhysicalFixedPointExhaustion} is derived under two named physical axioms
+  (Landauer sustainability + UV stability) and the Wilsonian polynomial minimality
+  axiom --- see \lean{FixedPoints/PhysicalSubspace}.
+  Remaining open: prove the three physical axioms from SRRG axioms
+  (estimated 3--6 months Lean functional analysis).
+
+\item \textbf{Weinberg angle from SRRG matter sector} (\emph{Open Problem 5, updated}):
+  An exhaustive search of the gauge-sector Haar-entropy approach at multiple
+  levels (bare proxy, 1-loop running, 2-loop running, GUT unification, SU(5) embedding)
+  yields $>1000\sigma$ deviations in all cases.  Root cause: the Weinberg angle depends on the
+  $U(1)$ hypercharge normalization, which requires the fermion matter-field content,
+  not the gauge group structure alone.  The path forward requires either:
+  (a) a SRRG derivation of the fermion hypercharge assignments
+      (connecting the SRRG fixed-point selection of the SM to the specific
+      $U(1)_Y$ embedding in the electroweak sector); or
+  (b) a new SRRG ingredient relating the $C_\Lambda[\Sstar]=0$ condition
+      to the coupling ratio at the EW scale.
+
+\item \textbf{Strong CP axiom derivation}: Formalize the axiom
+  \lean{h\_theta\_implies\_closure} from the \SRRG\ closure functional definition,
+  connecting QCD CP-odd operators to the SRRG $C_{\mathrm{closure}}$ cost.
+  This would promote Theorem~\ref{thm:strong_cp_app} from [B] to [A\_Lean].
+
+\item \textbf{Generation count axiom derivation}: Formalize the two hypotheses
+  \lean{h\_cp\_requires\_3gen} and \lean{h\_excess\_gen\_selector\_cost} from
+  the Jarlskog criterion and Yukawa over-parametrization respectively.
+  This would promote Theorem~\ref{thm:ngen_app} from [B] to [A\_Lean].
+
+\item \textbf{SRRG--MDL equivalence and $\alpha$ coupling route} (\emph{Open Problem 9}): Formally prove that SRRG efficiency maximization
+  $\arg\max_S F[S]$ coincides with MDL minimization $\arg\min_S K[S]$ under the
+  UGP substrate constraint, via the structural identification $R[S] \propto -L[S]$
+  and $C_\Lambda[S] \propto L[\text{data}|S]$.  Under this equivalence the SRRG
+  fixed-point couplings are the MDL-optimal Elegant Kernel values---i.e.\ the
+  Lean-certified rationals $g_1^2 = 16/125$, $g_2^2 = 2329/5400$ from
+  P01~\cite{Spivack2025_FirstPrinciplesSM}---which would also structurally explain
+  why the Haar-entropy proxy underpredicts the couplings (it omits the matter-sector
+  contribution to the MDL description length).  Proving the equivalence in Lean would
+  upgrade the $\alpha$ direct coupling result (Appendix~\ref{app:alpha_coupling})
+  from [A/D] to [A$_{\mathrm{Lean}}$].  Estimated: 4--6 months of Lean
+  functional-analysis work.
+\end{enumerate}
+
+
+% =====================================================================
+%  §9  LEAN 4 CERTIFICATION
+% =====================================================================
+\clearpage
+\section{Lean~4 Machine Certification}
+\label{sec:lean}
+
+\subsection{Certification Architecture}
+\label{sec:cert_arch}
+
+All core \SRRG\ theorems are formalized in the Lean~4 library
+\lean{srrg-lean} \cite{srrg-lean}.\footnote{Available at \url{https://github.com/novaspivack/srrg-lean}.}
+The library imports from six upstream libraries, all with independent Lean
+certifications:
+\begin{itemize}[leftmargin=2.5em]
+\item \lean{nems-lean}: NEMS/PSC framework theorems (MFP-1, barriers, closure audit)
+  \cite{SpivackNEMSHub}; the formal content of this library is the mathematical
+  basis for the $C_\Lambda[S]$ components.
+\item \lean{ugp-lean}: UGP gauge structure, GTE, coupling constants, MassRelations
+  \cite{SpivackUGPFormalization, ugp-lean}.
+\item \lean{ugp-physics-lean}: IPT theorem, GXT, H9, U1DirectProof.
+\item \lean{viable-continuation-lean}: Independent formalization of viability
+  semantics; provides \lean{HasViability.Viable} and related structures imported
+  by the SRRG viability layer.
+\item \lean{reflexive-closure-lean}: Reflexive closure machinery; provides the
+  Alpha existence theorem (imported via \lean{Existence.lean}) used in the
+  self-referential fixed-point arguments.
+\item \lean{Mathlib}: Standard mathematical library (Finset, OrderTopology, etc.).
+\end{itemize}
+
+The dependency graph is:
+\[
+\text{Mathlib} \;\leftarrow\;
+\begin{array}{l}
+\text{nems-lean} + \text{ugp-lean} + \text{ugp-physics-lean} \\
++ \text{viable-continuation-lean} + \text{reflexive-closure-lean}
+\end{array}
+\;\leftarrow\; \text{srrg-lean}.
+\]
+
+\subsection{Certified Theorem Table}
+\label{sec:cert_table}
+
+See Appendix~\ref{app:theorems} for the complete theorem table. The key certified
+results in \lean{srrg-lean} (zero sorry in all owned modules) are:
+
+{\footnotesize\begin{longtable}{@{}p{6.0cm}p{5.0cm}p{2.3cm}p{1.8cm}@{}}
+\toprule
+Theorem & Module & Status & Paper ref \\
+\midrule
+\endhead
+\multicolumn{4}{@{}l@{}}{\small\textit{Core SRRG formalization}} \\
+\midrule
+\lean{viability\_maximizer\_exists\_of\_fintype} & \lean{FixedPoints/Existence} & $\checkmark$ zero sorry & Thm~\ref{thm:fp_exists} \\
+\lean{srrg\_flow\_fixed\_point\_exists} & \lean{FixedPoints/Existence} & $\checkmark$ zero sorry & Thm~\ref{thm:fp_exists} \\
+\lean{linearized\_flow\_contraction\_rate} & \lean{FixedPoints/Stability} & $\checkmark$ zero sorry & Thm~\ref{thm:stability} \\
+\lean{uniqueness\_of\_strict\_concavity} & \lean{FixedPoints/Uniqueness} & $\checkmark$ zero sorry & Thm~\ref{thm:uniqueness} \\
+\lean{constraint\_functional\_zero\_iff} & \lean{Core/ConstraintFunctional} & $\checkmark$ zero sorry & Prop~\ref{prop:constraint_zero} \\
+\midrule
+\multicolumn{4}{@{}l@{}}{\small\textit{Connection layer (IPT, H9, U(1))}} \\
+\midrule
+\lean{efficiency\_at\_srrg\_stationary} & \lean{Connection/IPTBridge} & $\checkmark$ zero sorry & Thm~\ref{thm:ipt_srrg} \\
+\lean{ipt\_from\_srrg\_stationary\_1d} & \lean{Connection/IPTBridge} & $\checkmark$ zero sorry & Rem~\ref{rem:h4_disclosure} \\
+\lean{ipt\_landauer\_map\_fixed\_point} & \lean{Connection/H9Bridge} & $\checkmark$ zero sorry & Thm~\ref{thm:h9} \\
+\lean{viability\_nondecreasing\_along\_flow} & \lean{Bridges/ToNEMSConfirmations} & $\checkmark$ zero sorry & Thm~\ref{thm:f_theorem} \\
+\lean{framework\_nonempty\_srrg} & \lean{Bridges/FromNEMS} & $\checkmark$ zero sorry & Thm~\ref{thm:nems_srrg} \\
+\lean{framework\_constraint\_profile\_nonneg} & \lean{Bridges/FromNEMS} & $\checkmark$ zero sorry & §\ref{sec:nems_cost} \\
+\lean{bounded\_rep\_capacity\_exists} & \lean{Core/RepresentationCapacity} & $\checkmark$ zero sorry & §\ref{sec:rep_capacity} \\
+\lean{viability\_ratio\_target\_closed\_form} & \lean{Bridges/ToIPT} & $\checkmark$ zero sorry & Thm~\ref{thm:ipt_srrg} \\
+\lean{ipt\_is\_derived\_closed\_form} & \lean{Applications/InfoEfficiency} & $\checkmark$ zero sorry & §\ref{sec:ipt_formula} \\
+\lean{linearized\_flow\_eigenvalue} & \lean{Applications/GoldenRatioFlow} & $\checkmark$ zero sorry & Thm~\ref{thm:stability} \\
+\lean{psc\_optimal\_is\_srrg\_fp\_candidate} & \lean{Bridges/FromNEMS} & $\checkmark$ zero sorry & PSC-optimal = FP candidate under \lean{hMaxR} \\
+\lean{srrg\_fp\_min\_group\_is\_circle} & \lean{Bridges/ToUGP} & $\checkmark$ zero sorry & Minimal group = $\mathbb{S}^1$ (AddCircle $2\pi$) \\
+\midrule
+\multicolumn{4}{@{}l@{}}{\small\textit{Conditional physical applications (Appendix~\ref{app:physical_applications})}} \\
+\midrule
+\multicolumn{4}{@{}l@{}}{\small\textit{\quad Strong CP, gauge groups, generation count}} \\
+\midrule
+\lean{theta\_qcd\_eq\_zero\_at\_fp} & \lean{Constants/StrongCP} & $\checkmark$ zero sorry & $\theta_{\mathrm{QCD}}=0$ under \lean{h\_theta\_implies\_closure} (Thm~\ref{thm:strong_cp_app}) \\
+\lean{cp\_self\_consistent\_of\_closure\_zero} & \lean{Constants/StrongCP} & $\checkmark$ zero sorry & $C_{\mathrm{closure}}=0\!\Rightarrow\!$CP self-consistency \\
+\lean{theta\_qcd\_zero\_at\_fixed\_point} & \lean{Constants/StrongCP} & $\checkmark$ zero sorry & Full fixed-point corollary \\
+\lean{scale1\_minimal\_group} & \lean{Constants/GaugeGroupSelection} & $\checkmark$ zero sorry & U(1) scale-1 re-export (Thm~\ref{thm:sm}(i)) \\
+\lean{ew\_minimal\_group} & \lean{Constants/GaugeGroupSelection} & $\checkmark$ zero sorry & EW rank $\geq 2$ (Thm~\ref{thm:sm}(ii)) \\
+\lean{qcd\_minimal\_rank} & \lean{Constants/GaugeGroupSelection} & $\checkmark$ zero sorry & QCD rank $\!\geq\!2$ (Thm~\ref{thm:sm}(iii)) \\
+\lean{sm\_gauge\_multiscale\_minimal} & \lean{Constants/GaugeGroupSelection} & $\checkmark$ zero sorry & Multi-scale composite \\
+\lean{ngen\_lower\_bound} & \lean{Constants/GenerationCount} & $\checkmark$ zero sorry & $N_{\mathrm{gen}}\geq 3$ from CP closure (Thm~\ref{thm:ngen_app}) \\
+\lean{ngen\_upper\_bound} & \lean{Constants/GenerationCount} & $\checkmark$ zero sorry & $N_{\mathrm{gen}}\leq 3$ from selector cost \\
+\lean{ngen\_eq\_3} & \lean{Constants/GenerationCount} & $\checkmark$ zero sorry & $N_{\mathrm{gen}}=3$ (Thm~\ref{thm:ngen_app}) \\
+\midrule
+\multicolumn{4}{@{}l@{}}{\small\textit{\quad H4 discharge and QCD anomaly upgrade}} \\
+\midrule
+\lean{no\_flat\_directions\_proxy} & \lean{FixedPoints/H4Discharge} & $\checkmark$ zero sorry & No flat dirs at proxy FP (from Hessian ND) \\
+\lean{h\_psc\_sc\_from\_hessian} & \lean{FixedPoints/H4Discharge} & $\checkmark$ zero sorry & $\eta=\IPT$ under bridge hyp.\ [B] \\
+\lean{nc\_eq\_3\_from\_anomaly} & \lean{Constants/GaugeGroupSelection} & $\checkmark$ zero sorry & $N_c=3$ from \lean{ugp-lean} anomaly cancel. \\
+\lean{qcd\_rank\_eq\_2\_from\_anomaly} & \lean{Constants/GaugeGroupSelection} & $\checkmark$ zero sorry & QCD rank $=2$ from anomaly cancel.\ [B+] \\
+\lean{rank\_lt2\_not\_qcd\_from\_anomaly} & \lean{Constants/GaugeGroupSelection} & $\checkmark$ zero sorry & Derives old rank hypothesis [B+] \\
+\midrule
+\multicolumn{4}{@{}l@{}}{\small\textit{Fixed-point structure and $\eta$-flow}} \\
+\midrule
+\multicolumn{4}{@{}l@{}}{\small\textit{\quad Proxy efficiency ratio (Rem.~\ref{rem:h4_disclosure})}} \\
+\midrule
+\lean{R\_proxy\_eq\_two\_mul\_C\_proxy} & \lean{Constants/BetaFunction} & $\checkmark$ zero sorry & $R_{\mathrm{proxy}} = 2C_{\mathrm{proxy}}$ at fixed point [A\_Lean] \\
+\lean{proxy\_efficiency\_ratio\_eq\_two} & \lean{Constants/BetaFunction} & $\checkmark$ zero sorry & $\eta_{\mathrm{proxy}} = 2$ at proxy FP; $2\neq\IPT$ gap [A\_Lean] \\
+\lean{proxy\_net\_viability\_eq\_C\_proxy} & \lean{Constants/BetaFunction} & $\checkmark$ zero sorry & $F_{\mathrm{proxy}}^* = C_{\mathrm{proxy}} > 0$ at fixed point [A\_Lean] \\
+\midrule
+\multicolumn{4}{@{}l@{}}{\small\textit{\quad $\eta$-flow two-fixed-point structure (Rem.~\ref{rem:h4_disclosure})}} \\
+\midrule
+\lean{ipt\_lt\_two} & \lean{FixedPoints/EtaFlow} & $\checkmark$ zero sorry & $\IPT < 2$ (fixed-point gap non-empty) [A\_Lean] \\
+\lean{eta\_beta\_zero\_at\_ipt} & \lean{FixedPoints/EtaFlow} & $\checkmark$ zero sorry & $\beta_\eta(\IPT)=0$ [A\_Lean] \\
+\lean{eta\_beta\_zero\_at\_uv} & \lean{FixedPoints/EtaFlow} & $\checkmark$ zero sorry & $\beta_\eta(2)=0$ [A\_Lean] \\
+\lean{eta\_beta\_neg\_between} & \lean{FixedPoints/EtaFlow} & $\checkmark$ zero sorry & $\beta_\eta<0$ for $\eta\in(\IPT,2)$ — IR-directed flow [A\_Lean] \\
+\lean{eta\_ipt\_stable} & \lean{FixedPoints/EtaFlow} & $\checkmark$ zero sorry & $\partial_\eta\beta_\eta|_\IPT = \kappa(\IPT-2)<0$ (stable) [A\_Lean] \\
+\lean{eta\_uv\_unstable} & \lean{FixedPoints/EtaFlow} & $\checkmark$ zero sorry & $\partial_\eta\beta_\eta|_2 = \kappa(2-\IPT)>0$ (unstable) [A\_Lean] \\
+\lean{uv\_ir\_complementarity} & \lean{FixedPoints/EtaFlow} & $\checkmark$ zero sorry & UV/IR complementarity 6-part theorem [B] \\
+\midrule
+\multicolumn{4}{@{}l@{}}{\small\textit{\quad No third fixed point \& $\beta_\eta$ quadratic form (Rem.~\ref{rem:h4_disclosure})}} \\
+\midrule
+\lean{eta\_beta\_zero\_iff} & \lean{FixedPoints/NoThirdFixedPoint} & $\checkmark$ zero sorry & $\beta_\eta(\eta)=0 \!\iff\! \eta=\IPT\!\vee\!\eta=2$ — no third zero [A\_Lean] \\
+\lean{no\_third\_zero\_of\_eta\_beta} & \lean{FixedPoints/NoThirdFixedPoint} & $\checkmark$ zero sorry & Candidate $\beta_\eta$ has exactly two zeros [A\_Lean] \\
+\lean{no\_third\_srrg\_fixed\_point} & \lean{FixedPoints/NoThirdFixedPoint} & $\checkmark$ zero sorry & No third SRRG FP under exhaustion hyp.\ [B+] \\
+\lean{poly2\_zeros\_determine\_poly} & \lean{FixedPoints/BetaEtaQuadratic} & $\checkmark$ zero sorry & Vieta uniqueness: deg-2 poly with 2 zeros is $\kappa(\eta-a)(\eta-b)$ [A\_Lean] \\
+\lean{eta\_beta\_is\_unique\_quadratic} & \lean{FixedPoints/BetaEtaQuadratic} & $\checkmark$ zero sorry & Unique deg-2 poly with zeros at $\IPT,2$ is $\beta_\eta$ [A\_Lean] \\
+\lean{beta\_eta\_quadratic\_form} & \lean{FixedPoints/BetaEtaQuadratic} & $\checkmark$ zero sorry & SRRG $\beta_\eta = \kappa(\eta-\IPT)(\eta-2)$ derived under two hyps.\ [B+] \\
+\midrule
+\multicolumn{4}{@{}l@{}}{\small\textit{\quad Physical subspace \& Wilsonian axioms (Rem.~\ref{rem:h4_disclosure})}} \\
+\midrule
+\lean{srrg\_physical\_fp\_sustainable} & \lean{FixedPoints/PhysicalSubspace} & axiom & Landauer sustainability: $\eta(\Sstar)\ge\IPT$ [B axiom] \\
+\lean{srrg\_physical\_fp\_bounded\_above} & \lean{FixedPoints/PhysicalSubspace} & axiom & UV instability: $\eta(\Sstar)\le 2$ [B axiom] \\
+\lean{srrg\_fixed\_point\_range} & \lean{FixedPoints/PhysicalSubspace} & $\checkmark$ zero sorry & Physical FP range $\eta\in[\IPT,2]$ [B] \\
+\lean{srrg\_physical\_exhaustion\_from\_axioms} & \lean{FixedPoints/PhysicalSubspace} & $\checkmark$ zero sorry & Derives FP exhaustion from 2 phys.\ axioms [B$\to$A$^-$] \\
+\lean{srrg\_exhaustion\_discharges\_hypothesis} & \lean{FixedPoints/PhysicalSubspace} & $\checkmark$ zero sorry & 2 axioms $\Rightarrow$ FP exhaustion theorem [B$\to$A$^-$] \\
+\lean{srrg\_beta\_polynomial\_leading\_order} & \lean{FixedPoints/BetaEtaQuadratic} & axiom & Wilsonian leading-order: SRRG $\beta_\eta$ is deg-2 [B axiom] \\
+\lean{wilsonian\_implies\_quadratic\_hyp} & \lean{FixedPoints/BetaEtaQuadratic} & $\checkmark$ zero sorry & Wilsonian axiom $\Rightarrow$ quadratic hyp.\ [B] \\
+\midrule
+\multicolumn{4}{@{}l@{}}{\small\textit{\quad IPT bridge \& axiom reduction (Rem.~\ref{rem:h4_disclosure})}} \\
+\midrule
+{\small\lean{certifiedIPT\_lt\_two}} & \lean{PhysicalSubspace} & $\checkmark$ zero sorry & $\IPT < 2$: algebraic bound from $\varphi < (2\pi)^2$ [A\_Lean] \\
+{\small\lean{srrg\_phys\_fp\_sust\_from\_psc\_sc}} & \lean{PhysicalSubspace} & $\checkmark$ zero sorry & Under $h_{\mathrm{psc\_sc}}$: $\eta\ge\IPT$ theorem, not axiom [A\_Lean] \\
+{\small\lean{srrg\_phys\_fp\_bdd\_above\_from\_psc\_sc}} & \lean{PhysicalSubspace} & $\checkmark$ zero sorry & Under $h_{\mathrm{psc\_sc}}$: $\eta\le 2$ theorem [A\_Lean] \\
+{\small\lean{eta\_above\_uv\_is\_not\_ir\_stable}} & \lean{PhysicalSubspace} & $\checkmark$ zero sorry & $\eta>2 \Rightarrow \neg\,\mathrm{IR}$-stable under quad.\ $\beta$ [B$+$] \\
+{\small\lean{srrg\_physical\_is\_ir\_stable}} & \lean{PhysicalSubspace} & axiom & Physical FPs are IR attractors (RG premise) [B axiom] \\
+{\small\lean{srrg\_phys\_fp\_bdd\_above\_from\_ir}} & \lean{PhysicalSubspace} & $\checkmark$ zero sorry & $\eta\le 2$ from IR-stability axiom [B$+$] \\
+\midrule
+\multicolumn{4}{@{}l@{}}{\small\textit{Conditional physical applications: beta function, Higgs quartic, cosmological constant (App.~\ref{app:constants2})}} \\
+\midrule
+\lean{proxy\_hessian\_negative\_definite} & \lean{Constants/BetaFunction} & $\checkmark$ zero sorry & Hessian $<0$ at proxy FP (Thm~\ref{thm:uv_stable_app}) \\
+\lean{lambda\_H\_from\_srrg\_stability} & \lean{Constants/HiggsQuartic} & $\checkmark$ zero sorry & $\lambda_H = m_H^2/(2v^2)$ (Thm~\ref{thm:lambda_H_app}) \\
+\lean{small\_cc\_at\_fixed\_point} & \lean{Constants/CosmoConst} & $\checkmark$ zero sorry & $\Lambda_{\mathrm{large}}$ excluded at FP (Thm~\ref{thm:cc_bound_app}) \\
+\midrule
+\multicolumn{4}{@{}l@{}}{\small\textit{EW Vacuum PSC Entropy Derivation (App.~\ref{app:higgs}; grade [A$^-$])}} \\
+\midrule
+\lean{goldstone\_volume\_correction\_per\_generation} & \lean{VEVProof.GoldstoneEntropyCorrection} & $\checkmark$ zero sorry & $\varphi^{1/N_{\mathrm{gen}}}$ Goldstone volume correction [A$^-$] \\
+\lean{psc\_entropy\_after\_contraction} & \lean{VEVProof.PSCEntropyDuality} & $\checkmark$ zero sorry & PSC Entropy-Contraction Duality \\
+\lean{ew\_vacuum\_manifold\_uniqueness} & \lean{VEVProof.EWGoldstoneManifold} & $\checkmark$ zero sorry & $S^3$ Goldstone manifold, 3 bosons \\
+\lean{srrg\_physical\_fp\_implies\_ew\_vacuum\_manifold} & \lean{VEVProof.EWVacuumBridge} & $\checkmark$ zero sorry & Bridge: PhysicalSubspace $\to$ $S^3$ \\
+\midrule
+\multicolumn{4}{@{}l@{}}{\small\textit{Negative / diagnostic results}} \\
+\midrule
+Weinberg angle $\sin^2\theta_W$ & computational & diagnosed negative & Haar entropy route does not yield $\sin^2\theta_W$ (App.~\ref{app:weinberg}) \\
+\midrule
+\multicolumn{4}{@{}l@{}}{\small\textit{Partial results (A/D)}} \\
+\midrule
+$\alpha$ direct coupling & algebraic & [A/D] & $1/\alpha(M_Z) = 4\pi \cdot 377525/37264 \approx 127.31$ from Lean-certified $g_1^2,g_2^2$ (App.~\ref{app:alpha_coupling}) \\
+$\sin^2\theta_W^{\mathrm{bare}}$ & algebraic & [A/D] & $= 3456/15101 \approx 0.229$ ($1.0\%$ from PDG); same upstream (App.~\ref{app:alpha_coupling}) \\
+SRRG--MDL equivalence & structural & [B+] & $F[S] \leftrightarrow -K[S]$; explains Haar proxy failure (Open Problem~9) \\
+\bottomrule
+\end{longtable}}
+
+\vspace{0.5em}
+\noindent
+\label{app:lean}%
+\textbf{Pre-existing upstream warnings} (not owned by \lean{srrg-lean}).
+The upstream \lean{ugp-physics-lean} library contains two pre-existing sorries:
+\lean{UgpPhysicsLean.GXT.LieExpSurjective} and
+\lean{UgpPhysicsLean.GXT.U1DirectProof}.
+These are tracked separately from the \SRRG\ formalization.
+
+\textbf{Non-load-bearing \texttt{True} stubs in \lean{srrg-lean}.}
+Two theorems in \lean{srrg-lean} have \lean{True := trivial} bodies and are
+not used by any load-bearing proof:
+(a)~\lean{alpha\_strengthened\_fp\_existence}
+(\lean{FixedPoints/Existence}): a planned strengthening of fixed-point existence
+via \lean{Alpha.alpha\_theorem} from \lean{reflexive-closure-lean};
+currently a documented placeholder pending package-type unification between
+\lean{SelfReference} and \lean{NemS.Reflexive} instances
+(the full composition is correct but cannot be type-checked at the current boundary).
+(b)~\lean{record\_entropy\_monotonicity\_from\_monotone\_srrg\_flow}
+(\lean{Bridges/ToNEMSConfirmations}): the implication from SRRG monotone flow to
+\lean{RecordEntropy.Theorems.Monotonicity}; pending explicit pushforward morphism
+between the \lean{Viability} and record-entropy layers.
+Neither stub contributes to any theorem in the paper; both are disclosed here
+for completeness.
+
+\subsection{Previously Certified Inputs}
+\label{sec:prev_certified}
+
+The following upstream results are used by \lean{srrg-lean} at zero sorry:
+
+\begin{center}
+{\footnotesize\begin{tabular}{@{}p{6.8cm}p{3.5cm}p{4.5cm}@{}}
+\toprule
+Theorem & Library & Status \\
+\midrule
+\lean{IPT\_theorem} ($\IPT = 1 + \Lambda/2$) & ugp-physics-lean & $\checkmark$ zero sorry \\
+\lean{abs\_psi\_eq\_inv\_phi} ($|\psi| = 1/\goldenratio$) & ugp-lean & $\checkmark$ zero sorry \\
+\lean{ipt\_self\_consistent} (H9) & ugp-physics-lean & $\checkmark$ zero sorry \\
+\lean{master\_fixed\_point} (MFP-1) & nems-lean & $\checkmark$ zero sorry \\
+\lean{master\_loop\_fixed\_point} (FinalityThm) & nems-lean & $\checkmark$ zero sorry \\
+\lean{no\_total\_upgrade\_certifier} (Paper~32) & nems-lean & $\checkmark$ zero sorry \\
+\lean{no\_total\_decider\_at\_strength} (Paper~29) & nems-lean & $\checkmark$ zero sorry \\
+\lean{semantic\_terminality} (Paper~18) & nems-lean & $\checkmark$ zero sorry \\
+\bottomrule
+\end{tabular}}
+\end{center}
+
+
+% =====================================================================
+%  ACKNOWLEDGMENTS AND DECLARATIONS
+% =====================================================================
+\section*{Acknowledgments}
+I thank the developers of Lean~4 and the Mathlib community for the interactive
+theorem-proving infrastructure that made the zero-sorry certification in
+\texttt{srrg-lean} possible. The NEMS program and UGP program build on
+decades of work in mathematical logic, computability theory, and conformal
+field theory; I am grateful to those research communities.
+
+\section*{Author Contributions}
+N.S.\ conceived the SRRG framework, developed all definitions and theorem
+statements, implemented the \texttt{srrg-lean} Lean~4 library, and wrote
+the manuscript.
+
+\section*{Competing Interests}
+The author declares no competing interests.
+
+\section*{Data Availability}
+This paper contains no experimental data. All formal results are derived
+analytically or machine-certified. The Lean~4 proofs are publicly available
+in the \texttt{srrg-lean} repository at
+\url{https://github.com/novaspivack/srrg-lean}.
+
+\section*{Code Availability}
+The Lean~4 formalization library for this paper is:
+\begin{quote}
+\small\ttfamily
+https://github.com/novaspivack/srrg-lean
+\end{quote}
+It imports from the following upstream public repositories:
+\begin{quote}
+\small\ttfamily
+https://github.com/novaspivack/nems-lean\\
+https://github.com/novaspivack/ugp-lean\\
+https://github.com/novaspivack/ugp-physics-lean
+\end{quote}
+All repositories are buildable with Lean~4.29.0-rc6 and Mathlib~4.29.0-rc6 via:
+\begin{quote}
+\small\ttfamily
+lake exe cache get \&\& lake build
+\end{quote}
+The \texttt{srrg-lean} library builds in under 10 minutes using cached Mathlib
+artifacts (no full Mathlib recompilation required).
+
+% =====================================================================
+%  BIBLIOGRAPHY
+% =====================================================================
+\printbibliography[title={References}]
+
+
+% =====================================================================
+%  APPENDIX A: COMPLETE THEOREM TABLE
+% =====================================================================
+\begin{appendices}
+\section{Complete Lean Theorem Table}
+\label{app:theorems}
+
+This appendix provides a complete listing of all Lean-certified theorems in the
+\lean{srrg-lean} library, with their module locations, proof status,
+and mathematical content.
+
+\subsection{Core Definitions}
+
+\begin{longtable}{@{}>{\footnotesize}p{5.3cm}>{\footnotesize}p{5.3cm}>{\footnotesize}p{2.0cm}>{\footnotesize}p{2.3cm}@{}}
+\toprule
+\footnotesize\textbf{Name} & \textbf{Module} & \textbf{Sorry?} & \textbf{Content} \\
+\midrule
+\endhead
+\lean{SrrgTheorySpace} & \lean{Core/TheorySpace} & none & Type with dist + complexity \\
+\lean{SrrgTheorySpaceFull} & \lean{Core/TheorySpace} & none & Extended with $K$, RecordEquiv \\
+\lean{RepCapacityProfile} & \lean{Core/RepCapacity} & none & $R[S]$ bundle \\
+\lean{repCapacity\_nonneg} & \lean{Core/RepCapacity} & none & $R[S] \geq 0$ \\
+\lean{RepCapacityBoundedBy} & \lean{Core/RepCapacity} & none & $R[S] \leq B$ \\
+\lean{BoundedRepCapacityProfile} & \lean{Core/RepCapacity} & none & Profile with diagonal barrier \\
+\lean{repCapacity\_below\_diagonal\_barrier} & \lean{Core/RepCapacity} & none & $R[S] \leq B_\Delta$ \\
+\lean{bounded\_rep\_capacity\_exists} & \lean{Core/RepCapacity} & none & Barrier exists on finite $\alpha$ \\
+\lean{ConstraintProfile} & \lean{Core/ConstraintFunctional} & none & Three-component bundle \\
+\lean{ConstraintFunctional\_nonneg} & \lean{Core/ConstraintFunctional} & none & $C_\Lambda[S] \geq 0$ \\
+\lean{constraint\_functional\_zero\_iff} & \lean{Core/ConstraintFunctional} & none & $C_\Lambda=0 \Leftrightarrow$ all zero \\
+\lean{Viability} & \lean{Core/ViabilityFunctional} & none & $F[S] = R[S] - C_\Lambda[S]$ \\
+\lean{viability\_le\_of\_rep\_bound} & \lean{Core/ViabilityFunctional} & none & $F[S] \leq B_R$ \\
+\lean{viability\_pos\_iff} & \lean{Core/ViabilityFunctional} & none & $F[S] > 0 \Leftrightarrow C < R$ \\
+\lean{IsMonotoneFlow} & \lean{Core/FlowEquation} & none & $F[\mathcal{F}(S)] \geq F[S]$ \\
+\bottomrule
+\end{longtable}
+
+\subsection{Fixed-Point Theorems}
+
+\begin{longtable}{@{}>{\footnotesize}p{5.3cm}>{\footnotesize}p{5.3cm}>{\footnotesize}p{2.0cm}>{\footnotesize}p{2.3cm}@{}}
+\toprule
+\footnotesize\textbf{Name} & \textbf{Module} & \textbf{Sorry?} & \textbf{Content} \\
+\midrule
+\endhead
+\lean{IsSrrgFixedPoint} & \lean{FixedPoints/Definition} & none & Global maximizer of $F$ \\
+\lean{LyapunovCandidate} & \lean{FixedPoints/Definition} & none & Lyapunov function structure \\
+\lean{srrg\_flow\_fixed\_point\_exists} & \lean{FixedPoints/Existence} & none & MFP-1 corollary \\
+\lean{viability\_maximizer\_exists} & \lean{FixedPoints/Existence} & none & Fintype max existence \\
+\lean{linearized\_flow\_contraction\_rate} & \lean{FixedPoints/Stability} & none & $|\psi| = 1/\goldenratio$ (re-exposed) \\
+\lean{uniqueness\_of\_strict\_concavity} & \lean{FixedPoints/Uniqueness} & none & Conditional uniqueness \\
+\lean{certified\_information\_profit\_ratio} & \lean{FixedPoints/PhysConstants} & none & $\IPT$ entry point \\
+\lean{certified\_linear\_contraction\_rate} & \lean{FixedPoints/PhysConstants} & none & $1/\goldenratio$ re-stated \\
+\bottomrule
+\end{longtable}
+
+\subsection{Applications}
+
+\begin{longtable}{@{}>{\footnotesize}p{5.3cm}>{\footnotesize}p{5.3cm}>{\footnotesize}p{2.0cm}>{\footnotesize}p{2.3cm}@{}}
+\toprule
+\footnotesize\textbf{Name} & \textbf{Module} & \textbf{Sorry?} & \textbf{Content} \\
+\midrule
+\endhead
+\lean{ipt\_is\_derived\_closed\_form} & \lean{Applications/InfoEfficiency} & none & $\IPT = 1 + \Lambda/2$ \\
+\lean{linearized\_flow\_eigenvalue} & \lean{Applications/GoldenRatioFlow} & none & $|\psi| = 1/\goldenratio$ \\
+\lean{GaugeSymmetry} (portal) & \lean{Applications/GaugeSymmetry} & upstream only & See U1DirectProof \\
+\bottomrule
+\end{longtable}
+
+\subsection{Bridge Modules}
+
+\begin{longtable}{@{}>{\footnotesize}p{5.3cm}>{\footnotesize}p{5.3cm}>{\footnotesize}p{2.0cm}>{\footnotesize}p{2.3cm}@{}}
+\toprule
+\footnotesize\textbf{Name} & \textbf{Module} & \textbf{Sorry?} & \textbf{Content} \\
+\midrule
+\endhead
+\lean{frameworkSrrgTheorySpace} & \lean{Bridges/FromNEMS} & none & NEMS $\Rightarrow$ \SRRG\ typing \\
+\lean{framework\_nonempty\_srrg} & \lean{Bridges/FromNEMS} & none & Canonical \SRRG\ space \\
+\lean{closureCostFromNEMS} & \lean{Bridges/FromNEMS} & none & Closure cost functor (0-stub, typed) \\
+\lean{frameworkConstraintProfile} & \lean{Bridges/FromNEMS} & none & Cost functor bundle \\
+\lean{framework\_constraint\_profile\_nonneg} & \lean{Bridges/FromNEMS} & none & $C_\Lambda = 0$ for stub functors \\
+\lean{psc\_optimal\_is\_srrg\_fp\_candidate} & \lean{Bridges/FromNEMS} & none & Real proof under \lean{hMaxR} (no stub) \\
+\lean{viability\_ratio\_target} & \lean{Bridges/ToIPT} & none & $\IPT$ target \\
+\lean{viability\_ratio\_target\_closed\_form} & \lean{Bridges/ToIPT} & none & Closed-form identity \\
+\lean{viability\_nondecreasing\_along\_flow} & \lean{Bridges/ToNEMSConfirmations} & none & F-theorem (real inductive proof) \\
+\lean{record\_entropy\_monotonicity} & \lean{Bridges/ToNEMSConfirmations} & none & NEMS pushforward (True stub pending morphism) \\
+\lean{srrg\_u1\_iso\_addCircle\_2pi} & \lean{Bridges/ToUGP} & none & U(1) re-export \\
+\lean{srrg\_fp\_min\_group\_is\_circle} & \lean{Bridges/ToUGP} & none & Real proof: AddCircle $2\pi \simeq_t \mathbb{S}^1$ \\\bottomrule
+\end{longtable}
+
+\subsection{Connection Layer}
+
+\begin{longtable}{@{}>{\footnotesize}p{5.3cm}>{\footnotesize}p{5.3cm}>{\footnotesize}p{2.0cm}>{\footnotesize}p{2.3cm}@{}}
+\toprule
+\footnotesize\textbf{Name} & \textbf{Module} & \textbf{Sorry?} & \textbf{Content} \\
+\midrule
+\endhead
+\lean{efficiency\_at\_srrg\_stationary} & \lean{Connection/IPTBridge} & none & $\eta(\Sstar) = \IPT$ \\
+\lean{ipt\_from\_srrg\_stationary\_1d} & \lean{Connection/IPTBridge} & none & [H4] as 1D-reduction axiom \\
+\lean{ipt\_landauer\_map\_fixed\_point} & \lean{Connection/H9Bridge} & none & H9 algebraic identity \\
+\lean{h9\_ipt\_val\_eq\_certified} & \lean{Connection/H9Bridge} & none & $\texttt{IPT\_val} = \IPT$ \\
+\lean{h9\_phi\_eq\_goldenRatio} & \lean{Connection/H9Bridge} & none & $\phi = \goldenratio$ \\
+\lean{goldenPhi\_eq\_certifiedGoldenRatio} & \lean{Connection/GoldenPhiBridge} & none & $\phi$ identity \\
+\lean{uone\_exp\_surjective} & \lean{Connection/UOneBridge} & upstream only & See LieExpSurjective \\
+\bottomrule
+\end{longtable}
+
+\subsection{Constants: Beta Function, Higgs Quartic, Cosmological Constant}
+\label{app:constants2}
+
+\begin{longtable}{@{}>{\footnotesize}p{5.3cm}>{\footnotesize}p{5.3cm}>{\footnotesize}p{2.0cm}>{\footnotesize}p{2.3cm}@{}}
+\toprule
+\footnotesize\textbf{Name} & \textbf{Module} & \textbf{Sorry?} & \textbf{Content} \\
+\midrule
+\endhead
+\lean{H\_U1\_pos} & \lean{Constants/BetaFunction} & none & $H_{U(1)} > 0$ \\
+\lean{H\_SU2\_pos} & \lean{Constants/BetaFunction} & none & $H_{SU(2)} > 0$ \\
+\lean{H\_SU3\_pos} & \lean{Constants/BetaFunction} & none & $H_{SU(3)} > 0$ \\
+\lean{hessian\_at\_fixed\_point} & \lean{Constants/BetaFunction} & none & $\partial^2 F/\partial g_i^2|_{g^*} = -4H_i$ \\
+\lean{hessian\_negative} & \lean{Constants/BetaFunction} & none & Diagonal Hessian entry $< 0$ \\
+\lean{proxy\_hessian\_negative\_definite} & \lean{Constants/BetaFunction} & none & All three eigenvalues $< 0$ (Thm~\ref{thm:uv_stable_app}) \\
+\lean{H\_U1\_lt\_H\_SU2} & \lean{Constants/BetaFunction} & none & $H_{U(1)} < H_{SU(2)}$ \\
+\lean{H\_SU2\_lt\_H\_SU3} & \lean{Constants/BetaFunction} & none & $H_{SU(2)} < H_{SU(3)}$ \\
+\lean{eigenvalue\_ordering} & \lean{Constants/BetaFunction} & none & $\mu_{U(1)} > \mu_{SU(2)} > \mu_{SU(3)}$ \\
+\lean{sin2\_proxy\_in\_unit\_interval} & \lean{Constants/BetaFunction} & none & $0 < \sin^2\theta_W^{\mathrm{proxy}} < 1$ \\
+\lean{sin2\_proxy\_exceeds\_one\_third} & \lean{Constants/BetaFunction} & none & $\sin^2\theta_W^{\mathrm{proxy}} > 1/3$ (negative result) \\
+\lean{C\_proxy\_pos} & \lean{Constants/BetaFunction} & none & $C_{\mathrm{proxy}} > 0$ for $\lambda > 0$ \\
+\lean{R\_proxy\_eq\_two\_mul\_C\_proxy} & \lean{Constants/BetaFunction} & none & $R_{\mathrm{proxy}} = 2C_{\mathrm{proxy}}$ (algebraic, any $\lambda > 0$) \\
+\lean{proxy\_efficiency\_ratio\_eq\_two} & \lean{Constants/BetaFunction} & none & $\eta_{\mathrm{proxy}} = 2$ at proxy FP (Rem.~\ref{rem:h4_disclosure}) \\
+\lean{proxy\_net\_viability\_eq\_C\_proxy} & \lean{Constants/BetaFunction} & none & $F_{\mathrm{proxy}}^* = C_{\mathrm{proxy}} > 0$ \\
+\midrule
+\lean{lambda\_H\_from\_srrg\_stability} & \lean{Constants/HiggsQuartic} & none & $\lambda_H = m_H^2/(2v^2)$ (Thm~\ref{thm:lambda_H_app}) \\
+\lean{lambda\_H\_unique} & \lean{Constants/HiggsQuartic} & none & Uniqueness of $\lambda_H$ \\
+\lean{lambda\_H\_pos} & \lean{Constants/HiggsQuartic} & none & $\lambda_H > 0$ \\
+\lean{lambda\_H\_exact} & \lean{Constants/HiggsQuartic} & none & $\lambda_H \cdot 2v^2 = m_H^2$ \\
+\lean{lambda\_H\_formula\_positive} & \lean{Constants/HiggsQuartic} & none & Structural positivity \\
+\midrule
+\lean{small\_cc\_at\_fixed\_point} & \lean{Constants/CosmoConst} & none & $\Lambda_{\mathrm{large}}$ excluded at FP (Thm~\ref{thm:cc_bound_app}) \\
+\lean{small\_cc\_at\_full\_fixed\_point} & \lean{Constants/CosmoConst} & none & Full fixed-point corollary \\
+\lean{closure\_cost\_monotone\_in\_vac\_energy} & \lean{Constants/CosmoConst} & none & Closure cost monotone in $\rho_\Lambda$ \\
+\lean{cc\_bound\_not\_exact\_zero} & \lean{Constants/CosmoConst} & none & Scope: smallness, not exact zero \\
+\bottomrule
+\end{longtable}
+
+% =====================================================================
+%  APPENDIX B: CONDITIONAL PHYSICAL APPLICATIONS
+% =====================================================================
+\section{Conditional Physical Applications}
+\label{app:physical_applications}
+
+\noindent\textbf{Note:} The results in this appendix apply the \SRRG\ fixed-point
+structure to specific physical problems under additional physical hypotheses
+beyond the core \SRRG\ axioms.  Each subsection states its load-bearing
+hypotheses explicitly.  These are presented separately from the main
+theoretical results to make the hypothesis-dependence transparent.
+All Lean formalizations are in \lean{SrrgLean.Constants/} with zero sorry,
+conditional on the stated hypotheses.
+
+\subsection{The Strong CP Problem: $\theta_{\mathrm{QCD}} = 0$}
+\label{app:strong_cp}
+
+The strong CP problem asks why $|\theta_{\mathrm{QCD}}| < 10^{-10}$ despite no
+known symmetry enforcing this.  The \SRRG\ offers a structural resolution that
+requires no axion mechanism or anthropic reasoning.
+
+\paragraph{Mechanism.}
+A theory $S$ with $\theta_{\mathrm{QCD}} \neq 0$ is not invariant under the CP
+transformation $S \mapsto \bar{S}$ (its CP image).  The QCD $\theta$-term
+$\frac{\theta_{\mathrm{QCD}} g^2}{32\pi^2} G^a_{\mu\nu} \tilde{G}^{a\mu\nu}$
+is odd under time-reversal; a theory with this term active cannot self-consistently
+represent its own time-reversed dynamics.  In \SRRG\ terms, a CP-violating theory $S$
+requires an \emph{external} time-direction selector to specify which of $S$ and
+$\bar{S}$ is the ``forward'' theory: this contributes positively to $C_{\mathrm{closure}}[S]$.
+
+\begin{definition}[CP Self-Consistency]
+A theory $S \in \mathcal{T}$ is \emph{CP-self-consistent} if its CP image
+$\bar{S}$ is observationally equivalent to $S$: $F[\bar{S}] = F[S]$.  Equivalently,
+$|\theta_{\mathrm{QCD}}(S)| = 0$.
+\end{definition}
+
+\begin{proposition}[CP Violation Increases Closure Cost]
+\label{prop:cp_closure_app}
+For any theory $S$: $|\theta_{\mathrm{QCD}}(S)| > 0 \;\Rightarrow\; C_{\mathrm{closure}}[S] > 0$.
+\end{proposition}
+
+\begin{proof}
+If $|\theta_{\mathrm{QCD}}(S)| > 0$, then $S$ and $\bar{S}$ are observationally
+distinguishable (the neutron electric dipole moment is nonzero).  The self-referential
+record of $S$ must include a specification of the time-orientation, which is an
+external selector: $C_{\mathrm{sel}}[S] > 0$.  Since $C_{\mathrm{closure}} \geq C_{\mathrm{sel}}$
+by the nonnegativity of the closure cost components, this gives $C_{\mathrm{closure}}[S] > 0$.
+\textit{(This implication is stated as axiom \lean{h\_theta\_implies\_closure} in the
+Lean formalization; its derivation from the SRRG closure functional definition requires
+connecting QCD operators to the SRRG type theory, deferred to future work.)}
+\end{proof}
+
+\begin{theorem}[\SRRG\ Derivation of $\theta_{\mathrm{QCD}} = 0$]
+\label{thm:strong_cp_app}
+At the \SRRG\ fixed point $\Sstar$ with $C_\Lambda[\Sstar] = 0$, the strong CP phase
+vanishes: $\theta_{\mathrm{QCD}}(\Sstar) = 0$.
+\end{theorem}
+
+\begin{proof}
+By Proposition~\ref{prop:constraint_zero}, $C_\Lambda[\Sstar] = 0$ implies
+$C_{\mathrm{closure}}[\Sstar] = 0$.  By Proposition~\ref{prop:cp_closure_app}, if
+$|\theta_{\mathrm{QCD}}(\Sstar)| > 0$ then $C_{\mathrm{closure}}[\Sstar] > 0$,
+contradicting the fixed-point condition.  Therefore $\theta_{\mathrm{QCD}}(\Sstar) = 0$.
+\end{proof}
+
+\textbf{Lean status: [B]} --- formalized in \lean{SrrgLean.Constants.StrongCP}.
+The main theorem \lean{theta\_qcd\_eq\_zero\_at\_fp} and the implication chain
+\lean{cp\_self\_consistent\_of\_closure\_zero} compile with zero sorry in
+\lean{srrg-lean}.  The physics axiom \lean{h\_theta\_implies\_closure} (CP violation
+$\Rightarrow$ positive closure cost) is stated explicitly and is the remaining gap.
+
+\paragraph{Comparison with the Axion Mechanism.}
+The Peccei-Quinn axion mechanism \cite{PecceiQuinn1977} dynamically relaxes
+$\theta_{\mathrm{QCD}}$ to zero by adding a new symmetry.  The \SRRG\ argument is
+different in character: $\theta_{\mathrm{QCD}} = 0$ is not a symmetry requirement
+but a self-referential consistency requirement.  The fixed-point theory $\Sstar$
+cannot have $\theta_{\mathrm{QCD}} \neq 0$ because such a theory fails the
+$C_{\mathrm{closure}} = 0$ viability criterion.
+
+\paragraph{Comparison with Nelson--Barr mechanism.}
+A second class of structural solutions, due to Nelson \cite{Nelson1984} and Barr
+\cite{Barr1984}, enforces $\bar\theta = 0$ at tree level by imposing CP as an exact
+symmetry that is subsequently broken spontaneously, producing naturally small
+radiative corrections.  Like the \SRRG\ approach, Nelson--Barr does not invoke
+axions; unlike it, the mechanism rests on a symmetry assumption external to the
+theory.  The \SRRG\ derives $\theta_{\mathrm{QCD}} = 0$ from the unique internal
+requirement $C_{\mathrm{closure}}[\Sstar] = 0$, without imposing CP symmetry as an
+axiom.
+
+\subsection{Fermion Generation Count: $N_{\mathrm{gen}} = 3$}
+\label{app:ngen}
+
+The \SRRG\ selects $N_{\mathrm{gen}} = 3$ fermion generations via a two-sided
+constraint on the viability functional.
+
+\paragraph{Lower bound ($N_{\mathrm{gen}} \geq 3$).}
+The \SRRG\ fixed point is CP-self-consistent in the strong sector
+(Theorem~\ref{thm:strong_cp_app}), but the electroweak sector admits CP violation:
+the Jarlskog invariant $J \neq 0$ encodes quark-mixing CP violation required for
+electroweak baryogenesis.  The fundamental result of CKM matrix theory states:
+$J \neq 0 \;\Leftrightarrow\; N_{\mathrm{gen}} \geq 3$ \cite{Jarlskog1985}.
+Anomaly cancellation conditions similarly fix the SM fermion
+representations uniquely to one generation \cite{GengMarshak1989};
+requiring self-consistency across generations then implies $N_{\mathrm{gen}} \geq 3$
+in alternative structural arguments \cite{DobrescuPoppitz2001,Frampton1992}.
+With $N_{\mathrm{gen}} \leq 2$, the CKM matrix is real ($J = 0$), no electroweak
+CP asymmetry arises, and baryogenesis cannot produce the observed baryon asymmetry.
+A theory unable to self-consistently model the observed cosmological CP asymmetry
+has $C_{\mathrm{closure}}[S] > 0$, violating the fixed-point condition.
+Therefore $N_{\mathrm{gen}} \geq 3$ at $\Sstar$.
+
+\paragraph{Upper bound ($N_{\mathrm{gen}} \leq 3$).}
+The Yukawa sector with $N_{\mathrm{gen}}$ generations has $(N_{\mathrm{gen}}-1)^2$
+physical CP phases plus $N_{\mathrm{gen}}$ real mixing angles.  For
+$N_{\mathrm{gen}} > 3$, the additional Yukawa parameters beyond those needed for
+the minimum CP asymmetry are free external inputs that cannot be self-computed:
+each contributes positively to $C_{\mathrm{sel}}[S]$.  Since $C_{\mathrm{sel}}[\Sstar] = 0$,
+any excess generational structure is excluded.
+
+\begin{theorem}[\SRRG\ Derivation of $N_{\mathrm{gen}} = 3$]
+\label{thm:ngen_app}
+At the \SRRG\ fixed point $\Sstar$ with $C_\Lambda[\Sstar] = 0$, the number of
+fermion generations is exactly three: $N_{\mathrm{gen}}(\Sstar) = 3$.
+\end{theorem}
+
+\begin{proof}
+The lower bound follows from the CP-violation argument above:
+$C_{\mathrm{closure}}[\Sstar] = 0$ implies $J \neq 0$, hence $N_{\mathrm{gen}} \geq 3$.
+The upper bound follows from $C_{\mathrm{sel}}[\Sstar] = 0$: excess Yukawa
+free parameters above the $N_{\mathrm{gen}} = 3$ minimum are excluded.
+\end{proof}
+
+\textbf{Lean status: [B]} --- formalized in \lean{SrrgLean.Constants.GenerationCount}.
+The theorem \lean{ngen\_eq\_3} compiles with zero sorry under explicit hypotheses
+\lean{h\_cp\_requires\_3gen} and \lean{h\_excess\_gen\_selector\_cost}.
+
+\textbf{Independence from NEMS.}
+This \SRRG\ derivation of $N_{\mathrm{gen}} = 3$ is independent of the NEMS
+Two-Layer PSC Theorem (P05 \cite{SpivackNEMS05}), which derives $N_{\mathrm{gen}} = 3$
+from categorical completeness of the gauge sieve.  The two derivations are
+complementary: NEMS uses the categorical structure of gauge theory; \SRRG\ uses
+the viability balance of closure cost vs.\ selector cost.  Agreement between
+independent derivations strengthens confidence in the result.
+
+\subsection{One-Loop \SRRG\ $\beta$-Function: UV Stability and Hessian}
+\label{app:beta_function}
+
+The one-loop expansion of the \SRRG\ viability functional $F[S]$ around the fixed
+point $\Sstar$ yields the \SRRG\ Hessian $M = \delta^2 F/\delta S^2\big|_{\Sstar}$,
+whose eigenspectrum determines scaling dimensions of perturbations to $\Sstar$.
+
+\paragraph{The gauge-coupling proxy.}
+We study a finite-dimensional proxy for \SRRG\ theory space: the SM gauge couplings
+$(g_1, g_2, g_3)$ for $U(1)$, $SU(2)$, $SU(3)$.  The proxy viability functional is
+\begin{equation}\label{eq:proxy_F_app}
+  F_{\mathrm{proxy}}[g_1, g_2, g_3]
+  = \sum_{i} H_{\mathrm{Haar}}(G_i)\, g_i^2
+    - \lambda \sum_{i} g_i^4, \qquad \lambda > 0,
+\end{equation}
+where $H_{\mathrm{Haar}}(G_i) = \ln\mathrm{Vol}_{\mathrm{Haar}}(G_i)$ is the Haar
+entropy of each gauge group, and the quartic $-\lambda g_i^4$ models the self-computation
+cost growing with coupling strength.
+
+\paragraph{Fixed-point couplings.}
+Setting $\partial F_{\mathrm{proxy}}/\partial g_i = 0$ gives
+\begin{equation}
+  g_i^{*2} = \frac{H_{\mathrm{Haar}}(G_i)}{2\lambda}\,.
+\end{equation}
+The fixed-point couplings scale as the Haar entropies:
+$g_1^{*2} : g_2^{*2} : g_3^{*2}
+= \ln(2\pi) : \ln(2\pi^2) : \ln(3\pi^4)
+\approx 1.838 : 2.983 : 5.678$.
+
+\paragraph{Hessian at the fixed point.}
+The diagonal Hessian entries at $g_i^*$ are
+\[
+  \frac{\partial^2 F_{\mathrm{proxy}}}{\partial g_i^2}\bigg|_{g_i^*}
+  = 2 H_{\mathrm{Haar}}(G_i) - 12\lambda\, g_i^{*2}
+  = 2 H_{\mathrm{Haar}}(G_i) - 6 H_{\mathrm{Haar}}(G_i)
+  = -4 H_{\mathrm{Haar}}(G_i).
+\]
+All three eigenvalues are \emph{strictly negative}:
+\begin{align*}
+  \mu_{U(1)} &= -4\ln(2\pi) \approx -7.352, \\
+  \mu_{SU(2)} &= -4\ln(2\pi^2) \approx -11.930, \\
+  \mu_{SU(3)} &= -4\ln(3\pi^4) \approx -22.710.
+\end{align*}
+
+\begin{theorem}[\SRRG\ Proxy UV Stability]
+\label{thm:uv_stable_app}
+At the gauge-coupling proxy fixed point $g_i^* = \sqrt{H_{\mathrm{Haar}}(G_i)/(2\lambda)}$,
+the Hessian of $F_{\mathrm{proxy}}$ is negative-definite.  All three eigenvalues
+$\mu_i = -4H_{\mathrm{Haar}}(G_i)$ are strictly negative.
+\end{theorem}
+
+\begin{proof}
+Direct computation: $\partial^2 F/\partial g_i^2\big|_{g^*} = 2H_i - 12\lambda\cdot H_i/(2\lambda)
+= -4H_i < 0$ since $H_i > 0$.
+\end{proof}
+
+\textbf{Lean status: [A\_Lean]} --- formalized in
+\lean{SrrgLean.Constants.BetaFunction}.  Theorems
+\lean{proxy\_hessian\_negative\_definite} and \lean{eigenvalue\_ordering}
+compile with zero sorry.
+
+\paragraph{Eigenvalue ordering and contraction rates.}
+The eigenvalues satisfy
+$\mu_{U(1)} > \mu_{SU(2)} > \mu_{SU(3)}$ (less to more negative),
+reflecting increasing gauge group complexity.  The contraction rates along the
+three eigendirections satisfy $|\mu_{SU(3)}|/|\mu_{U(1)}| \approx 3.089$,
+consistent with the relative Haar entropy hierarchy.
+
+The Weinberg angle from the proxy coupling ratio is a negative result; see
+Appendix~\ref{app:weinberg}.
+
+\subsection{Higgs Quartic Coupling $\lambda_H$ from \SRRG\ EW Stability}
+\label{app:higgs}
+
+\paragraph{Structural recovery, not independent prediction.}
+The SRRG does not independently predict $m_H$ and $v$ in this argument.
+Rather, conditional on the observed mass and VEV anchors ($m_H \approx 125\,\mathrm{GeV}$,
+$v \approx 246\,\mathrm{GeV}$), the SRRG fixed-point electroweak stability condition
+recovers the unique tree-level quartic $\lambda_H = m_H^2/(2v^2)$.
+This is an internal consistency check---the SRRG EW stability condition is satisfied
+exactly by the observed ratio---not a derivation of the Higgs mass from first principles.
+
+P01 \cite{Spivack2025_FirstPrinciplesSM} derives $\lambda_H = \varphi/(4\pi) \approx 0.12876$
+via Minimum Description Length (MDL) selection.  The \SRRG\ approach is independent:
+it fixes $\lambda_H$ through the EW vacuum stability condition at the \SRRG\ fixed point.
+
+\paragraph{\SRRG\ EW stability condition.}
+At the \SRRG\ fixed point $\Sstar$ at EW scale $\mu_{\mathrm{EW}}$, the Higgs
+potential $V(\phi) = \mu^2\phi^2 + \lambda_H\phi^4$ must satisfy:
+\begin{enumerate}[label=(\roman*),leftmargin=2.5em]
+  \item \emph{EW symmetry breaking:} $\mu^2 = -\lambda_H v^2$ (VEV condition);
+  \item \emph{Tree-level mass relation:} $m_H^2 = 2\lambda_H v^2$ (curvature at minimum).
+\end{enumerate}
+Solving (ii) for $\lambda_H$ gives
+\begin{equation}\label{eq:lambda_H_srrg_app}
+  \lambda_H = \frac{m_H^2}{2v^2}.
+\end{equation}
+
+\begin{theorem}[\SRRG\ EW Stability Fixes $\lambda_H$]
+\label{thm:lambda_H_app}
+At the \SRRG\ EW-stable fixed point, the Higgs quartic coupling is uniquely
+determined by $\lambda_H = m_H^2/(2v^2)$.
+\end{theorem}
+
+\begin{proof}
+From the tree-level mass relation $m_H^2 = 2\lambda_H v^2$, solving for $\lambda_H$
+with $v > 0$ gives the result directly.
+\end{proof}
+
+\textbf{Lean status: [B]} --- formalized in \lean{SrrgLean.Constants.HiggsQuartic}.
+With $m_H = 125.20\,\text{GeV}$ and $v = 246.22\,\text{GeV}$ (PDG 2022
+\cite{ParticleDataGroup2022}): $\lambda_H^{\mathrm{SRRG}} \approx 0.12928$,
+$\lambda_H^{\mathrm{P01}} \approx 0.12876$ ($\Delta \approx -0.4\%$).
+\textbf{Grade: [B]}.
+
+\paragraph{Connection to P01 self-consistent VEV result.}
+The $-0.4\%$ gap between $\lambda_H^{\mathrm{SRRG}}$ and $\lambda_H^{\mathrm{P01}} = \varphi/(4\pi)$
+is precisely the residual tension identified in P01 \cite{Spivack2025_FirstPrinciplesSM}: using the
+self-consistent VEV $v_{\rm self} = 2M_W/g_2(M_W) = 246.27$~GeV (artifact
+\texttt{comp\_p01\_HMC\_higgs\_mass\_closure.json}), the bare $9.1\sigma$ Higgs mass tension
+reduces to $-2.08\sigma$, with the residual arising entirely from this $-0.4\%$ offset in
+$\lambda_H = \varphi/(4\pi)$ versus the SM tree-level value.  The SRRG EW stability condition
+and the P01 MDL identification thus agree on the structural source of the remaining discrepancy.
+
+\paragraph{Structural derivation of $v$ (grade [A$^-$]).}
+Combining the SRRG contraction eigenvalue $1/\varphi$ (\lean{GoldstoneEntropyCorrection},
+Lean-certified), the PSC Entropy-Contraction Duality (\lean{PSCEntropyDuality}, zero sorry),
+and the EW Goldstone manifold $S^3$ ($\dim = 3 = N_{\mathrm{gen}}$,
+$\mathrm{Vol}(S^3) = 2\pi^2$; \lean{EWGoldstoneManifold}), the VEV is derived as
+\begin{equation}\label{eq:vev_psc}
+  v_{\mathrm{PSC}} \;=\; 246.16\,\mathrm{GeV}, \quad -0.024\%\ \text{from}\ v_{\mathrm{PDG}}.
+\end{equation}
+A null-discipline enumeration over 288 structural formula candidates yields exactly one hit
+within the $1\%$ structural threshold (saturation $0.35\%$; artifact
+\texttt{null\_discipline\_vev\_formula.json} in P01 \texttt{canonical\_run/}),
+confirming the result is structural rather than coincidental.
+\textbf{Grade [A$^-$]:} formalized in \lean{srrg-lean/SrrgLean/VEVProof.*} (zero sorry;
+all four modules build-verified).  One named open axiom remains before full
+grade [A$_{\mathrm{Lean}}$] is attained: \lean{psc\_ew\_entropy\_maximization}
+(Lean plumbing gap: connecting \lean{EWGoldstoneManifold} to \lean{PhysicalSubspace}).
+
+\subsection{Cosmological Constant: Structural Smallness Argument}
+\label{app:cosmo_constant}
+
+\paragraph{Structural exclusion, not derivation of observed value.}
+The SRRG result here is the structural exclusion of Planck-scale vacuum energy
+at the fixed point $\Sstar$ (via $C_{\mathrm{closure}}[\Sstar] = 0$), not a
+derivation of the observed value $\Lambda_{\mathrm{obs}}$.
+The quantitative $0.31\sigma$ match reported below requires as additional input
+the P01 holographic formula and the observed $H_0$; it is a consistency check
+at grade [C$\to$B], not an ab initio prediction.
+
+The cosmological constant problem asks why the observed vacuum energy
+$\Lambda_{\mathrm{vac}} \approx (2.3\,\text{meV})^4 \approx 2.9\times10^{-123}\,M_P^4$
+is $\sim 120$ orders of magnitude below the Planck scale.  The \SRRG\ provides a
+structural mechanism for why $\Lambda_{\mathrm{vac}}$ cannot be Planck-scale.
+
+\paragraph{\SRRG\ closure cost and large vacuum energy.}
+A vacuum energy $\rho_\Lambda \gg M_P^4$ implies spacetime curvature
+$\sim \sqrt{G_N\rho_\Lambda} \gg M_P$, placing the theory in the quantum gravity
+regime where no renormalizable QFT description exists.  In SRRG terms: in this
+regime, no stable self-referential record can form
+(spacetime fluctuations disrupt record integrity), so $C_{\mathrm{closure}}[S] > 0$
+for any $S$ with $\Lambda_{\mathrm{vac}} \gg M_P^4$.
+
+\begin{theorem}[\SRRG\ Cosmological Constant Bound]
+\label{thm:cc_bound_app}
+Under the structural hypothesis that $\Lambda_{\mathrm{vac}} \gg M_P^4$ implies
+$C_{\mathrm{closure}}[S] > 0$, the \SRRG\ fixed-point condition
+$C_{\mathrm{closure}}[\Sstar] = 0$ excludes Planck-scale vacuum energy.
+\end{theorem}
+
+\begin{proof}
+By contrapositive: if $\Lambda_{\mathrm{vac}}(\Sstar) > \Lambda_{\mathrm{threshold}}$,
+then $C_{\mathrm{closure}}[\Sstar] > 0$ by hypothesis, contradicting the fixed-point
+condition.
+\end{proof}
+
+\textbf{Lean status: [B]} --- formalized in
+\lean{SrrgLean.Constants.CosmologicalConstant}.
+Combined with P01 holographic formula~\cite{Spivack2025_FirstPrinciplesSM}:
+$\Lambda_{\mathrm{P01}} = 1.097\times10^{-52}\,\text{m}^{-2}$ ($0.31\sigma$ match
+to Planck~2018).
+\textbf{Combined grade: [C$\to$B]} --- SRRG structural bound + P01 quantitative
+formula gives $0.31\sigma$ match; $H_0$ remains an external anchor.
+
+% =====================================================================
+%  APPENDIX C: FINE-STRUCTURE CONSTANT — DIRECT COUPLING ROUTE
+% =====================================================================
+\section{Fine-Structure Constant: Direct Coupling Route}
+\label{app:alpha_coupling}
+
+\noindent\textbf{[Positive partial result --- Category A/D.]}
+
+\paragraph{Overview.}
+This appendix documents the direct derivation of the electromagnetic fine-structure
+constant $\alpha$ from the \SRRG\ fixed-point gauge couplings via a tree-level
+SM identity that does \emph{not} require knowledge of $\sin^2\theta_W$ as a
+separate input.  It complements (and is independent of) the failed Haar-entropy
+Weinberg-angle route of Appendix~\ref{app:weinberg}.
+
+\paragraph{Tree-level identity.}
+In the SM, the electromagnetic coupling satisfies the exact tree-level relation
+\begin{equation}\label{eq:alpha_tree}
+  \alpha = \frac{g_1^2\, g_2^2}{4\pi(g_1^2 + g_2^2)},
+\end{equation}
+where $g_1$ and $g_2$ are the $\mathrm{U}(1)_Y$ and $\mathrm{SU}(2)_L$ gauge
+couplings (without the $\sqrt{5/3}$ GUT-normalisation factor; see below).
+This follows from $e = g_1 g_2/\sqrt{g_1^2+g_2^2}$ at tree level and
+$\alpha = e^2/(4\pi)$.  Importantly, the Weinberg angle $\sin^2\theta_W =
+g_1^2/(g_1^2+g_2^2)$ is \emph{implicit} in this formula; it need not be
+computed independently.
+
+\paragraph{Numerical evaluation from Lean-certified couplings.}
+P01~\cite{Spivack2025_FirstPrinciplesSM} provides Lean-certified exact rationals:
+\[
+  g_1^2 = \tfrac{16}{125},\qquad g_2^2 = \tfrac{2329}{5400}.
+\]
+These give
+\[
+  g_1^2 + g_2^2 = \frac{377525}{675000}, \qquad
+  g_1^2\, g_2^2  = \frac{37264}{675000},
+\]
+and therefore
+\begin{equation}\label{eq:inv_alpha_mz}
+  \frac{1}{\alpha_{\mathrm{bare}}}
+  = \frac{4\pi \cdot 377525}{37264}
+  \approx 127.311.
+\end{equation}
+The PDG 2022 running value at the electroweak scale is
+$1/\alpha(M_Z) \approx 127.944$, so the bare-coupling prediction deviates by
+$0.5\%$, consistent with the A/D status reported in P01.
+
+\noindent
+Equation~\eqref{eq:inv_alpha_mz} is also the P01 formula quoted there
+as ``$1/\alpha_{\rm EM} = 4\pi \cdot 377525/37264$ (0.5\% from PDG)''.
+
+\paragraph{Implicit Weinberg angle.}
+A by-product: the same couplings give
+\[
+  \sin^2\theta_W^{\mathrm{bare}} = \frac{g_1^2}{g_1^2+g_2^2}
+  = \frac{86400}{377525} = \frac{3456}{15101} \approx 0.2290,
+\]
+which is the P01 tree-level value at $1.0\%$ from PDG ($0.23122$) --- obtained
+without any GUT-normalisation factor.  The $\sqrt{5/3}$ GUT factor inflates the
+coupling by $5/3$, giving $\sin^2\theta_W^{\mathrm{GUT}} \approx 0.381$, which is
+the proxy value that fails by $>1000\sigma$ in the Haar-entropy route of
+Appendix~\ref{app:weinberg}.  The tree-level P01 value avoids this inflation
+because it uses the physical SM coupling $g_1$ directly, not the GUT embedding.
+
+\paragraph{Running to CODATA value.}
+The CODATA value $1/\alpha \approx 137.036$ is the Thomson-limit (zero-momentum)
+coupling.  The difference
+\[
+  \frac{1/\alpha_0}{1/\alpha(M_Z)}
+  = \frac{137.036}{127.311} \approx 1.0764
+\]
+is accounted for by standard one-loop QED running from $M_Z$ to $q^2 = 0$ via the
+SM fermion content.  This running is external to the \SRRG\ framework and does not
+affect the status of Eq.~\eqref{eq:inv_alpha_mz}.
+
+\paragraph{SRRG--MDL structural interpretation.}
+P09~\cite{Spivack2025_ArchitectureComputableUniverse} (Principle of Constants as Compression Ratios)
+establishes that physical constants are MDL-optimal compression ratios fixed by the
+Elegant Kernel.  A structural bridge between P09 and the present paper
+is provided by the \textbf{SRRG--MDL equivalence conjecture} (Open Problem~9): the
+\SRRG\ fixed-point maximization $\arg\max_S F[S]$ and MDL minimization
+$\arg\min_S K[S]$ select the same theory $\Sstar$ under the correspondence
+\[
+  F[S] = R[S] - C_\Lambda[S]
+  \;\longleftrightarrow\;
+  -K[S] = -\bigl(L[S]+L[\text{data}|S]\bigr),
+\]
+via $R[S] \propto -L[S]$ (self-representation capacity increases as description
+length decreases) and $C_\Lambda[S] \propto L[\text{data}|S]$ (closure cost
+$\leftrightarrow$ prediction length under $\Lambda$-perturbations).
+
+Under this conjecture, the SRRG fixed-point couplings \emph{are} the MDL-optimal
+Elegant Kernel invariants---i.e.\ $g_1^2 = 16/125$, $g_2^2 = 2329/5400$,
+$g_3^2 = 41075281/27648000$---and $\alpha$ at $M_Z$ is therefore a direct
+output of the \SRRG\ fixed point.
+
+The conjecture also structurally explains \emph{why} the Haar-entropy proxy fails:
+$H_{\mathrm{Haar}}(G_i)$ captures only the gauge-sector entropy contribution to
+$L[S]$, omitting the matter-sector hypercharge normalization.  The true MDL
+description length includes the full SM matter content, which is why only the
+Elegant Kernel invariants (computed from the complete UGP structure) yield the
+correct values.
+
+\paragraph{Literature context.}
+The standard identity $\alpha = Z_0/(2R_K)$ (where $Z_0 = \mu_0 c$ is the impedance of
+free space and $R_K = h/e^2$ is the von Klitzing constant) expresses the same
+dimensional content as the \SRRG\ balance condition, connecting the $\mathrm{U}(1)$
+mode structure to the fine-structure constant without free parameters.
+The integer $137 = 2^0 + 2^3 + 2^7$
+(bit-set $\{0,3,7\}$ PSC structure) providing the MDL-minimal identification of
+the EM base scale is independently documented in P01.
+
+\paragraph{Grade summary.}
+\begin{itemize}[leftmargin=2.5em]
+  \item $1/\alpha(M_Z) = 4\pi \cdot 377525/37264 \approx 127.31$ from Lean-certified
+    bare couplings: \textbf{[A/D]} (upstream couplings are $A_{\mathrm{Lean}}$;
+    bridge via Eq.~\eqref{eq:alpha_tree} is tree-level SM algebra).
+  \item $\sin^2\theta_W^{\mathrm{bare}} = 3456/15101 \approx 0.229$ (1.0\% from PDG):
+    \textbf{[A/D]} (same upstream; no GUT normalisation).
+  \item SRRG--MDL equivalence conjecture: \textbf{[B+]} (structurally well-motivated;
+    awaits Lean formalization, Open Problem~9).
+  \item Running to CODATA ($1/\alpha \approx 137.036$): requires standard QED
+    running; not an \SRRG\ output.
+\end{itemize}
+
+% =====================================================================
+%  APPENDIX D: FAILED ROUTE — WEINBERG ANGLE
+% =====================================================================
+\section{Failed Route: Weinberg Angle from Haar Entropy}
+\label{app:weinberg}
+
+\noindent\textbf{[Negative result --- documented for scientific completeness.]}
+
+The Weinberg angle $\theta_W$ satisfies $\sin^2\theta_W = g'^2/(g^2 + g'^2)$
+where $g, g'$ are the $SU(2)$ and $U(1)$ couplings.  The \SRRG\ approach asks whether
+the Haar measure entropies of $U(1)$ and $SU(2)$ determine the coupling ratio.
+
+\paragraph{Haar measure entropy ratio.}
+The normalized Haar measure entropy of a compact group $G$ is
+$H_{\mathrm{Haar}}(G) = \ln \mathrm{Vol}(G)$ where $\mathrm{Vol}(G)$ is the total
+Haar measure.  For the relevant groups:
+\begin{align*}
+H_{\mathrm{Haar}}(U(1)) &= \ln(2\pi) \approx 1.838 \quad \text{(Theorem~\ref{thm:u1})},\\
+H_{\mathrm{Haar}}(SU(2)) &= \ln(2\pi^2) \approx 2.983 \quad \text{($SU(2) \cong S^3$)},\\
+H_{\mathrm{Haar}}(SU(3)) &= \ln(3\pi^4) \approx 5.678.
+\end{align*}
+
+\paragraph{Numerical assessment.}
+The structural hypothesis that $\sin^2\theta_W = H_{\mathrm{Haar}}(U(1)) / (H_{\mathrm{Haar}}(U(1)) + H_{\mathrm{Haar}}(SU(2)))$
+gives:
+\[
+\sin^2\theta_W \stackrel{?}{=}
+  \frac{\ln(2\pi)}{\ln(2\pi) + \ln(2\pi^2)}
+= \frac{\ln(2\pi)}{\ln(4\pi^3)}
+\approx 0.381,
+\]
+which deviates from the experimental value $\sin^2\theta_W = 0.23122 \pm 0.00003$
+\cite{ParticleDataGroup2022} by $\Delta = 0.150$ (65\% relative deviation).  No simple ratio
+of Haar entropies of $U(1)$, $SU(2)$, and $SU(3)$ recovers the experimental value.
+
+\paragraph{Assessment.}
+The Haar entropy ratio does \emph{not} directly give $\sin^2\theta_W$; the
+structural hypothesis is falsified at this level.
+
+\paragraph{One-loop RG running attempt.}
+To test whether RG evolution from the Planck scale to $M_Z$ closes the gap,
+the script \texttt{scripts/weinberg\_rg\_running.py} integrates the one-loop SM
+$\beta$-functions from $M_{\mathrm{Planck}}$ down to $M_Z$, with SRRG
+Haar-entropy Planck-scale boundary conditions
+$\alpha_i^* = \lambda H_{\mathrm{Haar}}(G_i)/(4\pi)$ and $\lambda$ fixed from
+$\alpha_s(M_Z) = 0.1179$.
+The result: $\sin^2\theta_W^{\mathrm{RG}} \approx 0.190$, which is
+${\approx}-1385\sigma$ from experiment.  The predicted $\alpha_1(M_Z) \approx 0.0049$
+and $\alpha_2(M_Z) \approx 0.0125$ are both ${\sim}3\times$ below PDG values,
+reflecting that the Haar-entropy boundary conditions do not correctly reproduce
+the SM coupling ratios even after running.
+
+The root cause is that the GUT normalization of the hypercharge coupling ---
+$g_1 = \sqrt{5/3}\, g'_Y$ --- is an input convention not derived from SRRG.
+The Weinberg angle derivation requires a deeper SRRG treatment of the
+$U(1)$ factor, connecting the hypercharge assignment to the $C_\Lambda[\Sstar]=0$
+fixed-point condition.
+This is recorded as an open exploration path, not a derivation.
+\textbf{Grade: [D$\to$C]} --- structural hypothesis identified and numerically tested
+at two levels (proxy Haar ratio and one-loop RG running); negative results honestly
+disclosed; further analysis deferred to Open Problem 5 (\S\ref{sec:open}).
+
+This result is included because transparency demands honest disclosure of
+blocked routes. The Weinberg angle remains an open problem for the \SRRG\ framework.
+
+\end{appendices}
+
+\end{document}
