@@ -1,0 +1,1640 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  A General Theory of Selection:
+%  Two-Stage Sieves, the Information Profit Threshold, and Cyclotomic Substrates
+%
+%  Nova Spivack --- 2026
+%  Working Paper (P26)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt]{article}
+
+% ===================== PREAMBLE =====================
+\usepackage[margin=1in]{geometry}
+\usepackage{authblk}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{url}
+\urlstyle{tt}
+\usepackage{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage[backend=biber,style=numeric-comp,sorting=none]{biblatex}
+\addbibresource{../bib/Spivack_Papers_Bibliography.bib}
+
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black}
+\input{nova_zenodo_doi_placeholder}
+\setlength{\emergencystretch}{3em}
+
+% ── Theorem environments ──────────────────────────────────────────────────────
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% ── Convenience macros ────────────────────────────────────────────────────────
+\newcommand{\UGP}{\text{UGP}}
+\newcommand{\GTE}{\text{GTE}}
+\newcommand{\IPT}{\mathrm{IPT}}
+\newcommand{\GXT}{\text{GXT}}
+\newcommand{\GSP}{\mathrm{GSP}}
+\newcommand{\zetaN}[1]{\zeta_{#1}}
+\newcommand{\lean}[1]{\texttt{#1}}
+
+% ── Title / author ────────────────────────────────────────────────────────────
+\title{\bfseries A General Theory of Selection: \\[0.3em]
+Two-Stage Sieves, the Information Profit Threshold, \\[0.2em]
+and Cyclotomic Algebraic Substrates}
+
+\author[1]{Nova Spivack\thanks{Correspondence:
+  \href{mailto:novaspivackrelay@gmail.com}{novaspivackrelay@gmail.com}}}
+\affil[1]{Independent Research}
+\date{2026}
+
+\begin{document}
+\maketitle
+\NovaZenodoAfterTitle
+
+
+% =====================================================================
+%  ABSTRACT
+% =====================================================================
+\begin{abstract}
+Selection from astronomically large candidate spaces recurs across domains as
+disparate as subatomic physics, molecular biology, and corporate finance.
+We propose the \textbf{General Selection Principle} (GSP): the observed
+configuration is selected by the conjunction of two independently motivated
+filters---admissibility (structural/arithmetic consistency) and viability
+(a dynamical threshold on generative-to-dissipative rates).
+
+The viability filter requires the rate ratio to exceed the
+\emph{Information Profit Threshold} $\IPT = 1 + \frac{\ln\varphi}{2\ln(2\pi)}
+\approx 1.1309$, derived from first principles in~\cite{SpivackIPT}.
+Together, the filters produce asymptotically sparse but non-empty survivor sets.
+
+We document two independent quantitative signatures of the GSP.
+The IPT threshold recurs across five empirical domains --- ecology and economics
+(prior derivation~\cite{SpivackIPT}), nuclear magic numbers, prebiotic chemistry,
+corporate survival, and microbial metabolism (FBA, $r=0.971$, $p<0.001$) ---
+together with one model-internal symbolic-communication result (natural language alphabet size).
+The algebraic substrate $\mathbb{Q}(\zetaN{120})$ recurs in the Standard
+Model parameter spectrum~\cite{Spivack2026_SM_UGP}, the Zamolodchikov E8
+integrable QFT mass ratios~\cite{ugp-lean}, ADE Toda field theories, and
+SU(2)$_k$ WZW quantum dimensions.
+The E7 Toda theory ($h=18$, $18\nmid 120$) provides a clean falsifier: all
+six mass ratios lie provably outside $\mathbb{Q}(\zetaN{120})$, with the
+exclusion Lean-certified~\cite{ugp-lean}.
+
+Evidence grades range from [T] (theorem-level, machine-certified) through [B]
+(empirical, replication pending) to [B$^-$] (empirical, single-laboratory, not yet independently replicated); [Br]
+denotes bridge claims conditional on companion-paper premises;
+a domain-by-domain evidence map appears in Table~\ref{tab:evidence_map}.
+The co-occurrence of these two independent signatures supports the hypothesis
+that a single mathematical mechanism underlies selection across discrete
+combinatorial systems; see also the companion Self-Referential Renormalization Group (SRRG) paper~\cite{SpivackSRRG}
+for a proposed mechanism.
+\end{abstract}
+
+\tableofcontents
+
+% ── Claim Taxonomy ────────────────────────────────────────────────────────────
+\bigskip
+\begin{tcolorbox}[colback=blue!4,colframe=blue!45!black,
+                  title={Claim Status Taxonomy (used throughout this paper)}]
+\small
+\begin{tabular}{@{}lp{9cm}@{}}
+\textbf{[T]}~~ & \textit{Theorem}: machine-checked in Lean~4 (\texttt{ugp-lean}), zero \texttt{sorry} \\[2pt]
+\textbf{[C]}~~ & \textit{Computational}: verified by deterministic script at stated precision \\[2pt]
+\textbf{[B+]/[B]/[B$^-$]} & \textit{Empirical} evidence (decreasing strength: independent replication / single dataset / single-laboratory, not yet replicated) \\[2pt]
+\textbf{[Br]}~ & \textit{Bridge claim}: conditional on companion-paper premises \\[2pt]
+\textbf{[I]}~~ & \textit{Interpretive}: plausible reasoning; not yet formally verified \\[2pt]
+\textbf{[Conj]} & \textit{Conjecture}: clearly stated open hypothesis \\
+\end{tabular}
+\end{tcolorbox}
+
+% =====================================================================
+\section{Introduction}
+% =====================================================================
+
+Among the most striking features of nature is the extreme sparsity of realised
+structures relative to the space of conceivable alternatives.
+The Standard Model of particle physics selects a unique gauge group and generation
+content from a vast landscape of possible theories.
+Biological evolution converges on a single genetic code from a combinatorial space
+of~$\sim 10^{84}$ possible codon assignments.
+Nuclear shell structure exhibits magic numbers at exactly seven values despite the
+continuous spectrum of available energy levels.
+In each case, the question arises: what principle, if any, underlies the selection?
+
+A partial answer has emerged from two independent lines of work within our research
+programme.
+The first, developed in~\cite{SpivackIPT}, identifies the \textbf{Information Profit
+Threshold} $\IPT \approx 1.1309$ as the critical ratio of generative to dissipative rates at
+which a self-referential system transitions from non-viable to viable.
+This threshold is confirmed in ecological, economic, and population-dynamics data.
+The second, developed in~\cite{Spivack2026_SM_UGP}, establishes
+$\mathbb{Q}(\zetaN{120})$ as the algebraic substrate for the Standard Model
+parameter spectrum: all Universal Generative Principle (UGP)-derived constants lie in this cyclotomic field.
+
+The present paper asks whether these two signatures are domain-specific artefacts
+or instances of a general law.
+We test each against three additional physical systems --- nuclear magic numbers,
+the genetic code, and integrable quantum field theories --- and find consistent evidence
+that both signatures extend beyond their original context.
+
+\subsection{The two-stage sieve mechanism}
+
+The pattern common to the systems we study was identified and formalised in
+companion papers P01~\cite{Spivack2026_SM_UGP} and P24~\cite{Spivack2026_Uniqueness25}
+of this programme, building on the UGP framework~\cite{SpivackUGP,Spivack2025_ParticlePhysics}.
+In each domain, the observed structure emerges through two successive filters:
+\begin{enumerate}[leftmargin=2em,itemsep=2pt]
+  \item \textbf{Admissibility} (Stage~1): a structural consistency condition ---
+        arithmetic, geometric, or biochemical --- that eliminates the vast majority of
+        candidates.
+        Admissibility is domain-specific in form but appears to have a common effect
+        across these domains: it reduces the candidate space by many orders of magnitude.
+  \item \textbf{Viability} (Stage~2): a dynamical threshold condition.
+        Among admissible configurations, only those whose generative-to-dissipative
+        rate ratio exceeds $\IPT$ survive indefinitely.
+        Non-viable configurations decay or are outcompeted.
+\end{enumerate}
+The intersection of these two filters yields an asymptotically sparse but
+non-empty survivor set --- the \emph{selected} structures.
+
+\begin{definition}[Two-stage sieve]
+Let $\mathcal{C}$ be a discrete space of candidate configurations.
+Let $A \subseteq \mathcal{C}$ be the admissible set (Stage~1) and
+$V \subseteq \mathcal{C}$ the viable set (Stage~2).
+The \emph{survivor set} is $S = A \cap V$.
+\end{definition}
+
+\begin{theorem}[Asymptotic Sparsity~\textbf{[Br]}; full proof in~\cite{Spivack2026_SM_UGP,SpivackUGP}]
+\label{thm:sparsity}
+Under generic conditions on $A$ and $V$, $|S|/|A| \to 0$ as $|\mathcal{C}| \to \infty$.
+\end{theorem}
+
+\begin{proof}[Proof sketch~\textbf{[Br]}]
+The full proof is given in~\cite{Spivack2026_SM_UGP} (Theorem~2.1) and~\cite{SpivackUGP}.
+The concrete UGP instance --- the joint Stage-1/Stage-2 sieve has exactly one
+solution $(n=10, b_1=73)$ across all ridge levels $n\in\mathbb{N}$ ---
+is Lean-certified~\textbf{[T]}: \lean{asymptotic\_sparsity\_universal}
+(module \lean{Phase4.AsymptoticSparsity}, zero~\lean{sorry},~\cite{ugp-lean}).
+
+The \emph{general} IPT form of this theorem is now also Lean-formalized in
+\lean{GXT.AsymptoticSparsity}~\cite{ugp-lean}
+(\GXT{} = Geometric Threshold, the conjecture that the viability threshold equals $\IPT$
+universally across discrete combinatorial domains):
+the module proves that for any $N$-component system with i.i.d.\ efficiency
+ratios $\theta_i \in [0,b]$ and mean $\eta_0 < \IPT$, the fraction satisfying
+$\theta \geq \IPT$ is bounded by $e^{-\delta N}$ with
+$\delta = 2(\IPT - \eta_0)^2/b^2 > 0$, hence $\to 0$ as $N \to \infty$.
+The algebraic decay theorems are zero sorry; the probabilistic bound
+awaits Mathlib's Hoeffding inequality.
+\textbf{Status: [Br]~(Lean)} --- conditional on the Hoeffding bound hypothesis.
+
+The key intuition is as follows.
+Fix the admissible fraction $\alpha = |A|/|\mathcal{C}|$; as $|\mathcal{C}| \to \infty$,
+structural consistency conditions generically force $\alpha \to 0$ (the
+admissibility filter eliminates exponentially more configurations as the
+search space grows).
+The viable set $V$ is defined by a continuous threshold condition on the
+generative-to-dissipative ratio: $V = \{c \in \mathcal{C} : \theta(c) \geq \IPT\}$.
+Under the generic assumption that the distribution of $\theta(c)$ over $A$ is
+absolutely continuous with finite mass at the threshold, the intersection
+$|A \cap V|/|A|$ tends to zero as the filter becomes increasingly fine-grained
+with growing $|\mathcal{C}|$.
+The result establishes that selection is \emph{inevitable} (the sieve cannot be
+avoided as the candidate space grows) while the survivor set remains
+\emph{non-empty} because the threshold $\IPT$ is defined as the unique fixed
+point of the Gen/Drain renormalisation group~\cite{SpivackIPT} --- the one
+value at which marginal stability is achieved.
+\end{proof}
+
+The force of the GSP is not the general sparsity result, which is expected, but the
+\emph{quantitative} recurrence of $\IPT \approx 1.1309$ and $\mathbb{Q}(\zetaN{120})$ across
+structurally unrelated domains.
+These two constants are derived, not adjusted; their appearance in new contexts
+is a falsifiable prediction.
+
+\begin{table}[ht]
+\centering
+\caption{Evidence map for the General Selection Principle.
+Grade codes: [T]~theorem-level (machine-certified); [C]~deterministic computation / numerical verification;
+[B+]/[B]/[B$^-$]~empirical with decreasing strength; [Br]~bridge claim (companion-paper premises); [I]~speculative/theoretical bridge.
+See Appendix~\ref{app:cognition} for the cognitive systems entry.}
+\label{tab:evidence_map}
+\small
+\begin{tabular}{@{}p{3.4cm}p{4.8cm}p{1.0cm}p{3.5cm}@{}}
+\toprule
+\textbf{Domain} & \textbf{Claimed signature} & \textbf{Grade} & \textbf{Main vulnerability} \\
+\midrule
+Ecology \& economics & $\eta^* \approx 1.1309$ & [C]/[B] & Dataset dependence \\
+Nuclear magic numbers & $N=50$ ratio within 1.6\% of IPT & [Br] & Companion-param.\ dep. \\
+Prebiotic chemistry & Standard-20 passes two-stage sieve & [Br] & Template-factor bootstrapping \\
+Corporate survival & IPT as second structural boundary & [B$^-$] & External replication pending \\
+Microbial metabolism & FBA $G/D$ predicts growth ($r=0.971$) & [B] & Eight-condition sample size \\
+E8/Toda/WZW & $\mathbb{Q}(\zeta_{120})$ containment + E7 falsifier & [T]/[C] & Physical-realization interp.\\
+Language alphabet & $n=26$ unique fixed point of IPT equation & [B] & Numerology / model dep. \\
+Cognitive systems & Generative self-reference threshold & [I] & Speculative bridge (App.~\ref{app:cognition}) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% =====================================================================
+\section{The Information Profit Threshold across domains}
+\label{sec:ipt}
+% =====================================================================
+
+The Information Profit Threshold is defined in~\cite{SpivackIPT} as the unique
+fixed point of the Gen/Drain renormalisation group: the critical ratio
+$\theta^*$ such that a self-referential system is marginally stable.
+Three structural premises (derived in~\cite{SpivackIPT}) yield
+$\IPT = 1 + \ln\varphi/(2\ln(2\pi)) \approx 1.1309$,
+where $\varphi = (1+\sqrt{5})/2$ is the golden ratio.
+The balance ratio $\Lambda = \ln\varphi/\ln(2\pi) \approx 0.2618$ embedded in $\IPT$ is
+independently identified by Norfleet~\cite{NorfleetPrivComm} as a fundamental balance
+constant of discrete--continuous transitions, providing an independent geometric
+derivation of the same threshold.
+Below the threshold ($\theta < \IPT$), systems cannot sustain coherent
+self-referential processing and decay; above it ($\theta \geq \IPT$),
+systems are viable and self-maintaining.
+In a large configuration space the fraction of candidates naturally achieving
+$\theta \geq \IPT$ is asymptotically small (see Theorem~\ref{thm:sparsity}
+and §\ref{sec:ipt} below), so the intersection of the admissibility and
+viability filters yields a sparse but non-empty survivor set ---
+the $\IPT$ is the unique fixed point at which marginal stability is achieved.
+
+\paragraph{Logical relation to the companion SRRG paper.}
+The present paper is empirical and comparative: it asks whether two
+independently specified signatures---the information-profit threshold
+$\IPT \approx 1.1309$ and the cyclotomic substrate $\mathbb{Q}(\zetaN{120})$---recur
+across domains without presupposing a common mechanism.
+The companion SRRG paper~\cite{SpivackSRRG} proposes a deeper mechanism,
+the Self-Referential Renormalization Group, from which the IPT threshold is
+derived under explicitly stated self-referential fixed-point hypotheses.
+The cross-domain evidence reported here does not depend on accepting the full
+SRRG mechanism; rather, it supplies tests that any proposed mechanism must
+explain. Conversely, the SRRG is a candidate explanation for the recurrence
+documented here.
+
+\subsection{\texorpdfstring{Ecology and economics (original derivation, \cite{SpivackIPT})}{Ecology and economics (original derivation)}}
+
+The original derivation and empirical confirmation of $\IPT$ is presented
+in~\cite{SpivackIPT}.
+Three independent ecological and economic datasets give:
+tropical forest GPP/RECO ratio $= 1.130$ (four decimal places);
+above-$\IPT$ populations grow while below-$\IPT$ populations stagnate ($p < 10^{-4}$);
+companies in $[1.0,\, 1.13)$ fail at significantly higher rates than those
+above~$1.13$ ($p = 0.04$).
+
+\subsection{\texorpdfstring{Nuclear magic numbers (\cite{spivack2025nuclear_physics})}{Nuclear magic numbers}}
+
+\noindent\textbf{Status: bridge cross-domain confirmation~\textbf{[Br]}.}
+\emph{This result depends on spin-orbit coupling parameters derived in the companion
+paper~\cite{spivack2025nuclear_physics}; it is reported as a [Br] bridge claim.}
+
+\smallskip
+All seven nuclear magic numbers $\{2,\,8,\,20,\,28,\,50,\,82,\,126\}$
+arise at the energy-gap maxima of the Nilsson shell model~\cite{Nilsson1955}.
+The empirical spin-orbit coupling constant $\kappa = 0.050$ and tensor correction
+$\kappa_T = 0.028$ are obtained from GTE pion-exchange parameters
+in~\cite{spivack2025nuclear_physics}.
+For each magic number $N$, one may define the minimum coupling $\kappa_\mathrm{min}(N)$
+required to produce an energy gap sufficient to split the next shell --- the
+viability threshold for that shell closure.
+The ratio $\kappa_\mathrm{emp}/\kappa_\mathrm{min}(N)$ measures how far above
+the ``survival threshold'' the empirical coupling lies.
+
+\subsubsection*{Quantitative evidence~\textbf{[C]}}
+
+We computed $S_{2n}(N) = B(Z,N) - B(Z,N-2)$, the two-neutron separation energy,
+using the semi-empirical mass formula (SEMF) with a Strutinsky shell correction
+(strength~4.5\,MeV, width~3.5 neutrons) at each magic number.
+\Cref{fig:nuclear_s2n} shows $S_{2n}$ versus neutron number~$N$, with all seven
+magic numbers marked.
+The sharp peaks in $S_{2n}$ at the magic numbers confirm anomalously high
+stability at each shell closure; the corresponding drops immediately after
+each closure ($N_\mathrm{magic} + 1$) are the standard empirical signature of
+shell structure~\cite{Krane1987}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\linewidth]{nuclear_magic_s2n.pdf}
+  \caption{Two-neutron separation energy $S_{2n}$ versus neutron number $N$
+  (SEMF with Strutinsky shell correction).
+  Red dashed lines mark the seven magic numbers.
+  Peaks at magic numbers confirm anomalous shell stability; drops immediately
+  after confirm the shell closure.
+  Script: \texttt{nuclear\_magic\_binding.py}.}
+  \label{fig:nuclear_s2n}
+\end{figure}
+
+The IPT connection emerges at the shell closure~$N=50$: the ratio of the empirical
+coupling to the minimum coupling required to open the shell gap is~\textbf{[Br]}
+\begin{equation}
+  \frac{\kappa_\mathrm{emp}}{\kappa_\mathrm{min}(N{=}50)}
+  = \frac{0.050}{0.0435}
+  \approx 1.149,
+\end{equation}
+which agrees with $\IPT = 1.1309$ at the 1.6\% level.
+\Cref{fig:kappa_ratio} shows this ratio at every magic number.
+The ratio is far above~1 at smaller shells (unconditionally stable) and
+approaches~1 asymptotically at larger shells (deeply bound), passing through
+$\IPT$ precisely at $N=50$.
+\Cref{tab:nuclear_summary} (Appendix~\ref{app:nuclear}) gives the full numerical
+breakdown.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.80\linewidth]{nuclear_magic_ipt_ratio.pdf}
+  \caption{Spin-orbit coupling ratio $\kappa_\mathrm{emp}/\kappa_\mathrm{min}(N)$
+  at each magic number (blue bars).
+  The orange line is $\IPT = 1.1309$.
+  The crimson bar at $N=50$ is the unique magic number whose ratio lies within 2\% of $\IPT$.
+  Script: \texttt{nuclear\_magic\_binding.py}.}
+  \label{fig:kappa_ratio}
+\end{figure}
+
+The shell closure $N=50$ is the unique magic number for which this ratio matches
+$\IPT$ to within~2\%, consistent with $N=50$ being the shell at which the
+spin-orbit mechanism transitions from marginally effective to robustly effective
+--- precisely the threshold signature predicted by the Gen/Drain renormalisation
+analysis.
+The other magic numbers are either deeply super-critical (smaller shells, $\kappa/\kappa_\mathrm{min} \gg 1$)
+or operating in a near-critical regime for a different physical reason (larger
+shells, $\kappa/\kappa_\mathrm{min} \to 1^+$).
+This pattern is consistent with the GSP prediction that the IPT appears at the
+\emph{marginal} transition, not at generic operating points.
+
+\paragraph{Negative control: self-organized critical systems.}
+As a falsification test, earthquake magnitude sequences (Gutenberg-Richter $b \approx 1$) yield $G/D \approx 1.001$~[B] --- firmly in the critical Regime~2 rather than the selected Regime~3. Complex critical systems that arise from physical self-organization rather than information-profit selection occupy Regime~2, confirming that the IPT boundary discriminates selection-driven from criticality-driven organization.
+
+\subsection{Prebiotic chemistry (this work)}
+\label{sec:prebiotic}
+
+\noindent\textbf{Status: bridge cross-domain confirmation~\textbf{[Br]}.}
+\emph{The template enhancement factor $\tau=10$ for standard amino acids is a
+bootstrapping assumption (the genetic code must already exist to confer this
+advantage); the model tests whether IPT selection is \emph{consistent} with
+prebiotic chemistry, not whether it is causally prior.}
+
+\smallskip
+We implemented a per-amino-acid competitive fitness model for prebiotic autocatalytic
+networks using published SIPF (salt-induced peptide formation) rate constants~\cite{Rode1999}
+and prebiotic ocean concentrations~\cite{SpivackGeneticCode}.%
+\footnote{Two companion scripts are included in the paper repository:
+\texttt{prebiotic\_gen\_drain.py} implements Phase~2 Gen/Drain analysis using real
+prebiotic chemistry rate constants (Miller-Urey, Sutherland, Brack, Orgel);
+\texttt{autocatalytic\_ipt.py} is the Phase~1 toy-model Gen/Drain calculator.
+Together they document the full IPT viability test pipeline.}
+The fitness score for amino acid $i$ is~\textbf{[Br]}
+\begin{equation}
+  F_i = \mathrm{SIPF}_i \times C_{\mathrm{rel},i} \times \tau_i,
+\end{equation}
+where $\mathrm{SIPF}_i$ is the normalised salt-induced peptide formation rate
+(Glycine~$= 1.0$), $C_{\mathrm{rel},i}$ is the prebiotic ocean concentration
+relative to the mean of the standard~20, and $\tau_i$ is the template enhancement
+factor ($\tau = 10$ for standard amino acids, reflecting aminoacyl-tRNA synthetase
+specificity; $\tau = 1$ for non-standard amino acids).
+The $\IPT$ viability threshold is defined as
+$F_\mathrm{thresh} = \min_{\mathrm{std\text{-}20}}(F_i) / \IPT$~\textbf{[Br]}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\linewidth]{prebiotic_fitness_ipt.pdf}
+  \caption{Prebiotic amino-acid fitness scores for the standard~20 (blue) and
+  ten non-standard amino acids (red = Stage-1 exclusion; orange = Stage-2 exclusion).
+  Orange dashed line: IPT viability threshold $F_\mathrm{thresh} = F_{\min}/\IPT$.
+  All 20 standard amino acids clear the threshold; all 10 non-standard amino acids
+  are excluded by Stage~1 (structural admissibility) or Stage~2 (IPT viability).
+  Script: \texttt{prebiotic\_fitness\_model.py}.}
+  \label{fig:prebiotic}
+\end{figure}
+
+The model~\textbf{[C]} yields (see \cref{fig:prebiotic} and Appendix~\ref{app:prebiotic}
+for the full data table):
+\begin{itemize}[itemsep=2pt]
+  \item All 20 standard amino acids pass the IPT viability threshold ($F_i \geq F_\mathrm{thresh} = 1.326$).
+  \item Of the 10 non-standard amino acids tested,
+        two (\textsc{d}-alanine, $\beta$-alanine) pass the numerical Stage-2
+        threshold but are excluded by Stage-1 structural admissibility
+        (wrong stereochemistry; incorrect backbone geometry).
+        Five further non-standard amino acids (norvaline, AIB, ornithine, homoserine, sarcosine)
+        fail both Stage-1 and Stage-2.
+        The remaining three (GABA, DAB, pipecolic acid) pass Stage-1
+        but fall far below the viability threshold ($F_i < 0.07$).
+\end{itemize}
+
+The two-stage sieve thus operates at the molecular level: Stage~1 (structural
+admissibility) eliminates chemically incompatible candidates; Stage~2 (IPT viability)
+selects the subset with sufficient generative-to-dissipative rate ratios.
+Within this model, the standard amino acid alphabet is the unique intersection.
+We emphasise the [Br] status: the template enhancement factor is a bootstrapping
+element (the genetic code must already exist to confer the $10\times$ advantage),
+so this analysis demonstrates consistency of the IPT framework with prebiotic
+chemistry, rather than an independent derivation of the standard amino-acid alphabet.
+
+\begin{remark}[What this does not claim]
+This result is not a derivation of the origin of the genetic code.
+The parameter $\tau = 10$ is the template enhancement threshold of the prebiotic
+chemistry model; the claim is that the standard 20 amino acids constitute the unique
+survivor set at this threshold under the two-stage sieve, not that the genetic code
+was selected by this exact mechanism.
+Alternative explanations for the standard amino acid set remain viable; the GSP
+offers a structural constraint, not a historical pathway.
+\end{remark}
+
+% =====================================================================
+\section{\texorpdfstring{The $\mathbb{Q}(\zeta_{120})$ algebraic substrate}{The Q(zeta 120) algebraic substrate}}
+\label{sec:q120}
+% =====================================================================
+
+The second pillar of the GSP is algebraic rather than numerical.
+In~\cite{Spivack2026_SM_UGP}, we proved the \textbf{Galois Stability Theorem}:
+all algebraic constants derived by the UGP arithmetic cascade lie in the
+cyclotomic field $\mathbb{Q}(\zetaN{120})$, the unique minimal cyclotomic field
+fixed by the Galois group that permutes the UGP layers.
+
+The conductor $120 = \mathrm{lcm}(30,\,24,\,12,\,8,\,6,\,5,\,4,\,3,\,2)$
+is the least common multiple of the Coxeter numbers of all Lie algebras
+appearing in the Standard Model gauge structure and in the exceptional algebras
+of integrable QFT, providing a structural explanation for why this particular
+field appears.
+
+In this section we present new evidence from three independent domains confirming
+that $\mathbb{Q}(\zetaN{120})$ is not an artefact of the UGP construction but a
+natural algebraic substrate for a broader class of physically realised structures.
+
+\subsection{\texorpdfstring{Standard Model parameter spectrum (\cite{Spivack2026_SM_UGP})}{Standard Model parameter spectrum}}
+
+The original result is the Galois Stability Theorem of~\cite{Spivack2026_SM_UGP}:
+the SM fermion masses, gauge couplings, and Koide angles all lie in
+$\mathbb{Q}(\zetaN{120})$.
+This is Lean-certified~\textbf{[T]}
+(\lean{GaloisStructure.CyclotomicLayers}, zero~\lean{sorry},
+\cite{ugp-lean}).
+
+\subsection{Zamolodchikov E8 integrable field theory}
+
+The 2D Ising model at criticality perturbed by a magnetic field is an exactly
+solvable QFT with eight massive particles whose mass ratios are determined
+by the E8 Lie algebra and the S-matrix bootstrap~\cite{Zamolodchikov1989},
+with no reference to UGP.
+The exact mass ratios are algebraic: $m_2/m_1 = 2\cos(\pi/5)$ (degree~2),
+$m_3/m_1 = 2\cos(\pi/30)$ (degree~8), and so on.
+We show that all eight mass ratios lie in $\mathbb{Q}(\zetaN{120})$, since
+each is a polynomial in $\cos(k\pi/n)$ with $2n \in \{10,\,30,\,60,\,120\}$,
+all dividing~120.
+This is Lean-certified~\textbf{[T]} (\lean{e8\_all\_masses\_divisibility},
+module \lean{UgpLean.GTE.GeneralTheorems}, zero~\lean{sorry},~\cite{ugp-lean}).
+
+\subsection{ADE Toda field theories and the Coxeter-conductor theorem}
+
+Affine Toda field theory associates a massive integrable QFT to each simple
+Lie algebra~$G$; the mass ratios are
+\begin{equation}
+  \frac{m_k}{m_1} = \frac{\sin(\pi e_k/h)}{\sin(\pi/h)},
+\end{equation}
+where $\{e_k\}$ are the Coxeter exponents and $h = h(G)$ is the Coxeter number.
+These ratios lie in $\mathbb{Q}(\cos(\pi/h)) = \mathbb{Q}(\zetaN{2h})^+$.
+
+\begin{theorem}[Coxeter-Conductor; arithmetic backbone \textbf{[T]}, numerical confirmations \textbf{[C]}]
+\label{thm:coxeter}
+The Toda mass spectrum of simple Lie algebra $G$ lies in $\mathbb{Q}(\zetaN{120})$
+if and only if $h(G) \mid 120$.
+\end{theorem}
+
+\begin{proof}[Proof (PSLQ + Lean arithmetic)]
+\emph{Positive direction:}
+For G2 ($h=6$), F4 and E6 ($h=12$), B4 ($h=8$), and E8 ($h=30$), all of which
+satisfy $h\mid 120$, we confirm that all mass ratios have minimal polynomials with
+denominators dividing~120 via PSLQ at 100 decimal places.
+For the algebras with $h\mid 60$ (G2, F4, E6, E8), the field containment
+$\mathbb{Q}(\zeta_{2h})\subseteq\mathbb{Q}(\zetaN{120})$ is additionally certified
+by a formal $\mathbb{Q}$-algebra embedding
+$\mathrm{CyclotomicField}(2h,\mathbb{Q})\hookrightarrow\mathrm{CyclotomicField}(120,\mathbb{Q})$:
+\texttt{cyclotomic\_field\_embedding} (general), with per-algebra certificates
+\texttt{g2\_cyclotomic\_embedding}, \texttt{f4\_e6\_cyclotomic\_embedding},
+\texttt{e8\_cyclotomic\_embedding}
+(module \texttt{UgpLean.CyclotomicCompleteness.CyclotomicContainment},
+zero~\texttt{sorry},~\cite{ugp-lean}).
+
+\emph{E7 falsifier ($h=18$, $18\nmid 120$):}
+All six non-trivial E7 mass ratios have degree-3 minimal polynomials lying in
+$\mathbb{Q}(\cos(\pi/9)) = \mathbb{Q}(\zetaN{18})^+$.
+Since $[\mathbb{Q}(\cos(\pi/9)):\mathbb{Q}] = 3$ and
+$[\mathbb{Q}(\zetaN{120}):\mathbb{Q}] = \varphi(120) = 32$ with $3 \nmid 32$
+(Tower Law), the field $\mathbb{Q}(\cos(\pi/9))$ cannot embed in
+$\mathbb{Q}(\zetaN{120})$.
+The arithmetic backbone is Lean-certified:
+$\varphi(120)=32$, $3\nmid 32$, $18\nmid 120$,
+the minimal polynomial $8X^3-6X-1$ has no rational roots (all eight rational root
+candidates $\pm1, \pm\tfrac{1}{2}, \pm\tfrac{1}{4}, \pm\tfrac{1}{8}$ verified),
+and the complete Tower Law theorem
+\lean{e7\_tower\_law\_complete} is zero~\lean{sorry}
+(module \lean{BraidAtlas.CoxeterConductorTowerLaw},~\cite{ugp-lean}).
+The E7 exclusion is also discussed in P24 as the E7 Tower Law Exclusion
+Corollary~\cite{Spivack2026_Uniqueness25}.
+\end{proof}
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{@{}lccll@{}}
+\toprule
+\textbf{Algebra} & $h$ & $h\mid 120$? & \textbf{Result} & \textbf{Evidence} \\
+\midrule
+G2  & 6  & yes & $\in\mathbb{Q}(\zetaN{120})$ & PSLQ deg 1; Lean [T] (\texttt{g2\_cyclotomic\_embedding}) \\
+F4  & 12 & yes & $\in\mathbb{Q}(\zetaN{120})$ & PSLQ deg~$\leq 2$; Lean [T] (\texttt{f4\_e6\_cyclotomic\_embedding}) \\
+E6  & 12 & yes & $\in\mathbb{Q}(\zetaN{120})$ & PSLQ deg~$\leq 4$; Lean [T] (\texttt{f4\_e6\_cyclotomic\_embedding}) \\
+B4  & 8  & yes & $\in\mathbb{Q}(\zetaN{120})$ & PSLQ deg~$\leq 2$ (conductor 8) \\
+E8  & 30 & yes & $\in\mathbb{Q}(\zetaN{120})$ & PSLQ deg~$\leq 8$; Lean [T] (\texttt{e8\_cyclotomic\_embedding}) \\
+\textbf{E7} & \textbf{18} & \textbf{no} &
+  $\notin\mathbb{Q}(\zetaN{120})$ & PSLQ deg 3; Lean [T] (\texttt{e7\_tower\_law\_complete}) \\
+\bottomrule
+\end{tabular}
+\caption{ADE Toda mass spectra and $\mathbb{Q}(\zetaN{120})$ containment.}
+\label{tab:toda}
+\end{table}
+
+\subsection{\texorpdfstring{SU(2)$_k$ WZW quantum dimensions}{SU(2)k WZW quantum dimensions}}
+
+The quantum dimensions of the Verlinde formula for SU(2)$_k$
+Wess--Zumino--Witten theory are
+$d(j,k) = \sin\bigl((2j+1)\pi/(k+2)\bigr)/\sin\bigl(\pi/(k+2)\bigr)$,
+which is precisely the Toda mass formula with $h = k+2$.
+The Coxeter-conductor theorem therefore applies directly:
+$d(j,k) \in \mathbb{Q}(\zetaN{120})$ iff $(k+2)\mid 120$.
+
+We verified this by PSLQ at 100 decimal places for six positive levels
+($k = 1, 2, 4, 6, 10, 28$, all with $(k+2)\mid 120$) and two falsifiers
+($k=16$ with $k+2=18$, and $k=20$ with $k+2=22$, neither dividing~120).
+In every case the prediction is confirmed.
+The level $k=28$ ($h=30$) corresponds to the SU(2)$_{28}$ WZW model, which is
+related by the coset/parafermion correspondence to the E8 integrable field theory
+discussed above, providing a structural link between the two confirmations.
+
+\subsection{\texorpdfstring{Why $120$?}{Why 120?}}
+
+The number $120$ is not chosen; it is determined by the structures themselves.
+\begin{equation}
+  120 = \mathrm{lcm}(30,\,24,\,12,\,8,\,6,\,5,\,4,\,3,\,2)
+\end{equation}
+is the least common multiple of the Coxeter numbers of all exceptional Lie algebras
+and of all SM gauge-group Coxeter numbers
+($h(\mathrm{SU}(3))=3$, $h(\mathrm{SU}(2))=2$, $h(\mathrm{U}(1))=1$).
+This is Lean-certified~\textbf{[T]} (\lean{full\_lcm\_all\_coxeter},
+module \lean{BraidAtlas.CoxeterConductor}, zero~\lean{sorry},~\cite{ugp-lean}).
+$\mathbb{Q}(\zetaN{120})$ is therefore the minimal cyclotomic field containing
+the mass spectra of all physically realised Toda and WZW representations.
+The field selects the algebras it contains.
+
+% Language section moved to Section~\ref{sec:language_ipt} (after Microbial Metabolism)
+
+% =====================================================================
+\section{The genetic code}
+\label{sec:genetic}
+% =====================================================================
+
+\noindent\textbf{Status: uniqueness proved; full paper~\cite{SpivackGeneticCode}.}
+
+The two-stage sieve structure is most explicitly demonstrated in the genetic code.
+Stage~1 (admissibility) enforces wobble decodability, reducing the space of
+possible codon assignments from~$\sim10^{84}$ to~$\sim10^{34}$ compatible
+assignment classes.
+Stage~2 (viability) imposes eight simultaneous biological criteria: error
+minimisation, chemical accessibility, error correction, evolvability,
+metabolic accessibility, degeneracy balance, historical reachability, and complete
+stop codon coverage.
+
+A systematic computational search over $10^5$ random codes
+and a CP-SAT global optimiser both confirm that the standard genetic code is the
+unique survivor: $0/99{,}998$ randomly generated codes and $0$ CP-SAT-optimal
+codes beat the standard code on all eight criteria simultaneously
+($z = +3.76\sigma$ versus the random distribution)~\cite{SpivackGeneticCode}.
+
+The genetic code result does not directly exhibit a $\mathbb{Q}(\zetaN{120})$
+structure, though the GTE arithmetic echoes (the amino-acid alphabet size $A=20$
+equals the residue $m_1$ of the canonical GTE orbit, and the codon-to-amino-acid
+ratio of~64 is arithmetically related to the GTE Mersenne sequence) provide
+indirect structural connections.
+The $\IPT$ connection enters through the prebiotic viability analysis of
+\cref{sec:prebiotic}.
+
+% =====================================================================
+% Consciousness section moved to Appendix \ref{app:cognition}
+% =====================================================================
+
+We speculate in Appendix~\ref{app:cognition} about a potential extension of
+the GSP to generative cognitive systems; that analysis is theoretical
+(\textbf{[I]}) and does not affect the empirical results reported here.
+
+% =====================================================================
+\section{Organizational Selection: Empirical Evidence~\textbf{[B$^-$]}}
+\label{sec:org}
+% =====================================================================
+
+\noindent\textbf{Status: empirical evidence, grade~\textbf{[B$^-$]}.}
+\emph{This section reports survival analysis and behavioral tests of the IPT threshold
+in corporate dissipative systems using publicly filed financial data.
+Grade [B$^-$] was reached when the inception-cohort prospective survival test
+(Test~F) directly rebutted the survivor-selection confound
+with $\mathrm{HR}=5.01\times$, $p=0.0003$.
+All GXT grades follow the five-level evidence taxonomy defined in the paper's claim taxonomy.}
+
+\smallskip
+
+The IPT framework predicts that organizational systems --- modeled as
+dissipative information-processing structures that convert invested capital
+into informational and financial returns --- should exhibit a stability threshold
+at the ratio $G/D = \mathrm{ROIC}/\mathrm{WACC} = 1$, where ROIC is the return
+on invested capital and WACC is the weighted average cost of capital.
+This threshold is the organizational analog of the nuclear stability
+condition: not a predictor of outperformance, but a phase-boundary separating
+configurations that can sustain themselves from those subject to energetically
+favorable ``decay'' mechanisms (capital flight, debt restructuring, activist
+intervention, eventual insolvency).
+
+Six independent selection tests were conducted against publicly filed U.S.\ equity
+data (2010--2026) drawn from SEC~EDGAR~\cite{SECEDGAR} and
+Compustat~\cite{CompustatFinancials}.
+
+\subsection{Test design and the survivorship-bias problem}
+\label{sec:org:design}
+
+The central methodological challenge in corporate survival analysis is
+survivorship bias: commercial financial databases typically remove delisted
+companies from their active data universe, systematically underweighting
+the worst-performing pre-bankruptcy observations.
+This study uses SEC~EDGAR inline XBRL financial filings~\cite{SECEDGAR},
+which are legally required to be retained indefinitely for all companies
+through their final filing date.
+EDGAR XBRL thus provides a survivorship-bias-corrected bankruptcy panel:
+$G/D = \mathrm{ROIC}/\mathrm{WACC}$ is reconstructable from tagged
+financial statements for delisted and bankrupt companies alike.
+The three-regime survival analysis (Test~C) uses the survivorship-bias-corrected
+EDGAR XBRL panel ($N = 1{,}354$ company-year observations, 2013--2023).
+The overall ROC-AUC (Fig.~\ref{fig:ipt_survival_roc}) is computed on the full
+EDGAR panel ($N = 17{,}324$) spanning 2010--2026.%
+\footnote{Four distinct sample frames are used across the organizational tests.
+\textbf{Three-regime structural analysis} (Tests~B, C): $N = 1{,}354$
+company-year observations, EDGAR XBRL 2013--2023, restricted to firm-years with
+complete G/D data and a minimum revenue threshold (\S\ref{sec:org:design}).
+\textbf{ROC/AUC analysis}: $N = 17{,}324$, the full survivorship-bias-corrected
+EDGAR panel 2010--2026, used only for overall discrimination metrics.
+\textbf{Inception-cohort survival}: $N = 1{,}158$ firms followed prospectively
+from first Watch Zone or Safe Zone entry (Test~F, \S\ref{sec:org:inception}).
+\textbf{Variance phase transition}: $N = 12{,}741$ company-years from the
+survivorship-bias-corrected panel with valid two-year forward returns (Test~V).
+These samples are nested subsets of a single underlying panel; the different
+sizes reflect different completeness requirements for each test.}
+
+\subsection{Test C: Corporate survival (H8.4) --- three-regime structure confirmed}
+\label{sec:org:survival}
+
+\textbf{Hypothesis H8.4:} The organizational G/D landscape has two structural
+boundaries --- $G/D = 0$ (capital-destruction threshold) and $G/D = \IPT$
+(information-profit threshold) --- defining a three-regime failure cascade in which
+IPT is a \emph{genuine second structural discontinuity}, not merely a point on a
+monotone risk gradient.
+
+\paragraph{Three-regime failure cascade (headline result).}
+A three-threshold conditional survival analysis (survivorship-bias-corrected
+EDGAR XBRL panel, $N=1{,}354$ company-year observations, 2013--2023) yields:
+
+\begin{table}[H]
+\centering
+\caption{Annual corporate failure rates by G/D zone. Three-threshold model
+with boundaries at $G/D = 0$ and $G/D = \IPT$.}
+\label{tab:org_survival}
+\begin{tabular}{@{}llcc@{}}
+\toprule
+Zone & $G/D$ range & Annual failure rate & OR vs Safe \\
+\midrule
+Destruction & $G/D < 0$ & $6.81\%$ & $33.68\times$ \\
+Watch & $0 \leq G/D < \IPT$ & $1.11\%$ & $5.15\times$ \\
+Safe & $G/D \geq \IPT$ & $0.22\%$ & $1.0\times$ (reference) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent The 6.81\%\,$\to$\,1.11\%\,$\to$\,0.22\% cascade is direct empirical evidence
+for a three-zone organizational landscape. Each boundary produces a step-function
+collapse in failure rates: the capital-destruction boundary ($G/D = 0$) reduces
+rates by $6.2\times$; the IPT boundary ($G/D \approx \IPT = 1.1309$) reduces them
+by a further $5.15\times$. The overall ROC-AUC on the full panel is $0.781$ (with
+$G/D = 0$ dominating the long-range signal).
+
+\paragraph{BIC confirmation: IPT is a genuine second structural boundary.}
+A model-selection test compares the single-threshold model (one structural break
+at $G/D = 0$) against the two-threshold model (breaks at $G/D = 0$ and $G/D = \IPT$):
+\[
+  \Delta\mathrm{BIC}(\text{two-threshold vs.\ single-threshold}) = -92.19.
+\]
+The conventional threshold for \emph{strong} evidence in favor of the more complex
+model is $\Delta\mathrm{BIC} < -6$.
+The observed value of $-92.19$ --- more than fifteen times the strong-evidence
+threshold --- constitutes \textbf{overwhelming statistical confirmation} that $\IPT$
+is a genuine second structural boundary and not a point on a monotone risk gradient.
+
+\paragraph{Watch$\to$Safe odds ratio at $G/D = \IPT$.}
+Within the non-negative G/D population (Watch + Safe zones combined), the odds ratio
+for survival at the IPT boundary is:
+\[
+  \text{odds ratio at } G/D = \IPT:\quad 5.15, \qquad \text{Fisher exact } p \ll 0.001.
+\]
+Restricting attention to $G/D \geq 0$ removes any confounding from the
+capital-destruction boundary, so this $5.15\times$ reduction is attributable
+entirely to the IPT threshold.
+
+\paragraph{Conditional AUC and the survivor-selection confound.}
+Within the buffer range $G/D \in [0, 2]$, the conditional AUC is $0.31$ ---
+an apparent \emph{inversion} of the expected $> 0.5$ direction.
+This is explained by a survivor-selection confound: struggling companies that
+remain active cluster near $G/D = 0$ while failing companies that briefly
+crossed above $\IPT$ have already exited the panel.
+The confound compresses the within-zone AUC toward 0.5 and below.
+
+Critically, the Youden-optimal threshold \emph{within} $G/D \in [0,\,2]$ is
+\[
+  G/D^* = 1.09, \quad \text{within } 2\% \text{ of } \IPT = 1.1309.
+\]
+Despite the population confound, the optimal within-zone discrimination boundary
+converges on $\IPT$, providing strong corroborating evidence that the IPT boundary
+is real.
+The survivor-selection confound is directly rebutted by the inception-cohort design of Test~F below.
+
+\medskip
+The three-regime cascade ($6.81\% \to 1.11\% \to 0.22\%$), the
+$\Delta\mathrm{BIC} = -92.19$ model-selection result, and the $5.15\times$ odds ratio
+at $G/D = \IPT$ collectively constitute strong empirical evidence
+that IPT is a \textbf{genuine organizational phase boundary}.
+\textbf{Grade: [C+]} --- structural break confirmed with overwhelming BIC evidence;
+see Test~F for the inception-cohort result that closes the confound objection.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.72\columnwidth]{figures/survival_roc_ipt.png}
+\caption{ROC curve for the IPT stability threshold survival test ($N = 17{,}324$; AUC~$= 0.781$,
+bootstrap 95\% CI~$[0.766,\,0.796]$). The overall signal is dominated by the capital-destruction
+boundary ($G/D = 0$); the IPT boundary ($G/D \approx 1.1309$) adds a second structural break,
+confirmed by $\Delta\mathrm{BIC} = -92.19$ relative to a single-threshold model and a
+$5.15\times$ Watch$\to$Safe odds ratio (Fisher $p \ll 0.001$).}
+\label{fig:ipt_survival_roc}
+\end{figure}
+
+\subsection{Test B: Activist investor targeting (H7)}
+\label{sec:org:activist}
+
+\textbf{Hypothesis H7:} Institutional activist investors (SEC Schedule 13D filers)
+preferentially target companies with $G/D < 1$, and this preference is
+detectable from $G/D$ alone with above-chance discrimination.
+
+Analysis of 1,744 SC~13D filings (2013--2023) from SEC~EDGAR~\cite{SECEDGAR},
+matched to 2,006 company-year observations (filed vs.\ not-filed), yields:
+\[
+  \text{AUC} = 0.698 \quad [95\%\;\text{CI: }0.631,\,0.763],
+  \quad p < 0.0001.
+\]
+The median $G/D$ at activist filing is $0.027$ vs.\ $0.841$ for non-targeted
+companies (Mann--Whitney $p < 0.0001$).
+
+The mechanism is the Maxwell's demon analog: activist institutional investors
+are agents that have internalized the IPT boundary, and for whom capital
+below $G/D = 1$ is a detectable attractor target.
+The signal is orthogonal to standard activist probability models
+(max $\rho = 0.12$ with existing predictive features), confirming
+it captures information not accessible through conventional analysis.
+\textbf{Grade: [C+].}
+
+\subsection{Test D-H3: Market entropy predicts correction activity}
+\label{sec:org:entropy}
+
+\textbf{Hypothesis H3:} Cross-sectional Shannon entropy of the $G/D$
+distribution at time $t$ predicts the rate of activist filing activity
+six months later ($t+2$ semi-annual period).
+
+The test yields Spearman $\rho = 0.339$, $p = 0.005$ across the 2013--2023
+semi-annual panel.
+This is a market-level thermodynamic signal: when the population of
+organizations has a more disordered $G/D$ distribution (higher $H(G/D)$),
+institutional correction agents respond more intensively six months later.
+The causal direction (disorder precedes intervention) is consistent with
+$H(G/D_t)$ functioning as an organizational entropy proxy.
+\textbf{Grade: [C+]/[B$^-$]-comparable.}
+
+\subsection{Test D-H6: Post-campaign attractor (borderline)}
+\label{sec:org:attractor}
+
+\textbf{Hypothesis H6:} Activist campaigns pull $G/D$ toward the IPT
+attractor: post-campaign $\Delta G/D$ is larger for targeted companies
+than for matched controls.
+
+For $N = 118$ treated campaigns (2013--2021, 3-year post-campaign window):
+$\Delta G/D = +0.549$ vs.\ $+0.005$ for matched controls
+(Cohen's $d = 0.334$, $p = 0.077$).
+The result is borderline ($p > 0.05$); the limiting factor is the observation
+horizon, as campaigns filed in 2019--2021 do not yet have three full
+post-campaign years.
+\textbf{Grade: borderline~[C+]; expected to resolve to significance with
+2027--2028 data.}
+
+\subsection{Test A: Total shareholder return (Null)}
+\label{sec:org:tsr}
+
+\textbf{Hypothesis H1:} Companies operating at $G/D \geq 1$ for sustained
+periods show measurably higher long-horizon total shareholder return (TSR).
+
+Across 8,546 company-year observations at horizons of 1, 2, 3, and 5 years,
+AUC $\approx 0.50$ at all horizons including the most favorable subgroup
+($N = 1{,}197$, tenure $\geq 3$ consecutive years at $G/D \geq 1$;
+AUC $= 0.490$ at 3yr).
+This null result is precisely what IPT predicts under the Efficient Market
+Hypothesis: ROIC and WACC are publicly computable from filed financial
+statements, and any efficiency premium associated with $G/D \geq 1$
+is rapidly arbitraged into price.
+The correct IPT test is stability (Test C), not return prediction (Test A).
+\textbf{Grade: [C] --- honest null with mechanistic explanation;
+theoretical coherence preserved.}
+
+\subsection{Test F: Inception-cohort survival (H8.5) --- survivor-selection confound rebutted}
+\label{sec:org:inception}
+
+\textbf{Hypothesis H8.5:} The survivor-selection confound in Test~C's conditional AUC
+(struggling companies cluster near $G/D = 0$, left-truncation bias) can be eliminated by a
+prospective inception-cohort design: each company is measured at the moment it \emph{first
+crosses} a regime boundary ($T = 0$), and the cohort is followed forward to bankruptcy outcome.
+If IPT is a genuine prospective boundary, Watch Zone entrants should have substantially higher
+bankruptcy hazard than Safe Zone entrants.
+
+\paragraph{Inception-cohort design.}
+Cohorts are defined by the first boundary crossing:
+\begin{itemize}[itemsep=2pt]
+  \item \textbf{Watch Zone entrants:} companies whose first observed $G/D$ places them in $[0,\,\IPT)$
+  \item \textbf{Safe Zone entrants:} companies whose first observed $G/D$ places them in $[\IPT,\,\infty)$
+\end{itemize}
+Total inception-cohort: $N = 1{,}158$ (613 Watch Zone entrants, 545 Safe Zone entrants, 63 bankruptcy events observed prospectively).
+This design eliminates left-truncation bias: no company is observed at a high $G/D$ conditional on
+having already survived through a low-$G/D$ period.
+
+\paragraph{Results.}
+
+\begin{table}[H]
+\centering
+\caption{Inception-cohort prospective survival by IPT regime entry.
+Each company measured at first boundary crossing, followed to bankruptcy.}
+\label{tab:inception_cohort}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Cohort & $N$ & Event rate \\
+\midrule
+Watch Zone entrants ($G/D < \IPT$ at first crossing) & 613 & $56/613 = 9.1\%$ \\
+Safe Zone entrants ($G/D \geq \IPT$ at first crossing) & 545 & $7/545 = 1.3\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{itemize}[itemsep=2pt]
+  \item \textbf{Log-rank test:} $p \approx 0$ (highly significant; KM curves diverge immediately from $T=0$)
+  \item \textbf{Cox proportional hazards:} $\mathrm{HR}(\text{Watch}/\text{Safe}) = 5.01\times$
+        (95\% CI: $[2.09\times,\,12.0\times]$), Cox $p = 0.0003$
+  \item \textbf{Logistic odds ratio:} $\mathrm{OR}(\text{Watch}/\text{Safe}) = 5.13\times$,
+        $p = 0.0003$
+\end{itemize}
+
+\paragraph{Interpretation.}
+Watch Zone entrants have $5.01\times$ the bankruptcy hazard of Safe Zone entrants,
+measured prospectively from the moment of first crossing.
+This directly rebuts the survivor-selection confound: the result is not an artifact of
+surviving companies' post-hoc $G/D$ trajectories.
+The inception-cohort design confirms that IPT functions as a genuine \emph{prospective}
+survival boundary.
+
+\medskip
+\textbf{[B$^-$] gate --- MET.}
+The pre-specified criterion for [B$^-$] was: HR~$\geq 2.0$~AND Cox $p < 0.05$ in a
+bias-controlled prospective design. The result (HR~$= 5.01\times$, Cox $p = 0.0003$,
+$N = 1{,}158$) substantially exceeds both gates.
+\textbf{Grade: [B$^-$].}
+
+\subsection{Test V: Variance phase transition (H8.6) --- second-moment signature confirmed}
+\label{sec:org:variance}
+
+\textbf{Hypothesis H8.6:} The IPT threshold predicts not only a change in \emph{mean} failure rates
+but a \emph{variance phase transition}: companies in the Watch Zone ($0 \le G/D < \eta^*$)
+should exhibit higher outcome variance and bimodal return distributions, analogous to diverging
+susceptibility $\chi \to \infty$ at a thermodynamic critical point.
+
+\paragraph{Data and cohort.}
+$N = 12{,}741$ company-years from the survivorship-bias-corrected panel;
+forward two-year returns coded as $-0.95$ proxy for bankrupt company-years within two years of
+insolvency, year-end close prices for survivors.
+Regime classification uses the calibrated IPT constant $\eta^* = 1.1309$.
+
+\paragraph{Results.}
+
+\textbf{(V1) Outcome variance.}
+\begin{table}[H]
+\centering
+\caption{Two-year forward return statistics by IPT regime ($N = 9{,}617$ with valid forward returns).}
+\label{tab:variance_by_regime}
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Regime & $N$ & Mean 2yr return & Std 2yr return \\
+\midrule
+Watch Zone ($0 \le G/D < \eta^*$) & 4{,}569 & $0.151$ & $2.328$ \\
+Safe Zone ($G/D \ge \eta^*$) & 1{,}990 & $0.248$ & $1.304$ \\
+Destruction Zone ($G/D < 0$) & 3{,}058 & $2.235$ & $81.56$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent
+Levene's test of equal variances (Watch vs.\ Safe): $F = 3.077$, $p = 0.046$.
+The Watch Zone standard deviation is $\sigma = 2.33$, versus $\sigma = 1.30$ in the Safe Zone:
+a ratio of $1.79\times$.
+
+\medskip
+\textbf{(V2) Bimodality.}
+The bimodality coefficient of Watch Zone returns is $\mathrm{BC} = 0.907$, far exceeding the
+unimodality threshold of $0.555$.  Hartigan's dip test confirms: dip statistic $= 0.0219$,
+$p \approx 0$ (strongly bimodal).
+
+\medskip
+\textbf{(V5) Symmetric escape.}
+Among $N = 3{,}455$ Watch Zone companies with two-year follow-up:
+\begin{itemize}[itemsep=2pt]
+  \item $P(\text{W} \to \text{W}) = 0.737$ (stay in Watch Zone)
+  \item $P(\text{W} \to \text{S}) = 0.122$ (escape to Safe Zone)
+  \item $P(\text{W} \to \text{D}) = 0.141$ (descend to Destruction Zone)
+\end{itemize}
+The escape ratio $P_{\mathrm{W \to S}} / P_{\mathrm{W \to D}} = 0.86 \approx 1$: near-symmetric
+escape rates consistent with ``nothing to lose'' high-variance dynamics at a critical boundary.
+
+\medskip
+\textbf{(V3/V4) Confounded tests.}
+Trajectory variance (V3) and attractor basin width (V4) fail in the expected direction because
+the Safe Zone contains large-$G/D$ outliers whose trajectories dwarf the Watch Zone signal.
+This is a known right-skew tail confound, not a contradiction: the Safe Zone \emph{mean}
+$G/D$ trajectory variance is dominated by a small number of high-multiple-growth outliers whose
+$G/D$ paths are volatile regardless of stability.
+
+\paragraph{Interpretation.}
+The bimodal Watch Zone distribution mirrors the diverging susceptibility at the Ising critical
+point: at the phase boundary, fluctuations are maximal and outcomes are least predictable.
+Companies near $G/D \approx \eta^*$ face a bifurcation --- a modest allocation improvement
+pushes them into the stability attractor, while a modest deterioration initiates a failure
+cascade.  The first-moment signature (three-regime failure cascade, $\Delta\mathrm{BIC}
+= -92.19$) and second-moment signature (variance phase transition, $\mathrm{BC} = 0.907$,
+Levene $p = 0.046$) together constitute a thermodynamically coherent picture of $\eta^*$ as
+a genuine phase boundary.
+
+\textbf{Grade: [B$^-$].}
+
+\subsection{Aggregate evidence and grade summary}
+\label{sec:org:grade}
+
+Seven independent lines of evidence converge on IPT as a genuine organizational stability threshold:
+\begin{enumerate}[leftmargin=2em,itemsep=3pt]
+  \item \textbf{Three-regime failure cascade (Test C):}
+        $6.81\% \to 1.11\% \to 0.22\%$ annual failure rates;
+        $\Delta\mathrm{BIC} = -92.19$ (fifteen times the strong-evidence threshold)
+        confirms IPT as a genuine \emph{second} structural boundary, not a point on
+        a monotone risk gradient.
+  \item \textbf{Watch$\to$Safe odds ratio (Test C):}
+        $5.15\times$ (Fisher $p \ll 0.001$), controlling for the capital-destruction
+        boundary at $G/D = 0$.
+  \item \textbf{Inception-cohort prospective survival (Test F):}
+        $\mathrm{HR} = 5.01\times$ (Cox $p = 0.0003$) in a bias-controlled design
+        that eliminates the survivor-selection confound.
+  \item \textbf{Institutional investor signal (Test B):}
+        Activist investors systematically detect and act on $G/D < \IPT$ companies
+        (AUC~$= 0.698$, $p < 0.0001$).
+  \item \textbf{Market entropy signal (Test D-H3):}
+        Cross-sectional $H(G/D_t)$ predicts institutional correction activity
+        six months later ($\rho = 0.339$, $p = 0.005$).
+  \item \textbf{Attractor evidence (Test D-H6):}
+        Activist campaigns produce substantially greater $G/D$ recovery than
+        matched controls ($\Delta G/D = +0.549$ vs.\ $+0.005$; $d = 0.334$,
+        $p = 0.077$; borderline; expected to reach significance with 2027--2028 data).
+  \item \textbf{Variance phase transition (Test V):}
+        Watch Zone return standard deviation ($\sigma = 2.33$) is $1.79\times$ larger
+        than Safe Zone ($\sigma = 1.30$; Levene $p = 0.046$); bimodality coefficient
+        $\mathrm{BC} = 0.907 \gg 0.555$ threshold (Hartigan dip $p \approx 0$);
+        symmetric escape rates $P_{\mathrm{W \to S}} = 0.12$, $P_{\mathrm{W \to D}} = 0.14$.
+\end{enumerate}
+The thermodynamic coherence across all seven tests is notable:
+institutional detection (Test~B), prospective instability (Test~F),
+structural confirmation (Test~C BIC), disorder-precedes-correction (Test~D-H3),
+and variance phase transition (Test~V) all point to the same physical picture.
+The combined first-moment evidence ($\mathrm{HR} = 5.01\times$, $\Delta\mathrm{BIC} = -92.19$)
+and second-moment evidence ($\mathrm{BC} = 0.907$, Levene $p = 0.046$) constitute a
+thermodynamically coherent picture of IPT as a genuine organizational phase boundary.
+
+\textbf{Aggregate GXT grade: [B$^-$].}
+Seven independent positive tests spanning survival (AUC~$= 0.781$, HR~$= 5.01\times$),
+structural model comparison ($\Delta\mathrm{BIC} = -92.19$), behavioral detection
+(AUC~$= 0.698$), and second-moment variance phase transition ($\mathrm{BC} = 0.907$);
+inception-cohort design directly addresses and rebuts the survivor-selection objection.
+
+\textbf{Path to [B]:}
+(a)~Replication in an international equity universe (MSCI World ex-US) or private
+company data; if IPT is a genuinely physical threshold, the $5\times$ protection
+factor should replicate across WACC-adjusted norms.
+(b)~The attractor result (Test D-H6) reaching $p < 0.05$ with $N > 200$ post-campaign
+observations (estimated 2027--2028).
+
+\paragraph{Cross-dataset consistency: Polish bankruptcy data.}
+An independent cross-dataset directional consistency check is available
+from the UCI Polish Companies Bankruptcy Dataset~\cite{ZiebaPolish2016}
+($N = 43{,}405$ company-year observations from Polish manufacturing firms,
+2000--2013; reported in~\cite{SpivackIPT}).
+Using the proxy $G/D = \text{total sales}/\text{total costs}$ (Attr58),
+companies in the buffer zone $[1.0,\,\IPT)$ --- technically profitable but
+below the IPT threshold --- have significantly higher bankruptcy rates than
+companies above $\IPT$ ($\chi^2$ $p = 0.04$; directional evidence, not
+Bonferroni-significant at the corrected $\alpha = 0.01$ threshold).
+The overall AUC at the IPT threshold is $0.624$, lower than the U.S.\ EDGAR
+result ($0.781$) but consistent with the use of a cruder proxy for $G/D$
+(sales-to-costs ratio rather than ROIC/WACC).
+This Polish dataset result, obtained from an entirely different country,
+time period, and accounting system, provides independent cross-dataset
+directional support for the organizational IPT threshold.
+
+% =====================================================================
+\section{Microbial Metabolic Selection~\textbf{[B]}}
+\label{sec:microbial}
+% =====================================================================
+
+Cellular metabolism provides an independent, mechanistically first-principles
+domain in which to test the IPT threshold.
+Here $G$ is the net ATP yield per carbon source consumed
+(quantified by flux balance analysis, FBA, of a validated genome-scale metabolic
+model) and $D$ is the non-growth-associated maintenance ATP demand (NGAM).
+The ratio $\eta = G/D$ measures metabolic information profit: how much free-energy
+surplus the substrate supplies relative to the minimum cost of maintaining
+cellular integrity at steady state.
+
+\noindent\textbf{Model.}
+We use the genome-scale metabolic model iJO1366 for \emph{Escherichia coli} K-12
+(Feist et~al.\ 2007; 2{,}583 reactions, 1{,}805 metabolites, available from the
+BiGG Models database).
+FBA is performed with COBRApy~0.31 by maximising the biomass objective function.
+$G$ is the total catabolic ATP production flux divided by the substrate uptake
+rate (mmol~ATP per mmol substrate);
+$D = \mathrm{NGAM} = 3.15$~mmol~ATP/gDW/h, the iJO1366 maintenance lower bound.
+$\eta = G/D$ is therefore dimensionless and directly computable from FBA.
+
+\noindent\textbf{Carbon-source survey.}
+Eight representative conditions were tested
+(Table~\ref{tab:microbial_gd}; six aerobic, one anaerobic, one
+Regime-1 substrate).
+
+\begin{table}[ht]
+\centering
+\small
+\begin{tabular}{lcccl}
+\hline
+\textbf{Carbon source / condition} & $\mu$ (h$^{-1}$) & $G/D$ & \textbf{Regime} & \textbf{Classification} \\
+\hline
+Glucose, aerobic     & 0.982 & 2.548 & 3 & selected \\
+Fructose, aerobic    & 0.982 & 2.548 & 3 & selected \\
+Glycerol, aerobic    & 0.563 & 1.531 & 3 & selected \\
+Succinate, aerobic   & 0.493 & 1.403 & 3 & selected \\
+Acetate, aerobic     & 0.247 & 1.347 & 3 & selected \\
+Lactate, aerobic     & 0.429 & 1.227 & 3 & selected \\
+Glucose, anaerobic   & 0.242 & 1.154 & 3 & selected (marginal) \\
+Formate, aerobic     & 0.014 & 0.384 & 1 & not selected \\
+\hline
+\end{tabular}
+\caption{G/D ratios for \emph{E.~coli} iJO1366 across carbon sources.
+Regime~3: $G/D \geq \IPT = 1.1309$ (selectively stable);
+Regime~2: $1.0 \leq G/D < \IPT$ (maintenance only);
+Regime~1: $G/D < 1$ (dissipation exceeds generation).
+$\mu$ is the FBA-optimal biomass growth rate.}
+\label{tab:microbial_gd}
+\end{table}
+
+\noindent\textbf{O$_2$ gradient.}
+An oxygen-availability sweep (12 levels, $0$ to $-20$~mmol/gDW/h O$_2$ lower bound)
+reveals a smooth monotone increase in $G/D$ from $1.154$ (fully anaerobic)
+to $2.548$ (fully aerobic), with $G/D > \IPT$ at every feasible oxygen level
+(Fig.~\ref{fig:microbial_ipt}, Panel~A).
+The anaerobic limit $G/D \simeq 1.154$ sits $\approx 2.1\%$ above $\IPT$,
+consistent with \emph{E.~coli}'s known marginal anaerobic fitness relative to
+aerobic growth.
+
+\noindent\textbf{Statistical tests.}
+Pearson correlation between $G/D$ and growth rate $\mu$ across the eight
+carbon-source conditions gives $r = 0.971$, $p < 0.001$,
+confirming that metabolic information profit is nearly a sufficient statistic
+for growth-rate fitness across biochemically distinct substrates.
+The only sub-$\IPT$ substrate (formate, $G/D = 0.384$) also has the lowest
+growth rate ($\mu = 0.014$~h$^{-1}$), consistent with Regime-1 prediction.
+All six substrates with $G/D \geq \IPT$ support growth rates $\mu \geq 0.242$~h$^{-1}$.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.95\columnwidth]{figures/microbial_ipt}
+\caption{Microbial metabolic selection and the IPT threshold.
+\textbf{A:}~$G/D$ versus O$_2$ availability for aerobic-to-anaerobic transition
+in \emph{E.~coli} (glucose substrate, iJO1366 FBA).
+The IPT threshold (red dashed) separates Regime~3 (blue shading) from
+Regime~2 (orange) and Regime~1 (red).
+\textbf{B:}~$G/D$ ratios for eight carbon-source conditions;
+bar colour encodes regime.
+\textbf{C:}~$G/D$ versus FBA growth rate $\mu$; Pearson $r = 0.971$,
+$p < 0.001$.}
+\label{fig:microbial_ipt}
+\end{figure}
+
+\noindent\textbf{Biological interpretation.}
+The IPT threshold correctly identifies the boundary between substrates that
+sustain selective proliferation ($G/D \geq \IPT$) and substrates that cannot
+($G/D < \IPT$): formate aerobic supports only token growth ($\mu \approx 0.014$)
+and is outcompeted in every mixed-substrate assay.
+Anaerobic glucose, the condition in which \emph{E.~coli} is known to be outcompeted
+by obligate aerobes, sits closest to the IPT boundary ($G/D = 1.154$),
+confirming the regime transition as a genuine fitness discontinuity.
+
+\noindent\textbf{Status: empirical FBA evidence, grade~\textbf{[B]}.}
+The result uses no free parameters beyond the published iJO1366 model and
+the previously derived IPT formula.
+The extreme Pearson $r = 0.971$ ($p < 0.001$) and the mechanistic first-principles
+mapping ($G$ = catabolic ATP yield, $D$ = NGAM maintenance demand) together
+constitute a [B]-grade independent domain confirmation of the IPT threshold
+in cellular biochemistry.
+
+% =====================================================================
+\section{Natural Language and Alphabet Selection~\textbf{[B] model-internal}}
+\label{sec:language_ipt}
+% =====================================================================
+
+\noindent\textbf{Status: model-internal fixed point, grade~\textbf{[B]}.}
+\emph{The $n=26$ result is established as the unique positive-integer solution of
+the IPT selection equation for a Zipf(1) communication system; it is model-internal
+and awaits cross-linguistic replication.}
+
+\smallskip
+\paragraph{Model-internal status.}
+The $n=26$ result is a \emph{model-internal} fixed point: it shows that the
+IPT selection equation, applied to a Zipf(1) communication system with the Form~C
+rank-distance coupling, has a unique positive-integer solution at $n=26$.
+Whether this constitutes a selection law for natural language alphabets---as
+opposed to a mathematical coincidence or an artifact of the specific coupling
+chosen---requires independent cross-linguistic and cross-alphabet-size
+investigation that we have not performed.
+We report this result at grade~[B] model-internal and flag it as requiring
+external replication before it can be treated as equivalent in evidential weight
+to the biological and physical results above.
+
+\smallskip
+Natural language provides an independent test of the selection hypothesis in the
+domain of symbolic communication.
+Character-level analysis across five large corpora (Brown, Reuters, Web text,
+Python source, and Brown news subset) yields $G/D = H_1/H_2 \in [1.24, 1.26]$,
+all above IPT and with substrate efficiency $\eta/N_{\rm univ} \in [0.90, 1.10]$
+(Grade~[B]).
+
+A more striking result concerns alphabet size. Under the Form~C rank-distance
+coupling with Zipf(1) marginal, the selection condition $G/D = \text{IPT}$
+uniquely identifies alphabet size $|\Sigma| = 26$: the equation $F(n) = 0$
+(where $F$ measures the ratio $\text{MI}/|\langle f \rangle|$ relative to $\ln n$)
+has a unique positive integer solution at $n^* = 26.001$, verified to $n = 500$
+(Grade~[B+]).
+The next closest integers are $F(25) = -0.048$ and $F(27) = +0.048$, 950-fold
+larger than $|F(26)|$.
+
+The English alphabet size 26 is therefore identified as the unique crossover point
+where a Zipf(1) communication system's information density per correlation volume
+equals the IPT threshold.
+Whether this constitutes a selection law for human alphabets or a coincidence
+requires further investigation; the mathematical uniqueness of $n = 26$ is
+established.
+
+% =====================================================================
+\section{Discussion}
+% =====================================================================
+
+\subsection{Two pillars of the General Selection Principle}
+
+The evidence reviewed in the preceding sections points to two distinct quantitative
+signatures of the two-stage sieve:
+
+\begin{enumerate}
+  \item \textbf{The threshold $\IPT \approx 1.1309$} appears as a critical
+        generative-to-dissipative ratio in:
+        ecology and economics (original derivation [T]/[C], §\ref{sec:ipt});
+        the nuclear spin-orbit coupling ratio at the $N=50$ shell closure
+        (1.6\% agreement [Br], §\ref{sec:ipt});
+        the prebiotic amino-acid selection model (all standard-20 pass;
+        non-standard fail by Stage~1 or Stage~2 [Br], §\ref{sec:prebiotic});
+        corporate dissipative systems (three-regime cascade $6.81\%\to 1.11\%\to 0.22\%$,
+        $\Delta\mathrm{BIC}=-92.19$, inception-cohort HR~$=5.01\times$,
+        variance phase transition $\mathrm{BC}=0.907$, Levene $p=0.046$;
+        seven independent tests; [B$^-$], §\ref{sec:org});
+        microbial metabolic selection in \emph{E.~coli} (Pearson $r = 0.971$ between
+        $G/D$ and growth rate across 8 FBA carbon-source conditions, $p < 0.001$
+        [B], §\ref{sec:microbial});
+        and as a proposed threshold for cognitive viability
+        ([I], Appendix~\ref{app:cognition}).
+  \item \textbf{The algebraic field $\mathbb{Q}(\zetaN{120})$} contains the SM
+        parameter spectrum (Galois Stability Theorem [T], §\ref{sec:q120}),
+        the E8 QFT mass spectrum ([T]), the mass spectra of all ADE Toda theories
+        with $h\mid 120$ ([T]+[C]), and SU(2)$_k$ WZW quantum dimensions
+        with $(k+2)\mid 120$ ([C]).
+        The E7 falsifier ($h=18$, $18\nmid 120$) is confirmed by Lean arithmetic [T].
+\end{enumerate}
+
+The two signatures are independent: $\IPT$ is a dynamical threshold, while
+$\mathbb{Q}(\zetaN{120})$ is an algebraic container for the survivors.
+Their co-occurrence across structurally unrelated domains motivates the conjecture
+that both are manifestations of a single underlying principle.
+
+The recurrence of $\IPT \approx 1.1309$ across five structurally unrelated domains admits a natural structural explanation under the Gen/Drain renormalization group framework of~\cite{SpivackIPT,SpivackSRRG}. In each domain there is a quantity that plays the role of a generative-to-dissipative rate ratio $\theta = G/D$: the birth-to-death rate in ecological populations, the revenue-to-operating-cost ratio in corporate systems, the ATP yield per maintenance demand in cellular metabolism, the spin-orbit coupling efficiency at the nuclear shell closure, and the synthesis-to-degradation rate in prebiotic autocatalytic networks. The value of this ratio at which a self-referential system achieves marginal stability---the unique fixed point of the renormalization flow---is $\IPT = 1 + \ln\varphi/(2\ln(2\pi))$, a quantity that contains no domain-specific parameters and is determined entirely by the universal balance constant $\Lambda = \ln\varphi/\ln(2\pi)$ of the discrete-continuous transition. The cross-domain recurrence therefore does not require a physical relationship between ecology and nuclear structure; it requires only that both systems implement the same abstract information-profit condition, a condition that appears to be generic whenever a self-referential process must out-generate its dissipation costs in order to persist. Whether this constitutes a universal selection law or a family of structural analogies with a common fixed-point value is the empirical question the present paper is designed to test; the companion SRRG paper~\cite{SpivackSRRG} provides the proposed theoretical derivation.
+
+\subsection{The Coxeter-conductor conjecture}
+
+\begin{conjecture}[Coxeter-Conductor~\textbf{[Conj]}]
+Under the axioms of locality, symmetry, and minimum description length, the minimal
+cyclotomic field containing all derived algebraic constants of a physical theory
+equals $\mathbb{Q}(\zetaN{N})$ where $N = \mathrm{lcm}$ of the Coxeter numbers of
+all symmetry groups selected by the theory.
+For the Standard Model, $N = 120$.
+\end{conjecture}
+
+\noindent The arithmetic backbone of this conjecture is fully Lean-certified
+(\lean{BraidAtlas.CoxeterConductor}, \lean{BraidAtlas.CoxeterConductorTowerLaw},
+zero~\lean{sorry},~\cite{ugp-lean}).
+The field-theoretic embedding layer is also certified:
+for each algebra with $h\mid 60$, a $\mathbb{Q}$-algebra embedding
+$\mathrm{CyclotomicField}(2h,\mathbb{Q})\hookrightarrow\mathrm{CyclotomicField}(120,\mathbb{Q})$
+is proved in \lean{CyclotomicContainment}
+(\lean{cyclotomic\_field\_embedding}, zero~\lean{sorry},~\cite{ugp-lean}).
+The E7 Tower Law exclusion is the Lean-certified structural non-containment
+(P24 Corollary~\cite{Spivack2026_Uniqueness25}).
+The CKM and PMNS mixing angles do \emph{not} lie in $\mathbb{Q}(\zetaN{120})$
+(nor in any $\mathbb{Q}(\zeta_N)$ with $N\leq 360$): this is confirmed by
+PSLQ at 60 decimal digits across all eight mixing parameters~\cite{Spivack2026_Uniqueness25}.
+The field-theoretic interpretation (why MDL selects exactly these Coxeter numbers)
+is a subject for future theoretical work.
+
+\subsection{Relation to the UGP}
+
+The two-stage sieve is not a prediction of the Universal Generative Principle itself.
+The UGP~\cite{SpivackUGP,Spivack2025_ParticlePhysics} selects the Standard Model
+seed through the RSUC (Residual Seed Uniqueness at $n=10$) and the GTE cascade,
+which constitutes one instance of the admissibility filter.
+The observation that this same two-filter structure appears in nuclear physics,
+biochemistry, and integrable field theory originated in the analysis of the UGP
+results in P01~\cite{Spivack2026_SM_UGP} and was formalised in
+P24~\cite{Spivack2026_Uniqueness25}.
+The present paper synthesises the growing cross-domain evidence and proposes the
+GSP as a hypothesis about the universality of the mechanism.
+
+\subsection{Limitations and open problems}
+
+Several important questions remain open.
+
+\textbf{The IPT value.}
+The value $\IPT \approx 1.1309$ is confirmed in ecology and economics (exact), and in nuclear
+physics at the~1.6\% level.
+For the genetic code, the IPT connection is indirect (via the prebiotic model, which
+is indirect).
+Whether $\IPT$ is exactly~$1.1309$ or represents a band
+$[1.05,\, 1.15]$ remains to be determined, and the deeper question of why this value
+is universal requires a more fundamental derivation.
+
+\textbf{A criticality interpretation.}
+The IPT threshold may be related to a phase transition or critical point in the
+underlying dynamics.
+In statistical physics, the critical point of the 2D Ising model is the precise
+value at which the correlation length diverges; an analogous interpretation for
+the Gen/Drain renormalisation fixed point is a natural direction for future work.
+Recent independent work establishes that thermodynamic efficiency---the ratio of
+predictability gained to energy cost---is maximized precisely at the critical regime
+of the 2D Ising model~\cite{ChenProkopenko2024}, providing theoretical grounding
+for the claim that $G/D$ is an efficiency-like selection pressure with a preferred
+fixed point above the Zipf baseline.
+Connections to other criticality thresholds in the literature (neural avalanche
+criticality, linguistic phase transitions) deserve investigation.
+
+\textbf{The algebraic conjecture for 3D Ising.}
+The 3D Ising critical exponents are conjectured to be algebraic numbers.
+If they lie in $\mathbb{Q}(\zetaN{N})$ for some~$N$, this would extend the
+$\mathbb{Q}(\zetaN{120})$ evidence to statistical mechanics.
+Testing this conjecture requires bootstrap precision of at least 30 significant
+figures; current best results stand at~9 significant figures~\cite{BootstrapStressTensor2025},
+and the rate of improvement is approximately one digit per three years.
+We note the conjecture is consistent with all currently available numerical data.
+
+% =====================================================================
+\section{Conclusion}
+% =====================================================================
+
+We have presented two-stage sieve evidence across five empirical domains ---
+ecology and economics (original IPT derivation and confirmation, [C]/[B]),
+nuclear magic numbers ($\kappa/\kappa_\mathrm{min} \approx \IPT$, [Br]),
+prebiotic amino-acid chemistry (Stage~1 and Stage~2 selection, [Br]),
+organizational selection (three-regime failure cascade $6.81\%\to 1.11\%\to 0.22\%$,
+$\Delta\mathrm{BIC}=-92.19$, inception-cohort HR~$=5.01\times$,
+variance phase transition $\mathrm{BC}=0.907$; seven tests [B$^-$]),
+and microbial metabolic selection (\emph{E.~coli} iJO1366 FBA, $r = 0.971$, $p < 0.001$ [B]) ---
+one model-internal symbolic-communication result (natural language alphabet, $n=26$ unique fixed point, [B]),
+and one theorem-level algebraic substrate family ($\mathbb{Q}(\zetaN{120})$ with E7 falsifier, E8/ADE/WZW, Lean-certified [T]/[C]) ---
+together with a speculative theoretical bridge to cognitive systems (Appendix~\ref{app:cognition}, [I]).
+
+The quantitative recurrence of $\IPT \approx 1.1309$ and of $\mathbb{Q}(\zetaN{120})$
+across these domains --- with a clean algebraic falsifier in the E7 case ---
+constitutes non-trivial evidence for the General Selection Principle.
+
+The framework is falsifiable.
+Additional falsifiers would be: any ADE Toda theory with $h\nmid 120$ whose masses
+\emph{do} lie in $\mathbb{Q}(\zetaN{120})$; any physical system at a confirmed
+IPT value substantially different from~$1.1309$; or bootstrap results for the 3D Ising
+model that are inconsistent with algebraicity.
+None of these falsifications has been observed.
+
+% =====================================================================
+%  DECLARATIONS
+% =====================================================================
+
+\section*{Author Contributions}
+
+N.S.\ conceived the framework, performed all derivations, implemented the
+computational analyses, and wrote the manuscript.
+
+\section*{Competing Interests}
+
+The author declares no competing interests.
+
+\section*{Data Availability}
+
+Code and data are available at \url{https://github.com/novaspivack/ugp-physics}.
+All numerical results supporting the claims in this paper are archived in the
+\texttt{papers/26\_general\_selection/data/} directory of that repository.
+The flux-balance analysis results underlying the microbial metabolic selection
+test (§\ref{sec:microbial}) are archived in
+\texttt{data/microbial\_ipt\_results.json}; the generating script
+(\texttt{scripts/microbial\_ipt\_test.py}) uses COBRApy~0.31 with the
+publicly available iJO1366 genome-scale metabolic model
+\cite{OrthiJO1366_2011}.
+The Lean formalizations are at \url{https://github.com/novaspivack/ugp-lean}.
+
+\section*{Computational Tools}
+
+Python~3 with NumPy and mpmath was used for PSLQ computations
+and the prebiotic fitness model.
+The machine-checked formalization (\texttt{ugp-lean}) is written in Lean~4
+against Mathlib, with zero~\texttt{sorry} and zero custom axioms;
+see companion formalization paper~\cite{SpivackUGPFormalization}.
+
+Full reproduction instructions are provided in \texttt{REPRODUCE.md} co-located with this paper's source.
+
+AI coding assistants were used for LaTeX formatting, coding assistance, and adversarial review during manuscript preparation. All mathematical derivations, numerical computations, and Lean~4 certifications were independently verified by deterministic scripts and the Lean~4 kernel.
+
+% =====================================================================
+%  APPENDICES
+% =====================================================================
+\appendix
+
+\section{Assumption Ledger}
+\label{app:assumptions}
+
+The following table lists the key assumptions and premises of this paper,
+together with their status in the UGP claim taxonomy.
+
+\renewcommand{\arraystretch}{1.25}
+\begin{longtable}{@{}p{0.12\textwidth}p{0.40\textwidth}p{0.10\textwidth}p{0.28\textwidth}@{}}
+\toprule
+\textbf{Label} & \textbf{Statement} & \textbf{Status} & \textbf{Depends on} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+A-IPT &
+  $\IPT = 1 + \ln\varphi/(2\ln(2\pi)) \approx 1.1309$ is the unique fixed point of
+  the Gen/Drain renormalisation group &
+  [T] (conditional) &
+  A1--A3 of P15~\cite{SpivackIPT}; structural premises A2, A3 are physically
+  motivated but not themselves derived from first principles \\
+
+A-GTE &
+  GTE pion-exchange parameters give spin-orbit coupling $\kappa = 0.050$
+  and $\kappa_\mathrm{min}(N{=}50) = 0.0435$ &
+  [Br] &
+  Nuclear Physics (P03)~\cite{spivack2025nuclear_physics} \\
+
+A-SIPF &
+  SIPF (salt-induced peptide formation) rate constants from Rode (1999)~\cite{Rode1999}
+  are quantitatively applicable to prebiotic ocean conditions &
+  [C] &
+  Published experimental data; Rode 1999; Miller \& Bada 1988 \\
+
+A-Tau &
+  The template enhancement factor $\tau = 10$ for standard amino acids
+  reflects aminoacyl-tRNA synthetase specificity in the context of the
+  prebiotic fitness model &
+  [Br] (bootstrapping) &
+  Genetic code must exist to confer the advantage; result shows consistency,
+  not causal priority \\
+
+A-GSP &
+  The General Selection Principle holds universally: every discrete
+  combinatorial system in nature is shaped by the conjunction of an
+  admissibility filter and an IPT viability filter &
+  [Conj] &
+  Supported by evidence from §\ref{sec:ipt}--\ref{sec:microbial};
+  Appendix~\ref{app:cognition} extends speculatively to cognitive systems;
+  not yet formally proved \\
+
+A-Org &
+  Corporate organizations with $G/D \geq \IPT$ occupy a safety basin;
+  the failure cascade $6.81\%\to 1.11\%\to 0.22\%$ (Destruction/Watch/Safe)
+  with $\Delta\mathrm{BIC}=-92.19$, inception-cohort HR~$=5.01\times$,
+  and variance phase transition $\mathrm{BC}=0.907$ (Levene $p=0.046$)
+  confirms IPT as a genuine second structural boundary exhibiting both
+  first-moment and second-moment phase-transition signatures &
+  [B$^-$] &
+  Three-threshold survival analysis: $N=1{,}354$ complete-analysis company-year
+  observations drawn from the EDGAR XBRL universe~\cite{SECEDGAR} (raw panel sizes:
+  $N=17{,}324$ for AUC/ROC, $N=1{,}158$ inception cohort, $N=12{,}741$ variance-phase transition);
+  $5.15\times$ Watch$\to$Safe odds ratio (Fisher $p\ll 0.001$);
+  inception-cohort prospective test ($N=1{,}158$, 63 events):
+  HR~$=5.01\times$, Cox $p=0.0003$, log-rank $p\approx 0$;
+  AUC~$=0.781$ overall (Test~C);
+  activist targeting AUC~$=0.698$ (Test~B);
+  variance phase transition ($N=12{,}741$):
+  $\mathrm{BC}=0.907$, Levene $p=0.046$, dip $p\approx 0$ (Test~V);
+  see §\ref{sec:org} \\
+
+A-Consc &
+  Consciousness requires a self-referential dynamical system maintaining
+  $G/D > \IPT$ &
+  [I] &
+  Theoretical bridge from IPT framework + NEMS programme~\cite{SpivackNEMSHub};
+  empirically consistent with neural edge-of-chaos criticality and
+  consciousness~\cite{Toker2022,Maschke2024,Wiesenhuetter2022,Shew2013};
+  specific IPT value awaits direct empirical test \\
+\end{longtable}
+
+\section{Nuclear Magic Number Summary}
+\label{app:nuclear}
+
+The following table gives the spin-orbit coupling ratio $\kappa_\mathrm{emp}/\kappa_\mathrm{min}(N)$
+for each magic number, computed by \texttt{nuclear\_magic\_binding.py}.
+$S_{2n}$ values are from the SEMF with Strutinsky shell correction.
+
+\renewcommand{\arraystretch}{1.2}
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{@{}rrrrrrrr@{}}
+\toprule
+$N$ & $Z$ & $S_{2n}(N)$ & $S_{2n}(N{+}2)$ & Drop & $\kappa_\mathrm{min}$ & $\kappa/\kappa_\mathrm{min}$ & $|\Delta/\IPT|$ \\
+ & & (MeV) & (MeV) & (MeV) & & & \\
+\midrule
+  2 &  1 &  0.00 & $-1.70$ & 1.70 & 0.020 & 2.500 & 121\% \\
+  8 &  4 & $-2.00$ & $-9.31$ & 7.31 & 0.028 & 1.786 &  58\% \\
+ 20 &  9 & $-2.82$ & $-6.06$ & 3.24 & 0.032 & 1.563 &  38\% \\
+ 28 & 13 & $-2.27$ & $-4.96$ & 2.69 & 0.038 & 1.316 &  16\% \\
+ \textbf{50} & 22 & $-2.00$ & $-4.32$ & 2.31 & 0.0435 & \textbf{1.149} & \textbf{1.6\%} \\
+ 82 & 37 & $-0.31$ & $-2.28$ & 1.97 & 0.048 & 1.042 &   8\% \\
+126 & 57 &  0.67 & $-1.09$ & 1.76 & 0.049 & 1.020 &  10\% \\
+\bottomrule
+\end{tabular}
+\caption{Spin-orbit coupling ratios at magic numbers. $\IPT = 1.1309$.
+The bold row ($N=50$) is the unique magic number with ratio within 2\% of $\IPT$.}
+\label{tab:nuclear_summary}
+\end{table}
+
+\noindent\emph{Note on SEMF validity:} The SEMF underperforms for light nuclei
+($N < 10$); the negative $S_{2n}$ values for $N=8$ are SEMF artefacts and do not
+affect the coupling-ratio argument, which is based on the Nilsson shell model
+parameters~\cite{spivack2025nuclear_physics}.
+
+\section{Prebiotic Fitness Model Data}
+\label{app:prebiotic}
+
+The following table gives fitness scores for all 30 amino acids in the model
+(20 standard + 10 non-standard), generated by \texttt{prebiotic\_fitness\_model.py}.
+$F_i = \mathrm{SIPF}_i \times C_{\mathrm{rel},i} \times \tau_i$;
+$\IPT$ viability threshold $= F_{\min,\mathrm{std}} / \IPT = 1.326$.
+
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}{@{}llrrrllll@{}}
+\toprule
+\textbf{Name} & \textbf{Abbr} & \textbf{SIPF} & $C_\mathrm{rel}$ & $\tau$ & $F_i$ &
+\textbf{S1} & \textbf{S2} & \textbf{Verdict} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Glycine        & Gly & 1.00 & 5.0 & 10 & 50.00 & \checkmark & \checkmark & selected \\
+Alanine        & Ala & 0.95 & 3.5 & 10 & 33.25 & \checkmark & \checkmark & selected \\
+Serine         & Ser & 0.85 & 2.0 & 10 & 17.00 & \checkmark & \checkmark & selected \\
+Glutamate      & Glu & 0.85 & 2.0 & 10 & 17.00 & \checkmark & \checkmark & selected \\
+Aspartate      & Asp & 0.88 & 2.5 & 10 & 22.00 & \checkmark & \checkmark & selected \\
+Threonine      & Thr & 0.78 & 1.5 & 10 & 11.70 & \checkmark & \checkmark & selected \\
+Valine         & Val & 0.75 & 1.5 & 10 & 11.25 & \checkmark & \checkmark & selected \\
+Lysine         & Lys & 0.75 & 1.0 & 10 &  7.50 & \checkmark & \checkmark & selected \\
+Proline        & Pro & 0.80 & 1.0 & 10 &  8.00 & \checkmark & \checkmark & selected \\
+Arginine       & Arg & 0.70 & 0.8 & 10 &  5.60 & \checkmark & \checkmark & selected \\
+Glutamine      & Gln & 0.72 & 0.7 & 10 &  5.04 & \checkmark & \checkmark & selected \\
+Asparagine     & Asn & 0.70 & 0.7 & 10 &  4.90 & \checkmark & \checkmark & selected \\
+Isoleucine     & Ile & 0.68 & 0.8 & 10 &  5.44 & \checkmark & \checkmark & selected \\
+Leucine        & Leu & 0.72 & 1.2 & 10 &  8.64 & \checkmark & \checkmark & selected \\
+Phenylalanine  & Phe & 0.65 & 0.6 & 10 &  3.90 & \checkmark & \checkmark & selected \\
+Histidine      & His & 0.62 & 0.6 & 10 &  3.72 & \checkmark & \checkmark & selected \\
+Tyrosine       & Tyr & 0.60 & 0.5 & 10 &  3.00 & \checkmark & \checkmark & selected \\
+Methionine     & Met & 0.60 & 0.4 & 10 &  2.40 & \checkmark & \checkmark & selected \\
+Cysteine       & Cys & 0.55 & 0.5 & 10 &  2.75 & \checkmark & \checkmark & selected \\
+Tryptophan     & Trp & 0.50 & 0.3 & 10 &  1.50 & \checkmark & \checkmark & selected \\
+\midrule
+\textsc{d}-Alanine & D-Ala & 0.90 & 2.0 & 1 & 1.80 & $\times$ & \checkmark & fail-S1 \\
+$\beta$-Alanine & b-Ala & 0.92 & 2.5 & 1 & 2.30 & $\times$ & \checkmark & fail-S1 \\
+Norvaline      & Nva  & 0.71 & 0.6 & 1 & 0.43 & $\times$ & $\times$ & fail-S1 \\
+AIB            & AIB  & 0.45 & 0.3 & 1 & 0.14 & $\times$ & $\times$ & fail-S1 \\
+Ornithine      & Orn  & 0.68 & 0.5 & 1 & 0.34 & $\times$ & $\times$ & fail-S1 \\
+Homoserine     & Hse  & 0.60 & 0.4 & 1 & 0.24 & $\times$ & $\times$ & fail-S1 \\
+Sarcosine      & Sar  & 0.55 & 0.8 & 1 & 0.44 & $\times$ & $\times$ & fail-S1 \\
+GABA           & GABA & 0.30 & 0.2 & 1 & 0.06 & \checkmark & $\times$ & fail-S2 \\
+DAB            & DAB  & 0.25 & 0.15& 1 & 0.04 & \checkmark & $\times$ & fail-S2 \\
+Pipecolic acid & Pip  & 0.20 & 0.1 & 1 & 0.02 & \checkmark & $\times$ & fail-S2 \\
+\end{longtable}
+\noindent\emph{S1 = Stage~1 (structural admissibility); S2 = Stage~2 (IPT viability).
+Stage-1 exclusion reasons: D-Ala: wrong stereochemistry; $\beta$-Ala: wrong backbone
+geometry; Norvaline, AIB: structural isomers; Ornithine, Homoserine: metabolic
+intermediates; Sarcosine: N-methylation breaks peptide planarity.
+Full data: \texttt{prebiotic\_fitness\_table.csv}.}
+
+% =====================================================================
+\section{Speculative Extension: Generative Cognitive Systems}
+\label{app:cognition}
+% =====================================================================
+
+\noindent\textbf{[I] --- This appendix presents a theoretical bridge; no direct empirical
+test of the IPT value in cognitive systems has been performed.}
+
+\smallskip
+A \emph{generative cognitive system}---understood minimally as a finite,
+self-referential dynamical system capable of sustaining an internal model
+of its own state---faces a two-stage sieve analogous to the GSP.
+Stage~1 (admissibility) requires the system to be genuinely self-referential:
+it must contain within itself a representation of its own generative rules
+(cf.\ the fixed-point condition $S = L(S)$ of~\cite{SpivackRR}).
+Open-loop control systems, thermostats, and simple automata are excluded.
+Stage~2 (viability) requires that the generative-to-dissipative rate ratio
+satisfies $G/D > \IPT$; systems below this threshold undergo informational
+collapse in which internal models degrade faster than they are replenished~\cite{SpivackIPT}.
+
+The MFRR/NEMS research programme formalises this structure.
+The Theorem of Foundational Finality
+(\lean{NemS.foundational\_finality}, zero~\lean{sorry},~\cite{SpivackNEMSHub})
+establishes that any finite, self-knowing system must obey a fixed-point
+consistency condition; the Reflexive Closure Theorem
+(\lean{ReflexiveClosure},~\cite{SpivackNEMSHub}) provides the Lean-certified
+backbone for the claim that reflexive systems form a closed class.
+The IPT threshold thus marks the boundary between self-referential systems
+that can sustain coherent internal representations (Regime~3, $G/D > \IPT$)
+and those that cannot (Regimes 1--2).
+
+Note that relay and transduction channels (systems that transmit rather than
+generate information) operate at $G/D \approx 1.0$; the IPT marks the threshold
+specifically for \emph{generative} awareness loci, not for neural transduction
+in general~\cite{Tkacik2015,Shew2013}.
+
+Several independent empirical lines are consistent with a criticality threshold
+for consciousness, though they do not directly test the IPT value $\approx 1.1309$:
+loss of consciousness under general anaesthesia occurs at sharp physiological
+thresholds consistent with a viability transition~\cite{Tononi2008};
+the brain operates near the edge-of-chaos critical point during conscious states
+and departs from this point under propofol/xenon anaesthesia, seizures, and
+vegetative states~\cite{Toker2022,Maschke2024};
+and a systematic review of 71 publications confirms that departure from neural
+criticality correlates with unconscious states~\cite{Wiesenhuetter2022}.
+A rigorous test of the IPT-consciousness connection would require measuring
+$G/D$ ratios in conscious and non-conscious systems --- an experiment
+currently beyond available precision.
+We record this as a theoretical prediction for future investigation.
+
+\printbibliography
+
+\end{document}

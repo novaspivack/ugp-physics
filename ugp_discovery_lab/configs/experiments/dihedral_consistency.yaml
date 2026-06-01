@@ -1,0 +1,39 @@
+experiment:
+  name: dihedral_consistency
+  description: "Fit Dihedral-Lock planes; test 2cos(pi/n), rational, and algebraic bases"
+  
+  inputs:
+    runs:
+      - "UGP_discovery_lab_runs/**/dihedral_lock_*_summary.json"
+      
+  fit:
+    min_points: 300
+    min_r2: 0.997
+    bootstrap_samples: 200
+    pslq_max_denominator: 64
+    algebraic_basis:
+      - "sqrt2"
+      - "sqrt3"
+      - "phi"
+      - "sqrt(2+sqrt2)"
+      - "(sqrt6+sqrt2)/2"
+      
+  hypotheses:
+    - name: cos_formula
+      form: "alpha = 1/(2*cos(pi/n))"
+      tol_abs: 5e-4
+    - name: rational
+      form: "alpha = p/q"
+      tol_abs: 1e-6
+    - name: algebraic
+      form: "alpha = linear_combination(basis)"
+      tol_abs: 1e-8
+      
+  run:
+    steps: 5000
+    window: 64
+    seed: [42, 173, 823]
+    
+  report:
+    export_md: true
+    export_json: true

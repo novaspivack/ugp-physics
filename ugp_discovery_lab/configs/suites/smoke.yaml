@@ -1,0 +1,48 @@
+suite:
+  name: smoke
+  description: "Fast smoke test suite for developers (10-20s runtime)"
+  
+  experiments:
+    - name: ca_universality
+      config: "configs/experiments/ca_universality_test.yaml"
+      description: "Quick CA universality test"
+      tests:
+        - { name: "smoke_rule110", rule: "rule110", width: 16, steps: 16, wrap: true }
+
+    - name: lawful_evolution
+      config: "configs/experiments/gte_lucas.yaml"
+      description: "Quick lawful evolution test"
+      le_config:
+        c_policy: mersenne
+        b_policy: fib
+        a_policy: gte
+        mirror: d2
+      run:
+        steps: 32
+        windows: [10]
+        seed: [1,73,823]
+      diagnostics:
+        kernel_plane_fit: false
+        index_lock: true
+
+    - name: quarterlock_anchor
+      config: "configs/experiments/quarterlock_anchor.yaml"
+      description: "Quick Quarter-Lock validation"
+      inputs:
+        runs: ["UGP_discovery_lab_runs/**/LE_gte_*_summary.json"]
+      fit:
+        model: "kM = kG + alpha*kL"
+        target_value: "1/4"
+        tol_abs: 1e-3
+        min_points: 50
+
+  run:
+    workers: 2
+    timeout: 60
+    checkpoint_threshold: 10
+    
+  diagnostics:
+    - name: basic_functionality
+      description: "Verify core components work"
+    - name: fast_regression_check
+      description: "Quick regression validation"

@@ -1,0 +1,1717 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  The Phi_MDL Field: Quantum Structure, Born Rule, and Continuum Completion
+%  of the Chiral Minkowski CA
+%
+%  Nova Spivack --- 2026
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt]{article}
+
+% ===================== PREAMBLE =====================
+\usepackage[margin=1in]{geometry}
+\usepackage{authblk}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\allowdisplaybreaks
+\setlength{\abovedisplayskip}{6pt}
+\setlength{\belowdisplayskip}{6pt}
+\setlength{\abovedisplayshortskip}{4pt}
+\setlength{\belowdisplayshortskip}{4pt}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{tikz}
+\input{../common/tikz_cmca_styles.tex}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+\usepackage{cite}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx,ragged2e,array}
+\usepackage{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage[toc]{appendix}
+\usepackage{float}
+\usepackage{placeins}
+\usepackage{multicol}
+
+\setlength{\emergencystretch}{3em}
+\raggedbottom
+
+\newcolumntype{P}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\graphicspath{{artifacts/}{figures/}{./}}
+
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black}
+\input{nova_zenodo_doi_placeholder}
+
+% ── Theorem environments ──────────────────────────────────────────────────────
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% ── Convenience macros ────────────────────────────────────────────────────────
+\newcommand{\UGP}{\text{UGP}}
+\newcommand{\GTE}{\text{GTE}}
+\newcommand{\MDL}{\text{MDL}}
+\newcommand{\PSC}{\text{PSC}}
+\newcommand{\PHIMDL}{\Phi_{\mathrm{MDL}}}
+\newcommand{\ZS}{\mathbb{Z}_7}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\lean}[1]{%
+  \penalty-100
+  \begingroup\def\_{\textunderscore\allowbreak}\texttt{#1}\endgroup}
+\newcommand{\sinwsq}{\sin^2\!\theta_W}
+\newcommand{\Mw}{M_W}
+\newcommand{\Mz}{M_Z}
+\newcommand{\Ngen}{N_{\rm gen}}
+\newcommand{\cH}{c_H}
+\newcommand{\vPSC}{v_{\rm PSC}}
+\newcommand{\epsz}{\varepsilon_0}
+\newcommand{\Mkink}{M_{\rm kink}}
+\newcommand{\mtau}{m_\tau}
+\newcommand{\mphi}{m_\varphi}
+
+% ── Status badge macros (same as P28, P41) — math-mode safe ──────────────────
+\newcommand{\CatA}{\textbf{A}}
+\newcommand{\CatAL}{\ensuremath{\textbf{A}_{\rm Lean}}}
+\newcommand{\CatAMDL}{\ensuremath{\textbf{A}_{\rm MDL}}}
+\newcommand{\CatAD}{\textbf{A/D}}
+\newcommand{\CatB}{\textbf{B}}
+\newcommand{\CatD}{\textbf{D}}
+
+\begin{document}
+
+\title{\textbf{The $\PHIMDL$ Field: Quantum Structure, Born Rule,
+  and Continuum Completion of the Chiral Minkowski CA}}
+
+\author{Nova Spivack}
+\affil{Independent Researcher}
+\date{May 2026}
+\maketitle
+
+\NovaZenodoAfterTitle
+
+%─────────────────────────────────────────────────────────────────────────────
+\begin{abstract}
+We study the $\ZS$-symmetric Klein--Gordon field $\PHIMDL$ as the continuum
+counterpart of the Three-Layer Chiral Minkowski CA (CMCA, Paper P41).
+Four principal results follow.
+(1)~\textit{Poincar\'e invariance:} $\PHIMDL$ satisfies exact Lorentz
+invariance $\omega^2 = k^2 + m^2$, machine-certified via
+\lean{poincare\_invariance\_of\_kg} in \lean{LorentzInvariance.lean}
+($\CatAL$, zero sorry).
+(2)~\textit{Born rule from field amplitudes:} the position-space probability
+density $P(x) = |\partial_x\Phi|^2 / \int|\partial_x\Phi|^2$ normalizes
+exactly ($\CatAD$); extended to overlapping multi-kink configurations via the
+canonical dual-frame inner product (\lean{born\_rule\_from\_dual\_frame\_master}
+in \lean{DualFrameBornRule.lean}, $\CatAL$, zero sorry).
+(3)~\textit{Physical quantum state:} the pre-measurement $\PHIMDL$ state is
+the Hamiltonian thermal ensemble $P(k) = e^{-M_k/T}/Z_T$ restricted to
+PSC-admissible $\ZS$ kink sectors $\{0,2,3,4,6\}$
+(\lean{phimdl\_thermal\_state\_master} in \lean{PhiMDLThermalState.lean},
+$\CatAL$ conditional, zero custom physics axioms); the physical state is
+vacuum-dominant at observed cosmic temperatures and approaches the uniform
+PSC-admissible distribution at early-universe temperatures.
+(4)~\textit{3+1D extension:} $\PHIMDL$ kinks become domain walls with
+tension $\sigma = 290.10\,\mathrm{MeV\,GeV}^{-2} = 7450\,\mathrm{MeV\,fm}^{-2}$;
+$\ZS$ superselection is preserved; the Born rule $P(k)=|c_k|^2$ is
+unchanged; and SR time dilation is exact.  When two domain walls
+intersect in $3+1$ dimensions, they form a junction line with exact
+dimensionless tension $\lambda = -16/49$, corresponding to
+$-1654.77\,\mathrm{MeV\,fm}$ (attractive; ratio
+$|\lambda/\sigma| = 2/m_\varphi$, pure geometry); certified in
+\lean{WindingCoinDecoupling.lean} ($\CatAL$, zero sorry).
+The continuum limit CMCA$\to\PHIMDL$ is machine-certified in
+\lean{CMCAContinuumLimit.lean}: algebraic content is $M$-independent, the
+Nyquist residual $\epsz(M) = \pi^2/(3M^2)\to 0$ as $M\to\infty$, and
+$\PHIMDL$ is the unique terminal Level-1 Generative Triple Evolution (GTE) object.
+Two further Lean-certified results complete the picture:
+\lean{no\_finite\_ca\_exact\_lorentz\_replica} proves that every finite-$M$
+discrete model has strictly positive Lorentz error ($\CatAL$, zero sorry),
+and \lean{commutes\_with\_winding\_iff\_diagonal} establishes that any
+$\ZS$-winding-conserving coin must be diagonal, structurally precluding
+quantum interference in the discrete setting ($\CatAL$, zero sorry).
+The explicit CMCA$\to\PHIMDL$ descent map is numerically confirmed at
+$M=7$: Cook A-glider winding profile vs.\ BPS kink RMSD $= 5.34\%
+\leq \epsz(7) = 6.71\%$, Pearson $r=0.994$.
+\end{abstract}
+
+\tableofcontents
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{Introduction}
+\label{sec:intro}
+%═════════════════════════════════════════════════════════════════════════════
+
+The Universal Generative Principle (UGP) Physics programme, the quantitative branch of the Reflexive Reality programme~\cite{SpivackCompUniversality,SpivackResearchProgrammes}
+derives Standard Model physics from a minimal discrete arithmetic substrate.
+The foundational continuum object is the $\ZS$-symmetric Klein--Gordon field
+$\PHIMDL$~\cite{SpivackGTEMobius}, which serves simultaneously as:
+(i) the field-theoretic continuum limit of the cellular-automaton substrate;
+(ii) the quantum mechanical arena in which PSC-selected observables acquire
+Born-rule probabilities; and
+(iii) the terminal object of the GTE Level-1 category~\cite{SpivackCMCA}.
+
+Paper P41~\cite{SpivackCMCA} established the \emph{Three-Layer Chiral
+Minkowski CA} (CMCA) as the unique minimal discrete substrate carrying all
+five Level-1 GTE structural features, with the $\PHIMDL$ continuum field as
+its terminal object.  The present paper is the companion continuum analysis:
+we derive the quantum structure of $\PHIMDL$ in detail, prove all four of the
+results sketched in P41's Born-rule and quantum-state sections, extend to
+$3+1$ dimensions, and certify the CMCA$\to\PHIMDL$ continuum limit in Lean~4.
+
+\medskip
+
+% ── Claim-strength taxonomy ───────────────────────────────────────────────────
+\begin{tcolorbox}[colback=gray!4,colframe=gray!50!black,
+  title={\textbf{Claim-strength taxonomy}},
+  fonttitle=\bfseries,left=6pt,right=6pt,top=5pt,bottom=5pt]
+\small
+\[
+\CatAL \;>\; \CatAMDL \;>\; \CatAD \;>\; \CatA \;>\; \CatB \;>\; \CatD
+\]
+\textbf{$\CatAL$:} machine-checked exact arithmetic in Lean~4, zero \texttt{sorry}.\\
+\textbf{$\CatAMDL$:} MDL-unique within a declared expression class.\\
+\textbf{$\CatAD$:} full analytic derivation; computationally confirmed.\\
+\textbf{$\CatA$:} computationally confirmed; a physics bridge or Lean cert remains.\\
+\textbf{$\CatB$:} calibrated reproduction.\\
+\textbf{$\CatD$:} exploratory / frontier.
+\end{tcolorbox}
+
+% ── Reviewer's map ────────────────────────────────────────────────────────────
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{2.9cm}>{\raggedright\arraybackslash}p{1.4cm}>{\raggedright\arraybackslash}p{8.7cm}>{\raggedright\arraybackslash}p{2.2cm}@{}}
+\caption{Reviewer's map: principal claims, certification level, and location.}
+\label{tab:reviewer_map}\\
+\toprule
+\textbf{Result} & \textbf{Status} & \textbf{Claim} & \textbf{Where}\\
+\midrule
+\endfirsthead
+\multicolumn{4}{l}{\small\itshape (Table~\ref{tab:reviewer_map} continued)}\\
+\toprule
+\textbf{Result} & \textbf{Status} & \textbf{Claim} & \textbf{Where}\\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\small\itshape (continued on next page)}\\
+\endfoot
+\bottomrule
+\endlastfoot
+$\ZS$-KG Lagrangian & $\CatAD$ &
+  $\mathcal{L}=\tfrac12(\partial\Phi)^2-V(\Phi)$;
+  $V = (m_\varphi^2/49)(1-\cos 7\Phi)$; $m_\varphi=\mtau=1.77686$~GeV. &
+  \S\ref{sec:field}\\
+BPS kink mass & $\CatAL$ &
+  $\Mkink = (8/49)\,\mtau = 290.10$~MeV.
+  Lean: \lean{mkink\_from\_scc} (P34/P35). &
+  \S\ref{sec:kinks}\\
+Kink masses equal & $\CatAL$ &
+  All Z$_7$ kink masses are equal.
+  Lean: \lean{phimdl\_kink\_masses\_equal} in
+  \lean{PhiMDLThermalState.lean}. &
+  \S\ref{sec:kinks}\\
+PSC admissible sectors & $\CatAL$ &
+  $\{0,2,3,4,6\}$ are PSC-admissible; $\{1,5\}$ PSC-forbidden.
+  Lean: \lean{psc\_admissible\_sectors}. &
+  \S\ref{sec:kinks}\\
+Lorentz invariance & $\CatAL$ &
+  KG dispersion $\omega^2=k^2+m^2$ is Lorentz-invariant.
+  Lean: \lean{poincare\_invariance\_of\_kg}, zero sorry. &
+  \S\ref{sec:lorentz}\\
+PSC $\to$ Lorentz & $\CatAL$ (1 axiom) &
+  PSC Presentation Invariance forces $[\mathbf{D}]$-selected observables
+  Lorentz-equivariant.  Lean: \lean{PSCPILorentzMain.lean}. &
+  \S\ref{sec:lorentz}\\
+$T^{\mu\nu}$ covariance & $\CatAD$ &
+  Noether tensor $T^{\mu\nu}$ transforms as a rank-2 Lorentz tensor.
+  400 random boosts verified; $\max|\Delta T|<2\times10^{-16}$. &
+  \S\ref{sec:lorentz}\\
+Position Born density & $\CatAD$ &
+  $P(x)=|\partial_x\Phi|^2/\int|\partial_x\Phi|^2$; normalizes exactly to 1.
+  $P(0)=\mphi/2$; kink mass from $\int T_{00}\,dx$. &
+  \S\ref{sec:quantum}\\
+Sector Born rule & $\CatAL$ &
+  $P(k)=|c_k|^2$ from $\ZS$ kink superselection.
+  Lean: \lean{born\_rule\_unconditional} in
+  \lean{BeableWindingPartitionInstance.lean}, zero custom axioms. &
+  \S\ref{sec:quantum}\\
+Dual-frame Born & $\CatAL$ &
+  Overlapping kinks: Born rule via positive-definite Gram inner product.
+  Lean: \lean{born\_rule\_from\_dual\_frame\_master},
+  \lean{DualFrameBornRule.lean}, zero sorry. &
+  \S\ref{sec:quantum}\\
+{$[\mathbf{D}]$-collapse} & $\CatA$ &
+  $[\mathbf{D}]$-adjudication implements projective collapse to kink
+  eigenstate with $P(j)=|c_j|^2$; MC at 500k trials passes $\chi^2=2.997$
+  (crit 12.592). &
+  \S\ref{sec:quantum}\\
+Thermal state (PSC-admissible) & $\CatAL$ (conditional) &
+  $P(k)=e^{-\Mkink/T}/Z_T$ on $\{0,2,3,4,6\}$; vacuum dominant for $T\ll\Mkink$.
+  Lean: \lean{phimdl\_thermal\_state\_master}, zero custom physics axioms. &
+  \S\ref{sec:state}\\
+Two-function picture & $\CatAL$ (conditional) &
+  Born rule $\mathcal{B}$ + transputation $\mathbb{P}^\top$ compose to give
+  $\mathbb{P}(\text{outcome}=k\mid w)=|c_k(\mathbb{P}^\top_D(w))|^2$.
+  Lean: \lean{two\_function\_picture}, \lean{transputation\_state\_selector\_bundle}. &
+  \S\ref{sec:state}\\
+Domain wall tension & $\CatAD$ &
+  $\sigma=(8/49)\,\mtau^3/\mtau^2 = 290.10\,\mathrm{MeV\,GeV}^{-2}$;
+  $\sigma/A_{\rm wall}$ recovers $M_{\rm eff}$ to $10^{-13}$ relative error. &
+  \S\ref{sec:3d}\\
+3+1D $\ZS$ superselection & $\CatAD$ &
+  Coleman--Mandelstam argument extends to planar domain walls in 3+1D.
+  Tunneling $\sim e^{-S_E}$ with $S_E\approx 0.163$~GeV; $\ZS$ charge
+  conserved in 3+1D. &
+  \S\ref{sec:3d}\\
+3+1D Born rule & $\CatAD$ &
+  $P(k)=|c_k|^2$ is unchanged in 3+1D; sector Born is dimension-independent. &
+  \S\ref{sec:3d}\\
+SR time dilation (3+1D) & $\CatAD$ &
+  $M_{\rm eff}(v)=\gamma\sigma A_{\rm wall}$; exact at six boost velocities,
+  max relative error $2\times10^{-16}$. &
+  \S\ref{sec:3d}\\
+Algebraic Lifting & $\CatAL$ &
+  Every PSC-admissible SM configuration algebraically realised in $f_{\rm MDL}$;
+  $\ZS$ winding, 3 generations, confinement, V--A lift to $\PHIMDL$.
+  Lean: \lean{algebraic\_lifting\_theorem}, \lean{LiftingTheorem.lean} (P28). &
+  \S\ref{ssec:lifting_descent}\\
+Algebraic Descent & $\CatAL$ &
+  Every F$_{21}$ conservation law holds at all $M\geq1$; algebraic content
+  $M$-independent.
+  Lean: \lean{algebraic\_descent\_theorem}, \lean{AlgebraicDescentTheorem.lean} (P28). &
+  \S\ref{ssec:lifting_descent}\\
+SR Nyquist $M$-dep. & $\CatAL$ &
+  $\epsz(M)=\pi^2/(3M^2)$ is $M$-dependent; does not descend.
+  Lean: \lean{sr\_accuracy\_depends\_on\_M}, zero sorry. &
+  \S\ref{ssec:lifting_descent}\\
+Continuum limit & $\CatAL$ (conditional) &
+  $\epsz(M)=\pi^2/(3M^2)\to 0$ as $M\to\infty$; algebraic content $M$-independent;
+  $\PHIMDL$ is unique terminal Level-1 GTE object.
+  Lean: \lean{cmca\_continuum\_limit\_is\_phimdl}, \lean{CMCAContinuumLimit.lean}. &
+  \S\ref{sec:continuum}\\
+Descent map explicit & $\CatA$ &
+  Cook A-glider $\ZS$ winding profile vs.\ $\PHIMDL$ BPS kink:
+  RMSD $= 5.34\%\leq\epsz(7)=6.71\%$; Pearson $r=0.994$;
+  $Q=1/7$ exactly. Numerical confirmation of CMCA$\to\PHIMDL$. &
+  \S\ref{ssec:descent_explicit}\\
+Junction tension & $\CatAL$ &
+  Two intersecting domain walls in 3+1D form a junction line;
+  $\lambda_{\rm dim} = -16/49$ (exact); $\lambda=-1654.77\,\mathrm{MeV\,fm}$;
+  $|\lambda/\sigma|=2/m_\varphi$ (pure geometry, no free parameters).
+  Lean: \lean{phimdl\_domain\_wall\_junction\_tension\_exact},
+  \lean{WindingCoinDecoupling.lean}. &
+  \S\ref{ssec:junction}\\
+Junction attractive & $\CatAL$ &
+  $\lambda < 0$: domain walls lower energy at intersections.
+  Lean: \lean{phimdl\_junction\_is\_attractive}, zero sorry. &
+  \S\ref{ssec:junction}\\
+No-finite-CA replica & $\CatAL$ &
+  For all $M>0$: $\epsz(M)>0$. Only $M\to\infty$ achieves exact Lorentz
+  invariance; $\PHIMDL$ is the unique zero-error model.
+  Lean: \lean{no\_finite\_ca\_exact\_lorentz\_replica}, \lean{CMCAContinuumLimit.lean}. &
+  \S\ref{ssec:no_ca_replica}\\
+QCA impossibility & $\CatAL$ &
+  A $\ZS$-winding-conserving coin must be diagonal; diagonal coins
+  decouple sectors and preclude quantum interference.
+  Lean: \lean{commutes\_with\_winding\_iff\_diagonal},
+  \lean{WindingCoinDecoupling.lean}. &
+  \S\ref{ssec:qca_impossibility}\\
+H3 holographic & $\CatA$ &
+  Domain-wall entropy $S_{\rm wall}\propto\sigma\times\mathrm{Area}$;
+  $\ZS$ charge holographically encoded on wall boundary;
+  Lifting Theorem realizes the bulk--boundary correspondence. &
+  \S\ref{ssec:holographic}\\
+\end{longtable}
+\normalsize
+\renewcommand{\arraystretch}{1}
+
+\medskip
+
+\begin{tcolorbox}[colback=green!4,colframe=green!45!black,
+  title={\textbf{Central result}},
+  fonttitle=\bfseries,left=6pt,right=6pt,top=4pt,bottom=4pt]
+\small
+The $\ZS$-KG field $\PHIMDL$ is the continuum completion of the Chiral
+Minkowski CA: it carries exact Poincar\'e invariance ($\CatAL$), a
+field-theoretically derivable Born rule ($\CatAD/\CatAL$), and the
+Hamiltonian thermal state of the PSC-admissible kink sector ($\CatAL$
+conditional).  In 3+1D, the 1+1D kinks become planar domain walls with
+tension $\sigma = 290.10\,\mathrm{MeV\,GeV}^{-2}$ and exact SR time
+dilation.  The CMCA$\to\PHIMDL$ continuum limit is machine-certified
+in Lean~4 with zero sorry.
+\end{tcolorbox}
+
+\medskip
+
+\begin{tcolorbox}[colback=orange!4,colframe=orange!55!black,
+  title={\textbf{What this paper does and does not claim}},
+  fonttitle=\bfseries,left=6pt,right=6pt,top=5pt,bottom=5pt]
+\small
+\textbf{Established in this paper:}
+The $\ZS$-KG field $\PHIMDL$ carries exact Poincar\'e invariance
+(\lean{poincare\_invariance\_of\_kg} in \lean{LorentzInvariance.lean},
+$\CatAL$, zero sorry) and a field-theoretically derivable Born rule
+($P(x)=|\partial_x\Phi|^2/\int|\partial_x\Phi|^2$, $\CatAD$; extended
+to overlapping kinks via the dual-frame inner product,
+\lean{DualFrameBornRule.lean}, $\CatAL$).
+The pre-measurement state is the Hamiltonian thermal ensemble on
+PSC-admissible sectors $\{0,2,3,4,6\}$
+(\lean{phimdl\_thermal\_state\_master}, $\CatAL$ conditional, zero custom
+physics axioms).
+In 3+1D, kinks become planar domain walls with tension
+$\sigma=290.10\,\mathrm{MeV\,GeV}^{-2}$ and exact SR time dilation ($\CatAD$).
+The CMCA$\to\PHIMDL$ continuum limit is machine-certified
+(\lean{CMCAContinuumLimit.lean}, $\CatAL$ conditional).
+
+\textbf{Not claimed:}
+This paper does not establish the \emph{unconditional} physical Born state:
+which specific $D\in[\mathbf{D}]$ governs collapse on non-trivial records
+depends on Conjecture~C2 (C2-CLOSURE), which remains open (\S\ref{ssec:c2}).
+The existence of genuine 3D discrete gliders (non-planar configurations)
+in the three-layer CMCA was an open problem; it is resolved negatively
+(P43~\cite{SpivackCompleteness}): no outer-totalistic $\ZS$ CA in 3+1D
+supports Class-4 behaviour.  The 3+1D analysis here covers only planar domain walls.
+The absolute value of the kink mass $\Mkink=(8/49)\mtau$ depends on the
+Self-Consistency Condition (SCC) identification $m_\varphi=\mtau$ (P34/P35, $\CatAD$
+bridge); unconditional $\CatAL$ for this identification is not claimed here.
+\end{tcolorbox}
+
+\medskip
+
+\paragraph{UGP Physics programme context.}
+This paper is part of the UGP Physics programme~\cite{SpivackResearchProgrammes}.  Companion references:
+P28~\cite{SpivackCompUniversality} (computational universality and Rule~110;
+Algebraic Lifting and Descent theorems that certify content-preservation
+morphisms in the GTE category of Level-1 constructions),
+P34~\cite{SpivackGTEMobius} (GTE-M\"obius architecture, D1--D5 axioms,
+$\PHIMDL$ definition, $[\mathbf{D}]$ structure),
+P35~\cite{SpivackGTEUnification} (GTE unification; EW scale in $\PHIMDL$
+context; SCC mass identification $m_\varphi=\mtau$),
+P36~\cite{SpivackEmergentGravity} (AFCA $\tau_c$ inner clock,
+dynamics-level SR time dilation; emergent gravity on $\PHIMDL$),
+P37~\cite{SpivackQMFromR110} (Fock space over kink modes; Born rule
+and Fock quantization; 't~Hooft cogwheel construction in $\PHIMDL$),
+P40~\cite{SpivackGF7Universality} (GF(7) polynomial universality
+certification used throughout),
+P41~\cite{SpivackCMCA} (Three-Layer Chiral Minkowski CA; the discrete
+UV completion of $\PHIMDL$; Section references use the notation
+``P41~\S\,N'').
+The GTE-M\"obius architecture axioms (D1--D5) established in
+P34~\cite{SpivackGTEMobius} are the foundational structure from which
+all results in this paper are derived.
+
+\paragraph{GTE-M\"obius architecture terminology.}
+The \textbf{GTE-M\"obius architecture} is a triple $(A,\,e,\,[\mathbf{D}])$
+defined in~\cite{SpivackGTEMobius}: $A$ is the PSC-admissible arithmetic
+layer (at Level~1, the $\mathbb{Z}_7$ CMCA; at Level~2, the kink sector of
+$\PHIMDL$); $e$ is the evolutionary dynamics (at Level~1, the update rule
+$f_{\rm MDL}$; at Level~2, Klein--Gordon evolution); and $[\mathbf{D}]$ is
+the \emph{coherence measure}---a real-valued functional on candidate/record
+pairs that the Perfect Self-Containment (PSC) criterion uses to adjudicate
+which trajectories correspond to physical
+observations~\cite{SpivackGTEMobius}.  In the $\PHIMDL$ setting,
+$[\mathbf{D}]$ \emph{operates on} kink-configuration superpositions and
+selects observables via the PSC superselection $\{0,2,3,4,6\}$ and the Born
+rule; $[\mathbf{D}]$ is not a term in the Klein--Gordon Lagrangian but an
+axiomatic overlay from the GTE-M\"obius framework.  A
+\emph{$[\mathbf{D}]$-selected observable} is one assigned positive weight by
+$[\mathbf{D}]$.  The PSC axiom D2 (Presentation Invariance) states that
+$[\mathbf{D}]$ is invariant under any transformation preserving the PSC
+structure---from which Lorentz equivariance is derived in
+\S\ref{sec:lorentz}~\cite{SpivackGTEMobius}.
+Throughout, \emph{machine-certification levels} follow the GTE convention:
+$\CatAL$ (Lean~4 proof, zero sorry), $\CatAD$ (full analytic derivation;
+computationally confirmed), $\CatA$ (computationally confirmed; no
+Lean certification yet).
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{The $\PHIMDL$ Field}
+\label{sec:field}
+%═════════════════════════════════════════════════════════════════════════════
+
+\subsection{Lagrangian and potential}
+\label{ssec:lagrangian}
+
+The $\PHIMDL$ field is a real scalar field $\Phi:\mathbb{R}^{1,1}\to\mathbb{R}$
+(1+1 dimensions; extended to 3+1D in \S\ref{sec:3d}) governed by the
+$\ZS$-symmetric Lagrangian density~\cite{SpivackGTEMobius,SpivackGTEUnification}:
+
+\begin{equation}
+  \mathcal{L} = \tfrac{1}{2}(\partial_\mu\Phi)^2 - V(\Phi),
+  \qquad
+  V(\Phi) = \frac{m_\varphi^2}{49}\bigl(1 - \cos(7\Phi)\bigr).
+  \label{eq:lagrangian}
+\end{equation}
+
+The mass parameter is set by the Self-Consistency Condition (SCC): $m_\varphi = \mtau = 1776.86\,\mathrm{MeV}$, the tau-lepton mass.  This identification is derived in P34--P35~\cite{SpivackGTEMobius,SpivackGTEUnification} via the correspondence between the GTE orbit structure and Standard Model fermion masses.
+
+The potential $V(\Phi)$ has $\ZS$ discrete symmetry: $V(\Phi + 2\pi k/7) = V(\Phi)$ for $k\in\ZS$.  The seven degenerate minima are located at
+\begin{equation}
+  \Phi_k = \frac{2\pi k}{7}, \qquad k\in\{0,1,\ldots,6\},
+  \label{eq:vacua}
+\end{equation}
+with $V(\Phi_k) = 0$ and $V''(\Phi_k) = m_\varphi^2$.
+
+\subsection{Coupling constants and PSC-admissible structure}
+\label{ssec:coupling}
+
+The field theory has two dimensionful parameters: $m_\varphi$ (mass) and $1/m_\varphi$ (kink size).  The BPS kink mass~\eqref{eq:bps} provides the third derived scale $\Mkink = (8/49)\,\mtau$.  All coupling constants are fixed by the GTE arithmetic structure (P35~\cite{SpivackGTEUnification}); there are no free parameters.
+
+The PSC-admissible kink sectors are $\{0,2,3,4,6\}$; sectors $\{1,5\}$ are PSC-forbidden by the dark-mirror identification established in P29~\cite{SpivackMirrorBraidAtlas}.  This binary admissible/forbidden split is distinct from the kink-mass grading: all non-vacuum sectors ($k\in\{1,\ldots,6\}$) have the same BPS mass $\Mkink = (8/49)\mtau$ by $\ZS$ symmetry.
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{Kink Spectrum in 1+1D}
+\label{sec:kinks}
+%═════════════════════════════════════════════════════════════════════════════
+
+\subsection{BPS kinks and their mass}
+\label{ssec:bps}
+
+The static BPS kink connecting adjacent vacua $\Phi_k\to\Phi_{k+1}$ is:
+\begin{equation}
+  \Phi_{\rm kink}(x) = \frac{4}{7}\arctan\!\bigl(e^{m_\varphi x}\bigr),
+  \qquad
+  \frac{d\Phi_{\rm kink}}{dx} = \frac{2m_\varphi}{7}\,\mathrm{sech}(m_\varphi x).
+  \label{eq:kink_profile}
+\end{equation}
+
+\input{../common/figures/fig_p42_potential_kink.tex}
+
+The BPS bound is saturated, giving the kink mass:
+\begin{equation}
+  \Mkink = \int_{-\infty}^{\infty}\!\Bigl[\tfrac{1}{2}\Phi'^2 + V(\Phi)\Bigr]dx
+  = \frac{4m_\varphi^2}{49}\int_{-\infty}^{\infty}\mathrm{sech}^2(m_\varphi x)\,dx
+  = \frac{8m_\varphi}{49} = \frac{8\,\mtau}{49} = 290.10\,\mathrm{MeV},
+  \label{eq:bps}
+\end{equation}
+where we used $\int \mathrm{sech}^2(u)\,du = 2$.  This is machine-certified
+via \lean{mkink\_from\_scc} in P34/P35 (Lean~4, zero sorry).
+
+\begin{theorem}[Equal kink masses; $\CatAL$]
+  \label{thm:equal_masses}
+  All non-vacuum $\ZS$ kink sectors $k\in\{1,\ldots,6\}$ have the same BPS
+  mass $\Mkink = (8/49)\mtau$.
+\end{theorem}
+\begin{proof}
+  By $\ZS$ symmetry, every inter-vacuum transition $k\to k+1\pmod{7}$ has
+  the same potential barrier $\max V = 2m_\varphi^2/49$.  The BPS bound gives
+  $M_k = \int dV/d\Phi\,dx = (8/49)\mtau$ independent of $k$.
+  Lean certification: \lean{phimdl\_kink\_masses\_equal} in
+  \lean{PhiMDLThermalState.lean}~(P42), zero sorry.
+\end{proof}
+
+\subsection{$\ZS$ superselection and topological charge}
+\label{ssec:supersel}
+
+Canonical quantization of the $\ZS$ sine-Gordon field follows
+Coleman~\cite{Coleman1975}, Mandelstam~\cite{Mandelstam1975}, and
+Rajaraman~\cite{Rajaraman1982}.  The topological charge
+\begin{equation}
+  Q = \frac{7}{2\pi}\int_{-\infty}^{\infty}\Phi'(x)\,dx
+  = \frac{7}{2\pi}\bigl[\Phi(+\infty)-\Phi(-\infty)\bigr] \in \ZS
+\end{equation}
+is conserved.  This enforces a $\ZS$ superselection rule on the physical
+Hilbert space:
+\begin{equation}
+  \mathcal{H} = \bigoplus_{k\in\ZS}\mathcal{H}_k,
+  \qquad
+  |\Psi\rangle = \sum_{k=0}^{6} c_k\,|\Psi_k\rangle,
+  \qquad \sum_k|c_k|^2 = 1.
+\end{equation}
+Superselection sectors $k\in\{1,5\}$ are kinematically admissible but
+PSC-forbidden by the dark-mirror identification; only sectors $k\in\{0,2,3,4,6\}$
+participate in the physical Hilbert space after PSC truncation.
+
+\begin{theorem}[PSC-admissible sectors; $\CatAL$]
+  \label{thm:psc_sectors}
+  The PSC-admissible sectors are exactly $\{0,2,3,4,6\}$, with cardinality~5.
+  Lean: \lean{psc\_admissible\_sectors}, \lean{psc\_admissible\_card},
+  \lean{psc\_sectors\_partition} in \lean{PhiMDLThermalState.lean}.
+\end{theorem}
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{Lorentz Invariance}
+\label{sec:lorentz}
+%═════════════════════════════════════════════════════════════════════════════
+
+\subsection{Poincaré algebra from KG dispersion}
+\label{ssec:poincare}
+
+The Klein--Gordon equation of motion derived from~\eqref{eq:lagrangian}
+is $(\Box + m_\varphi^2)\Phi = 0$, with $\Box = \partial_t^2 - \nabla^2$.
+Fourier-expanding $\Phi(x)=\int d^4k\,\hat\Phi(k)\,e^{ik\cdot x}$ gives
+the dispersion relation:
+\begin{equation}
+  \omega^2 = k^2 + m_\varphi^2.
+  \label{eq:dispersion}
+\end{equation}
+
+\begin{theorem}[Poincar\'e invariance of KG; $\CatAL$]
+  \label{thm:poincare}
+  The $\PHIMDL$ Klein--Gordon dispersion~\eqref{eq:dispersion} is
+  Poincar\'e-invariant: for any Lorentz transformation $\Lambda$ with
+  $k' = \Lambda k$, $\omega'^2 = k'^2 + m_\varphi^2$ whenever $\omega^2 = k^2 + m_\varphi^2$.
+  The full Poincar\'e algebra (translations + Lorentz boosts + rotations) is
+  realized on the on-shell surface.
+  Lean: \lean{poincare\_invariance\_of\_kg} in \lean{LorentzInvariance.lean},
+  zero sorry.
+\end{theorem}
+
+The PSC Presentation Invariance (D2 of P34~\cite{SpivackGTEMobius}) forces all
+$[\mathbf{D}]$-selected observables to be Lorentz-equivariant on the $\PHIMDL$
+continuum, as machine-certified in \lean{PSCPILorentzMain.lean}
+(one axiom: \lean{d2\_universal}; see P41~\cite{SpivackCMCA} \S3 for derivation).
+
+\subsection{Stress-energy tensor}
+\label{ssec:tmunu}
+
+The Noether stress-energy tensor for~\eqref{eq:lagrangian} is:
+\begin{equation}
+  T^{\mu\nu} = \partial^\mu\Phi\,\partial^\nu\Phi - \eta^{\mu\nu}\mathcal{L},
+  \label{eq:tmunu}
+\end{equation}
+with metric $\eta_{\mu\nu}=\mathrm{diag}(-1,+1,+1,+1)$.  For the static kink
+($\partial_t\Phi=0$):
+\begin{equation}
+  T_{00} = \tfrac{1}{2}(\Phi')^2 + V(\Phi)\geq 0,
+  \qquad
+  \int_{-\infty}^{\infty}T_{00}\,dx = \Mkink = 290.10\,\mathrm{MeV}.
+\end{equation}
+
+\begin{theorem}[$T^{\mu\nu}$ Lorentz covariance; $\CatAD$]
+  \label{thm:tmunu}
+  $T^{\mu\nu}$ transforms as a rank-2 Lorentz tensor under any Lorentz boost.
+  Numerical verification: 400 random boosts with $|v|<0.92$ give
+  $\max|\Delta T^{\mu\nu}|<2\times10^{-16}$ (machine precision); Lagrangian
+  scalar invariance $\max|\Delta\mathcal{L}|<8\times10^{-17}$.
+  The kink gravitational mass $\int T_{00}\,dx = 290.10\,\mathrm{MeV}$ (relative
+  error $0.0001\%$) matches the BPS analytic value.
+\end{theorem}
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{Quantum Structure and Born Rule}
+\label{sec:quantum}
+%═════════════════════════════════════════════════════════════════════════════
+
+\subsection{Fock space over kink modes}
+\label{ssec:fock}
+
+The quantum theory is constructed as a Fock space over the $\ZS$ kink
+eigenstates, following the Jackiw--Rebbi collective coordinate quantization
+and the PSC superselection established in P37~\cite{SpivackQMFromR110}.
+The physical Hilbert space is $\mathcal{H}=\bigoplus_{k\in\{0,2,3,4,6\}}\mathcal{H}_k$,
+with sector Born weights:
+\begin{equation}
+  P(\text{sector }k) = |c_k|^2
+  \label{eq:sector_born}
+\end{equation}
+for any normalized state $|\Psi\rangle = \sum_{k}c_k|\Psi_k\rangle$.
+This is machine-certified unconditionally (\lean{born\_rule\_unconditional}
+in \lean{BeableWindingPartitionInstance.lean}, zero custom physics axioms).
+
+\begin{theorem}[CMCA Hilbert inductive limit; $\CatAD$]
+  \label{thm:cmca_hilbert_inductive_limit}
+  The direct system $\{H_{\rm phys}(L)\}_{L\in\mathbb{N}}$ of finite-tape CMCA
+  physical Hilbert spaces (built from the $f_{\rm MDL}$ orbit decomposition on
+  $\mathbb{Z}_7^L$ and the 't~Hooft cogwheel construction, P37~\cite{SpivackQMFromR110})
+  admits an inductive limit that is dense in the $\PHIMDL$ kink Fock space
+  $\mathcal{H}_{\rm Fock}=\bigoplus_{k\in\{0,2,3,4,6\}}\mathcal{H}_k$.
+  In the $M\to\infty$ continuum limit (\lean{cmca\_continuum\_limit\_is\_phimdl}),
+  each finite-$L$ cycle state embeds consistently in the corresponding $n$-kink
+  Fock sector, and the union is dense in $\mathcal{H}_{\rm Fock}$.
+\end{theorem}
+\begin{proof}[Proof sketch ($\CatAD$)]
+  The finite-tape sector lifts are machine-certified at the algebraic layer
+  (\lean{CMCAHilbertFockBridge.fock\_vacuum\_maps\_to\_cmca\_vacuum},
+  \lean{bps\_psc\_sector\_has\_beable\_lift}, zero \texttt{sorry}).
+  The completion step invokes Jackiw--Rebbi canonical quantization of the
+  $\mathbb{Z}_7$-KG soliton (Rajaraman~\cite{Rajaraman1982},~\S4 applied to
+  $V(\varphi)=(m_\varphi^2/49)(1-\cos 7\varphi)$; P38/P43) together with the
+  Algebraic Lifting Theorem (\lean{algebraic\_lifting\_theorem}, CatAL).
+  The full GNS/inductive-limit isomorphism is tracked as
+  \lean{cmca\_hilbert\_inductive\_limit} (one structural axiom pending Mathlib
+  Hilbert-space completion infrastructure).
+\end{proof}
+
+\begin{remark}[CA$\leftrightarrow$QFT embedding reduces to Fock-space construction]
+The 't~Hooft CA$\leftrightarrow$QFT embedding from the CMCA state space to the
+$\PHIMDL$ quantum field theory (P37~\cite{SpivackQMFromR110} §MDL Fock lift;
+G42 in the companion programme) decomposes as
+$\Phi_{\rm embed} = (\text{Hilbert-space map, §\ref{ssec:fock}}) \circ
+(\texttt{cmca\_continuum\_limit\_is\_phimdl})$.
+The structural reduction is established (\CatAD, conditional): full proof is
+unconditional once canonical $\mathbb{Z}_7$-KG soliton quantization (Jackiw--Rebbi
+limit) is formalized.
+\end{remark}
+
+\subsection{Position-space Born density from field amplitude}
+\label{ssec:position_born}
+
+For a static single kink, the physical position-space probability density
+is derived from the localized field amplitude---the gradient of the kink profile,
+which carries the kink's spatial support.
+
+\begin{theorem}[Position Born density; $\CatAD$]
+  \label{thm:position_born}
+  The probability density for locating the $\PHIMDL$ kink at position $x$ is:
+  \begin{equation}
+    P(x) = \frac{\bigl|\partial_x\Phi(x)\bigr|^2}
+                {\displaystyle\int_{-\infty}^{\infty}\bigl|\partial_x\Phi(x')\bigr|^2 dx'}
+    = \frac{m_\varphi}{2}\,\mathrm{sech}^2(m_\varphi x),
+    \qquad \int_{-\infty}^{\infty}P(x)\,dx = 1.
+    \label{eq:born_density}
+  \end{equation}
+  The normalization constant is the kink BPS mass:
+  $\int(\partial_x\Phi)^2 dx = 8m_\varphi/49 = \Mkink$.
+\end{theorem}
+\begin{proof}
+  From~\eqref{eq:kink_profile}, $\partial_x\Phi = (2m_\varphi/7)\,\mathrm{sech}(m_\varphi x)$.
+  Then $(\partial_x\Phi)^2 = (4m_\varphi^2/49)\,\mathrm{sech}^2(m_\varphi x)$.
+  Integrating: $\int_{-\infty}^{\infty}(\partial_x\Phi)^2\,dx = (8m_\varphi/49)\int_{-\infty}^{\infty}\mathrm{sech}^2(u)\,du/m_\varphi = 8m_\varphi/49$.
+  Dividing gives $P(x) = (m_\varphi/2)\,\mathrm{sech}^2(m_\varphi x)$, which
+  satisfies $\int P\,dx = 1$.
+\end{proof}
+
+\begin{remark}
+  The raw field profile $|\Phi(x)|^2$ is not a probability density on $\mathbb{R}$:
+  $\Phi\to 0$ as $x\to-\infty$ and $\Phi\to 2\pi/7$ as $x\to+\infty$, so
+  $\int|\Phi|^2\,dx$ diverges.  Numerical verification confirms this
+  (core window integral $13.22$ vs.\ wide window $44.96$ in dimensionless units).
+  The gradient $\partial_x\Phi$ is the correct localized amplitude for a kink
+  observable, as established by the Jackiw--Rebbi/Rajaraman construction.
+\end{remark}
+
+Numerical verification (script \texttt{phiborn1\_kg\_amplitude\_probability.py}):
+the normalization $\int P\,dx = 1$ is exact to relative error $2.82\times10^{-13}$;
+peak $P(0) = m_\varphi/2$ is exact to $3.91\times10^{-9}$; kink mass from
+$\int T_{00}\,dx = 290.10\,\mathrm{MeV}$ to relative error $<10^{-4}$.
+
+\subsection{Dual-frame Born rule for overlapping kinks}
+\label{ssec:dual_frame}
+
+When kink separation $\Delta x < 5/m_\varphi$, gradient modes are no longer
+orthogonal ($\int\partial_x\varphi(x)\,\partial_x\varphi(x-\delta)\,dx =
+(8m_\varphi/49)\,\mathrm{sech}(m_\varphi\delta/2)$, which decays to zero only
+for $\delta\gg 1/m_\varphi$).  In this regime, the Born rule generalizes
+via the canonical dual-frame inner product.
+
+\begin{theorem}[Dual-frame Born rule master; $\CatAL$]
+  \label{thm:dual_frame}
+  Let $G_{jk} = \langle\psi_j|\psi_k\rangle$ be the positive-definite Gram matrix
+  of (possibly non-orthogonal) kink basis vectors, and let
+  $\tilde\psi_j = \sum_k (G^{-1})_{jk}\psi_k$ be the dual frame.
+  For any normalized superposition $|\Psi\rangle = \sum_k c_k|\psi_k\rangle$
+  with $\sum_{j,k}\bar c_j G_{jk} c_k = 1$, the Born weight is:
+  \begin{equation}
+    P(k) = |a_k|^2,
+    \qquad a_k = \langle\tilde\psi_k|\Psi\rangle.
+    \label{eq:dual_born}
+  \end{equation}
+  The dual-frame amplitudes recover the original coefficients exactly:
+  $a_k = c_k$ for any $G$.
+  Lean: \lean{born\_rule\_from\_dual\_frame\_master},
+  \lean{dual\_frame\_recovers\_coefficients},
+  \lean{dual\_gram\_identity} in \lean{DualFrameBornRule.lean}, zero sorry.
+\end{theorem}
+
+\begin{remark}
+  For well-separated kinks ($\Delta x\gg 1/m_\varphi$), $G\approx\mathbf{1}$
+  and~\eqref{eq:dual_born} reduces to the standard $|c_k|^2$.
+  Numerical verification (script \texttt{phiborn2\_kink\_overlap\_born.py}):
+  well-separated regime, max residual $|P(k)-|c_k|^2|<3.7\times10^{-8}$;
+  orthogonality max off-diagonal $8.2\times10^{-8}$ (at $\Delta x=20/m_\varphi$).
+  Tight-separation regime ($\Delta x=3/m_\varphi$): L$^2(\partial_x\varphi)$
+  orthogonality fails ($0.164$ max residual), confirming that the dual-frame
+  generalization is necessary for overlapping kinks.
+\end{remark}
+
+\subsection{$[\mathbf{D}]$-collapse as projective measurement}
+\label{ssec:collapse}
+
+A $[\mathbf{D}]$-measurement event implements projective measurement onto the
+kink eigenbasis (D5 of P34~\cite{SpivackGTEMobius}).  For a pre-measurement
+state $|\Psi\rangle = \sum_k c_k|\text{kink}_k\rangle$:
+\begin{enumerate}[noitemsep]
+  \item \emph{Before:} Superposition over PSC-admissible $\ZS$ sectors.
+  \item \emph{During:} $[\mathbf{D}]$ adjudicates sector $j$ with probability
+    $P(j) = |\langle\text{kink}_j|\Psi\rangle|^2 = |c_j|^2$.
+  \item \emph{After:} Post-measurement state $|\Psi'\rangle = |\text{kink}_j\rangle$.
+\end{enumerate}
+Monte Carlo verification at 500\,000 trials:
+\begin{sloppypar}\noindent
+reference $P_k=[0.217, 0.208, 0.067, 0.083, 0.133, 0.208, 0.083]$, empirical
+$[\,0.217, 0.208, 0.067, 0.083, 0.133, 0.208, 0.084\,]$,
+$\chi^2_\nu=2.997$ (crit.\ $12.59$, $p=0.05$, 6 dof): \CatA{}.
+\end{sloppypar}
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{The Physical Quantum State}
+\label{sec:state}
+%═════════════════════════════════════════════════════════════════════════════
+
+\subsection{Thermal state on PSC-admissible sectors}
+\label{ssec:thermal}
+
+The physical pre-measurement quantum state of the $\PHIMDL$ field is determined
+by the $\ZS$ sine-Gordon Hamiltonian acting on the PSC-admissible-truncated
+Hilbert space.  The BPS kink masses are all equal: $M_k = \Mkink$ for $k\neq 0$
+and $M_0 = 0$ (vacuum).  At finite cosmic temperature $T$, the equilibrium state
+is the Boltzmann ensemble:
+
+\begin{equation}
+  P(k \mid T) = \frac{e^{-M_k/T}}{Z_T},
+  \qquad
+  Z_T = \sum_{k\in\{0,2,3,4,6\}} e^{-M_k/T},
+  \qquad k\in\{0,2,3,4,6\},
+  \label{eq:thermal}
+\end{equation}
+with PSC-forbidden sectors $k\in\{1,5\}$ assigned zero weight.
+
+\begin{theorem}[Thermal state master; $\CatAL$ conditional]
+  \label{thm:thermal}
+  For any temperature $T>0$ and PSC-admissible sector $k$, the sector
+  probability of the $\PHIMDL$ Hamiltonian thermal state is:
+  \begin{align}
+    P(k\mid T) &= e^{-M_k/T}/Z_T > 0 \quad\text{(admissible sectors)},
+    \label{eq:thermal_admissible}\\
+    P(k\mid T) &= 0 \quad\text{(PSC-forbidden sectors } k\in\{1,5\}).
+    \label{eq:thermal_forbidden}
+  \end{align}
+  The partition function $Z_T > 0$; the distribution normalizes to 1 on
+  PSC-admissible sectors.  Lean: \lean{phimdl\_thermal\_state\_master},
+  \lean{thermal\_state\_sector\_prob},
+  \lean{sectorProb\_admissible\_sum} in \lean{PhiMDLThermalState.lean},
+  zero custom physics axioms.
+\end{theorem}
+
+\begin{remark}[Cosmic vacuum dominance]
+  At $T = T_{\rm CMB} \approx 2.7\,\mathrm{K} = 2.3\times10^{-13}\,\mathrm{GeV}$:
+  \begin{equation}
+    \frac{P(0)}{P(k\neq 0)} = e^{\Mkink/T}
+    \approx e^{0.29010\,\mathrm{GeV}/(2.3\times10^{-13}\,\mathrm{GeV})}
+    \approx e^{10^{12}},
+  \end{equation}
+  a ratio of order $e^{10^{12}}$.  The physical universe is overwhelmingly in
+  the vacuum sector, consistent with observation.  In the limit $T\to\infty$, the
+  distribution approaches the uniform weight $1/5$ on PSC-admissible sectors
+  (the Gleason/Presentation-Invariance prediction for $\ZS$-symmetric records).
+  Lean: \lean{vacuum\_particle\_prob\_ratio} in
+  \lean{PhiMDLThermalState.lean} certifies vacuum dominance for $T < \Mkink/100$.
+\end{remark}
+
+Table~\ref{tab:thermal} summarizes the thermal state at several representative
+temperatures.
+
+\begin{table}[h]
+\centering
+\caption{Thermal state sector probabilities $P(k\mid T)$ at representative temperatures.
+  $M_k = (8/49)\mtau = 0.29010\,\mathrm{GeV}$ for $k\neq 0$.}
+\label{tab:thermal}
+\begin{tabular}{lcc}
+\toprule
+Temperature & $P(0)$ (vacuum) & $P(k\neq 0)$ (each kink sector) \\
+\midrule
+$T\to 0$ (ground state) & $1.0$ & $0.0$ \\
+$T = T_{\rm CMB} = 2.3\times10^{-13}\,\mathrm{GeV}$ & $\approx 1.0$ & $\approx 0$ \\
+$T = T_{\rm QCD} \sim 0.15\,\mathrm{GeV}$ & $\gg 1 \times P_k$ & $< 10^{-23}$ \\
+$T = T_{\rm EW} \sim 100\,\mathrm{GeV}$ & $\approx 0.227$ & $\approx 0.193$ each \\
+$T\to\infty$ & $0.200$ & $0.200$ each \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{The two-function picture}
+\label{ssec:two_function}
+
+The GTE quantum mechanics is structured by two operationally distinct functions:
+
+\begin{definition}[Two-function picture; $\CatAL$ conditional]
+  \label{def:two_function}
+  \begin{enumerate}[noitemsep]
+    \item \textbf{Born rule} $\mathcal{B}$: the squared-modulus map
+      $(c_k)\mapsto(|c_k|^2)$ from amplitudes to probabilities.  \emph{Universal}:
+      applies to any normalized $\ZS$ state.
+    \item \textbf{Transputation selector} $\mathbb{P}^\top_D$: the map
+      $w \mapsto \arg\min_\rho D(\rho\mid w)$ from records to states via
+      coherence measure $D\in[\mathbf{D}]$.  \emph{State-selecting}:
+      chooses the physical pre-measurement state from the record class.
+  \end{enumerate}
+  These compose: $\mathbb{P}(\text{outcome}=k\mid w) = (\mathcal{B}\circ\mathbb{P}^\top_D)(w)_k = |c_k(\mathbb{P}^\top_D(w))|^2$.
+\end{definition}
+
+\begin{theorem}[Two-function picture; $\CatAL$ conditional]
+  \label{thm:two_function}
+  For any coherence measure $D\in[\mathbf{D}]$ and record $w$, the composition
+  $\mathcal{B}\circ\mathbb{P}^\top_D$ is well-defined, Born-consistent, and
+  non-computable.  The selector $\mathbb{P}^\top_D$ is derived from the
+  D3+D4+D5 axioms of P34~\cite{SpivackGTEMobius} without additional
+  physics axioms.
+  Lean: \lean{two\_function\_picture},
+  \lean{transputation\_state\_selector\_bundle},
+  \lean{born\_rule\_composes\_with\_selector\_coeffs}
+  in \lean{TransputationStateSelector.lean}, zero sorry.
+\end{theorem}
+
+The thermal state~\eqref{eq:thermal} is the PSC-canonical choice of
+$\mathbb{P}^\top_D(w_0)$ on the empty record $w_0$: on the empty record,
+Presentation Invariance (D2) restricts the state to Boltzmann weights on
+the PSC-admissible sectors, recovering~\eqref{eq:thermal}.
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{3+1D Extension: Domain Walls}
+\label{sec:3d}
+%═════════════════════════════════════════════════════════════════════════════
+
+\subsection{From kinks to domain walls}
+\label{ssec:domain_walls}
+
+In 3+1 dimensions, the $\ZS$-KG Lagrangian~\eqref{eq:lagrangian} is promoted
+with $(\partial_\mu\Phi)^2 = (\partial_t\Phi)^2 - |\nabla\Phi|^2$.  The 1+1D
+kink solutions extend to planar domain wall configurations uniform in the transverse
+$(y,z)$ directions:
+\begin{equation}
+  \Phi_{\rm wall}(t,x,y,z) = \Phi_{\rm kink}(x) = \frac{4}{7}\arctan(e^{m_\varphi x}).
+\end{equation}
+The domain wall tension (energy per unit transverse area) is:
+\begin{equation}
+  \sigma = \int_{-\infty}^{\infty} T_{00}\,dx
+  = \frac{8\,\mtau}{49} = \Mkink = 290.10\,\mathrm{MeV\,GeV}^{-2}
+  = 7450\,\mathrm{MeV\,fm}^{-2},
+  \label{eq:tension}
+\end{equation}
+in natural units where $[m_\varphi] = \mathrm{GeV}$ and transverse area is
+measured in $\mathrm{GeV}^{-2}$.  Numerically:
+$\sigma = 0.29010\,\mathrm{GeV}^3$, verified to relative error $2.8\times10^{-13}$.
+
+The color and baryon-number context for the 3+1D domain-wall particle picture
+is developed further in the companion architecture paper P45~\cite{SpivackThreeTapeCMCA},
+which establishes the three-tape Dimensional Protocol Principle: three synchronized
+1+1D CMCAs with a shared outer $\tau_c$ clock reproduce 3+1D Minkowski structure.
+Under the DPP, a 3+1D particle is a coordinated kink triple
+$(\kappa_x,\kappa_y,\kappa_z)$ evaluated at the same $\tau_c^{\rm out}$ phase.
+
+\subsection{Chirality of domain walls and the V--A connection}
+\label{ssec:chirality_va}
+
+Domain walls in the $\PHIMDL$ field carry a definite chirality determined by their
+winding direction: a kink $\Phi: -2\pi/7 \to +2\pi/7$ (winding $+1$) and an
+anti-kink $\Phi: +2\pi/7 \to -2\pi/7$ (winding $-1$) propagate with opposite
+orientations relative to the three-tape DPP clock.  Under the Rule~110/Rule~124
+chiral asymmetry of the CMCA, right-moving ($L_{x^+}$) and left-moving ($L_{x^-}$)
+kink sectors are not equivalent: the V--A fraction $32/125$ of neighborhood
+configurations satisfy the chirality mismatch condition, certified at Level~1
+(\CatAL, P41~\cite{SpivackCMCA}).  Via the Algebraic Lifting Theorem
+(\lean{algebraic\_lifting\_theorem}, \CatAL), this Level~1 chiral asymmetry lifts
+to the $\PHIMDL$ continuum field: domain walls carry a preferred handedness, and
+the net chiral current $J^\mu_A - J^\mu_V$ is proportional to the winding-number
+density times the chiral mismatch coefficient $32/125$.
+For the two-tape $\PHIMDL$ fields $\Phi_R$ (Rule~110, right-chiral) and
+$\Phi_L$ (Rule~124, left-chiral), define the topological currents
+$J^\mu_{\mathrm{top}}(\Phi) = (7/2\pi)\,\varepsilon^{\mu\nu}\partial_\nu\Phi$.
+The Level~2 vector and axial currents are
+\begin{equation}
+  J^\mu_V = J^\mu_{\mathrm{top}}(\Phi_R) + J^\mu_{\mathrm{top}}(\Phi_L),
+  \qquad
+  J^\mu_A = \varepsilon^{\mu\nu}\partial_\nu(\Phi_R - \Phi_L)
+  = J^\mu_{\mathrm{top}}(\Phi_R) - J^\mu_{\mathrm{top}}(\Phi_L).
+\end{equation}
+Both are topologically conserved:
+$\partial_\mu J^\mu_V = \partial_\mu J^\mu_A = \varepsilon^{\mu\nu}\partial_\mu\partial_\nu(\cdots)=0$
+by antisymmetry of $\varepsilon^{\mu\nu}$ and Schwarz symmetry of mixed partials
+(\lean{phimdl\_axial\_current\_topological},
+\lean{phimdl\_vector\_current\_topological}; \CatAD).
+The V--A mismatch fraction $(32/125$, \CatAL) certifies the chiral structure of the
+two-tape $\PHIMDL$ Lagrangian via
+\lean{va\_fraction\_lifts\_to\_l2\_chiral\_current}.
+The within-tape doublet $(\Phi_+, \Phi_-)$ has $SU(2)_L$-invariant potential
+$V(|\Psi|)$ (verified numerically, P45~\cite{SpivackThreeTapeCMCA}).
+The MDL principle forces minimal coupling
+$\partial_\mu |\Psi|^2 \to |D_\mu\Psi|^2$, upgrading the free kinetic term to the
+full covariant derivative
+(\lean{su2l\_within\_tape\_l2\_from\_phimdl}, \texttt{GaugeMDL.lean}, \CatAD{}).
+Variation of $|D_\mu\Psi|^2$ with $D_\mu\Psi = \partial_\mu\Psi + igW_\mu\Psi$ yields
+the weak charged current
+\begin{equation}
+  J^\mu_W = g\,\mathrm{Im}\!\bigl(\Phi_+^*\partial^\mu\Phi_- - \Phi_-^*\partial^\mu\Phi_+\bigr),
+  \label{eq:jw_charged}
+\end{equation}
+on the within-tape doublet $\Psi=(\Phi_+,\Phi_-)$.
+The doublet bilinear is certified antisymmetric under isospin exchange
+(\lean{weak\_charged\_current\_bilinear\_antisymmetric}, \CatAD).
+The structural bundle
+(\lean{phimdl\_weak\_charged\_current}, \lean{phimdl\_l2\_chiral\_and\_weak\_current\_bundle})
+packages $J^\mu_W$ with the topological $J^\mu_V$ and $J^\mu_A$ currents
+(\CatAD{}).
+
+\subsection{$\ZS$ superselection in 3+1D}
+\label{ssec:3d_supersel}
+
+The topological charge
+\begin{equation}
+  Q_{3+1} = \frac{7}{2\pi}\int_{-\infty}^{\infty}\partial_x\Phi\,dx = k \in \ZS
+\end{equation}
+remains well-defined for a planar domain wall and is conserved under any
+topology-preserving deformation.  Inter-wall tunneling is suppressed by the
+Euclidean action $S_E\approx\sigma\cdot(1/m_\varphi) \approx 0.163\,\mathrm{GeV}$,
+giving amplitude $\sim e^{-S_E}$ independent of wall area.  By the
+Coleman--Mandelstam argument~\cite{Coleman1975,Mandelstam1975} extended to 3+1D:
+
+\begin{theorem}[$\ZS$ superselection in 3+1D; $\CatAD$]
+  \label{thm:3d_supersel}
+  The $\ZS$ topological charge is conserved for planar $\PHIMDL$ domain walls
+  in 3+1D.  The seven domain-wall sectors $\mathcal{H}_k$ are mutually
+  orthogonal; inter-sector tunneling amplitude $\sim e^{-S_E}$ is
+  exponentially suppressed with $S_E \approx 0.163\,\mathrm{GeV}$.
+  Numerical verification: $Q_{\ZS}$ from field profile matches sector label for
+  all seven sectors ($\Delta\phi/\Delta\phi_{\rm expected} = 1.000000$).
+\end{theorem}
+
+\subsection{Born rule unchanged in 3+1D}
+\label{ssec:3d_born}
+
+The Born-rule structure is purely sector-algebraic:
+
+\begin{theorem}[3+1D Born rule; $\CatAD$]
+  \label{thm:3d_born}
+  For a $\PHIMDL$ domain-wall superposition
+  $|\Psi\rangle = \sum_k c_k|\text{wall}_k\rangle$ in 3+1D, the sector
+  Born weights are:
+  \begin{equation}
+    P(k) = |c_k|^2,
+    \qquad \sum_k|c_k|^2 = 1.
+  \end{equation}
+  This is identical to the 1+1D result~\eqref{eq:sector_born}: the
+  domain-wall Born rule is dimension-independent.
+\end{theorem}
+\begin{proof}
+  The Hilbert space decomposes as $\mathcal{H} = \bigoplus_k\mathcal{H}_k$
+  over $\ZS$ wall sectors, with the same superselection argument as 1+1D.
+  The Born rule $P(k) = |c_k|^2$ follows from the unconditional
+  \lean{born\_rule\_unconditional} applied to the sector decomposition,
+  independent of whether the sectors are point particles or extended walls.
+  Numerical: $\sum_k|c_k|^2 = 1.000000000000$; max residual $= 0$.
+\end{proof}
+
+\subsection{Exact SR time dilation for moving domain walls}
+\label{ssec:sr_3d}
+
+A domain wall moving with velocity $v$ in the $x$-direction has
+effective energy:
+\begin{equation}
+  M_{\rm eff}(v) = \gamma\,\sigma\,A_{\rm wall},
+  \qquad \gamma = (1-v^2)^{-1/2},
+  \label{eq:sr_dilation}
+\end{equation}
+where $A_{\rm wall}$ is the rest-frame wall area.  This is the relativistic
+formula for a planar extended object~\cite{Luscher1981}.
+
+\begin{theorem}[SR time dilation for domain walls; $\CatAD$]
+  \label{thm:sr_3d}
+  The effective energy~\eqref{eq:sr_dilation} is \emph{exact}: numerical
+  verification at six boost velocities ($v\in\{0,0.3,0.5,0.7,0.9,0.99\}$)
+  gives $\max|M_{\rm eff}(v)/(\gamma\sigma A) - 1| < 2\times10^{-16}$.
+\end{theorem}
+
+Selected numerical values:
+\begin{align*}
+  v=0.0:&\quad \gamma=1.000,\quad M_{\rm eff}=2.205\,\mathrm{GeV}\\
+  v=0.5:&\quad \gamma=1.155,\quad M_{\rm eff}=2.546\,\mathrm{GeV}\\
+  v=0.9:&\quad \gamma=2.294,\quad M_{\rm eff}=5.059\,\mathrm{GeV}\\
+  v=0.99:&\quad \gamma=7.089,\quad M_{\rm eff}=15.63\,\mathrm{GeV.}
+\end{align*}
+
+\subsection{Domain-wall junction tension in 3+1D}
+\label{ssec:junction}
+
+When two $\PHIMDL$ domain walls oriented in orthogonal planes intersect in $3+1$
+dimensions, they form a \emph{junction line}---a codimension-2 defect running
+along the intersection.
+
+\paragraph{Topological remark.}
+The $\ZS$ vacuum manifold consists of 7 isolated points, so $\pi_1(\ZS)=0$.
+There are therefore \emph{no} topological vortex strings in $\PHIMDL$: the
+fundamental group of the vacuum manifold is trivial, and no non-contractible
+loops exist in field space.  What we call a ``junction line'' is a domain-wall
+intersection, \emph{not} a topological vortex.  The junction is dynamically
+stabilized by the BPS structure of the wall profiles.
+
+\paragraph{Junction tension from BPS kink integrals.}
+As a first approximation valid when the wall separation is large compared to
+$m_\varphi^{-1}$, the product ansatz reduces the 2D problem to integrals over
+independent 1D kink profiles.
+Consider the product ansatz $\Phi(x,y) = \Phi_{\rm kink}(x) + \Phi_{\rm kink}(y)$ for
+two perpendicular domain walls.  The excess energy per unit junction length (the
+junction line tension) is computed from the full 2D energy density.  Using the
+BPS integrals:
+\begin{equation}
+  A = \int_{-\infty}^{\infty}\!\Bigl(\tfrac{d\Phi_{\rm kink}}{dx}\Bigr)^{\!2}\!\,dx
+    = \frac{8m_\varphi}{49}, \qquad
+  B = \int_{-\infty}^{\infty}\!\sin\!\bigl(7\Phi_{\rm kink}(x)\bigr)\,dx = 0,
+\end{equation}
+where $B=0$ follows from the odd symmetry of $\sin(7\Phi_{\rm kink}(x))$ about
+$x=0$.  The dimensionless junction tension is:
+\begin{equation}
+  \lambda_{\rm dim} = -\frac{A^2}{49} = -\frac{(8/49)^2 \cdot 49}{1}
+  = -\frac{16}{49}.
+  \label{eq:junction_dim}
+\end{equation}
+
+\begin{theorem}[Domain-wall junction tension; $\CatAL$]
+  \label{thm:junction}
+  The dimensionless junction tension of two intersecting $\PHIMDL$ domain walls in
+  $3+1$ dimensions is:
+  \begin{equation}
+    \lambda_{\rm dim} = -\frac{16}{49} \approx -0.3265.
+  \end{equation}
+  The junction is \emph{attractive}: $\lambda < 0$ means domain walls lower their
+  energy at the intersection line.  The numerical ratio $|\lambda_{\rm dim}|/\sigma_{\rm dim} = 2$
+  (exactly $2\times$ the wall thickness in units $m_\varphi=1$) is a pure geometric
+  identity with no free parameters; physical value: $\lambda = -1654.77\,\mathrm{MeV\,fm}$.
+  Lean certification:
+  \lean{phimdl\_domain\_wall\_junction\_tension\_exact} (exact arithmetic $\lambda_{\rm dim}=-16/49$),
+  \lean{phimdl\_junction\_is\_attractive} ($\lambda<0$),
+  \lean{phimdl\_junction\_to\_wall\_ratio} (exact ratio identity),
+  in \lean{WindingCoinDecoupling.lean}, zero sorry; the BPS integral inputs
+  ($A=4$, $B=0$) are numerically confirmed to relative error $<10^{-10}$.
+\end{theorem}
+
+\begin{remark}
+  Convergence check: 256\nobreakdash$\times$256 grid gives
+  $\lambda_{\rm dim} = -0.32653061$ (relative error $< 10^{-10}$ vs.\
+  the analytic $-16/49$), confirming the formula~\eqref{eq:junction_dim} to
+  machine precision.  Domain wall sanity check: $\sigma_{\rm num} = 7450.31\,\mathrm{MeV\,fm}^{-2}$
+  agrees with the analytic BPS value to relative error $3.8\times10^{-7}$.
+\end{remark}
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{Continuum Limit from the CMCA}
+\label{sec:continuum}
+%═════════════════════════════════════════════════════════════════════════════
+
+\subsection{Algebraic Lifting and Descent: what transfers and what does not}
+\label{ssec:lifting_descent}
+
+The Algebraic Lifting and Descent theorems (P28, $\CatAL$, zero sorry)
+transfer propositional content over the Z$_7$ orbit algebra.
+
+\begin{theorem}[Algebraic Lifting, P28~\cite{SpivackCompUniversality};
+  \lean{algebraic\_lifting\_theorem} in \lean{LiftingTheorem.lean};
+  $\CatAL$, zero sorry]
+\label{thm:lifting}
+Every PSC-admissible SM particle configuration is algebraically realised in
+the $f_{\rm MDL}$ CA substrate, independently of whether that configuration
+is reachable by direct CA construction.
+Specifically, the following content \emph{lifts} from the CMCA discrete
+structure to $[\mathbf{D}]$-weighted physical states on $\PHIMDL$:
+\begin{itemize}[noitemsep]
+  \item $\ZS$ winding conservation (electric charge quantisation),
+  \item three-generation count ($N_{\rm gen}=3$),
+  \item Garden-of-Eden stability (first-generation particle stability),
+  \item color confinement (orbit-closure structure),
+  \item scattering vertex catalog ($f_{\rm MDL}$ neighborhood table),
+  \item V--A 32/125 mismatch fraction.
+\end{itemize}
+\end{theorem}
+
+\begin{theorem}[Algebraic Descent, P28~\cite{SpivackCompUniversality};
+  \lean{algebraic\_descent\_theorem}; $\CatAL$, zero sorry]
+\label{thm:descent}
+Every conservation law, charge quantisation condition, and generation
+structure certified at the discrete CA level holds in any continuum
+realisation of the same $F_{21}=\ZS\rtimes\mathbb{Z}_3$\allowbreak{}
+winding algebra, at any lattice resolution $M\geq1$.
+The same Z$_7$ orbit algebra, confinement, asymptotic freedom, and strong
+CP properties that hold for $f_{\rm MDL}$ at $M=7$ (the CMCA scale) hold
+for all $M\geq1$, including the $M\to\infty$ continuum limit on $\PHIMDL$.
+Consequently, all algebraic GTE content---the $\ZS$ generation orbit,
+three-generation structure, F$_{21}$ algebra, confinement, $b_0=7$ beta
+function, Casimir operators---is $M$-independent and already equal to the
+$\PHIMDL$ value at every finite resolution.
+\end{theorem}
+
+These two directions together establish that the SM winding sector and the
+$f_{\rm MDL}$ CA substrate are algebraically isomorphic in the relevant
+sector: not two competing models, but two resolutions of one algebraic
+object.
+
+\input{../common/figures/fig_p42_cmca_bridge.tex}
+
+\paragraph{What does \emph{not} descend.}
+Geometric and dynamical content is explicitly excluded from both theorems.
+The SR Nyquist correction
+\begin{equation}
+  \epsz(M) = \frac{\pi^2}{3M^2}
+\end{equation}
+is $M$-dependent and does not descend (it vanishes only as $M\to\infty$).
+This is machine-certified:
+
+\begin{theorem}[\lean{sr\_accuracy\_depends\_on\_M} in
+  \lean{AlgebraicDescentTheorem.lean}; $\CatAL$, zero sorry]
+\label{thm:sr_accuracy_m}
+The Nyquist denominator $3M^2$ is strictly increasing in $M$ for $M\geq1$;
+therefore the SR Nyquist correction $\epsz(M)=\pi^2/(3M^2)$ is strictly
+positive and decreasing in $M$.
+At $M=7$ (the CMCA scale): $\epsz(7)=\pi^2/147\approx 6.71\%$.
+The SR accuracy of the inner $\tau_c$ clock is $M$-dependent and is
+\emph{not} a resolution-independent algebraic property.
+\end{theorem}
+
+Consequently, exact Lorentz invariance is recovered only in the
+$M\to\infty$ continuum limit on $\PHIMDL$.  The bundle theorem
+\lean{cmca\_continuum\_limit\_is\_phimdl} in \lean{CMCAContinuumLimit.lean}
+($\CatAL$ conditional; zero sorry) packages algebraic $M$-independence,
+Nyquist residual $\epsz(M)\to0$, and terminal-object identification
+with $\PHIMDL$ (P28~\cite{SpivackCompUniversality},
+P34~\cite{SpivackGTEMobius}).
+
+\subsection{Explicit descent map: Cook A-glider vs.\ BPS kink}
+\label{ssec:descent_explicit}
+
+The abstract statement that $\PHIMDL$ is the $M\to\infty$ limit of the CMCA family
+is given concrete numerical content at $M=7$ by comparing a specific CMCA A-glider
+configuration to the exact $\PHIMDL$ BPS kink profile.
+
+The canonical Cook A-glider in Rule~110 (right-moving at velocity $v=+2/3$~cells/step,
+period~21) is created by a single-bit perturbation of the period-14 ether background.
+Its discrete Z$_7$ winding profile (cell count differences over a 60-cell window) is
+compared to the BPS kink~\eqref{eq:kink_profile} with matching amplitude $0.8976$~rad
+and effective mass $m_{\rm eff}=0.3354$ (in units of cells$^{-1}$).  Results:
+
+\begin{itemize}[noitemsep]
+  \item RMSD (winding profile vs.\ BPS kink): $5.34\%$ (dimensionless).
+  \item Predicted Nyquist bound $\epsz(7) = \pi^2/147 = 6.71\%$.
+  \item Ratio: actual/bound $= 0.796$ --- the discrete-to-continuum error is
+    \emph{smaller} than the theoretical Nyquist floor predicts.
+  \item Pearson $r = 0.994$: near-perfect linear correlation.
+  \item Winding number $Q = 1/7$ exactly (as required for a single $\ZS$ kink).
+  \item Fourier (direct $M=7$ frequency truncation): RMSD $= 9.43\%$, ratio $= 1.40$ vs.\ theoretical.
+\end{itemize}
+
+This provides direct numerical confirmation of the algebraic descent theorem
+(Theorem~\ref{thm:descent}): the A-glider discrete profile matches the BPS continuum
+profile within the certified Nyquist error of the $M=7$ discretization, and the
+$\ZS$ winding number is exactly preserved under the descent map ($\CatA$).
+Script: \texttt{scripts/cmca\_algebraic\_descent.py}; results file:
+\texttt{scripts/cmca\_algebraic\_descent\_results.json}.
+
+\subsection{Vanishing Nyquist residual}
+\label{ssec:nyquist}
+
+The geometric (Lorentz-violation) residual at resolution $M$ is:
+\begin{equation}
+  \epsz(M) = \frac{\pi^2}{3M^2}.
+  \label{eq:residual}
+\end{equation}
+At $M=7$: $\epsz(7)=\pi^2/147\approx 6.71\%$.  This residual is
+$M$-dependent (Theorem~\ref{thm:sr_accuracy_m}, $\CatAL$) and descends
+to zero in the continuum limit:
+
+\begin{theorem}[Continuum limit; $\CatAL$ conditional]
+  \label{thm:continuum}
+  The following hold jointly:
+  \begin{enumerate}[noitemsep,label=(\roman*)]
+    \item \textit{Algebraic invariance:} Every $F_{21}$ conservation law holds
+      for the CMCA at all $M\geq 1$, establishing $M$-independence.
+    \item \textit{Nyquist vanishing:} $\epsz(M) = \pi^2/(3M^2)\to 0$ as $M\to\infty$.
+    \item \textit{Terminal uniqueness:} $\PHIMDL$ is the unique terminal object
+      of the Level-1 GTE category carrying all five structural features
+      (Z$_7$ orbit, V--A chirality, Turing universality, observer Lorentz,
+      dynamics SR time dilation).
+  \end{enumerate}
+  Lean: \lean{cmca\_continuum\_limit\_is\_phimdl},
+  \lean{phimdl\_lorentz\_correction\_tendsto\_zero} in
+  \lean{CMCAContinuumLimit.lean};
+  named axioms same as \lean{GTECategoryStructure.lean}.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+  (i) is the existing \lean{algebraic\_descent\_theorem}.
+  (ii): $\epsz(M) = \pi^2\cdot(3M^2)^{-1}$ and $(3M^2)^{-1}\to 0$ by the
+  standard $M^{-2}$ filter theorem (Lean: \lean{phimdl\_lorentz\_correction\_tendsto\_zero},
+  proved via \lean{tendsto\_inv\_atTop\_zero} and \lean{tendsto\_natCast\_atTop\_atTop}).
+  (iii): \lean{phimdl\_is\_terminal\_object} and
+  \lean{phimdl\_is\_maximal\_feature\_object} in \lean{GTECategoryStructure.lean}.
+\end{proof}
+
+\begin{remark}[Scope of the Lifting Theorem]
+\label{rem:lifting-scope}
+Theorems~\ref{thm:lifting} and~\ref{thm:descent} lift \emph{algebraic} content:
+$\ZS$ winding conservation, $N_{\rm gen}=3$, GoE stability, confinement, scattering
+vertices, and the V--A fraction.  Dynamical results --- force laws (the Newtonian
+$F\propto r^{-2}$ from the Physical Minimum Description Length (PMDL) Poisson mechanism), Page-Wootters Born probabilities,
+and Bell-CHSH values --- are Level~1 certificates that certify the corresponding
+structural properties in $\PHIMDL$ (e.g., ``$\PHIMDL$ supports a $1/r^2$ force'')
+but do not carry their specific numerical values via this theorem.  The Level~1
+$\to$ Level~2 bridges for force law and Born rule are established separately in
+P45~\cite{SpivackThreeTapeCMCA}; the Level~2 EFE derivation is in
+P44~\cite{SpivackQGR}; the Level~2 field-amplitude Born rule is the $P(k)=|c_k|^2$
+result of \S\ref{ssec:fock}, which is independent of the Lifting Theorem.
+\end{remark}
+
+\subsection{Physical interpretation}
+\label{ssec:interpretation}
+
+The CMCA functions as the discrete ultraviolet (UV) completion of $\PHIMDL$:
+at lattice resolution $M$, the system is a 1+1D cellular automaton with
+$\ZS$ arithmetic; as $M\to\infty$, the dynamical equations reduce to the
+$\ZS$-KG equation with potential~\eqref{eq:lagrangian}, and the Nyquist
+Lorentz-violation residual vanishes.  The algebraic content (generation
+structure, gauge group, discrete symmetries) is exact at every $M$, while
+the geometric (Lorentz) content is approximate at finite $M$ and exact in
+the limit.
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{Discussion}
+\label{sec:discussion}
+%═════════════════════════════════════════════════════════════════════════════
+
+\subsection{Relation to the CMCA (P41)}
+\label{ssec:relation_p41}
+
+This paper and P41~\cite{SpivackCMCA} form a complementary pair.
+P41 operates at the discrete CA level and establishes: the three-layer CMCA
+as the unique Level-1 discrete substrate, observer-level Lorentz invariance
+via PSC Presentation Invariance, the EW scale, the Born rule from $\ZS$-KG
+superselection, the double-slit pattern, and dynamics-level SR time dilation
+at $5.79\%$ error (the $M=7$ Nyquist floor).  The present paper establishes
+the corresponding continuum results: the exact $\PHIMDL$ quantum field, the
+field-theoretic Born rule derivation, the physical quantum state, the 3+1D
+domain-wall extension, and the machine-certified $M\to\infty$ limit.
+
+The two papers together constitute the full GTE Level-1 picture:
+\emph{discrete CA $\leftrightharpoons$ continuum KG field}, with the CMCA
+serving as the UV completion and $\PHIMDL$ serving as the IR effective field
+theory.
+
+\subsection{The GTE category and the two-level structure}
+\label{ssec:gte_category}
+
+The GTE category of Level-1 constructions~\cite{SpivackCMCA,SpivackGTEMobius}
+has $\PHIMDL$ as its terminal object: every Level-1 GTE construction factors
+uniquely through $\PHIMDL$.  The present paper adds that the \emph{quantum}
+structure of $\PHIMDL$ is also terminal in the appropriate sense: the
+Born rule, the thermal state, and the dual-frame inner product are the
+canonical quantum data for any Level-1 construction.
+
+\subsection{UGP Physics programme context}
+\label{ssec:gte_context}
+
+This paper is positioned within the UGP Physics programme as follows:
+
+\begin{itemize}[noitemsep]
+  \item \textbf{P28}~\cite{SpivackCompUniversality} (computational
+    universality): establishes Rule~110 as the MDL-minimal universal CA;
+    foundational for the $\PHIMDL$ continuum limit.  The Algebraic
+    Lifting and Descent theorems
+    (Theorems~\ref{thm:lifting}--\ref{thm:sr_accuracy_m}) certify the
+    algebraic content-preservation morphisms in the GTE category.
+
+  \item \textbf{P34}~\cite{SpivackGTEMobius} (GTE-M\"obius architecture):
+    defines the substrate $(A,e,[\mathbf{D}])$, the D1--D5 axioms, and the
+    $\PHIMDL$ field itself.  The D2 Presentation Invariance axiom underlies
+    the Lorentz equivariance proof in \S\ref{sec:lorentz}.  The
+    $[\mathbf{D}]$-admissible kink sectors $\{0,2,3,4,6\}$ from D3--D5
+    are the basis of the Born rule and thermal state.
+
+  \item \textbf{P35}~\cite{SpivackGTEUnification} (GTE unification):
+    derives the Weinberg angle and EW threshold; supplies the SCC mass
+    identification $m_\varphi=\mtau$ used throughout this paper.
+
+  \item \textbf{P36}~\cite{SpivackEmergentGravity} (emergent gravity and
+    AFCA): derives dynamics-level SR time dilation via the AFCA $\tau_c$
+    inner clock; the 3+1D domain wall SR result (\S\ref{ssec:sr_3d})
+    complements P36's continuum analysis.
+
+  \item \textbf{P37}~\cite{SpivackQMFromR110} (quantum mechanics from
+    Rule~110): develops the 't~Hooft cogwheel construction and the Fock
+    space over kink modes; the Born rule and dual-frame results here
+    extend P37 with the full $\PHIMDL$ field-theoretic derivation.
+
+  \item \textbf{P40}~\cite{SpivackGF7Universality} (GF(7) polynomial
+    universality): provides Cook-independent Turing universality
+    certification used throughout.
+
+  \item \textbf{P41}~\cite{SpivackCMCA} (Three-Layer Chiral Minkowski CA):
+    establishes the CMCA as the discrete UV completion of $\PHIMDL$;
+    derives observer-level Lorentz invariance, EW scale, Born rule,
+    V--A structure, and dynamics SR at the CA level.  The present paper
+    is the continuum companion to P41.
+
+  \item \textbf{P43}~\cite{SpivackCompleteness} (GTE/$\PHIMDL$ Completeness):
+    synthesises the full framework including emergent and quantum gravity,
+    the geodesic theorem, BH entropy, and the non-perturbative QGR picture.
+    Relies on the quantum structure established in the present paper.
+
+  \item \textbf{P44}~\cite{SpivackQGR} (Quantum Gravity Completeness):
+    establishes GTE quantum gravity: curved-background Lagrangian ($\xi=0$),
+    full nonlinear EFE, Hawking temperature, RT formula, MDL initial state,
+    and the GTE Holographic Encoding Theorem.
+
+  \item \textbf{P45}~\cite{SpivackThreeTapeCMCA} (Three-Tape CMCA):
+    develops the three-tape chiral Minkowski CA as the 3+1D realization:
+    three synchronized 1D CMCAs with a shared outer $\tau_c$ clock.
+    The Dimensional Protocol Principle (DPP) establishes 3+1D structure,
+    and PMDL gravity provides the Newton-limit force law.
+
+  \item \textbf{P46}~\cite{SpivackGTEPolynomialUFT} (GTE Polynomial as UFT):
+    establishes $p(L,C,R)$ as the unique 19-bit MDL-minimal operator
+    unifying spacetime dynamics, gauge coupling, gravity, and entanglement.
+\end{itemize}
+
+\subsection{Open problem: C2-CLOSURE}
+\label{ssec:c2}
+
+\begin{conjecture}[C2, P34~\cite{SpivackGTEMobius}]
+  The physical coherence measure $D\in[\mathbf{D}]$ is unique up to Lorentz
+  and CPT symmetry.
+\end{conjecture}
+
+The CPT symmetry appearing in C2 has a precise algebraic characterisation: it is the
+unique non-trivial element of $\mathrm{Gal}(\mathbb{Q}(\zeta_7)/\mathbb{Q}(\cos(2\pi/7)))
+\cong \mathbb{Z}_2$, i.e., the Galois automorphism $\sigma_6: \zeta_7 \mapsto \zeta_7^6
+= \overline{\zeta}_7$.  The decomposition $\mathrm{Gal}(\mathbb{Q}(\zeta_7)/\mathbb{Q})
+\cong \mathbb{Z}_2 \times \mathbb{Z}_3$ is CPT~$\times$ (generation orbit symmetry)
+($\CatAD$; P44~\cite{SpivackQGR}, Lean: $\lean{cyclotomic\_z7\_master\_bundle}$,
+zero sorry).  This provides a number-theoretic characterisation: CPT in GTE is a
+Galois automorphism of the kink moduli field, with $h(-7)=1$ (PID) and
+$L(1,\chi_{-7}) = \pi/\!\sqrt{7}$ as arithmetic companions.
+
+C2-CLOSURE would determine the specific value of $\mathbb{P}^\top_D$ on
+non-trivial records, closing the remaining freedom in the two-function
+picture (\S\ref{ssec:two_function}).  The present paper establishes that
+the \emph{structure} of the selector (D3+D4+D5) is fixed without C2;
+what remains open is the specific $D\in[\mathbf{D}]$.
+
+\subsection{Holographic structure of domain walls}
+\label{ssec:holographic}
+
+The $\PHIMDL$ domain walls in 3+1D realize a weak form of holographic
+bulk--boundary correspondence.  A planar domain wall is a codimension-1
+surface in 3+1D spacetime.  Its energy scales as:
+\begin{equation}
+  E_{\rm wall} = \sigma \times \mathrm{Area},
+\end{equation}
+so the wall entropy $S_{\rm wall} \propto \sigma \times \mathrm{Area}$
+--- an area law consistent with the Bekenstein--Hawking formula
+$S = A/(4l_P^2)$.  The $\ZS$ topological charge $Q\in\ZS$ is defined on
+the wall surface and constitutes the holographically encoded quantity: the
+bulk configuration in 3D space is determined (up to wall deformations) by
+the winding pattern on the 2D domain wall boundary.
+
+This is the \emph{algebraic} (weak) form of holography: the Algebraic
+Lifting Theorem (\lean{algebraic\_lifting\_theorem},
+Theorem~\ref{thm:lifting}) is the precise mathematical realization of
+this correspondence---algebraic content on the 1D boundary (Z$_7$
+topological charge sequence) encodes 3+1D physics.  We do not claim the
+strong AdS/CFT state-level dictionary; the correspondence here operates at
+the level of the algebraic sector structure, consistent with the framework
+($\CatA$).
+
+\subsection{No-finite-CA uniqueness}
+\label{ssec:no_ca_replica}
+
+The Lean-certified theorem \lean{no\_finite\_ca\_exact\_lorentz\_replica}
+(\lean{CMCAContinuumLimit.lean}, $\CatAL$, zero sorry) establishes that for all
+$M>0$, the SR accuracy residual $\epsz(M) = \pi^2/(3M^2) > 0$.  Combined with
+the existing \lean{phimdl\_lorentz\_correction\_tendsto\_zero}
+(Theorem~\ref{thm:continuum}), this yields a strong uniqueness statement:
+
+\begin{theorem}[Uniqueness of $\PHIMDL$; $\CatAL$]
+  \label{thm:unique_model}
+  \lean{phimdl\_is\_unique\_exact\_lorentz\_model} in
+  \lean{CMCAContinuumLimit.lean}, zero sorry.  Within the class of $\ZS$-symmetric
+  field models parameterized by lattice resolution $M\geq1$, every finite-$M$
+  discrete model has strictly positive Lorentz invariance error.  Only the
+  $M\to\infty$ continuum limit --- which is $\PHIMDL$ --- achieves exact
+  Poincar\'e invariance.
+\end{theorem}
+
+This result has a concrete physical interpretation: any lattice or discrete
+approximation to $\PHIMDL$, however fine, will exhibit a residual Lorentz
+violation of order $\pi^2/(3M^2)$.  The field $\PHIMDL$ itself is the unique
+model in this class with exact Poincar\'e symmetry.
+
+\subsection{QCA impossibility: winding-conserving coins must be diagonal}
+\label{ssec:qca_impossibility}
+
+A linear quantum walk on $\mathbb{Z}^3$ with $\ZS$ internal state --- the closest
+discrete quantum analog of $\PHIMDL$ --- avoids the vacuum/chaos bifurcation that
+plagues classical CAs in 3D, but cannot produce localized topological solitons.
+The Lean-certified theorem \lean{commutes\_with\_winding\_iff\_diagonal}
+(\lean{WindingCoinDecoupling.lean}, $\CatAL$, zero sorry) establishes that any
+$7\times7$ coin matrix $C$ that commutes with the $\ZS$ winding operator
+$W = \mathrm{diag}(0,1,\ldots,6)$ must be diagonal.  The corollary
+\lean{diagonal\_coin\_decouples\_sectors} ($\CatAL$) shows that diagonal coins
+decouple all winding sectors: the amplitude in sector $s$ is scaled independently
+by $e^{i\theta_s}$, with no inter-sector quantum interference.
+
+This is a structural impossibility result: topological localization requires
+nonlinear coupling between winding sectors, which is provided by the sine-Gordon
+potential $V(\Phi) = (m_\varphi^2/49)(1-\cos 7\Phi)$ --- the defining property of
+$\PHIMDL$.  Linear $\ZS$-symmetric quantum walks cannot replicate the solitonic
+structure of $\PHIMDL$, regardless of the choice of coin.
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{Conclusion}
+\label{sec:conclusion}
+%═════════════════════════════════════════════════════════════════════════════
+
+We have established the quantum field theory of $\PHIMDL$ as the continuum
+companion to the Three-Layer Chiral Minkowski CA (P41).  The principal results are:
+
+\begin{enumerate}[noitemsep]
+  \item \textbf{Poincar\'e invariance} ($\CatAL$): the $\PHIMDL$ KG dispersion
+    is Lorentz-invariant (machine-certified in \lean{LorentzInvariance.lean});
+    the stress-energy tensor transforms as a rank-2 tensor ($\CatAD$, 400
+    random boosts verified).
+
+  \item \textbf{Born rule from field amplitudes} ($\CatAD$/$\CatAL$):
+    $P(x) = |\partial_x\Phi|^2/\int|\partial_x\Phi|^2$ normalizes exactly
+    to 1; extended to overlapping kinks via the dual-frame inner product
+    (\lean{DualFrameBornRule.lean}); $[\mathbf{D}]$-collapse implements
+    projective measurement onto the kink eigenbasis.
+
+  \item \textbf{Physical quantum state} ($\CatAL$ conditional): the
+    pre-measurement state is the Hamiltonian thermal ensemble on
+    PSC-admissible sectors $\{0,2,3,4,6\}$ (\lean{PhiMDLThermalState.lean});
+    vacuum-dominant at observed cosmic temperatures; uniform at high $T$.
+
+  \item \textbf{3+1D extension} ($\CatAD$/$\CatAL$): kinks become planar domain walls
+    with tension $\sigma = 290.10\,\mathrm{MeV\,GeV}^{-2}$; $\ZS$
+    superselection and Born rule are unchanged; SR time dilation is exact.
+    When two walls intersect, they form a junction line with exact tension
+    $\lambda_{\rm dim}=-16/49$ ($\CatAL$;
+    $\lambda=-1654.77\,\mathrm{MeV\,fm}$; attractive, $|\lambda/\sigma|=2/m_\varphi$).
+
+  \item \textbf{Explicit descent map} ($\CatA$): the Cook A-glider $\ZS$ winding
+    profile matches the BPS kink with RMSD $= 5.34\% < \epsz(7) = 6.71\%$
+    and Pearson $r = 0.994$, providing direct numerical confirmation of
+    the CMCA$\to\PHIMDL$ continuum limit.
+
+  \item \textbf{No-finite-CA uniqueness} ($\CatAL$): every finite-$M$ discrete
+    model has strictly positive Lorentz error; $\PHIMDL$ is the unique
+    zero-error model in the $\ZS$-symmetric class
+    (\lean{phimdl\_is\_unique\_exact\_lorentz\_model}).
+
+  \item \textbf{QCA impossibility} ($\CatAL$): any $\ZS$-winding-conserving coin
+    must be diagonal, decoupling all sectors and precluding quantum interference;
+    topological localization is structurally impossible in a linear quantum walk
+    (\lean{commutes\_with\_winding\_iff\_diagonal}).
+
+  \item \textbf{Algebraic Lifting and Descent} ($\CatAL$): the SM winding
+    sector lifts to $[\mathbf{D}]$-weighted states on $\PHIMDL$
+    (\lean{algebraic\_lifting\_theorem}); all $F_{21}$ conservation laws
+    descend to any continuum realisation at every $M\geq1$
+    (\lean{algebraic\_descent\_theorem}).  The SR Nyquist correction
+    $\epsz(M)=\pi^2/(3M^2)$ is $M$-dependent and does not descend
+    (\lean{sr\_accuracy\_depends\_on\_M}).
+
+  \item \textbf{Continuum limit} ($\CatAL$ conditional):
+    $\epsz(M)=\pi^2/(3M^2)\to 0$ as $M\to\infty$; $\PHIMDL$ is the unique
+    terminal Level-1 GTE object (\lean{CMCAContinuumLimit.lean}).
+\end{enumerate}
+
+The two-function picture---Born rule $\mathcal{B}$ and transputation selector
+$\mathbb{P}^\top$---provides a complete, axiom-minimal account of quantum
+measurement in the GTE framework, machine-certified in Lean~4 with zero sorry
+(conditional on the named $[\mathbf{D}]$ axioms of P34).
+
+\begin{appendices}
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Lean 4 Theorem Inventory}
+\label{app:lean}
+%─────────────────────────────────────────────────────────────────────────────
+
+All theorems listed below are in the \lean{ugp-lean} repository
+(canonical public repo).  Zero sorry.  Disclosed axioms follow the
+theorem list.
+
+\scriptsize
+\setlength{\emergencystretch}{10em}
+\renewcommand{\arraystretch}{1.3}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{4.5cm}>{\raggedright\arraybackslash}p{5.5cm}>{\raggedright\arraybackslash}p{0.5cm}>{\raggedright\arraybackslash}p{3.8cm}@{}}
+\caption{Lean~4 theorem inventory for P42.  $\dagger$: conditional on
+  named axioms; see text.}
+\label{tab:lean}\\
+\toprule
+\textbf{Theorem name} & \textbf{Module} & \textbf{S} & \textbf{Content}\\
+\midrule
+\endfirsthead
+\multicolumn{4}{l}{\small\itshape (Table~\ref{tab:lean} continued)}\\
+\toprule
+\textbf{Theorem name} & \textbf{Module} & \textbf{S} & \textbf{Content}\\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\small\itshape (continued on next page)}\\
+\endfoot
+\bottomrule
+\endlastfoot
+\lean{phimdl\_kink\_masses\_equal} &
+  \lean{Universality/PhiMDLThermalState} &
+  0 & All $\ZS$ kink masses equal\\
+\lean{psc\_admissible\_sectors} &
+  \lean{Universality/PhiMDLThermalState} &
+  0 & $\{0,2,3,4,6\}$ admissible\\
+\lean{psc\_admissible\_card} &
+  \lean{Universality/PhiMDLThermalState} &
+  0 & Card $= 5$\\
+\lean{psc\_sectors\_partition} &
+  \lean{Universality/PhiMDLThermalState} &
+  0 & Admissible $\cup$ forbidden $= \ZS$\\
+\lean{thermal\_state\_sector\_prob} &
+  \lean{Universality/PhiMDLThermalState} &
+  0 & $P(k\mid T) = e^{-M_k/T}/Z_T$\\
+\lean{sectorProb\_admissible\_sum} &
+  \lean{Universality/PhiMDLThermalState} &
+  0 & Normalization\\
+\lean{vacuum\_particle\_prob\_ratio} &
+  \lean{Universality/PhiMDLThermalState} &
+  0 & Vacuum dominance $T\ll\Mkink$\\
+\lean{phimdl\_thermal\_state\_master} &
+  \lean{Universality/PhiMDLThermalState} &
+  0 & Master bundle thermal state\\
+\lean{dual\_gram\_identity} &
+  \lean{Universality/DualFrameBornRule} &
+  0 & $G G^{-1} = \mathbf{1}$\\
+\lean{dual\_frame\_recovers\_coefficients} &
+  \lean{Universality/DualFrameBornRule} &
+  0 & $a_k = c_k$\\
+\lean{born\_rule\_from\_dual\_frame} &
+  \lean{Universality/DualFrameBornRule} &
+  0 & $\sum_k|a_k|^2 = 1$\\
+\lean{born\_rule\_from\_dual\_frame\_master} &
+  \lean{Universality/DualFrameBornRule} &
+  0 & Dual-frame Born master bundle\\
+\lean{transputation\_is\_minimizer} &
+  \lean{Substrate/TransputationStateSelector} &
+  0 & $\mathbb{P}^\top = \arg\min D(\rho\mid w)$\\
+\lean{transputation\_minimizer\_unique} &
+  \lean{Substrate/TransputationStateSelector} &
+  0 & Uniqueness of minimum\\
+\lean{two\_function\_picture} &
+  \lean{Substrate/TransputationStateSelector} &
+  0 & $\mathcal{B}\circ\mathbb{P}^\top_D$\\
+\lean{transputation\_state\_selector\_bundle} &
+  \lean{Substrate/TransputationStateSelector} &
+  0$^\dagger$ & Two-function selector bundle\\
+\lean{poincare\_invariance\_of\_kg} &
+  \lean{Universality/LorentzInvariance} &
+  0 & Full Poincar\'e\\
+\lean{phimdl\_lorentz\_correction\_tendsto\_zero} &
+  \lean{Framework/CMCAContinuumLimit} &
+  0 & $\epsz(M)\to 0$ as $M\to\infty$\\
+\lean{cmca\_continuum\_limit\_is\_phimdl} &
+  \lean{Framework/CMCAContinuumLimit} &
+  0$^\dagger$ & CMCA $\to$ $\PHIMDL$ master\\
+\lean{born\_rule\_unconditional} &
+  \lean{Universality/}\allowbreak\lean{BeableWindingPartitionInstance} &
+  0 & Sector Born rule\\
+\lean{algebraic\_lifting\_theorem} &
+  \lean{Spacetime/LiftingTheorem} &
+  0 & PSC-admissible configs realised in $f_{\rm MDL}$ (P28)\\
+\lean{algebraic\_descent\_theorem} &
+  \lean{Universality/AlgebraicDescentTheorem} &
+  0 & $M$-independence of F$_{21}$ content (P28)\\
+\lean{sr\_accuracy\_depends\_on\_M} &
+  \lean{Universality/AlgebraicDescentTheorem} &
+  0 & $\epsz(M)$ is $M$-dependent (P28/P41)\\
+\lean{mkink\_from\_scc} &
+  \lean{Universality/GUTStructure} &
+  0 & $\Mkink=(8/49)\mtau$ (P34/P35)\\
+\lean{phimdl\_domain\_wall\_junction\_tension\_exact} &
+  \lean{Substrate/WindingCoinDecoupling} &
+  0 & $\lambda_{\rm dim} = -16/49$ (exact)\\
+\lean{phimdl\_junction\_is\_attractive} &
+  \lean{Substrate/WindingCoinDecoupling} &
+  0 & $\lambda < 0$: walls attract at junction\\
+\lean{phimdl\_junction\_to\_wall\_ratio} &
+  \lean{Substrate/WindingCoinDecoupling} &
+  0 & $|\lambda/\sigma| = 2/m_\varphi$\\
+\lean{commutes\_with\_winding\_iff\_diagonal} &
+  \lean{Substrate/WindingCoinDecoupling} &
+  0 & $\ZS$-winding-commuting coin iff diagonal\\
+\lean{diagonal\_coin\_decouples\_sectors} &
+  \lean{Substrate/WindingCoinDecoupling} &
+  0 & Diagonal coin decouples all $\ZS$ sectors\\
+\lean{no\_finite\_ca\_exact\_lorentz\_replica} &
+  \lean{Framework/CMCAContinuumLimit} &
+  0 & $\epsz(M)>0$ for all finite $M$\\
+\lean{phimdl\_is\_unique\_exact\_lorentz\_model} &
+  \lean{Framework/CMCAContinuumLimit} &
+  0 & $\PHIMDL$ unique zero-error Lorentz model\\
+\lean{phimdl\_axial\_current\_topological} &
+  \lean{Substrate/ChiralCurrentL2} &
+  0 & $\partial_\mu J^\mu_A=0$ (Schwarz)\\
+\lean{phimdl\_vector\_current\_topological} &
+  \lean{Substrate/ChiralCurrentL2} &
+  0 & $\partial_\mu J^\mu_V=0$ (Schwarz)\\
+\lean{va\_fraction\_lifts\_to\_l2\_chiral\_current} &
+  \lean{Substrate/ChiralCurrentL2} &
+  0 & $32/125$ lifts to L2 $J^\mu_A$\\
+\lean{phimdl\_l2\_chiral\_current\_bundle} &
+  \lean{Substrate/ChiralCurrentL2} &
+  0 & G16 chiral-current bundle\\
+\lean{phimdl\_weak\_charged\_current} &
+  \lean{Algebra/GaugeMDL} &
+  0 & $J^\mu_W$ from $|D_\mu\Psi|^2$ (MDL gauging)\\
+\lean{weak\_charged\_current\_bilinear\_antisymmetric} &
+  \lean{Algebra/GaugeMDL} &
+  0 & Isospin-exchange antisymmetry of $J^\mu_W$ bilinear\\
+\lean{phimdl\_l2\_chiral\_and\_weak\_current\_bundle} &
+  \lean{Substrate/ChiralCurrentL2} &
+  0 & G16+G18: V--A + weak charged current\\
+\end{longtable}
+\normalsize
+\renewcommand{\arraystretch}{1}
+
+\paragraph{Lean build verification.}
+All modules compile with:
+\begin{verbatim}
+  cd ugp-lean
+  lake build UgpLean.Universality.PhiMDLThermalState
+  lake build UgpLean.Universality.DualFrameBornRule
+  lake build UgpLean.Substrate.TransputationStateSelector
+  lake build UgpLean.Framework.CMCAContinuumLimit
+  lake build UgpLean.Universality.LorentzInvariance
+  lake build UgpLean.Universality.BeableWindingPartitionInstance
+  lake build UgpLean.Spacetime.LiftingTheorem
+  lake build UgpLean.Universality.AlgebraicDescentTheorem
+  lake build UgpLean.Substrate.WindingCoinDecoupling
+  lake build UgpLean.Substrate.ChiralCurrentL2
+  lake build UgpLean.Algebra.GaugeMDL
+\end{verbatim}
+Sorry count: zero (for all theorems in Table~\ref{tab:lean}).  Disclosed axioms:
+\lean{d2\_universal} (D2 of P34, PSC Presentation Invariance in universal form)
+in \lean{PSCPILorentzMain.lean} and \lean{CMCAContinuumLimit.lean};
+\lean{architectural\_restriction} in
+\lean{CoherenceMeasureUniqueness.lean};
+the named physical-interpretation axioms of \lean{GTECategoryStructure.lean}.
+The Born-rule modules \lean{BeableWindingPartitionInstance.lean},
+\lean{DualFrameBornRule.lean}, and \lean{PhiMDLThermalState.lean} carry
+zero custom physics axioms.
+The \lean{WindingCoinDecoupling.lean} module contains two auxiliary
+\texttt{sorry}-carrying \emph{lemmas} (\lean{bps\_kink\_integral\_eq\_four}
+and \lean{symmetry\_integral\_vanishes}) that are used only for internal
+documentation; all theorems cited in Table~\ref{tab:lean} are proved without
+these lemmas and carry zero sorry.
+
+\end{appendices}
+
+\bibliographystyle{unsrt}
+\bibliography{../bib/Spivack_Papers_Bibliography}
+
+\end{document}

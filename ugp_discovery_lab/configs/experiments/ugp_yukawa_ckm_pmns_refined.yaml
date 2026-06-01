@@ -1,0 +1,107 @@
+# Configuration for Refined UGP Yukawa/CKM/PMNS mixing matrix calculation
+# Research Question 1.2: Refined implementation with HM normalization constant and proper neutrino physics
+
+experiment:
+  name: ugp_yukawa_ckm_pmns_refined
+  description: "Refined UGP → Yukawas & CKM/PMNS mixing matrices with HM normalization constant and proper neutrino physics"
+  inputs:
+    runs:
+      - "canonical_gte_triples.json"  # Uses canonical GTE triples
+
+# Options (minimal; no continuous knobs)
+options:
+  neutrino_model: "majorana"  # "majorana" (Takagi) or "dirac" (Hermitian Gram)
+  down_sector_permutation_policy: "optimize"  # "optimize" (scan 6 perms) or "fixed"
+  down_sector_perm_fixed: [0, 1, 2]  # used only if policy == "fixed"
+  pdg_targets_ckm: [0.2245, 0.041, 0.00365]  # |Vus|, |Vcb|, |Vub| for score logging
+
+# HM Normalization Constant from degree-4 parallel-additivity proof
+hm_normalization:
+  constant: 4.0  # Discrete, kernel-fixed constant to lift |Vus| and |Ue3|
+  source: "degree_4_parallel_additivity_proof"
+  application: "face_weights_scaling"
+
+# Neutrino Physics Configuration
+neutrino_physics:
+  model: "ilr_seesaw_enhanced"  # Index-Lifting Representation + seesaw mechanism
+  ilr_n_set: [10, 12, 16]  # Standard n-set for ILR representation
+  mu_pattern: [1, 1, -1]  # Mu pattern for normal ordering
+  canonical_mapping:
+    electron_neutrino: 1  # n=1 → n'=10 (ILR)
+    muon_neutrino: 5      # n=5 → n'=12 (ILR)
+    tau_neutrino: 9       # n=9 → n'=16 (ILR)
+  seesaw_parameters:
+    sum_mnu_meV: 60.0  # Total neutrino mass constraint
+    ordering: "NO"     # Normal ordering
+    pdg_scaling_factors:
+      electron_neutrino: 1.770e+03
+      muon_neutrino: 1.036e+06
+      tau_neutrino: 3.588e+05
+
+# Claims-Gate Validation
+claims_gate:
+  enabled: true
+  stages:
+    - "independent_derivations"
+    - "persistence_cv"
+    - "null_surrogates"
+  significance_threshold: 0.01
+  stability_threshold: 0.1
+
+# Elegant Kernel constants (exact where feasible)
+kernel_constants:
+  phi: 1.618033988749895  # golden ratio
+  k_L2: 0.013671875  # 7/512
+  k_gen2: -0.8090169943749475  # -phi/2
+  k_gen: 1.5707963267948966  # pi/2
+  k_a: 0.125  # 1/8
+  k_b: -1.5  # -3/2
+  k_c: 1.3333333333333333  # 4/3
+  k_M: -0.8056640625  # k_gen2 + 0.25*k_L2
+
+# Canonical GTE triples (Verifier V8 standard)
+canonical_triples:
+  leptons:
+    electron: [1, 73, 823]
+    muon: [9, 42, 1023]
+    tau: [5, 275, 65535]
+  up_quarks:
+    up: [5, 9, 275]
+    charm: [5, 275, 65535]
+    top: [76, 337920, -1]
+  down_quarks:
+    down: [9, 5, 42]
+    strange: [9, 186, 1023]
+    bottom: [5, 8191, 65535]
+  neutrinos:
+    electron_neutrino: [1, 1, 823]  # Will be mapped via ILR
+    muon_neutrino: [9, 1, 1023]    # Will be mapped via ILR
+    tau_neutrino: [5, 1, 65535]    # Will be mapped via ILR
+
+# Analysis parameters
+analysis:
+  face_weights_calculation: "harmonic_mean_with_normalization"  # HM rigidity + normalization
+  sector_weights_calculation: "delta_squared"  # Δ² rigidity
+  face_metric: "quarter_lock_adjacency"  # Quarter-Lock face metric
+  phase_source: "kernel_generational"  # only k_gen, k_gen2 phases
+  pdg_ordering: true  # enforce PDG row/col ordering
+
+# Output configuration
+output:
+  save_matrices: true
+  save_angles: true
+  save_eigenvalues: true
+  save_vectors: true
+  save_permutation_choice: true
+  save_improvements: true
+  save_claims_gate: true
+  format: "csv"  # csv, json, both
+
+# Validation
+validation:
+  unitary_check: true
+  pdg_ordering_check: true
+  eigenvalue_ordering: true
+  jarlskog_invariant_check: true
+  hm_normalization_effect: true
+  neutrino_physics_consistency: true

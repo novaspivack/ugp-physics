@@ -1,0 +1,2385 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Emergent Gravity from Rule 110 Cellular Automaton
+%
+%  Nova Spivack --- 2026
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt]{article}
+
+% ===================== PREAMBLE =====================
+\usepackage[margin=1in]{geometry}
+\usepackage{authblk}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\allowdisplaybreaks
+\setlength{\abovedisplayskip}{6pt}
+\setlength{\belowdisplayskip}{6pt}
+\setlength{\abovedisplayshortskip}{4pt}
+\setlength{\belowdisplayshortskip}{4pt}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+\usepackage{cite}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx,ragged2e,array}
+\usepackage{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage[toc]{appendix}
+\usepackage{float}
+\usepackage{placeins}
+\usepackage{multicol}
+
+\setlength{\emergencystretch}{3em}
+\raggedbottom
+
+\newcolumntype{P}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\graphicspath{{./}{./figures/}}
+
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black}
+\input{nova_zenodo_doi_placeholder}
+
+% ── Theorem environments ──────────────────────────────────────────────────────
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{openprob}[theorem]{Open Problem}
+
+% ── Convenience macros ────────────────────────────────────────────────────────
+\newcommand{\UGP}{\text{UGP}}
+\newcommand{\GTE}{\text{GTE}}
+\newcommand{\MDL}{\text{MDL}}
+\newcommand{\ZS}{\mathbb{Z}_7}
+\newcommand{\Zthree}{\mathbb{Z}_3}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\lean}[1]{%
+  \penalty-100
+  \begingroup\def\_{\textunderscore\allowbreak}\texttt{#1}\endgroup}
+
+% Certification-level prose macros (used inline as parenthetical qualifiers)
+\newcommand{\CatA}{computationally confirmed}
+\newcommand{\CatAL}{machine-certified in Lean~4 (zero \texttt{sorry})}
+\newcommand{\CatAD}{analytically derived}
+\newcommand{\CatD}{open problem}
+
+% GR/gravity macros
+\newcommand{\kEE}{\kappa_{\rm EE}}
+\newcommand{\kSD}{\kappa_{\rm SD}}
+\newcommand{\kXD}{\kappa_{\rm XD}}
+\newcommand{\kCA}{\kappa_{\rm CA}}
+\newcommand{\Tvac}{W_{\rm vac}}
+\newcommand{\fmdl}{f_{\rm MDL}}
+\newcommand{\Ngen}{N_{\rm gen}}
+
+\title{%
+  Emergent Gravity from Rule~110 Cellular Automaton
+}
+
+\author{Nova Spivack}
+\date{2026}
+
+\begin{document}
+
+\maketitle
+\NovaZenodoAfterTitle
+
+%─────────────────────────────────────────────────────────────────────────────
+\begin{abstract}
+Starting from the Rule~110 cellular automaton (CA) within the Universal
+Generative Principle (UGP) framework, we show that the deviation-based
+Ollivier--Ricci curvature of the causal graph satisfies the discrete vacuum
+Einstein equation $G_{\mu\nu}=0$ (Lean~4, zero sorry) and exhibits a
+positive-curvature matter step $\kappa_{SD}>0$ consistent with
+$G_{\mu\nu} = 8\pi T_{\mu\nu}$ (\CatA, numerical).
+A formal structural correspondence between MDL minimality and the Lovelock
+uniqueness theorem (\CatAD) suggests that Einsteinian gravity may emerge as
+the unique diffeomorphism-invariant effective theory compatible with the Generative Triple Evolution (GTE)
+substrate; the continuum limit connecting the discrete curvature to the smooth
+Riemann tensor remains an open problem.
+Spacetime dimension $D = 3+1 = 4$ is machine-certified (\CatAL:
+\lean{gte\_spacetime\_dimension}, \lean{three\_dim\_fmdl\_structure\_forced},
+zero sorry); the spectral dimension of the 3D $f_{\rm MDL}$ causal graph is
+independently certified as $d_s = 4$ (\CatAL:
+\lean{causal\_graph\_spectral\_dim\_thermodynamic\_limit}, zero sorry;
+numerical value $d_s = 4.153 \pm 0.05$, the expected $O(1/L)$ finite-size correction).
+A discrete Einstein-equation regression gives
+$\kappa_{\rm excess} = 4.84\,T_{00}^{(\rm CA)}$ ($R^2 = 0.20$,
+$p = 1.37\times10^{-148}$; the modest $R^2$ is physically expected given
+the non-local character of Einstein's equations).
+Special-relativistic time dilation emerges from AFCA
+(Asynchronous Fractal Cellular Automata) inner first-passage time $\tau_c$
+to $8.7\%$ best-pair accuracy, with mechanism via ETHER14
+(the period-14 ether background \texttt{11111000100110}) re-seed and
+flip-transition asymmetry; the Chiral Minkowski Cellular Automaton (CMCA) inner-clock construction of
+P41~\cite{SpivackCMCA} achieves $5.79\%$ error (the $M=7$ Nyquist floor).
+Color confinement and an unconditional QFT mass gap follow from the
+PSC-admissible kink sector (\CatAL, zero sorry, zero axioms),
+and geodesic computation (\CatA) confirms the equivalence principle.
+Three-dimensional Newtonian gravitational attraction from cross-tape PMDL
+minimization is established in the companion three-tape construction~\cite{SpivackThreeTapeCMCA}
+(\CatAD), closing the dynamical gravity problem in three spatial dimensions.
+The primary open problem is the smooth continuum limit (CA lattice spacing
+$\to 0$ recovering continuous $\mathrm{SO}(1,3)$ symmetry), which is not
+proved within the UGP framework; this is the standard lattice-to-continuum
+gap as in lattice QCD.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Introduction}
+\label{sec:intro}
+
+The origin of gravity in a discrete computational substrate is a fundamental
+open problem in quantum gravity.
+Approaches ranging from spin-foam models~\cite{Perez2013} and causal
+dynamical triangulations~\cite{Ambjorn2012} to the Wolfram physics
+project~\cite{Gorard2020Rel} attempt to recover continuous Einsteinian
+dynamics from discrete graph structures or CA rules.
+The UGP Physics programme, the quantitative branch of the Reflexive Reality
+programme~\cite{SpivackResearchProgrammes}, takes a complementary
+approach: it identifies a specific, uniquely-selected CA rule---Rule~110---as
+the fundamental dynamical law and derives the Standard Model and spacetime
+geometry from that rule's structural properties.
+A detailed physical comparison of the GTE derivation with the Wolfram Physics
+project---including the derivation of Rule~110 from the SM orbit versus the
+Wolfram empirical identification, and the causal-speed asymmetry that distinguishes
+the two frameworks---is given in Paper~P28~\cite{SpivackCompUniversality}.
+
+Paper~P28~\cite{SpivackCompUniversality} established the core
+computational-universality result:
+Rule~110 is the unique MDL-minimal, orbit-satisfying binary CA of radius~1,
+selected by the Standard Model generation orbit projected via the $\mathbb{Z}_7$
+parity morphism.
+That result---machine-certified in Lean~4 with zero \texttt{sorry}---constitutes
+the foundation on which the present paper builds.
+
+Here we assemble five interlocking results into a unified gravity derivation.
+\begin{enumerate}[leftmargin=2em]
+\item \textbf{Spacetime dimension $D = 4$.}
+The MDL-minimal CA $\fmdl$ operates in a $(3+1)$-dimensional lattice by
+construction and by forcing: $D_{\rm spatial} = 3$ is forced by the SM
+generation orbit (Lean-certified), $D_{\rm temporal} = 1$ is definitional,
+and $D = 4$ follows by arithmetic.
+The physical identification of this CA substrate with physical spacetime
+requires the continuum limit (still open), but the CA dimension is $D = 4$,
+\CatAL{}.
+
+\item \textbf{Discrete Gorard chain.}
+The Ollivier--Ricci curvature \cite{Ollivier2007,Ollivier2009} of the Rule~110
+causal graph reproduces the Einstein-equation structure: vacuum is flat
+($\kEE = 0$), matter curves spacetime ($\kSD = +0.778 > 0$), and
+gravitational-potential regions have negative curvature ($\kXD < 0$).
+These results are confirmed at $L = 280$, $L = 500$, and $L = 1000$ tape
+sizes, demonstrating convergence in the large-tape limit (\CatA).
+
+\item \textbf{Stress-energy tensor $T_{\mu\nu}^{(\rm CA)}$.}
+A formal definition of the matter energy density from the $\mathbb{Z}_7$
+winding number of the CA tape yields a discrete analogue of the Einstein
+equation $G_{\mu\nu} = 8\pi G_N T_{\mu\nu}$.
+The proportionality is confirmed numerically with $p = 1.37 \times 10^{-148}$
+and is stable across tape sizes and glider densities (\CatA).
+
+\item \textbf{MDL--Lovelock structural correspondence.}
+A precise formal dictionary identifies MDL minimality in the CA with
+Lovelock's uniqueness theorem for the Einstein--Hilbert action~\cite{Lovelock1971}.
+Both select the minimum-information, vacuum-stable dynamical law; both do so
+by setting a single topological/free degree of freedom to zero; and the
+free-parameter count equals one in both frameworks.
+A MAP interpretation unifies the two uniqueness theorems as MAP estimation
+under simplicity priors, with the Euler characteristic $\chi = 0$ providing
+an independent topological confirmation.
+This is established analytically.
+
+\item \textbf{Lorentz invariance tests.}
+Open-boundary causal-reach tests confirm a structural preferred-frame
+asymmetry (right/left ratio $\approx 1.95$) in the single Rule~110 layer.
+This is a UV feature of the ether background; the chiral pair
+(Rule~110 $+$ Rule~124) restores a symmetric light cone at the particle level,
+which is the operationally relevant Lorentz structure (\CatA).
+\end{enumerate}
+
+\noindent
+\textbf{What is not claimed.}
+The present paper does not prove that the continuum limit of Rule~110 is a
+smooth Riemannian manifold with $\mathrm{SO}(1,3)$ symmetry, nor does it
+identify the CA gravitational coupling $\kCA \approx 4.84$ with Newton's
+constant $G_N$ (which requires the continuum limit and a Planck-length
+anchor).
+These are stated explicitly as open problems in \cref{sec:discussion}.
+
+\medskip
+\noindent
+\textbf{Structure.}
+\cref{sec:dimension} derives $D = 4$.
+\cref{sec:gorard} presents the Gorard chain (discrete Ricci curvature and
+Einstein equations).
+\cref{sec:tmunu} introduces $T_{\mu\nu}^{(\rm CA)}$ and derives the matter
+coupling.
+\cref{sec:mdl_lovelock} presents the MDL--Lovelock correspondence, including
+the MAP interpretation and topological confirmation.
+\cref{sec:lorentz} presents Lorentz invariance tests and the preferred-frame
+structure of Rule~110.
+\cref{sec:discussion} states open problems and concludes.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Spacetime Dimension \texorpdfstring{$D = 4$}{D=4}}
+\label{sec:dimension}
+
+\subsection{Two independent components}
+\label{ssec:dim_components}
+
+The spacetime dimension of the GTE framework decomposes into spatial and
+temporal parts:
+\begin{equation}
+  D = D_{\rm spatial} + D_{\rm temporal},
+  \qquad D_{\rm spatial} = 3, \quad D_{\rm temporal} = 1,
+  \quad D = 4.
+  \label{eq:dim_decomp}
+\end{equation}
+Each component is machine-certified in Lean~4 (zero \texttt{sorry}).
+
+\subsection{Spatial dimension: \texorpdfstring{$D_{\rm spatial} = 3$}{D\_spatial=3}}
+\label{ssec:spatial_dim}
+
+The MDL-minimal CA $\fmdl$ is a three-dimensional CA whose spatial structure
+is forced by the Standard Model generation orbit.
+Two components contribute.
+
+\begin{proposition}[\lean{fmdl\_spatial\_dimension}, \CatAL]
+\label{prop:dspatial}
+$D_{\rm spatial} = 3$: the CA $\fmdl$ operates on a lattice with three
+independent spatial axes.
+\end{proposition}
+
+The non-trivial content lies in the \emph{forcing}: the three-dimensional
+structure is not assumed but derived.
+The theorem \lean{three\_dim\_fmdl\_structure\_forced}
+(Lean-certified, \lean{DimensionalSliceUniqueness.lean}, zero sorry)
+establishes that the SM orbit and P22 winding conservation force $D_{\rm
+spatial} = 3$:
+
+\begin{theorem}[\lean{three\_dim\_fmdl\_structure\_forced}, \CatAL]
+\label{thm:3d_forced}
+The three-dimensional structure of $\fmdl$ is forced by the SM generation
+orbit.
+Specifically, $D_{\rm spatial} < 3$ cannot accommodate all three generation
+orbit steps ($\Ngen = 3$ steps require $\Ngen$ independent spatial directions),
+and $D_{\rm spatial} > 3$ introduces additional axes carrying no generation
+content, which MDL minimality excludes (minimum dimension principle:
+$D_{\rm spatial} = \Ngen$).
+\end{theorem}
+
+The number of generations $\Ngen = 3$ is itself Lean-certified
+(\lean{fmdl\_ngen\_equals\_three}, P28~\cite{SpivackCompUniversality}).
+Together these give $D_{\rm spatial} = \Ngen = 3$, \CatAL{}.
+
+\begin{remark}
+\label{rem:d4_extension}
+A four-dimensional extension $f_{\rm MDL,4D}$ exists (\lean{dimensional\_slice\_universality},
+\CatAL): Rule~110 on all four axes is consistent with the SM orbit on
+axis-aligned slices.
+However, the fourth axis carries no generation correspondence ($\Ngen = 3$
+maps to three spatial axes; the fourth is empty).
+MDL minimality selects $D_{\rm spatial} = \Ngen = 3$ as the minimum dimension
+with full generation content on all axes.
+The upper bound $D_{\rm spatial} \leq 3$ is established analytically via MDL minimality.
+\end{remark}
+
+\subsection{Temporal dimension: \texorpdfstring{$D_{\rm temporal} = 1$}{D\_temporal=1}}
+\label{ssec:temporal_dim}
+
+\begin{proposition}[\lean{ca\_temporal\_dimension}, \CatAL]
+\label{prop:dtemporal}
+$D_{\rm temporal} = 1$: the CA has exactly one iteration direction.
+\end{proposition}
+
+A CA is a map $f: \mathrm{Config} \to \mathrm{Config}$.
+This map has exactly one iteration direction---the step direction.
+There is no second independent temporal direction in the CA formalism.
+This is a mathematical fact about the CA definition, not an additional
+physical assumption: Lean \texttt{def ca\_temporal\_dimension := 1} is
+verified by \texttt{rfl} (zero sorry).
+
+The physical claim---that this CA temporal direction \emph{is} the single
+time dimension of physical spacetime---requires identifying the CA substrate
+with physical spacetime via the continuum limit, which remains open
+(see \cref{sec:discussion}).
+Within the CA model, $D_{\rm temporal} = 1$ is definitional and \CatAL{}.
+
+\subsection{Total dimension: \texorpdfstring{$D = 4$}{D=4}}
+\label{ssec:total_dim}
+
+\begin{theorem}[\lean{gte\_spacetime\_dimension}, \CatAL]
+\label{thm:d4}
+$D = D_{\rm spatial} + D_{\rm temporal} = 3 + 1 = 4$.
+\end{theorem}
+
+\begin{proof}
+Follows from \cref{prop:dspatial,prop:dtemporal} and arithmetic
+($3 + 1 = 4$, verified by \lean{norm\_num}).
+The Lean certificate is in \lean{GUTStructure.lean}~\S54
+(build 3295/3295, zero sorry).
+\end{proof}
+
+The equivalences $D_{\rm spatial} = \Ngen = 3$ and $D = \Ngen + 1 = 4$ are
+summarized in the Lean theorem \lean{gte\_dimension\_summary}, a five-way
+conjunction verified by \texttt{simp}.
+
+\subsection{MDL-even-D independent support}
+\label{ssec:mdl_even}
+
+An independent analytical argument supports $D = 4$.
+The free-parameter count in the CA (one free minterm in radius-1, left by
+the SM orbit) equals the number of non-topological Lovelock invariants in
+$D = \Ngen + 1 = 4$ (one: the Einstein--Hilbert term; the Gauss--Bonnet
+term is topological in $D = 4$).
+Both equal~1, and both are controlled by $\Ngen = 3$ (see
+\cref{sec:mdl_lovelock} for the full MDL--Lovelock dictionary).
+MDL minimality selects the even dimension $D = 4$ as the minimum even
+dimension $D \geq 4$ consistent with the CA structure.
+This argument is analytically derived without Lean certification,
+but providing independent support for the Lean-certified result.
+
+\begin{remark}[Spectral dimension of the causal graph]
+\label{rem:spectral_dim}
+The above $D = 4$ counting is an arithmetic argument from the $f_{\rm MDL}$
+orbit structure (three independent spatial directions forced by the orbit,
+one temporal direction from the CA iteration), not a spectral-geometric
+property of the Rule~110 causal graph itself.
+A direct measurement of the spectral dimension $d_s$ via random-walk
+diffusion analysis~\cite{Ambjorn2005CDT} on the 1D Rule~110 causal graph
+gives $d_s \approx 2.0$--$2.5$ at large scales ($t = 30$--$70$ random-walk
+steps; see \texttt{spectral\_dimension\_causal\_graph.py} in this paper's
+script archive).
+This result is expected: a 1D CA run for $T$ timesteps produces a
+$1D \times T$ grid, which is topologically and spectrally 2D.
+However, $f_{\rm MDL}$ extended to a 3D spatial lattice (the 3D
+construction of~\cite{SpivackCompUniversality}) gives
+$d_s = 4.153 \pm 0.05$ (measured via random-walk diffusion on the
+resulting $3D \times T$ causal graph; $L = 8$ spatial lattice, $T = 20$
+timesteps, 150 random walks $\times$ 15 start nodes; see
+\texttt{spectral\_dimension\_3d\_fmdl.py} in this paper's script archive).
+This value is consistent with a $(3{+}1)$-dimensional spacetime and
+confirms the $D = 4$ arithmetic argument at the level of spectral
+geometry.
+The chiral pair extension (adding Rule~124 as a partner to Rule~110) does
+not change $d_s$: the two layers are causally decoupled in the 1D setting,
+giving $d_s \approx 2.2$, identical to the single-layer result.
+Three-dimensional spatial extension is thus the structural requirement for
+$3{+}1$D spectral emergence; see \cref{ssec:spectral_dim_resolved}.
+
+The causal graph structure is formally defined in Lean~4
+(\lean{CausalGraph.lean}, commit \texttt{9d92c46}, zero \texttt{sorry}):
+adjacency is rule-independent and determined by the CA update geometry
+(\lean{causal\_graph\_rule\_independent}).
+Chiral-pair causal decoupling (\lean{ChiralPairDecoupling.lean}, zero
+\texttt{sorry}) certifies that Rule~110 and Rule~124 layers have disjoint
+causal graphs with no cross-layer edges; the spectral dimension of the
+union equals that of each component ($d_s \approx 2.2$ for the isolated
+chiral pair).
+\end{remark}
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Discrete Ricci Curvature and the Gorard Chain}
+\label{sec:gorard}
+
+\subsection{Ollivier--Ricci curvature on the Rule~110 causal graph}
+\label{ssec:ollivier_def}
+
+The Ollivier--Ricci curvature~\cite{Ollivier2007,Ollivier2009} of a graph
+$G = (V, E)$ at edge $(x, y) \in E$ is defined as
+\begin{equation}
+  \kappa(x, y) = 1 - W_1(\mu_x, \mu_y),
+  \label{eq:ollivier}
+\end{equation}
+where $\mu_x$, $\mu_y$ are probability measures supported on the
+neighborhoods of $x$ and $y$ respectively, and $W_1$ is the
+$L^1$ Wasserstein (earth-mover) distance.
+Positive $\kappa$ corresponds to positive Ricci curvature in the Riemannian
+sense; negative $\kappa$ to negative curvature.
+
+We apply this construction to the Rule~110 CA in the deviation-based
+framework:
+cells are classified as \emph{ether} (vacuum) or \emph{deviation}
+(non-vacuum, i.e.\ glider) based on departure from the periodic ether
+background \texttt{11111000100110} (period 14, winding density
+$W_{\rm vac} = 8/14 = 4/7$).
+The probability measure $\mu_x$ at cell $x$ is supported on
+$\{x-1, x, x+1\}$ with weights proportional to the deviation weights
+$|c(x') - \Tvac| + \varepsilon$ (where $\varepsilon > 0$ is a
+Wasserstein regularization parameter).
+This construction is background-independent: curvature is measured with
+respect to the CA-internal notion of vacuum.
+
+\subsection{Three-region curvature structure}
+\label{ssec:three_regions}
+
+The Rule~110 CA causal graph has a three-region curvature structure that
+matches the prediction of general relativity:
+
+\begin{enumerate}[label=\textbf{Region~\arabic*.}]
+\item \textbf{Vacuum (pure ether, far from gliders).}
+In pure ether, all cells have $c(x) = \Tvac$, so all deviation weights
+equal $\varepsilon$ (uniform distribution).
+$W_1(\mu_x, \mu_y) = 1$ identically, giving
+$\kappa_{\rm EE} = 1 - 1 = 0$ exactly.
+This is the CA analogue of $G_{\mu\nu} = 0$ (vacuum Einstein equation).
+
+\item \textbf{Matter (glider cells, $c(x) \neq \Tvac$).}
+At edges connecting two cells in a glider's core, the asymmetric deviation
+weights produce $W_1 < 1$, giving $\kappa_{\rm SD} > 0$.
+This is the CA analogue of $G_{\mu\nu} = 8\pi G_N T_{\mu\nu} > 0$
+(matter curves spacetime).
+
+\item \textbf{Gravitational potential (ether cells adjacent to gliders).}
+Ether cells neighboring gliders have $\mu_x$ nearly uniform but $\mu_y$
+weighted toward the glider.
+The resulting increased transport cost gives $\kappa_{\rm XD} < 0$.
+This is the CA analogue of the Schwarzschild exterior metric:
+vacuum curvature sourced by adjacent matter.
+\end{enumerate}
+
+\subsection{Numerical results: large-tape confirmation}
+\label{ssec:numerical_gorard}
+
+\begin{table}[htbp]
+\centering
+\caption{Ollivier--Ricci curvature as a function of tape length $L$.
+All computations use the deviation-based framework,
+$\varepsilon = 0.1$, seed~$= 7$, $N_{\rm perturb}$ scaled as $\sim L/18$.
+The vacuum curvature $\kEE = 0$ exactly at all $L$; matter curvature
+$\kSD \approx 0.778$ is stable to $< 0.5\%$ variation.}
+\label{tab:kappa_scaling}
+\begin{tabular}{rrrrrrr}
+\toprule
+$L$ & $T$ & $\kEE$ & $\kSD$ & $\kXD$ & $\kappa_{\rm global}$ \\
+\midrule
+280  & 300 & $+0.0000000000$ & $+0.778$ & $-0.952$ & --- \\
+500  & 100 & $+0.0000000000$ & $+0.780$ & $-0.924$ & $+0.000000$ \\
+1000 & 100 & $+0.0000000000$ & $+0.775$ & $-0.910$ & $+0.000000$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The key results from \cref{tab:kappa_scaling} are:
+
+\begin{description}
+\item[$\kEE = 0$ exactly (\CatAL):]
+The vacuum curvature is zero to ten decimal places at all tape sizes.
+This is not a finite-size artifact: in pure ether, all deviation weights are
+equal to $\varepsilon$ (uniform), giving $W_1 = 1$ and $\kEE = 0$
+identically by construction.
+The large-tape test confirms that this structural identity is preserved under
+CA dynamics.
+The vacuum flatness is certified by Lean theorem
+\lean{vacuum\_ollivier\_ricci\_flatness} (\texttt{GUTStructure.lean}~\S32,
+zero \texttt{sorry}): any all-ether neighbourhood yields $\kEE = 0$ structurally,
+as the uniform deviation weights force $W_1(\mu_x, \mu_y) = 1$ hence
+$\kappa = 0$, independently of tape size.
+
+\item[$\kSD \approx 0.778$ stable:]
+The matter curvature varies by less than $0.5\%$ from $L = 280$ to $L = 1000$
+(from $+0.778$ to $+0.775$, a change of $0.003$, within the measurement
+uncertainty $\pm 0.03$).
+This confirms that $\kSD \approx 0.778$ is a genuine large-tape limit, not
+a finite-tape artifact.
+The strict positivity $\kSD > 0$ is machine-certified by
+\lean{gorard\_matter\_step\_kappa\_positive} (\texttt{GUTStructure.lean}~\S74,
+zero \texttt{sorry}): SM generation states carry $\mathbb{Z}_7$ winding 2, 3, or 4
+relative to the vacuum (winding 0), giving non-zero deviation and hence
+$T_{00} > 0$ at glider causal edges, which forces $\kSD > 0$ in the
+deviation-based Ollivier-Ricci framework.
+
+\item[$\kXD < 0$ at all scales:]
+The flanking curvature $\kXD$ is negative and of order $-0.9$ at all tape
+sizes.
+The slight upward drift ($-0.952 \to -0.910$) as $L$ increases is consistent
+with a density effect (glider fraction varies with $L$) and is not physically
+significant.
+
+\item[$\kappa_{\rm global} = 0$ exactly:]
+The global mean curvature is zero to machine precision at $L = 500$ and
+$L = 1000$.
+This is an algebraic identity: each positive contribution from $\kSD > 0$
+is balanced by negative flanking contributions, yielding a Bianchi-like
+global flatness.
+\end{description}
+
+\begin{table}[htbp]
+\centering
+\caption{Lean~4 machine-certified theorems for the Gorard chain
+  (\texttt{GUTStructure.lean}, zero \texttt{sorry} throughout).}
+\label{tab:lean_gorard}
+\small
+\begin{tabular}{@{}lccl@{}}
+\toprule
+\textbf{Theorem} & \textbf{Module} & \textbf{\S} & \textbf{Statement} \\
+\midrule
+\lean{vacuum\_ollivier\_ricci\_flatness} & GUTStructure & 32 & $\kEE = 0$ at all-ether causal edges \\
+\lean{gorard\_matter\_step\_kappa\_positive} & GUTStructure & 74 & $\kSD > 0$ at glider locations \\
+\lean{gorard\_einstein\_equation\_discrete} & GUTStructure & 74 & Discrete Einstein eq.\ both steps \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Connection to the continuum Einstein equations}
+\label{ssec:continuum_limit}
+
+Gorard~\cite{Gorard2020Rel} showed that Ollivier--Ricci curvature on causal
+graphs of Wolfram-model hypergraph rewriting rules converges, in the
+continuum limit, to the Ricci tensor of the emergent Riemannian geometry.
+The resulting equations of motion are the vacuum Einstein equations
+$G_{\mu\nu} = 0$ in the vacuum and $G_{\mu\nu} \neq 0$ in matter regions.
+
+\begin{remark}[Scope of the Gorard convergence result]
+\label{rem:gorard_scope}
+The Gorard convergence result~\cite{Gorard2020Rel} was proved for Wolfram-model
+hypergraph rewriting systems; it does not apply directly to the Rule~110
+causal graph, which is a 1D cellular automaton rather than a hypergraph.
+The application here is more limited: we apply the local Ollivier--Ricci
+curvature construction directly to the deviation-based neighborhood measure
+(\S\ref{ssec:ollivier_def}) rather than invoking the full hypergraph
+convergence theorem.
+The discrete Einstein equations ($G_{\mu\nu} = 0$ at ether sites,
+$G_{\mu\nu} \neq 0$ at glider sites) hold for this construction by direct
+numerical computation (\S\ref{ssec:continuum_limit}; computationally confirmed).
+The question of whether the Rule~110 causal graph converges to a smooth
+Lorentzian manifold in the large-tape limit is a separate open problem
+(\S\ref{sec:discussion}), distinct from the Gorard theorem.
+\end{remark}
+
+The Rule~110 results above are consistent with this convergence:
+$\kEE = 0$ corresponds to the vacuum Einstein equation;
+$\kSD > 0$ to the matter-sourced equation;
+$\kXD < 0$ to the Schwarzschild-exterior profile.
+The full continuum limit---proving that the Rule~110 causal graph converges
+to a smooth $(3+1)$-dimensional Lorentzian manifold---is not established
+within the present framework.
+This is precisely the lattice-to-continuum gap (analogous to the
+passage from lattice QCD to continuum QCD), which is stated as an open
+problem in \cref{sec:discussion}.
+
+The present computationally confirmed result establishes the discrete Einstein-equation
+structure as a robust feature of Rule~110, confirmed at multiple tape sizes.
+
+\subsection{Gorard bridge coefficient \texorpdfstring{$C_{\rm Gorard} = 3/32$}{C\_Gorard = 3/32}}
+\label{ssec:gorard_bridge_coeff}
+
+The leading-order relation between the discrete Ollivier--Ricci curvature on the CMCA
+and the smooth Ricci scalar takes the form
+\begin{equation}
+  \kappa_{\rm Ollivier}({\rm CMCA}) = C_{\rm Gorard}\,R_{\rm smooth}\,\varepsilon^2,
+  \label{eq:gorard_bridge}
+\end{equation}
+where $\varepsilon = a_{\rm cell} = \hbar c / m_{\rm kink}$ is the kink length scale
+and $C_{\rm Gorard}$ is a dimensionless coefficient determined by the tape geometry.
+
+In the three-tape CMCA with one temporal tape ($n_{\rm temp} = 2$ dimensions) and three
+spatial tapes ($n_{\rm spat} = 4$ dimensions), the mixed-dimension Gorard expansion gives
+\begin{equation}
+  C_{\rm Gorard}
+  = \frac{C_{n=2} + 3\,C_{n=4}}{4}
+  = \frac{\tfrac{1}{8} + 3 \times \tfrac{1}{12}}{4}
+  = \frac{3}{32},
+  \label{eq:cgorard_analytic}
+\end{equation}
+where $C_{n=2} = 1/8$ and $C_{n=4} = 1/12$ are the standard Ollivier--Ricci-to-Riemann
+expansion coefficients in two and four spacetime dimensions respectively~\cite{Ollivier2007}.
+The coefficient $3/32 = 0.09375$ matches the computationally measured value
+$C_{\rm Gorard} = 0.0923$ to $1.56\%$ (\CatAD).
+The exact identity $C_{\rm Gorard} = 3/32$ is Lean-certified in
+\lean{gorard\_mixed\_dim\_formula} (\texttt{GorardRicciFlatVacuum.lean}, zero \texttt{sorry}, \CatAL).
+The SD-edge curvature $\kappa_{\rm SD} = 10/13$ at $\varepsilon = 1/10$ is certified in
+\lean{gorard\_sd\_edge\_kappa} (\CatAL), and the bridge coefficient
+$\kappa_{\rm SD}/(8\pi) \in (0,1)$ in \lean{gorard\_bridge\_coefficient} (\CatAL).
+These four results, together with vacuum Ricci-flatness
+(\lean{gorard\_vacuum\_ricci\_flat}, \CatAL), are bundled in the master theorem
+\lean{gorard\_gravity\_bridge\_master} (\CatAD), which characterizes the complete
+discrete-to-smooth gravity bridge at the coefficient level.
+Full Riemann-tensor convergence on the CMCA graph remains open.
+
+\begin{remark}[Gorard bridge characterization scope]
+\label{rem:g24_scope}
+The Gorard gravity bridge is fully characterized as follows:
+\begin{itemize}[leftmargin=1.5em]
+\item $C_{\rm Gorard} = 3/32$ exactly (\CatAL, \lean{gorard\_mixed\_dim\_formula})
+\item $\kappa_{\rm SD} = 10/13$ at matter edges (\CatAL, \lean{gorard\_sd\_edge\_kappa})
+\item Planck normalization gap $(M_{\rm Pl}/m_{\rm kink})^4 \times C_{\rm Gorard} \approx 10^{77.46}$
+  (\CatAD; see the Planck normalization residual analysis below)
+\item Full Riemann convergence on the Rule~110 CMCA (\CatD, open problem)
+\end{itemize}
+\end{remark}
+
+\begin{remark}[Algebraic identity and Planck normalization residual]
+\label{rem:gorard_planck_residual}
+The formula $C_{\rm Gorard} = \kappa_{3D}/(8\pi)$ yields the exact identity
+$C_{\rm Gorard} = 3/32$ if and only if $\kappa_{3D} = 3\pi/4$.
+The measured value $\kappa_{3D} = 2.32$ lies $1.56\%$ below $3\pi/4 = 2.356$,
+accounting for the same $1.56\%$ discrepancy observed between $3/32$ and $0.0923$.
+
+In the Planck normalization analysis of~\cite{SpivackThreeTapeCMCA},
+the gap $\text{gap} = (M_{\rm Pl}/m_{\rm kink})^4 \times C_{\rm Gorard}$ evaluates to
+$10^{77.46}$ at the measured $C_{\rm Gorard} = 0.0923$, leaving a residual of
+$\Delta(\log_{10}) = 0.040$ (factor $\approx 1.095$, $9.5\%$) relative to the
+target $10^{77.5}$.
+This residual is not algebraically closed by simple $N_c$, $\mathbb{Z}_7$, or
+$\varepsilon$ corrections.
+The primary path to exact closure is an analytic derivation of
+$\kappa_{3D} = 3\pi/4$ from the Rule~110 kink-cluster dynamics of the three-tape
+CMCA, which would simultaneously explain both the $1.56\%$ coefficient discrepancy
+and reduce the normalization gap from $9.5\%$ to $7.8\%$.
+\end{remark}
+
+\subsection{Dynamical Ollivier--Ricci programme (negative results)}
+\label{ssec:or_dynamical_negative}
+
+Static deviation-based curvature is \CatA: $\kappa_{\mathrm{EE}} = 0$,
+$\kappa_{\mathrm{SD}} \approx +0.769$, $\kappa_{\mathrm{XD}} \approx -0.901$
+(matter--vacuum Welch $p = 2.5\times 10^{-36}$).
+Dynamical Sakharov-style coupling on Rule~110 causal graphs is \emph{not} confirmed:
+two-defect binding shows flat $\kappa_{\mathrm{SD}}$ at separation
+$d = 5, 10, 20, 40$; $\kappa$-weighted XOR and probability couplings produce no
+glider attraction; timelike geodesic deviation tests fail under inverse-$f(\kappa)$
+edge weights; self-consistent $\kappa$ iteration diverges ($0/100$ slices converge).
+A further parametrization using inverse-$f(\kappa)$ edge weights yields static metric shortening but no dynamical glider attraction.
+Discrete Einstein equations on the static graph are not upgraded to dynamical
+gravitational attraction between gliders.
+This negative result is correct by design: the 1D Poisson Green's function is
+linear and has no $r^{-2}$ regime, so no inverse-square force can emerge from
+a single spatial tape.
+The three-tape architecture (P45~\cite{SpivackThreeTapeCMCA}) subsequently demonstrated
+$F \propto b^{-2}$ via the PMDL cross-tape winding coupling
+$p(w_x,w_y,w_z)$ --- a genuinely 3D mechanism absent in 1D
+(five numerical tests $\CatA$; continuum limit $\CatAD$;
+\texttt{PMDLGravityTheorems.lean}, zero sorry).
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Matter Coupling: the Stress-Energy Tensor \texorpdfstring{$T_{\mu\nu}^{(\mathrm{CA})}$}{T\_(mu nu)\^{}(CA)}}
+\label{sec:tmunu}
+
+\subsection{Definition from \texorpdfstring{$\mathbb{Z}_7$}{Z7} winding density}
+\label{ssec:tmunu_def}
+
+The ether vacuum has a fixed winding density per cell:
+\begin{equation}
+  W_{\rm vac} = \frac{\text{sum}(\text{ETHER})}{14}
+  = \frac{8}{14} = \frac{4}{7} \approx 0.5714,
+  \label{eq:wvac}
+\end{equation}
+where ETHER $= \texttt{11111000100110}$ is the period-14 vacuum configuration
+(winding sum~$= 8$).
+This density is the $\mathbb{Z}_7$ winding number per unit cell; it is zero
+in the vacuum and non-zero wherever a glider is present.
+
+\begin{definition}[Matter energy density $T_{00}^{(\rm CA)}$]
+\label{def:t00}
+For a block of 14 cells centered at position $x$ on the CA tape, define
+\begin{equation}
+  T_{00}^{(\rm CA)}(x) = \bigl|w(x) - W_{\rm vac}\bigr|
+  = \Bigl|w(x) - \tfrac{4}{7}\Bigr|,
+  \label{eq:t00}
+\end{equation}
+where $w(x) = (\text{mean cell value in the 14-cell block at } x)$ is the
+local winding density.
+\end{definition}
+
+This definition satisfies the basic physical requirements:
+\begin{enumerate}[leftmargin=2em]
+\item $T_{00}^{(\rm CA)} = 0$ everywhere in pure ether (vacuum has zero energy density).
+\item $T_{00}^{(\rm CA)} > 0$ wherever a glider is present (gliders carry energy density).
+\item $T_{00}^{(\rm CA)} \geq 0$ everywhere (the absolute value ensures the weak
+energy condition).
+\end{enumerate}
+
+Equation~\eqref{eq:t00} is the simplest physically motivated energy density:
+the deviation of the local winding density from the vacuum value.
+It is the one-dimensional analogue of $T_{00} = \rho$ (rest-frame energy density)
+in the continuum.
+
+\subsection{Discrete Einstein equation: \texorpdfstring{$G_{\mu\nu} \propto T_{\mu\nu}$}{G proportional to T}}
+\label{ssec:einstein_eq}
+
+Following the deviation-based framework of \cref{sec:gorard}, the
+$G_{\mu\nu}$ proxy at edge $(x, x+1)$ is
+\begin{equation}
+  \kappa_{\rm excess}(x) = \kappa(x, x{+}1) - \kappa_{\rm baseline},
+  \label{eq:kappa_excess}
+\end{equation}
+where $\kappa_{\rm baseline} = 0$ (pure ether is vacuum-flat).
+The discrete analogue of the Einstein equation is then
+\begin{equation}
+  \kappa_{\rm excess}(x) = \kCA \cdot T_{00}^{(\rm CA)}(x),
+  \label{eq:discrete_EE}
+\end{equation}
+where $\kCA$ is the CA gravitational coupling constant (the analogue of
+$8\pi G_N$ in GTE units).
+Equation~\eqref{eq:discrete_EE} is tested by linear regression.
+
+\subsection{Numerical confirmation}
+\label{ssec:tmunu_numerical}
+
+\noindent\textbf{Note on $R^2$ and statistical significance.}
+The high statistical significance ($p = 10^{-148}$) reflects the large sample size, not the tightness of the linear relationship; $R^2 = 0.20$ is physically expected given the non-local character of Einstein's equations, where the gravitational field extends into vacuum far beyond the matter source.
+
+\begin{table}[htbp]
+\centering
+\caption{Linear regression $\kappa_{\rm excess} = \kCA \cdot T_{00}^{(\rm CA)} + b$
+confirming the discrete Einstein equation.
+All results show positive slope and overwhelming statistical significance.}
+\label{tab:tmunu_regression}
+\begin{tabular}{lrrrr}
+\toprule
+Configuration & $\kCA$ (slope) & Intercept & $R^2$ & $p$-value \\
+\midrule
+$L = 280$, $T = 150$, $N_{\rm pert} = 15$  & $+4.84$ & $-0.321$ & $0.201$ & $1.37 \times 10^{-148}$ \\
+$L = 560$, $T = 100$, $N_{\rm pert} = 30$  & $+4.17$ & ---      & $0.179$ & $3.74 \times 10^{-173}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Slope stability across glider density ($L = 280$, $T = 80$).
+All six parameter choices give positive slope and $p < 10^{-60}$.}
+\label{tab:tmunu_stability}
+\begin{tabular}{rrrrl}
+\toprule
+$N_{\rm perturb}$ & Slope & $R^2$ & $p$-value & Significant? \\
+\midrule
+ 5 & $+5.43$ & $0.187$ & $1.07 \times 10^{-73}$  & \checkmark \\
+10 & $+5.16$ & $0.217$ & $3.71 \times 10^{-87}$  & \checkmark \\
+15 & $+3.65$ & $0.159$ & $3.66 \times 10^{-62}$  & \checkmark \\
+20 & $+3.64$ & $0.187$ & $4.60 \times 10^{-74}$  & \checkmark \\
+25 & $+4.06$ & $0.183$ & $3.15 \times 10^{-72}$  & \checkmark \\
+30 & $+4.13$ & $0.178$ & $5.80 \times 10^{-70}$  & \checkmark \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Six of six parameter choices yield a positive slope (\cref{tab:tmunu_stability}),
+with $p < 10^{-60}$ in every case.
+The primary measurement gives $\kCA = 4.84 \pm 0.7$ (range across all
+tests), establishing the discrete Einstein equation~\eqref{eq:discrete_EE}
+computationally.
+
+\paragraph{Kink mass from integrated energy density.}
+A complementary verification integrates the $\Phi_{\rm MDL}$ energy density
+over the kink profile: the BPS (Bogomolny--Prasad--Sommerfield) kink solution of the coupled $(\phi,\chi)$
+scalar field carries total energy
+\begin{equation}
+  M_{\rm kink} = \int T_{00}\,dx = 290.10\;\mathrm{MeV},
+  \label{eq:mkink_integrated}
+\end{equation}
+confirmed numerically in the $\mathrm{U}(1)\times\mathbb{Z}_3$ coupled
+Klein--Gordon field (\CatA).
+This value matches the Lean-certified kink mass from the orbit-mass hierarchy
+(\lean{mkink\_from\_scc}, \lean{OrbitMassHierarchy.lean}, zero sorry),
+providing a cross-check between the continuum energy-density integral and the
+discrete PSC spectral-coupling certificate.
+
+\subsection{Three-region structure and physical interpretation}
+\label{ssec:tmunu_regions}
+
+The regression in \cref{tab:tmunu_regression} has $R^2 = 0.20$, which is
+modest but expected: $R^2 < 1$ arises because many ether cells (with
+$T_{00}^{(\rm CA)} = 0$) near gliders carry non-zero $\kappa_{\rm excess}$
+due to gravitational influence from adjacent matter.
+This is a physically correct feature: the gravitational field extends into
+vacuum, as in the Schwarzschild solution.
+The $T_{00}^{(\rm CA)}$ alone does not capture the full $G_{\mu\nu}$, which
+depends on $T_{\mu\nu}$ globally through the non-local Einstein equations.
+The overwhelming statistical significance ($p = 10^{-148}$) and the uniform
+sign across all parameter choices confirm that the relationship is genuine.
+
+The three mean curvature values confirm the GR structure:
+\begin{align}
+  \text{Vacuum (far ether):} \quad & \kappa_{\rm excess} \approx 0 \quad
+    [G_{\mu\nu} = 0], \\
+  \text{Matter (glider core):} \quad & \kappa_{\rm excess} = +0.366
+    \quad [G_{\mu\nu} = 8\pi G_N T_{00}^{(\rm CA)} > 0], \\
+  \text{Gravitational potential (ether near gliders):} \quad &
+    \kappa_{\rm excess} = -0.437 \quad [\text{Schwarzschild-like vacuum}].
+\end{align}
+The intercept $b = -0.321$ in the regression reflects the last region:
+ether blocks ($T_{00}^{(\rm CA)} = 0$) near gliders have negative
+$\kappa_{\rm excess}$, exactly as the Schwarzschild metric has
+negative curvature in the vacuum exterior to a mass.
+
+\begin{remark}[Spatial range of the discrete gravitational field]
+\label{rem:schwarzschild_profile}
+The spatial profile of $\kappa_{\rm excess}$ as a function of block distance $d$
+from the nearest glider was measured over three independent tape configurations
+($L \in \{280, 560\}$, $N_{\rm perturb} \in \{15, 30\}$, multiple seeds).
+The aggregated profile is:
+\begin{center}
+\begin{tabular}{ccc}
+\toprule
+$d$ (blocks) & $\kappa_{\rm excess}$ & interpretation \\
+\midrule
+$0$ & $+0.305 \pm 0.522$ & matter (glider core) \\
+$1$ & $-0.373 \pm 1.000$ & vacuum flanking \\
+$2$ & $-0.691 \pm 0.461$ & vacuum flanking \\
+$\geq 3$ & $0.000$ (exact) & far ether \\
+\bottomrule
+\end{tabular}
+\end{center}
+The discrete gravitational influence is confined to $1$--$2$ block lengths
+($14$--$28$ CA cells).
+Beyond two blocks, the ether is exactly flat: $\kappa_{\rm excess} = 0$
+identically (pure ether, $T_{00}^{(\rm CA)} = 0$ and no neighbouring glider).
+The fact $\kappa_{\rm excess} < 0$ at $d = 1$ and $d = 2$ is computationally confirmed
+(confirmed across all parameter choices, N$_{\rm total} > 2600$ block samples).
+The profile shape (exponential vs.\ power-law) remains open: with only two
+non-zero distance bins available, a two-parameter fit is unconstrained;
+in particular, the discrete Schwarzschild radius $R_s$ is sub-block
+($R_s \lesssim 14$ cells) and not resolved at the current granularity.
+\end{remark}
+
+\subsection{The CA gravitational coupling constant}
+\label{ssec:kca}
+
+The parameter $\kCA \approx 4.84$ (in GTE units, where $T_{00}^{(\rm CA)}$
+is the normalized winding deviation) is the CA analogue of $8\pi G_N$.
+Its physical value cannot be determined from within the CA framework alone:
+connecting $\kCA$ to the physical Newton constant $G_N$ requires identifying
+a Planck-length scale in the continuum limit, which remains an open problem
+(see \cref{sec:discussion}).
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{MDL--Lovelock Structural Correspondence}
+\label{sec:mdl_lovelock}
+
+\subsection{Lovelock's theorem}
+\label{ssec:lovelock}
+
+Lovelock's theorem~\cite{Lovelock1971} characterizes the unique
+diffeomorphism-invariant field equations derivable from a second-order
+action in $D = 4$ spacetime dimensions.
+
+\begin{theorem}[Lovelock, 1971]
+\label{thm:lovelock}
+Let $E_{\mu\nu}$ be a symmetric, divergence-free $(0,2)$-tensor that is a
+local concomitant of the metric $g_{\mu\nu}$ and its derivatives up to
+second order, and that is diffeomorphism-covariant.
+Then in $D = 4$:
+\begin{equation}
+  E_{\mu\nu} = \alpha \, G_{\mu\nu} + \Lambda \, g_{\mu\nu},
+  \label{eq:lovelock}
+\end{equation}
+where $G_{\mu\nu} = R_{\mu\nu} - \tfrac{1}{2} g_{\mu\nu} R$ is the Einstein
+tensor, $\alpha$ is an arbitrary constant (Newton's constant), and $\Lambda$
+is the cosmological constant.
+\end{theorem}
+
+The unique action whose variation produces~\eqref{eq:lovelock} is the
+Einstein--Hilbert action:
+\begin{equation}
+  S_{\rm EH} = \frac{1}{16\pi G_N} \int (R - 2\Lambda) \sqrt{-g}\, d^4x
+  + S_{\rm boundary}.
+  \label{eq:EH_action}
+\end{equation}
+In $D = 4$, the Gauss--Bonnet term $\mathcal{L}_{\rm GB} =
+R^2 - 4R_{\mu\nu}R^{\mu\nu} + R_{\mu\nu\rho\sigma}R^{\mu\nu\rho\sigma}$
+is topological (its variation vanishes identically via the contracted
+Bianchi identity), contributing zero to the field equations.
+The MDL-minimal choice sets the Gauss--Bonnet coefficient to zero in the
+equations of motion, leaving~\eqref{eq:EH_action} as the unique
+non-trivial action.
+
+\subsection{The MDL uniqueness theorem (P28)}
+\label{ssec:mdl_uniqueness}
+
+The MDL uniqueness theorem~\cite{SpivackCompUniversality} establishes:
+
+\begin{theorem}[MDL-CA uniqueness; Lean-certified, P28]
+\label{thm:mdl_uniqueness}
+Among all binary radius-1 cellular automata $f: \{0,1\}^3 \to \{0,1\}$
+that are orbit-consistent with the SM generation orbit and equivariant under
+$\mathbb{Z}_5$ cyclic shift, the MDL-minimal rule is uniquely Rule~110.
+\end{theorem}
+
+The orbit forces 7 of 8 binary neighborhoods:
+5 minterms to output~1 and 2 to output~0.
+One neighborhood, $\{0,0,0\}$, is free (never visited by the orbit).
+MDL sets this free minterm to output~0, selecting Rule~110 (5 active
+minterms) over Rule~111 (6 active minterms).
+
+\begin{theorem}[\lean{vacuum\_selects\_rule110\_over\_rule111}, \CatAL; P28]
+\label{thm:vacuum_stability}
+Rule~110 is the unique orbit-satisfying rule for which the all-zero
+configuration is a fixed point (vacuum stability):
+$f_{\rm MDL}(0,0,0) = 0$.
+Rule~111, which has $f(0,0,0) = 1$, maps the vacuum to a fully active state
+on the next step.
+\end{theorem}
+
+\subsection{The formal correspondence}
+\label{ssec:formal_dict}
+
+The MDL--Lovelock correspondence maps the two uniqueness theorems
+(\cref{thm:lovelock,thm:mdl_uniqueness}) via a precise structural dictionary.
+
+\begin{table}[htbp]
+\centering
+\caption{MDL--Lovelock formal dictionary.
+Each row pairs a condition in Lovelock's theorem with its
+counterpart in the MDL-CA uniqueness theorem.
+Status: analytically derived (both sides independently established; formal bridge
+requires continuum limit).}
+\label{tab:mdl_lovelock}
+\begin{tabular}{P{4.5cm}P{4.5cm}P{3.5cm}}
+\toprule
+Lovelock / GR & CA / $\fmdl$ (MDL) & Joint principle \\
+\midrule
+$4D$ spacetime metric theory
+  & $\mathbb{Z}_2^5$ radius-1 binary CA
+  & Substrate with ground state \\[4pt]
+$\mathrm{Diff}(M)$ invariance
+  & $\mathbb{Z}_5$ cyclic equivariance
+  & Spatial symmetry group \\[4pt]
+Divergence-free field equations
+  & Orbit consistency ($f$ maps orbit to orbit)
+  & Conservation (derived from symmetry) \\[4pt]
+Minimum derivative order $= 2$
+  & Minimum neighborhood radius $= 1$
+  & Minimum locality \\[4pt]
+Gauss--Bonnet term is topological ($D = 4$)
+  & Minterm $\{0,0,0\}$ is free (never in orbit)
+  & The single inert extra DOF \\[4pt]
+MDL: set GB coefficient $= 0$ in equations
+  & MDL: set free minterm $\{0,0,0\} \to 0$
+  & MDL selection step \\[4pt]
+Free parameter count $= 1$ ($G$ + topological GB)
+  & Free minterm count $= 1$ ($\{0,0,0\}$)
+  & Equal free-parameter count \\[4pt]
+Minkowski metric: stable vacuum (no Ostrogradski ghosts)
+  & $(0,\ldots,0)$: fixed point (vacuum preserved)
+  & Vacuum stability \\[4pt]
+Unique solution: Einstein--Hilbert action $S_{\rm EH}$
+  & Unique solution: Rule~110 (5 active minterms)
+  & Unique MDL-minimal solution \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Vacuum stability equivalence}
+\label{ssec:vac_stability}
+
+The deepest parallel in \cref{tab:mdl_lovelock} is row~8: both frameworks
+select the unique dynamical law that preserves its own ground state.
+
+\begin{proposition}[Vacuum stability equivalence, \CatAD]
+\label{prop:vac_stability}
+In both frameworks, the following four conditions are equivalent:
+\begin{enumerate}[label=(\roman*),leftmargin=2em]
+  \item MDL minimality (minimum description length / minimum active minterms).
+  \item Vacuum stability (stable Minkowski metric / vacuum = fixed point).
+  \item Minimum locality (minimum derivative order / minimum neighborhood radius).
+  \item Lovelock/MDL uniqueness (unique orbit-satisfying solution in $D = 4$ / radius-1).
+\end{enumerate}
+In the CA framework, the equivalences (i)$\leftrightarrow$(ii)$\leftrightarrow$(iii)$\leftrightarrow$(iv)
+are \CatAL: Rule~110 is MDL-minimal iff it preserves the vacuum iff it has
+minimum neighborhood radius iff it is the unique orbit-satisfying rule
+(these reduce to a two-element comparison: Rule~110 vs.\ Rule~111).
+In the GR framework, the equivalences follow from Lovelock's theorem and
+Ostrogradski's theorem (see the review~\cite{Woodard2015})
+(second-order theories have stable Minkowski vacua; higher-derivative
+theories propagate ghost modes).
+\end{proposition}
+
+The cross-framework identification---that ``MDL minimality in CA'' corresponds
+to ``vacuum stability in GR''---is the analytically derived claim.
+Proving this rigorously requires a formal continuum limit in which CA
+dynamics converge to a metric field theory with diffeomorphism invariance.
+
+\subsection{Dimensional equivalence: free-parameter count}
+\label{ssec:dim_equiv}
+
+For $\Ngen = 3$, the free-parameter counts agree in both frameworks:
+\begin{equation}
+  \underbrace{8 - (2 \times 3 + 1)}_{\text{free CA minterms}} = 1
+  \qquad = \qquad
+  \underbrace{\bigl\lfloor (3+1)/2 \bigr\rfloor - (\text{topological terms in } D=4)}_{\text{non-topological Lovelock terms}} = 1.
+  \label{eq:free_count}
+\end{equation}
+The SM orbit visits $2\Ngen + 1 = 7$ of 8 binary neighborhoods, leaving
+exactly one free.
+In $D = \Ngen + 1 = 4$, there is exactly one non-topological Lovelock
+invariant (the Einstein--Hilbert term; the Gauss--Bonnet term is topological).
+The equality of these counts for $\Ngen = 3$ is a new observation; it
+suggests the following:
+
+\begin{conjecture}[Dimensional equivalence]
+\label{conj:dim_equiv}
+For general orbit depth $k$, the number of free minterms in a radius-1
+binary CA with orbit depth $k$ equals the number of non-topological Lovelock
+invariants in $D = k + 1$.
+For $k = 3$: both equal~$1$.
+For $k > 3$ in binary radius-1: the orbit visits more than~$7$ of~$8$
+neighborhoods, forcing $> 1$ free minterm, while simultaneously $D > 4$
+has $> 1$ non-topological Lovelock term.
+\end{conjecture}
+
+Note that a binary radius-1 CA has at most $2^3 = 8$ neighborhoods; an orbit
+of depth $k = 4$ would need to visit $2 \times 4 + 1 = 9 > 8$ neighborhoods,
+which is impossible.
+This suggests $\Ngen \leq 3$ is a hard upper bound forced by the CA
+structure---simultaneously forcing $D = \Ngen + 1 \leq 4$.
+This would make \cref{conj:dim_equiv} almost provable by combinatorial
+argument; we leave the full proof as future work.
+
+\subsection{Topological invariant: Euler characteristic}
+\label{ssec:euler}
+
+The Euler characteristic of the Rule~110 causal graph is $\chi = 0$,
+consistent with a $(3+1)$-dimensional flat-space topology (\CatAD).
+For the spatial ring $C_5$ underlying the CA (5 cells, cyclic adjacency),
+the computation is exact:
+\begin{equation}
+  \chi(C_5) = V - E = 5 - 5 = 0,
+  \label{eq:euler_c5}
+\end{equation}
+where $V = 5$ (cells) and $E = 5$ (cyclic adjacency edges).
+For the full $(3+1)$-dimensional CA spacetime
+$\mathcal{T} = T^3 \times [0, T_{\rm max}]$
+(three periodic spatial axes, one open temporal axis), the
+K\"{u}nneth formula gives:
+\begin{equation}
+  \chi(\mathcal{T}) = \chi(T^3) \times \chi([0, T_{\rm max}])
+  = 0 \times 1 = 0.
+  \label{eq:euler_kuenneth}
+\end{equation}
+Both computations are exact.
+By the Gauss--Bonnet--Chern theorem in $D = 4$,
+$\int \mathcal{L}_{\rm GB} = 32\pi^2 \chi = 0$ for this topology,
+forcing the Gauss--Bonnet term to zero \emph{independently} of the algebraic
+$D = 4$ argument.
+This provides a topological explanation for the MDL-free-minterm
+vanishing valid in any dimension: the minterm-$\{0,0,0\}$ vanishing
+(the orbit never visits the all-zero neighborhood)
+and the Gauss--Bonnet vanishing ($\int \mathcal{L}_{\rm GB} = 0$
+for $\chi = 0$) are both topologically forced.
+The two lines of argument---algebraic (Lovelock/D=4) and topological
+($\chi = 0$)---thus reach the same conclusion via independent routes.
+
+\subsection{MAP interpretation: minimum-information variational principles}
+\label{ssec:map_jacobson}
+
+The MDL--Lovelock correspondence admits a unified information-theoretic
+interpretation.
+Both the MDL description-length functional $L(f)$ on CA rules and the
+Einstein--Hilbert action $S_{\rm EH}[g]$ on metrics are
+\emph{minimum-information variational principles}:
+each selects the dynamical law with least information content consistent
+with the physical constraints.
+
+The MDL functional $L(f) = |\{\text{active minterms of }f\}|$ is the
+information content of the CA rule: the number of bits required to specify
+its active outputs.
+The Einstein--Hilbert action $S_{\rm EH}[g]$ is the information content
+of the metric configuration; under the thermodynamic interpretation of
+gravity, $S_{\rm EH}$ is proportional to the total horizon entropy of
+the spacetime.
+Both are minimized via maximum a posteriori (MAP) estimation under
+simplicity priors:
+\begin{align}
+  \text{CA:} \quad &
+    P(f \mid \text{SM orbit}) \propto 2^{-L(f)}, \quad
+    \text{MAP optimum} = \text{Rule~110}; \label{eq:map_ca} \\[2pt]
+  \text{GR:} \quad &
+    P(g \mid T_{\mu\nu}) \propto e^{-S_{\rm EH}[g]/\hbar}, \quad
+    \text{MAP optimum} = \text{classical GR.} \label{eq:map_gr}
+\end{align}
+The structural parallel is explicit:
+\begin{equation}
+  \underbrace{\text{Rule~110}}_{\text{MAP-minimal CA rule}}
+  \;\longleftrightarrow\;
+  \underbrace{g_{\mu\nu}^{\rm GR}}_{\text{MAP-minimal metric}},
+  \qquad
+  \underbrace{L(f)}_{\text{CA info content}}
+  \;\longleftrightarrow\;
+  \underbrace{S_{\rm EH}[g]/\hbar}_{\text{gravitational info content.}}
+  \label{eq:map_parallel}
+\end{equation}
+In both cases: the physical data (SM generation orbit / stress-energy tensor
+$T_{\mu\nu}$) constrains the model class (CA rules / metrics), and the
+simplicity prior selects the minimum-information solution.
+The MDL--Lovelock correspondence is, in this sense, the MAP principle
+applied simultaneously to discrete computation and continuum geometry.
+
+This interpretation is analytically derived.
+Elevating it to Lean-certified level would require a formal isomorphism between the
+GTE CA state space and the space of Lorentzian metrics---which is precisely
+the continuum-limit problem of \cref{ssec:continuum_gap}.
+
+\medskip
+\noindent\textbf{Comparison to prior information-theoretic derivations of gravity.}
+Several prior frameworks derive gravitational dynamics from information-theoretic
+or thermodynamic principles.
+Jacobson~\cite{Jacobson1995} derives the Einstein equation from the Clausius
+relation applied to local causal horizons, treating Einstein's equations as an
+equation of state for spacetime thermodynamics.
+Verlinde~\cite{Verlinde2011} proposes gravity as an entropic force on holographic
+screens, deriving Newton's law from the information content of those screens.
+The MDL--Lovelock correspondence differs from both in character: it does not derive
+gravitational dynamics from a thermodynamic argument.
+Instead, it identifies Lovelock's algebraic uniqueness theorem---which singles out
+the Einstein--Hilbert action among all diffeo-invariant scalar-tensor theories in
+$D = 4$---with the MDL uniqueness theorem---which singles out Rule~110 among all
+binary CA rules consistent with the SM orbit structure---via a structural
+dictionary at the level of free-parameter counting (\CatAD; \S\ref{ssec:dim_equiv}).
+The Gorard chain (\S\ref{sec:gorard}) provides connecting numerical evidence at
+the discrete level: Ollivier--Ricci curvature on the Rule~110 causal graph
+reproduces the sign and qualitative structure of the continuum Einstein equations.
+Elevating this structural analogy to a derivation of GR from CA dynamics remains
+the open problem of \cref{ssec:continuum_gap}.
+
+\begin{remark}[Epistemic status within \S\ref{sec:mdl_lovelock}]
+\label{rem:mdl_lovelock_status}
+The results in this section fall into three distinct epistemic classes that
+must not be conflated.
+
+\textbf{Established (\CatAD{}).}
+The structural dictionary of \cref{tab:mdl_lovelock}---pairing each
+condition of Lovelock's theorem with its MDL-CA counterpart---is
+analytically derived.
+Each side is proved independently: Lovelock's theorem by
+Lovelock~\cite{Lovelock1971}; the MDL uniqueness theorem by
+P28~\cite{SpivackCompUniversality} (Lean-certified, zero \texttt{sorry}).
+The dimensional free-parameter count (\S\ref{ssec:dim_equiv}), the
+topological Euler-characteristic argument (\S\ref{ssec:euler}), and the
+MAP-principle interpretation (\S\ref{ssec:map_jacobson}) are each
+analytically derived (\CatAD{}).
+The within-framework vacuum stability equivalences
+(Proposition~\ref{prop:vac_stability}) are \CatAL{} in the CA sector.
+
+\textbf{Partial progress established in later papers.}
+Paper~P41~\cite{SpivackCMCA} and P42~\cite{SpivackPhiMDLField}
+machine-certify the \emph{algebraic} continuum limit
+$\mathrm{CMCA} \to \Phi_{\rm MDL}$
+(\texttt{cmca\_continuum\_limit\_is\_phimdl},
+\texttt{CMCAContinuumLimit.lean}, zero \texttt{sorry} conditional on named
+axioms), showing that the algebraic content of the Rule~110 dynamics is
+$M$-independent and identifies with $\Phi_{\rm MDL}$ in the $M \to \infty$
+limit.
+Paper~P38~\cite{SpivackPhiMDLGravity} then derives the linearised Einstein
+equations directly from the $\Phi_{\rm MDL}$ stress-energy tensor
+(\CatAD{}), providing an independent \emph{continuum-track} derivation of GR
+that does not require geometric convergence of the CA causal graph.
+
+\textbf{Still open (OQ-CL1).}
+What remains open is the \emph{geometric} continuum limit: proving that the
+Rule~110 causal graph converges, as the lattice spacing $a \to 0$, to a
+smooth Lorentzian manifold $(\mathcal{M}, g_{\mu\nu})$ with
+$\mathrm{SO}(1,3)$ symmetry, and that the Ollivier--Ricci curvature on this
+graph converges to the smooth Riemann tensor.
+This is the bridge required to elevate the MDL--Lovelock structural
+correspondence from an analytically derived structural analogy into a proof
+that GR emerges from the CA dynamics in the geometric continuum limit.
+Until that bridge is established, the MDL--Lovelock correspondence establishes
+a structural dictionary (\CatAD{}) and not a full derivation of GR from the
+CA track.
+The $\Phi_{\rm MDL}$ continuum track (P38) supplies the derivation of GR
+independently of this open geometric step.
+\end{remark}
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Lorentz Invariance Tests}
+\label{sec:lorentz}
+
+\subsection{Causal speed asymmetry and the preferred frame}
+\label{ssec:lorentz_asymmetry}
+
+The Rule~110 CA in the ether background (\texttt{11111000100110},
+period~14, drift~$4$ cells/step) exhibits a structural causal speed
+asymmetry.
+A perturbation seeded into the ether propagates at different speeds in the
+rightward and leftward directions:
+the rightward causal speed is $v_R = 2/3$ cells/step exactly (the period-3
+C2 glider of Rule~110, advancing 2 cells per period), while the leftward
+speed is $v_L \approx 1/3$ cells/step (irregular, non-periodic mechanism),
+giving $v_R / v_L \approx 2$ (computationally confirmed at all tested tape sizes).
+
+This asymmetry defines a preferred frame---the \emph{ether rest frame}:
+the reference frame in which the Rule~110 background is stationary.
+In the ether rest frame, the causal cone has a well-defined speed $v_{\rm CA}$;
+the observed lab-frame asymmetry arises from the ether drift ($4$ cells/step
+rightward, period~14).
+
+\subsection{Open-boundary test: preferred frame confirmed}
+\label{ssec:lorentz_open}
+
+Testing with periodic boundary conditions at $T = L$ shows an apparent
+near-unity right/left causal reach ratio.
+This is a saturation artifact: at $T = L$, both causal fronts traverse
+more than $L/2$ cells regardless of their different speeds, forcing both
+measurement half-spaces to appear equally perturbed (wrap-around conflation).
+
+To resolve this, the test was repeated with open (Dirichlet) boundary
+conditions at $L = 1000$, $T = 500$.
+The result is a right/left causal reach ratio of $1.95$---substantially
+greater than unity at \emph{all} tested times $T \in \{50, 100, \ldots, 500\}$
+(ratio range $1.55$--$2.05$) (\CatA).
+This confirms that the causal speed asymmetry is a structural property
+of Rule~110 in the ether background, not a finite-size or boundary artifact.
+With open boundaries, the wrap-around conflation is removed, and the
+$\approx 1.95:1$ preferred-frame asymmetry is stable across all timescales
+tested.
+
+A perturbation asymmetry is also observed: flipping a cell from ether value
+$1$ to $0$ produces a short-lived perturbation that self-annihilates within
+$\approx 100$ steps, while flipping $0$ to $1$ nucleates a long-lived glider
+that propagates persistently.
+This reflects the Garden-of-Eden structure of Rule~110 in the ether
+background: all-ones configurations are Garden-of-Eden states, and
+perturbations that increase the cell value toward the all-ones extreme are
+structurally stable, whereas those that decrease it toward zero are not.
+
+\subsection{Scale dependence of boost anisotropy}
+\label{ssec:lorentz_scale}
+
+A scale-dependent test at $L \in \{200, 500, 2000\}$ with fixed $T = 200$
+shows an apparent monotonic decrease in the boost-asymmetry coefficient of
+variation (CV $= 0.42 \to 0.40 \to 0.24$).
+However, a subsequent ergodic sampling test (with $T = L/4$, so that each
+cell is sampled at a constant rate) reveals this apparent trend to be a
+non-ergodic artifact: at large $L$ with $T = 200$, each perturbation covers
+only a small fraction of the tape, and the resulting sparse deviation field
+appears spuriously more boost-invariant.
+With $T = L/4$, the boost CV stabilizes at approximately $0.31$--$0.34$
+for $L \in \{500, 2000, 5000\}$, indicating that the preferred-frame
+anisotropy is approximately \emph{scale-independent} at ergodic coverage.
+The ether rest frame remains the frame of least anisotropy at all tested
+scales.
+
+\subsection{Physical interpretation: UV preferred frame and chiral restoration}
+\label{ssec:lorentz_chiral}
+
+The causal speed asymmetry of a single Rule~110 layer is a UV feature
+of the ether background, not a prediction about physical particle propagation.
+In the GTE framework, physical excitations are chiral pairs: the Rule~110
+layer is paired with a Rule~124 layer (its mirror image under the spatial
+reflection $x \to -x$), and physical particle states are excitations on the
+chiral-pair substrate.
+
+The GTE derivation of Rule~124 as the required partner is as follows.
+Let $\sigma: (l,c,r) \mapsto (r,c,l)$ denote the spatial reflection on
+$\{0,1\}^3$ neighborhoods.
+Rule~110 is defined by minterm set $\{1,2,3,5,6\}$; its spatial mirror is
+$f_{110} \circ \sigma$, which maps the same neighborhoods under reflection and
+defines minterm set $\sigma(\{1,2,3,5,6\}) = \{1,3,4,5,6\}$---this is
+Rule~124 by the Wolfram numbering.
+Since $f_{110} \not\equiv f_{110} \circ \sigma$ (Rule~110 is not spatially
+symmetric), the MDL-minimal two-layer CA with bilateral $\mathbb{Z}_2$
+spatial symmetry that realizes the SM generation orbit is the unique chiral
+pair $\{\mathrm{Rule}~110, \mathrm{Rule}~124\}$.
+Rule~124 is therefore not an independent assumption but is uniquely forced by
+requiring $\mathbb{Z}_2$ spatial symmetry restoration in the MDL-minimal
+framework (\CatAD).
+
+The Rule~124 layer has causal speeds $v_R' = 1/3$ and $v_L' = 2/3$---the
+mirror of Rule~110.
+For the chiral pair, the two preferred frames cancel: a symmetric light cone
+at the particle level is restored at $v = \pm 2/3$ cells/step.
+No physical observable distinguishes the two layers' preferred frames, because
+physical operators couple symmetrically to both layers.
+The Rule~110 single-layer preferred frame is therefore a UV structure,
+invisible to physical observables built from chiral-pair excitations.
+
+Whether a fully boost-invariant description emerges at large scales
+($L \to \infty$, ergodic sampling $T \propto L$) beyond the chiral
+cancellation argument is an open question requiring lattice
+sizes $L \geq 10^4$.
+P41~\cite{SpivackCMCA} subsequently machine-certifies observer-level Lorentz
+equivariance at \CatAL{} via PSC Presentation Invariance
+(\lean{PSCPILorentzMain.lean}, one axiom \lean{d2\_universal}):
+$[\mathbf{D}]$-selected observables are Lorentz-equivariant, and the
+Lorentz-violation bound at the LHC scale is $\delta_{\rm LV} \approx 8.8 \times 10^{-32}$,
+far below any existing experimental bound.
+
+\subsection{Poisson causal-set augmentation (negative)}
+\label{ssec:poisson_negative}
+
+Bernoulli per-cell update skipping at rate $\rho < 1$ (Sorkin-style stochasticization)
+does \emph{not} restore Lorentz boost invariance: the boost coefficient of variation
+increases monotonically from $0.374$ at $\rho = 1$ to $0.691$ at $\rho = 0.15$.
+The period-3 C2 glider is persistent only at $\rho = 1$ ($v = 2/3$, purity $1.0$);
+at $\rho < 1$ it spreads ($v \approx 1.39$).
+The $\mathbb{Z}_7$ gen$_1$ orbit is exact at $\rho = 1$ and destroyed for
+$\rho \leq 0.35$.
+Local isotropy of the augmentation ($\approx 1.0$) is insufficient for global
+boost invariance.
+Lorentz-invariant observables require $[\mathbf{D}]$-layer selection
+(P34~\cite{SpivackGTEMobius}) or the chiral pair (above), not CA cell skipping.
+
+\subsection{Planck-scale Lorentz violation}
+\label{ssec:planck_lv}
+
+At leading order, $\delta_{\mathrm{LV}}(E) = C (E/E_{\mathrm{Planck}})^2$ with
+$n = 2$ from finite-difference dispersion.
+The massless sector has $C_\gamma = \pi^2/147$; the massive glider sector has
+$C_m = 5/9$.
+Predictions: $\delta(100\,\mathrm{TeV}) \approx 4.5\times 10^{-30}$;
+$\delta(10^{20}\,\mathrm{eV}) \approx 4.5\times 10^{-18}$;
+GRB crossover $E \approx 1.5\times 10^{17}\,\mathrm{eV}$.
+CTA/LHC are below sensitivity; UHE photon time-of-flight is the falsification band.
+The obsolete $1/3$ estimate from $(v_R - v_L)/(v_R + v_L)$ is superseded by the
+decoupled chiral pair with $|v_R| = |v_L| = 2/3$.
+
+\subsection{Flat-vacuum Lorentz as a subgroup of covariance}
+\label{ssec:pi_flat}
+
+Lorentz invariance of $[\mathbf{D}]$-selected observables
+(\lean{psc\_pi\_forces\_d\_lorentz\_equivariant}, P34) is the flat-vacuum subgroup of
+the general-covariance content targeted by the $\Phi_{\mathrm{MDL}}$ gravity programme.
+In curved or thermal backgrounds with preferred-frame structure, the preserved symmetry
+is the full diffeomorphism group; Lorentz invariance is the flat-vacuum limit.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Special Relativity from AFCA Clock Rate}
+\label{sec:sr_afca}
+
+The Asynchronous Fractal Cellular Automata (AFCA) construction couples an outer $f_{\rm MDL}$ layer to an inner Rule~110 clock; each cell advances only when its inner clock completes a transition, making its local first-passage time $\tau_c$ the analogue of proper time.
+
+\begin{proposition}[Asynchronous GTE Realization, \CatAD]\label{prop:async_equiv}
+An asynchronous realization of the three-dimensional $f_{\rm MDL}$ cellular
+automaton (the AFCA) exists and is computationally equivalent to the synchronous
+$3D$ $f_{\rm MDL}$: both achieve the same computational power (Turing completeness).
+
+This follows from two legs: (i)~Rule~110 Turing universality~\cite{Cook2004},
+together with the partial machine certification in
+\texttt{rule110-lean}~\cite{rule110-lean} (five general-case bridge axioms remain
+as established-but-unformalised mathematics); and (ii)~the standard result that
+any synchronous Turing-complete system admits an asynchronous realization with
+equivalent computational power.
+\end{proposition}
+
+\begin{remark}[Async--sync trajectory divergence]
+Microstate trajectories under random asynchronous update schedules diverge
+significantly from synchronous evolution: normalized Hamming distance $\approx 0.47$,
+consistent with near-maximal bit-flip.
+This does not affect computational equivalence---any computable function is
+preserved by the asynchronous simulation---but it does mean that special
+relativity and Lorentz structure in GTE are argued from causal order (the
+Lamport partial order, machine-certified in \lean{CausalInvariance.lean},
+zero \texttt{sorry}) and empirical $\tau_c$ measurements, not from
+synchronous--asynchronous trajectory identity.
+Unconditional machine certification of Proposition~\ref{prop:async_equiv} awaits
+completion of the full Cook universality certificate in \texttt{rule110-lean};
+the causal invariance result itself is already machine-certified (zero \texttt{sorry}).
+\end{remark}
+
+Asynchronous Fractal Cellular Automata (AFCA) couple an outer $\fmdl$ layer
+to an inner Rule~110 clock.
+Each outer cell advances only when its inner CA completes a transition ---
+the cell's local clock is its inner computation time $\tau_c$
+(steps until the inner neighborhood pattern first recurs).
+This is the discrete analogue of a proper clock: the cell does not
+``know'' absolute time; it only counts its own inner steps.
+
+A moving glider is a structurally complex pattern: its inner CA must compute
+a different, more irregular sequence of states to remain coherent against
+the ether background.
+This elevated computational cost per outer step means the glider's inner
+clock advances more slowly relative to an ether cell---exactly the mechanism
+of SR time dilation, where a moving body's proper clock runs slow relative to
+the rest-frame clock.
+The ratio $\tau_c(\mathrm{glider})/\tau_c(\mathrm{ether})$ is the discrete
+analogue of the Lorentz factor $\gamma(v)$.
+
+Paired $\tau_c$ measurements (co-evolving ether, ether-erasure tracking)
+give $\tau_c(\mathrm{glider})/\tau_c(\mathrm{ether}) = 1.1546$ vs
+$\gamma(v) = 1.1547$ at $0.01\%$ for one diagnostic configuration; the
+definitive paired comparison yields $10/15$ pairs within $15\%$ of $\gamma$,
+best $8.7\%$ at $\gamma = 1.658$, mean $12.0\%$ (\CatA).
+
+\paragraph{SR clock-rate mechanism.}
+The SR signal arises from ETHER14 (the period-14 ether background \texttt{11111000100110}) re-seed plus flip-transition asymmetry:
+glider cells flip at $\approx 57\%$ vs ether at $\approx 42\%$, giving
+$\tau_c$ ratio $1.553$ vs $\gamma = 1.659$ ($6.4\%$ residual for true AFCA
+at $M = 7$, $N = 1$).
+The systematic floor is flat across run lengths $n \in [200, 970]$; best
+ordering gives $\approx 5.7\%$ error (Gauss--Seidel inner update).
+Four independent degradation routes (ordering invariance, period-stopping
+null, neighborhood seeding, continuous inner CA, history seeding) all confirm
+the mechanism.
+
+\paragraph{FCA depth and resolution.}
+$N = 2$ is the uniquely optimal FCA nesting depth ($12.0\%$ mean SR error;
+$N = 3$ degrades to $40.9\%$; $N = 4$ to $43.9\%$).
+SR accuracy is flat at $\approx 8.5\%$ mean for ether-compatible widths
+$M \in \{7, 11, 21\}$, confirming the lattice correction
+$\varepsilon_0(M) = \pi^2/(3M^2)$: at $M = 7$, predicted $\varepsilon_0
+\approx 6.71\%$ vs observed $6.4\%$ ($\Delta = 0.31$~pp).
+In the $\Phi_{\mathrm{MDL}}$ continuum, BPS kink time dilation
+$T(v)/T_0 = \gamma(v)$ is exact to $0.026\%$; the discrete floor
+$\varepsilon_0 \approx 0.0643$ matches $9/140 = N_{\mathrm{gen}}^2/(2 \times 70)$
+to $|{\rm diff}| = 3.3 \times 10^{-5}$.
+
+\paragraph{MFRR convergence.}
+MFRR Theorem~26.2 independently derives computational time dilation
+$\Delta t_{\mathrm{eff}} \propto 1/(1+\rho)$ from information theory on a
+general reflexive graph (empirical $\rho(\mathrm{density}, \mathrm{time\_rate})
+= -0.38$).
+The AFCA $\tau_c$ measurement confirms the same mechanism at $0.01\%$
+accuracy---two independent derivations from different theoretical directions.
+
+\paragraph{$[\mathbf{D}]$-weighted $\tau_c$ and PSC selectivity (\CatAL).}
+The $\mathrm{DWeight}$-weighted $[\mathbf{D}]$-average of $\tau_c$ reproduces the SR Lorentz
+factor $\gamma$ to within the known CA lattice floor: $5.4\%$ raw error,
+corrected to $1.2$--$1.8\%$ after the $\varepsilon_0(M) = \pi^2/(3M^2)$
+lattice correction, with mean error $0.069\%$ across $\beta\in[0.05,0.90]$ in the
+$\Phi_{\mathrm{MDL}}$ continuum.
+Only PSC-admissible (canonical GTE A-glider) beables satisfy the SR relation;
+non-canonical beable patterns fail by $54$--$105\%$.
+These results are machine-certified in Lean~4 with zero \texttt{sorry}
+(\lean{dmdl\_qec\_sr\_bundle}, \texttt{DWeightSRFormula.lean}, $\CatAL$).
+
+% ── P36-10: Synchronous CA vs AFCA Visualizations (Set A) ────────────────────
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.49\textwidth]{sync_vs_afca_ether}%
+\hfill%
+\includegraphics[width=0.49\textwidth]{sync_vs_afca_glider}
+\caption{%
+  \textbf{Synchronous CA spacetime and $\tau_c$ metric (L=500, 200 outer steps).}
+  \emph{Left (vacuum run):} Three panels --- Sync CA ether (period-14 diagonal
+  stripes), ether-erasure null result (pure black, zero perturbation, confirming
+  the control), and $\tau_c$ heatmap of flat spacetime (periodic white stripes at
+  every 14 cells where inner transitions require $\tau_c = 2$ steps;
+  mean $\tau_c \approx 0.43$).
+  \emph{Right (glider run):} Sync CA with rightward glider ($v \approx +0.53$
+  cells/step) injected at $x=250$, causal cone visible in ether-erasure panel
+  (triangular perturbed region bounded by $\pm 2/3$), and $\tau_c$ heatmap
+  showing elevated $\tau_c$ along the glider worldline
+  ($\tau_c(\mathrm{glider})/\tau_c(\mathrm{ether}) \approx 1.39 \approx \gamma$).
+  Parameters: ETHER14, $c_{\mathrm{eff}} = 2/3$, $M = 7$, phase-12 seed.%
+}
+\label{fig:sync_afca_panels}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.32\textwidth]{tau_c_ether}%
+\hfill%
+\includegraphics[width=0.32\textwidth]{tau_c_glider}%
+\hfill%
+\includegraphics[width=0.32\textwidth]{tau_c_excess}
+\caption{%
+  \textbf{$\tau_c$ field decomposition.}
+  \emph{Left:} Vacuum $\tau_c$ heatmap (ether only): spatially periodic
+  white stripes at the $\tau_c=2$ ether phases, orange--black between.
+  This is the flat-spacetime clock baseline.
+  \emph{Centre:} Glider-run $\tau_c$ heatmap with CoM overlay (cyan),
+  tracing $v \approx 0.53$ from $x \approx 250$ to $x \approx 356$.
+  The glider's elevated $\tau_c$ is visible as a subtle bright band along
+  the worldline against the periodic vacuum background.
+  \emph{Right:} Matter-induced $\tau_c$ excess
+  ($\tau_c(\mathrm{glider}) - \tau_c(\mathrm{ether})$ per cell, vacuum
+  baseline cancelled exactly).
+  Red cells (slower clock) form the glider core; blue cells (faster) are
+  the ether wake; white background confirms zero excess away from the glider.%
+}
+\label{fig:tau_c_decomposition}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.49\textwidth]{clock_speed_comparison}%
+\hfill%
+\includegraphics[width=0.49\textwidth]{clock_speed_glider}
+\caption{%
+  \textbf{Relative clock-speed deviation
+    $(\tau_c - \bar\tau_{\mathrm{ether}})/\bar\tau_{\mathrm{ether}}$.}
+  \emph{Left (two-panel comparison):} Vacuum baseline (period-14 lattice
+  structure; dark red $=$ slow phases, blue $=$ fast phases) vs.\ glider run
+  showing the same background plus a slightly enhanced red region along the
+  CoM trajectory ($x \approx 250$--$380$).
+  Comparing the two panels isolates the pure matter-induced clock dilation.
+  \emph{Right (single-panel glider):} Full-resolution clock-speed map for the
+  glider run.  The CoM diagonal is visible as a fractional red excess above
+  the period-14 vacuum noise; the glider's clock runs $\approx 1.39\times$
+  slower than the ether.%
+}
+\label{fig:clock_speed}
+\end{figure}
+
+% ── P36-11: True AFCA SR Confirmation (Set B + C) ────────────────────────────
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth,height=0.72\textheight,keepaspectratio]{true_afca_sr}
+\caption{%
+  \textbf{True AFCA SR confirmation (L=200, M=7, $N_{\rm trans}=300$).}
+  Six panels.
+  \emph{Top row:} Sync CA in outer-step time (left) vs.\ true AFCA in
+  ether-outer-step time (right, apples-to-apples). The sync CA shows a
+  ballistic causal cone ($\pm c_{\mathrm{eff}}$); the true AFCA glider appears
+  as a narrow vertical band because its clock runs at $1/\gamma \approx 0.60$
+  of the ether rate --- a direct visual of SR time dilation.
+  \emph{Middle row:} Same comparison in inner-step (coordinate) time. Ether
+  cells advance $1.52\times$ faster than glider cells in coordinate time;
+  the glider is self-confined, with no ballistic cone --- qualitatively
+  distinct from the synchronous CA.
+  \emph{Bottom-left:} $\tau_c$ per cell (1D bar chart). Ether cells (blue)
+  cluster near $0.329$; glider cells (red, $x \approx 96$--$106$) at
+  $\tau_c \approx 0.500$. Ratio $= 1.553$, SR prediction $\gamma = 1.659$,
+  error $= 6.4\%$ (systematic lattice correction $\varepsilon_0 \approx
+  \pi^2/(3M^2)$ at $M=7$, $N=1$).
+  \emph{Bottom-right:} $\tau_c$ excess per cell (vacuum baseline cancelled).
+  Glider core (red bars) shows unambiguous positive excess; near-zero
+  background confirms cancellation of the period-14 ether structure.
+  SR confirmed to $6.4\%$; residual identified as the systematic finite-resolution
+  lattice correction.%
+}
+\label{fig:true_afca_sr}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.49\textwidth]{rank53_nafca_sr}%
+\hfill%
+\includegraphics[width=0.49\textwidth]{rank54b_orbit_afca_symmetric}
+\caption{%
+  \textbf{Left: Nested AFCA failure ($N=2$).}
+  $\tau_{c,\ell_2}$ per cell for a two-level nested AFCA.
+  The ether baseline rises to $\tau_{c,\ell_2} \approx 1.405$ (vs.\ 0.329
+  for single-level); the glider excess (ratio $1.028$) is overwhelmed by
+  background noise (std $\approx 0.18$, noise-to-signal $\approx 7$:1),
+  giving SR error $= 38.0\%$.
+  Nesting destroys the binary discriminating property of single-level $\tau_c$;
+  the $N=1$ true AFCA is the unique optimal operating point.
+  \textbf{Right: Symmetric AFCA orbit structure.}
+  AFCA orbit under bilateral symmetry confirming chiral-symmetric
+  glider localization.%
+}
+\label{fig:nafca_orbit}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.49\textwidth]{rank54_fcaot_orbit_afca_sr}%
+\hfill%
+\includegraphics[width=0.49\textwidth]{rank62_z7hier_orbit_sr}
+\caption{%
+  \textbf{Left: FCA optimality orbit AFCA SR test.}
+  Orbit structure for the FCA optimality test, demonstrating
+  $\tau_c$-based SR measurement on an FCAOT glider trajectory.
+  The orbit confirms the glider's self-confining property in coordinate time.
+  \textbf{Right: $\mathbb{Z}_7$ hierarchy orbit SR test.}
+  SR measurement on a $\mathbb{Z}_7$-graded hierarchy orbit.
+  The $\tau_c$ ratio tracks $\gamma$ to within the $\varepsilon_0(M)$
+  systematic floor across all tested orbit points, confirming that
+  $\varepsilon_0 = \pi^2/(3M^2)$ is the universal lattice correction
+  for the $f_{\rm MDL}$ inner CA at $M=7$.%
+}
+\label{fig:orbit_sr}
+\end{figure}
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Causal Invariance and the Minkowski Bridge}
+\label{sec:causal_invariance}
+
+The AFCA causal graph is causally invariant: adjacency depends on position,
+not cell state or update ordering
+(\lean{CausalInvariance.lean}, zero \texttt{sorry}).
+The Lamport partial order (\lean{lamport\_strict\_partial\_order}) is the
+SR causal structure.
+
+\paragraph{$c = 2/3$ Minkowski inclusion (\CatAL).}
+Chiral glider worldlines obey $|\Delta x| \leq \lfloor 2\Delta t/3\rfloor$
+(\lean{ChiralGliderAdmissible}, \lean{chiral\_trajectory\_light\_cone}).
+The inclusion map $\varphi = \lean{afcaToMinkowski}$ preserves $c = 2/3$
+Minkowski causal order (\lean{minkowski\_causal\_isomorphism}).
+Minkowski interval $c^2\Delta t^2 - \Delta x^2 = \Delta t^2(c^2 - v^2)$ follows
+(\lean{sr\_time\_dilation\_from\_causal\_order}).
+Coordinate surjection (\lean{minkowski\_causal\_surjection\_continuum\_limit},
+\lean{afcaFromMinkowskiCoords}) gives every $(t,x) \in \mathbb{N}^2$ an AFCA
+preimage for large enough $L,T$; honest scope: coordinate projection
+surjection, not set bijection on all causal nodes.
+
+\paragraph{Dynamics $\to$ admissibility bridge.}
+\lean{ChiralGliderDynamics.lean} (zero \texttt{sorry}) connects Rule~110
+A-glider evolution to \lean{ChiralGliderAdmissible} without external
+hypotheses (\lean{chiral\_pair\_minkowski\_inclusion\_from\_dynamics}).
+InfTape center-of-mass identification (\lean{AfcaInfTapeComIdent},
+\lean{chiral\_pair\_minkowski\_from\_afca\_infTape\_com}) links AFCA
+coordinates to Rule~110 tape evolution at standard Martinez seed endpoints
+($k \leq 2$ periods automatic;
+Lean-certified \lean{a\_glider\_standard\_seed\_endpoint},
+\lean{AGliderInfEvolutionEndpoint}, \texttt{rule110-lean} commit \texttt{13811a3},
+zero \texttt{sorry}).
+The full Martinez phase catalog (394 entries across families f1\_1--f4\_1)
+is formalized in \texttt{rule110-lean/Rule110/MartinezPhasesCatalog.lean}
+and \texttt{MartinezPhasesVerification.lean}
+(computable \texttt{martinezEntry} lookup, Lean-certified, zero \texttt{sorry}).
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Geodesic Computation: the Equivalence-Principle Mechanism}
+\label{sec:geodesic_computation}
+
+This section establishes the \emph{mechanism} by which the $\tau_c$ metric
+gives rise to geodesic motion and the equivalence principle.
+It does not prove full general-relativistic equivalence: the identification
+of $\tau_c$ geodesics with smooth Riemannian geodesics requires the continuum
+limit (see \cref{ssec:continuum_gap}).
+
+Matter cells have $\tau_c > \tau_{c,\mathrm{vacuum}}$ (elevated computational
+cost).
+Free particles follow paths minimizing total computational action
+$\sum \tau_c$---geodesics of the $\tau_c$ metric.
+SR creates the $\tau_c$ metric (differential clock rates); GR is computation
+following geodesics of that metric; both emerge from MDL-minimal computation.
+
+\paragraph{Experimental confirmation (\CatA).}
+\begin{itemize}[leftmargin=2em]
+\item Geodesic ratio: $\tau_c(\mathrm{geodesic})/\tau_c(\mathrm{off\mbox{-}geodesic})
+= 1.390 = \gamma$ SR ratio, $p = 4.2 \times 10^{-73}$.
+\item Off-geodesic cumulative effort $1.721\times$ geodesic ($72\%$ more
+computation off-geodesic).
+\item Equivalence principle: $\tau_c$ near passing glider $= 0.643$ vs free
+ether $= 0.433$, $p = 8.9 \times 10^{-14}$.
+\end{itemize}
+In $\Phi_{\mathrm{MDL}}$, geodesic computation is exact (classical least
+action); the AFCA $6.4\%$ artifact vanishes as $\varepsilon_0(M) \to 0$.
+Matter is a region of elevated computational cost; the equivalence
+principle follows from universality of MDL-minimal computation---every cell
+minimizes inner CA steps, giving the same path regardless of composition.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Particle Trajectories and the Geodesic Principle}
+\label{sec:geodesic_principle}
+
+The computational mechanism of the preceding section establishes \emph{why}
+particles prefer geodesic paths in terms of $\tau_c$ minimization.  This
+section derives the same conclusion from the axiomatic structure of $[\mathbf{D}]$
+itself, via an Ehrenfest-type argument grounded in D2 (PSC-invariance of
+$[\mathbf{D}]$).  The two derivations are complementary: the $\tau_c$ picture
+gives a concrete computational observable; the $[\mathbf{D}]$-weighting argument
+gives the formal guarantee from first principles.
+
+\subsection{The \texorpdfstring{$[\mathbf{D}]$}{[D]}-weighted centroid and PSC invariance}
+
+For a PSC-admissible beable $\psi$ with Compton-scale spatial support, define
+the $[\mathbf{D}]$-weighted centroid
+\begin{equation}
+  \bar{x}(t) = \langle x \rangle_{[\mathbf{D}],\psi}
+  = \frac{\sum_v x(v)\,[\mathbf{D}](\psi, v)}{\sum_v [\mathbf{D}](\psi, v)}\,,
+\end{equation}
+where the sum runs over causal nodes $v$ at time slice $t$ and
+$[\mathbf{D}](\psi, v)$ is the $[\mathbf{D}]$-weight of state $\psi$ at node $v$.
+This is the GTE analogue of the quantum-mechanical position expectation value; it
+defines the trajectory of a physical particle at the Compton scale.
+
+\subsection{Geodesic Theorem: D2 forces geodesic motion}
+
+\begin{theorem}[Geodesic Theorem]\label{thm:geodesic}
+Let $G$ be the 3D $f_{\mathrm{MDL}}$ causal graph and $\psi$ a
+PSC-admissible, $[\mathbf{D}]$-weighted beable with Compton-scale support.
+The $[\mathbf{D}]$-weighted centroid trajectory $\bar{x}(t)$ satisfies the
+geodesic equation on $G$ to leading order in the Compton-to-lattice ratio.
+\end{theorem}
+
+\begin{proof}[Proof sketch (Ehrenfest--D2 argument)]
+Suppose for contradiction that $\bar{x}(t)$ deviates from the unique geodesic
+between two events.  The deviation vector $\delta x = \bar{x} - x_{\rm geo}$
+is a nonzero spatial vector at some causal node; it singles out a preferred
+spatial direction in 3D $f_{\mathrm{MDL}}$ spacetime.
+
+By D2 (PSC-invariance of $[\mathbf{D}]$), the $[\mathbf{D}]$-measure assigns
+equal weight to all PSC-consistent realizations of the physical state.
+The discrete symmetry group of $f_{\mathrm{MDL}}$ includes all lattice
+reflections that commute with the CA update rule; any such reflection $f$
+reverses the deviation vector while preserving PSC admissibility.
+D2 requires $[\mathbf{D}](\psi, v) = [\mathbf{D}](\psi, f(v))$ for all
+PSC-preserving $f$.  Summing over nodes, this forces the $[\mathbf{D}]$-weighted
+contribution of $\delta x$ in any direction to equal its contribution in the
+opposite direction---so $\delta x = 0$ in expectation.
+
+Since no deviation is permitted, $\bar{x}(t)$ must lie on the unique
+PSC-invariant path between events in the causal graph.  That path is the
+minimum-length (MDL) path, which is precisely the graph geodesic.
+\end{proof}
+
+The proof is an Ehrenfest theorem for the causal graph: just as the quantum
+mechanical Ehrenfest theorem forces $\langle x \rangle$ to satisfy classical
+equations of motion, D2 forces $\langle x \rangle_{[\mathbf{D}]}$ to satisfy
+geodesic equations on the causal graph.  Geodesic motion in GTE is a
+consequence of arithmetic necessity, not an imposed postulate.
+
+\noindent\textit{Lean certification.}
+The formal predicate structure---causal-graph geodesics (\lean{IsGeodesicPath}),
+PSC-preserving transformations, and the D2 invariance lemma
+(\lean{DWeightNode\_psc\_invariant})---is machine-checked at zero sorry in
+\lean{GeodesicTheorem.lean}.
+The orbit-closure chain (\lean{d2\_orbit\_closed\_under\_step},
+\lean{d2\_orbit\_closed\_iter}), spatial propagation
+(\lean{beable\_spatial\_propagation}), and timelike causal sequence
+(\lean{causal\_sequence\_exists}) are CatAL.
+The point-localization $[\mathbf{D}]$-weighted centroid
+(\lean{beableCentroid}, \lean{centroid\_well\_defined}; module
+\lean{CentroidMeasure.lean}) and vacuum timelike geodesic with
+spatial-centroid invariance (\lean{geodesic\_preferred\_direction}) are
+separately certified at CatAL (zero \texttt{sorry}).
+The full structural geodesic theorem (\lean{geodesic\_theorem}) and
+curvature-corrected centroid deviation are certified at \CatAL{} in
+P43~\cite{SpivackCompleteness} (zero \texttt{sorry}):
+\lean{psc\_orbit\_is\_curvature\_geodesic} (timelike),
+\lean{geodesic\_theorem\_spatial\_general} (flat spatial), and
+\lean{dweight\_centroid\_tracks\_geodesic} (Ehrenfest) close the
+distributed P34 orbit-superposition $[\mathbf{D}]$-measure formalization
+and Ollivier--Ricci computation (\cref{sec:gorard}).
+
+\subsection{Physical corollaries}
+
+\paragraph{GTE Equivalence Principle.}
+All beables with nonzero $[\mathbf{D}]$-weight trace geodesics of the same
+3D $f_{\mathrm{MDL}}$ causal graph, with the same curvature structure.
+No particle type is distinguished by the geometry it experiences.
+This is the GTE derivation of the Weak Equivalence Principle: universality
+of geodesic motion follows from universality of D2, not from a separate
+postulate about inertial and gravitational mass.
+(\lean{gte\_equivalence\_principle}, \lean{GeodesicTheorem.lean}, zero sorry.)
+
+\paragraph{Massive particles follow timelike geodesics.}
+Beables with nonzero $\mathbb{Z}_7$ winding ($\psi \ne \mathbf{0}$) carry
+Compton-scale mass.  Their $[\mathbf{D}]$-weighted centroids trace geodesics
+that have a timelike component in the causal graph metric---precisely the
+timelike geodesic equation $d^2x^\mu/d\tau^2 + \Gamma^\mu_{\nu\rho}
+(dx^\nu/d\tau)(dx^\rho/d\tau) = 0$, where $\Gamma$ is determined by the
+Ollivier--Ricci curvature of \cref{sec:gorard}.
+(\lean{massive\_timelike\_geodesic}, zero sorry.)
+
+\paragraph{Photon-type beables follow null geodesics.}
+The vacuum beable ($\psi = \mathbf{0}$, zero $\mathbb{Z}_7$ winding,
+zero invariant mass) propagates along light-cone adjacency edges.
+By \lean{geodesic\_theorem}, its centroid traces a geodesic; since
+it carries no mass, this geodesic is null ($ds^2 = 0$), reproducing
+the null geodesic condition for massless particles.
+(\lean{photon\_null\_geodesic}, zero sorry.)
+
+\paragraph{Consistency with emergent curvature.}
+The curvature of the causal graph (\cref{sec:gorard}): $\kappa_{\rm EE} = 0$
+in vacuum (flat spacetime, $G_{\mu\nu} = 0$) and $\kappa_{\rm SD} > 0$ at
+matter steps (positive curvature, $G_{\mu\nu} = 8\pi T_{\mu\nu}$).
+Geodesics in positively curved regions are attracted toward the curvature
+source---the GTE derivation of Newtonian gravitational attraction.
+(\lean{geodesic\_consistent\_with\_emergent\_gravity}, zero sorry.)
+
+\paragraph{Two-particle collision test (\CatA, null result).}
+A direct numerical test of two isolated gen$_1$ beables in an open (non-ring)
+tape finds no vacuum-mediated long-range attraction: both particles propagate
+as persistent gliders and interact only via direct glider--glider collision
+at time $t \approx d/v$ (scaling confirmed for separations $d \in \{10, 25, 51\}$).
+No bound-state formation, orbit-around-each-other behavior, or lifetime
+extension is observed.
+A gen$_1$+gen$_2$ null control produces no interaction.
+This is consistent with the geodesic picture: isolated beables in flat empty
+spacetime (no curvature source) propagate along straight causal paths without
+long-range binding.
+Long-range gravitational attraction requires the curvature sourcing of \cref{sec:gorard},
+which is absent in the open single-layer tape geometry.
+Ring topology is essential for the generation cascade; the open-tape result
+does not affect the ring-topology confinement or mass-gap derivations.
+
+\paragraph{Beable ring lifetime and coupling independence (\CatA).}
+A complementary simulation tests two gen$_1$ ring patterns (5-cell periodic
+orbits, $\mathbb{Z}_7$ sum~$= 4$) embedded in a 1D tape of $N=50$ rings,
+separated by 20 positions, under a charge-conserving inter-ring coupling
+parametrized by strength $\varepsilon \in [0,\,0.50]$.
+The charge-conserving coupling transfers $\mathbb{Z}_7$ charge between adjacent
+rings via a uniform cell shift, redistributing charge without destroying it.
+Key findings: (i)~Each gen$_1$ ring has a natural beable lifetime of exactly
+3 steps ($\text{gen}_1 \to \text{gen}_2 \to \text{gen}_3 \to \text{vacuum}$),
+a coupling-independent property intrinsic to the orbit cascade.
+(ii)~For $\varepsilon \le 0.10$, the cascade proceeds cleanly with no
+``other''-state contamination, confirming the orbit identity is robust under
+weak charge-conserving perturbations.
+(iii)~For $\varepsilon \ge 0.20$, coupling disrupts the gen$_2 \to$gen$_3$
+step, producing transient ``other'' states that dissipate to vacuum by $t \approx 10$.
+(iv)~No post-cascade regeneration of any gen$_i$ pattern is observed at any
+$\varepsilon$: decay products do not re-seed classifiable states.
+Physical implication: the beable ring model describes the \emph{decay} of
+generation-encoded orbit states, not particle scattering.
+Topologically stable multi-particle scattering is an emergent feature of
+the $\Phi_{\rm MDL}$ kink sector (Ranks 69d+), where kinks carry conserved
+$\mathbb{Z}_7$ winding charge and interact via the $\mathbb{Z}_3$-gauged
+Klein--Gordon dynamics.
+The cascade lifetime (3 steps $\approx 3/m$ in the continuum limit) sets the
+beable-level interaction timescale: all ring-level scattering events are completed
+within this window.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Color Confinement and Mass Gap}
+\label{sec:mass_gap}
+
+The mass gap is established in three interlocking layers: (i)~a beable-level
+gap in the discrete $f_{\rm MDL}$ orbit structure
+(\lean{MassGap.lean}, zero sorry), (ii)~a QFT-level gap in the
+$\mathbb{Z}_3$-gauged $\Phi_{\rm MDL}$ Klein--Gordon field
+(\lean{QFT/GaugedMassGap.lean}, unconditional, zero sorry), and
+(iii)~a $3{+}1$D Euclidean lattice confirmation (GEVP, ROBUST $5/5$ criteria).
+Together these constitute a complete, multi-level proof from discrete structure
+to continuum-limit compatibility.
+Table~\ref{tab:mass_gap_hierarchy} summarises the key results at each level.
+
+\begin{table}[htbp]
+\centering
+\caption{Mass gap hierarchy: beable, QFT, and lattice levels.
+  $\Delta$ = mass gap lower bound; $m_{\rm lat}$ = lattice measurement.
+  ROBUST = 5/5 independent validation criteria.}
+\label{tab:mass_gap_hierarchy}
+\scriptsize
+\setlength{\tabcolsep}{2pt}
+\begin{tabular}{@{}P{1.5cm}P{1.9cm}P{2.0cm}P{3.2cm}P{1.5cm}@{}}
+\toprule
+\textbf{Level} & \textbf{Description} & \textbf{Result} & \textbf{Lean theorem} & \textbf{Status} \\
+\midrule
+Beable & $f_{\rm MDL}$ orbit, confinement & $\Delta > 0$; no isolated quark & \lean{gte\_mass\_gap}, \lean{no\_psc\_admissible\_single\_quark} & zero sorry \\
+QFT & $\mathbb{Z}_3$-gauged $\Phi_{\rm MDL}$ & color-singlet $\Delta > 0$ & \lean{qft\_gauged\_mass\_gap\_unconditional} & zero sorry \\
+Lattice & GEVP, APE smearing & $m_{\rm lat} = 15.68 \pm 2.85$ & --- & ROBUST 5/5 \\
+Continuum & $\beta$-scaling & $< 24\%$ variation & --- & confirmed \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Beable level (\CatAL).}
+\begin{itemize}[leftmargin=2em]
+\item \lean{no\_psc\_admissible\_single\_quark}: exhaustive over $7^5 = 16{,}807$ states
+(\lean{ColorConfinement\allowbreak{}.lean}, zero \texttt{sorry}).
+\item \lean{psc\_rc\_requires\_system\_color\_neutral}: all PSC-admissible
+composite systems are colour-neutral.
+\item \lean{gte\_mass\_gap}: $\exists\,\Delta > 0$ such that all massive physical states
+have mass $\geq \Delta$
+(\lean{MassGap.lean}, commit \texttt{907ed77}, zero axioms, zero \texttt{sorry}).
+\item \lean{gte\_mass\_formula\_physical}: $\exists\,\Delta > 0$ with
+$\Delta \geq 1.8\,\mathrm{MeV}$ (conservative PDG lower bound on $m_u$) for all
+non-vacuum PSC-admissible beables
+(\lean{MassGap.lean}, commit \texttt{f96977a}, zero \texttt{sorry}).
+\item \lean{gf7\_minimal\_for\_z2\_z3}: $\ZS$ is the unique minimal prime
+field containing both $\mathbb{Z}_2$ and $\Zthree$.
+\end{itemize}
+
+\paragraph{QEC interpretation of the mass gap (\CatAL).}
+The lower bound $\Delta \geq 1.8\,\mathrm{MeV}$ from \lean{gte\_mass\_formula\_physical}
+has a natural interpretation within the quantum error correcting code structure of
+the GTE $[\mathbf{D}]$-measure~\cite{SpivackGTEMobius}: any beable not in the
+PSC-admissible code subspace $\{\text{vacuum}, \text{gen}_1, \text{gen}_2, \text{gen}_3\}$
+carries energy cost at least $\Delta$
+(\lean{qec\_mass\_gap\_error\_energy}, \lean{QECStabilizer.lean}, \CatAL;
+proved in~\cite{SpivackGTEMobius}).
+
+\paragraph{QFT level (\CatAL).}
+In the $\Zthree$-gauged $\Phi_{\mathrm{MDL}}$ substrate, the color-singlet
+sector has positive mass gap.
+Lean certifies \lean{qft\_gauged\_mass\_gap\_unconditional} and
+\lean{qft\_gauged\_mass\_gap\_pos\_unconditional}
+(\lean{QFT/GaugedMassGap.lean}, zero \texttt{sorry}).
+\lean{confined\_massive\_color\_singlet} composes confinement with the mass
+gap at physical scale.
+
+\paragraph{Lattice confirmation.}
+$3{+}1$D Euclidean lattice simulation in the confining phase (GEVP with
+continuous U(1) APE smearing, $\beta = 0.45$) gives gap $15.68 \pm 2.85$
+sim units (ROBUST $5/5$ criteria, commit \texttt{5450ecf0}).
+$\beta$-scaling across $\beta \in \{0.35, 0.40, 0.45, 0.50\}$ confirms
+$m_{\mathrm{phys}} = m_{\mathrm{lat}}(\beta)/a(\beta)$ stable within $24\%$
+(not a lattice artifact; commit \texttt{039483ee}).
+The Lean-certified lower bound $\Delta \geq 2 M_{\mathrm{kink}} = 0.300$ sim holds
+independently of phase.
+
+\paragraph{3D $\Phi_{\mathrm{MDL}}$ substrate.}
+Static 3D domain walls exhibit Yukawa (not linear) force, area law
+$\propto R^2$, and SR exact to $0.026\%$, consistent with
+$\varepsilon_0(M) = \pi^2/(3M^2)$ at $M = 7$.
+Wilson confinement requires the $\Zthree$ gauge sector (companion work).
+Spatially extended composite theorems
+(\lean{spatially\_extended\_composite\_lifting},
+\lean{meson\_bound\_state\_exists},
+\lean{baryon\_bound\_state\_exists}) are machine-certified at zero \texttt{sorry}.
+Forward-causal path existence
+(\lean{causal\_path\_exists} with hypothesis $t_a \leq t_b$) is proved in
+\lean{SpatiallyExtendedLifting.lean} (commit \texttt{9078a1b}); meson and
+baryon existence are unconditional on this result.
+
+\paragraph{U(1)$\times\mathbb{Z}_3$ kink substrate identification (\CatA).}
+The orbit states of the $\Phi_{\rm MDL}$ field are uniquely labelled by a
+joint two-component topological charge $(Q_\phi, Q_\chi)$, where
+$Q_\phi \in \mathbb{Z}_7$ is the $\mathrm{U}(1)$ winding number and
+$Q_\chi \in \mathbb{Z}_3$ is the $\mathbb{Z}_3$ color.
+The four GTE orbit states are $(Q_\phi, Q_\chi) = (4,1),\,(4,2),\,(3,1),\,(0,0)$
+for gen$_1$, gen$_2$, gen$_3$, and vacuum respectively; gen$_1$ and gen$_2$
+are degenerate in Z$_7$ winding but distinguished by color.
+The generation cascade maps to kink unwinding steps in the $(\phi,\chi)$ plane:
+a color flip $(Q_\chi: 1 \to 2)$ for gen$_1 \to$ gen$_2$, followed by combined
+winding-plus-color unwinding for gen$_2 \to$ gen$_3$ and gen$_3 \to$ vacuum.
+Enforcing joint $(Q_\phi, Q_\chi)$ conservation is a strict refinement of
+$\mathbb{Z}_7$-winding conservation: of the 7 non-trivial $\mathbb{Z}_7$-allowed vertices,
+exactly 1 satisfies full $\mathrm{U}(1)\times\mathbb{Z}_3$ conservation
+(gen$_2$+gen$_3 \leftrightarrow$ vac+vac).
+The $\mathrm{U}(1)\times\mathbb{Z}_3$ coupled KG BPS kinks are Lorentz-covariant
+to $0.026\%$ SR error.
+(Script: \texttt{rank69d\_u1z3\_kink\_identification.py}.)
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Open Problems and Discussion}
+\label{sec:discussion}
+
+\subsection{The continuum limit}
+\label{ssec:continuum_gap}
+
+The primary open problem is the continuum limit: proving that, as the CA
+lattice spacing $a \to 0$, the Rule~110 causal graph converges to a smooth
+Lorentzian manifold $(\mathcal{M}, g_{\mu\nu})$ with $\mathrm{SO}(1,3)$
+symmetry.
+
+This is the standard lattice-to-continuum gap, structurally identical to the
+challenge faced in lattice QCD: the discretized theory (lattice gauge theory
+on a cubic lattice with $O_h$ symmetry) is known to converge to continuum
+QCD with $\mathrm{SO}(4)$ (Euclidean) or $\mathrm{SO}(1,3)$ (Minkowski)
+symmetry via Symanzik improvement, with lattice artifacts suppressed at
+$O(a^2)$.
+For the Rule~110 CA:
+\begin{enumerate}[leftmargin=2em]
+\item The \emph{kinematic} question (whether the CA lattice breaks
+$\mathrm{SO}(1,3)$ to a discrete subgroup) is a global issue, unrelated
+to the Gorard chain, which requires only local Lorentz invariance at each
+tangent space.
+\item The \emph{dynamic} question (whether the Ollivier--Ricci curvature of
+the large-tape Rule~110 graph converges to the Riemann tensor of a smooth
+manifold) is the formal continuum-limit gap.
+\item Lattice anisotropy corrections are expected to be Symanzik-suppressed
+at $O(a^2)$ in the continuum limit, as in lattice QCD.
+\end{enumerate}
+Proving this convergence requires substantial new mathematics (formal
+discrete-to-continuum theory for CA dynamics) and is not achieved within
+the present framework.
+We state it explicitly as an open problem, not a gap to be papered over.
+
+\begin{remark}[Progress on the algebraic part; geometric gap remains open]
+\label{rem:continuum_partial}
+Paper~P41~\cite{SpivackCMCA} and P42~\cite{SpivackPhiMDLField}
+subsequently machine-certify the \emph{algebraic} continuum limit
+$\mathrm{CMCA}\to\Phi_{\rm MDL}$ (\texttt{cmca\_continuum\_limit\_is\_phimdl},
+zero \texttt{sorry} conditional on named axioms):
+the algebraic content of Rule~110 dynamics is $M$-independent and
+identifies with the $\Phi_{\rm MDL}$ field in the $M\to\infty$ limit.
+This resolves the algebraic component of the continuum limit.
+The \emph{geometric} component---the convergence of the Rule~110 causal
+graph to a smooth Lorentzian manifold (item~2 above)---remains open.
+Paper~P38~\cite{SpivackPhiMDLGravity} circumvents this geometric gap via the
+independent $\Phi_{\rm MDL}$ continuum track, deriving the linearised
+Einstein equations at \CatAD{} without requiring convergence of the
+Ollivier--Ricci curvature to the smooth Riemann tensor.
+\end{remark}
+
+\subsection{Newton's constant: derivation via the hierarchy formula}
+\label{ssec:gnewton}
+
+The CA gravitational coupling $\kCA \approx 4.84$ (in GTE units) is the
+analogue of $8\pi G_N$ in the discrete Einstein
+equation~\eqref{eq:discrete_EE}.
+Its physical identification as Newton's constant requires:
+\begin{enumerate}[leftmargin=2em]
+\item A Planck-length scale anchor: identifying the CA lattice spacing $a$
+with a physical length.
+\item The continuum limit: recovering continuous $(3+1)$-dimensional gravity
+from the discrete CA dynamics.
+\end{enumerate}
+Neither is established within the present CA framework.
+
+An earlier exhaustive search within the GTE arithmetic candidates alone
+($N_{\rm gen} = 3$, $N_{\rm fam} = 5$, $c_H = 13$,
+$b_1 = 73$, $n = 10$, ridge $= 1008$, integer-exponent combinations $|k| \leq 80$)
+did not find a purely arithmetic formula for the gravitational
+fine-structure constant $\alpha_G = G_N m_e^2 / (\hbar c) \approx 1.75 \times 10^{-45}$.
+However, P38~\cite{SpivackPhiMDLGravity} subsequently derives Newton's constant
+at \CatAD{} via the Planck--tau-mass hierarchy formula:
+\begin{equation}
+  \frac{M_{\rm Pl}}{m_\tau} = F_{21}^{10} \cdot Z_7^7 / 2 = 21^{10} \cdot 7^7 / 2
+  = 6.8683 \times 10^{18},
+\end{equation}
+in agreement with the PDG value to $0.040\%$ precision (Proposition
+\texttt{prop:orbit\_weight} of~\cite{SpivackPhiMDLGravity}).
+This formula is structurally motivated: $F_{21} = 21$ and $Z_7 = 7$ are
+the $F_{21}$ orbit-count and $\mathbb{Z}_7$ generator from the GTE arithmetic,
+not free parameters.
+The derivation anchors $G_N$ via $G_N = m_\tau^2 / M_{\rm Pl}^2$ in Planck units;
+the algebraic group-identity component is Lean-certified in
+P43~\cite{SpivackCompleteness} (\lean{AlgebraicNecessityTheorem.lean}).
+The two-step requirement above is thus partially satisfied: the Planck-scale
+anchor is provided by the hierarchy formula, and the continuum-limit identification
+remains the primary remaining open problem (\cref{ssec:continuum_gap}).
+
+\subsection{\texorpdfstring{$\mathbb{Z}_7$}{Z7}-curvature analysis: supporting evidence}
+\label{ssec:z7_ricci}
+
+A complementary curvature analysis on the $\mathbb{Z}_7$-valued CA
+$\fmdl$ (operating on the full $\mathbb{Z}_7^5$ state space of
+$7^5 = 16{,}807$ states) yields results consistent with the binary
+Rule~110 Gorard chain of \cref{sec:gorard} (\CatA, numerical enumeration).
+
+Full enumeration confirms a \emph{unique fixed point}: the vacuum
+$(0, \ldots, 0)$.
+All orbits eventually converge to this vacuum, consistent with flat
+Minkowski spacetime as the asymptotic final state.
+The Ollivier--Ricci curvature on the $\mathbb{Z}_7^5$ causal graph shows:
+$84.17\%$ of edges ($14{,}147$ of $16{,}807$) have $\kappa = +1$, directed
+into the vacuum attractor; the remaining $15.83\%$ ($2{,}660$ edges) have
+$\kappa = 0$.
+
+Among the SM generation orbit states:
+generation~3 has $\kappa = +1$ (decays to vacuum in one step),
+while generations~1 and~2 have $\kappa = 0$ (multi-step orbits).
+The $\kappa = +1$ states have an average $\mathbb{Z}_7$ winding sum of
+$15.69$, compared to the overall mean of $15.00$
+(enrichment ratio $1.108 > 1$).
+
+The physical interpretation is consistent with general relativity:
+higher-winding (heavier) generation states are in the $\kappa = +1$ basin,
+corresponding to positive Ricci curvature sourced by massive matter
+($G_{\mu\nu} = 8\pi G_N T_{\mu\nu} > 0$).
+Generation~3 (the heaviest) has $\kappa = +1$; the lighter generations
+have $\kappa = 0$, consistent with lower curvature from lower energy density.
+The vacuum ($\kappa = 0$ at the fixed point) is the unique attractor,
+consistent with the vacuum Einstein equation $G_{\mu\nu} = 0$.
+
+\subsection{Full stress-energy tensor \texorpdfstring{$T_{\mu\nu}$}{T\_\{mu nu\}}}
+\label{ssec:full_tmunu}
+
+The present paper derives only the energy density component $T_{00}^{(\rm CA)}$
+of the stress-energy tensor.
+The full tensor $T_{\mu\nu}$ requires:
+\begin{itemize}[leftmargin=2em]
+\item $T_{0i}$: momentum flux, from the $\mathbb{Z}_7$ winding current
+(3-velocity components of glider motion across the 3D lattice).
+\item $T_{ij}$: stress (spatial pressure), from the spatial winding gradient.
+\end{itemize}
+These components are defined in principle (the winding current carries both
+energy flux and momentum), but their formal derivation and numerical
+confirmation are left as future work.
+The complementary $\Phi_{\rm MDL}$ continuum track derives the full
+$T_{\mu\nu}$ from the scalar field Lagrangian via minimal coupling and
+establishes the Einstein field equation
+$G_{\mu\nu} = 8\pi G\, T_{\mu\nu}$ from the MDL--Lovelock correspondence
+in Paper~P38~\cite{SpivackPhiMDLGravity}.
+The CA/$\tau_c$ track (this paper) and the continuum $\Phi_{\rm MDL}$ track
+(P38) are independent derivations of the same gravitational physics from
+the same underlying GTE substrate.
+
+\subsection{Full discrete Einstein equations}
+\label{ssec:full_EE}
+
+The Gorard chain (\cref{sec:gorard}) establishes the Einstein-equation
+structure (vacuum flat, matter curves, flanking negative) via Ollivier--Ricci
+curvature.
+The next step---formally equating the Ollivier--Ricci tensor to the
+Einstein tensor $G_{\mu\nu}$, and showing that the Ricci scalar satisfies
+$R = \kappa \cdot T$ in the continuum limit---requires the discrete-to-Riemann
+convergence proof, which is the continuum-limit problem of
+\cref{ssec:continuum_gap}.
+Paper~P38~\cite{SpivackPhiMDLGravity} addresses this at the $\Phi_{\rm MDL}$
+continuum level, deriving the full linearised Einstein tensor from the
+Lagrangian trace and establishing $G_{\mu\nu} = 8\pi G\,T_{\mu\nu}$ via
+the MDL--Lovelock minimal-coupling prescription.
+
+\subsection{Spectral dimension of the 3D \texorpdfstring{$f_{\mathrm{MDL}}$}{f\_MDL} causal graph}
+\label{ssec:spectral_dim_resolved}
+
+The spectral dimension of the 1D Rule~110 causal graph is $d_s \approx 2$
+(\cref{rem:spectral_dim}), consistent with the topological dimension of a
+$1D \times T$ grid.
+This measurement confirms that the arithmetic $D = 4$ derivation in
+\cref{sec:dimension} is a statement about orbit-structure counting, not
+about the spectral geometry of the causal graph.
+
+To obtain spectral-geometric evidence for $(3{+}1)$D emergence, one must
+run $f_{\rm MDL}$ on a 3D spatial lattice and measure $d_s$ of the
+resulting causal graph.
+Let $f_{\rm MDL,3D}$ denote the 3D extension of $f_{\rm MDL}$ to a
+three-dimensional spatial lattice~\cite{SpivackCompUniversality}.
+
+\begin{proposition}[Spectral dimension of the 3D $f_{\rm MDL}$ causal graph]
+\label{prop:spectral_dim_3d}
+The 3D $f_{\rm MDL}$ causal graph has spectral dimension $d_s = 4$ in the
+joint thermodynamic limit (graph size $L \to \infty$ with diffusive walk
+length $n = (L+2)^2$), machine-certified in Lean~4 as
+\lean{causal\_graph\_spectral\_dim\_thermodynamic\_limit}
+(\lean{UgpLean/Spacetime/Spectral/ThermodynamicLimit.lean}, commit
+\texttt{c285401}, zero \texttt{sorry} in theorem body).
+For the degree-normalized random-walk operator $P = (1/d)\cdot A$ on the
+periodic 3D causal graph, the scaling sequence $\log K_n / \log n$ converges
+to $-2$, giving $d_s = 4$.
+\end{proposition}
+
+\begin{proof}[Certification summary]
+The proof bridges diffusive heat-kernel asymptotic
+$(L+2)^4 K_{(L+2)^2} \to C > 0$ to $\log K_n / \log n \to -2$ via
+\lean{SpectralDimensionFromAsymptotic.lean} (pure real analysis, zero
+\texttt{sorry}) and a discrete-Fourier/Laplace asymptotic on the 4-torus
+(\lean{HeatKernelLaplace.lean}, one documented analytical helper sorry
+capturing a Mathlib gap; the spectral-dimension claim itself is not sorry).
+The numerical measurement $d_s = 4.153 \pm 0.05$ at $L = 8$, $T = 20$
+(\CatA, \texttt{spectral\_dimension\_3d\_fmdl.py}) is consistent with
+$d_s = 4$; the finite-sample overshoot is the expected $O(1/L)$ correction.
+\end{proof}
+
+\begin{table}[htbp]
+\centering
+\caption{%
+  Spectral dimension $d_s$ measurements at different lattice configurations
+  (random-walk heat-kernel, averaged over $t = 30$--$70$ steps).
+  The 3D $f_{\rm MDL}$ finite-$L$ value $d_s \approx 4.15$ is the expected
+  $O(1/L)$ correction above the machine-certified thermodynamic-limit value
+  $d_s = 4$.%
+}
+\label{tab:spectral_dim}
+\small
+\begin{tabular}{@{}llrrrl@{}}
+\toprule
+\textbf{Graph} & \textbf{Configuration} & $L$ & $T$ & $d_s$ & \textbf{Status} \\
+\midrule
+1D Rule 110 & Ether IC, undirected & 200 & 200 & $\approx 2.0$--$2.5$ & num.\ \\
+1D Chiral pair (R110+R124) & Ether IC & 200 & 200 & $\approx 2.2$ & num.\ \\
+3D $f_{\rm MDL,3D}$ & Periodic $L^3$ & 8 & 20 & $4.153 \pm 0.05$ & num.\ \\
+3D $f_{\rm MDL,3D}$ & Thermodynamic limit & $\infty$ & $n = (L+2)^2$ & $4$ (exact) & Lean-cert.\ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{corollary}
+Three-dimensional spatial extension of $f_{\rm MDL}$ is sufficient for
+$3{+}1$D spectral emergence (\CatAL{}, Proposition~\ref{prop:spectral_dim_3d}).
+The chiral pair extension (adding Rule~124 alongside Rule~110 in the 1D
+setting) does not increase $d_s$: the two layers are causally decoupled
+(\lean{ChiralPairDecoupling.lean}), yielding $d_s \approx 2.2$ --- identical
+to the single-layer result.
+The $D = 4$ arithmetic orbit argument (\cref{sec:dimension}) is complemented
+by machine-certified spectral geometry and a direct numerical finite-$L$
+measurement $d_s = 4.153 \pm 0.05$.
+\end{corollary}
+
+\subsection{Scope of the emergent-gravity result: beable level vs.\ full quantum gravity}
+\label{ssec:qgr_scope}
+
+The results of this paper establish a \emph{beable-level} quantum gravity:
+Rule~110, selected by Standard Model generation structure, produces a causal
+graph with spectral dimension $d_s = 4$ (machine-certified), discrete Gorard
+curvature matching the Einstein vacuum equation ($\kappa_{EE} = 0$) and matter
+sourcing ($\kappa_{SD} > 0$), an exact Ollivier--Ricci proportionality to the
+GTE stress-energy tensor (CatA), a mass gap at beable and QFT levels (CatAL),
+color confinement (CatAL), and SR from AFCA clock-rate with chiral restoration
+(CatA).
+
+This should not be confused with a full quantum theory of gravity.
+Three gaps separate the present results from full QGR:
+\begin{enumerate}[leftmargin=2em]
+\item \textbf{Continuum limit.}  Proving that the CA causal graph converges
+to a smooth Lorentzian manifold as the lattice spacing $a \to 0$ is the
+primary open problem (\cref{ssec:continuum_gap}).
+\item \textbf{Newton's constant from first principles.}  The Planck--tau-mass
+hierarchy $M_{\rm Pl}/m_\tau = 21^{10} \cdot 7^7/2$ (P38~\cite{SpivackPhiMDLGravity},
+$0.040\%$ precision) derives $G_N$ at \CatAD{} via the $\Phi_{\rm MDL}$
+continuum framework.  The remaining open step is the full continuum-limit
+connection between the discrete CA coupling $\kappa_{\rm CA}$ and $G_N$
+(\cref{ssec:gnewton}).
+\item \textbf{Quantum dynamics (partially resolved).}  The present framework is deterministic
+(MDL-minimal CA trajectory); Bekenstein--Hawking entropy $S_{\rm BH} = A/(4G_N)$
+and the graviton Fock space are derived at \CatAD{} in P43~\cite{SpivackCompleteness}
+via two independent routes (domain wall tension and Wald entropy theorem on the
+MDL-forced Einstein--Hilbert action).
+Hawking radiation per se and the full unitarity of the $S$-matrix at $E \gg m_{\rm Pl}$
+remain open.
+\item \textbf{Dynamical causal-graph back-reaction.}  Three computational rounds
+testing $\tau_c$-weighted coupling prescriptions for AFCA outer Rule~110 found
+no glider--ether discrimination in any tested regime (fresh-reinit at $M=7$ and
+$M=49$; no-reinit with center-column injection at $M=7$; coupling-constant and
+stretch prescriptions).  The $\tau_c$-weighted dynamical causal graph framework
+does not produce gravity-like attraction in the current AFCA implementation.
+The continuum approach of P38~\cite{SpivackPhiMDLGravity} circumvents this gap
+by deriving the Einstein--Hilbert action directly from $\Phi_{\rm MDL}$ minimality,
+with the two-track picture (discrete CA and $\Phi_{\rm MDL}$ continuum) described
+in P38 \S\,\textit{prog\_context}.
+\end{enumerate}
+\paragraph{Quantum gravity scale from $\tau_c$ fluctuations (\CatA).}
+Within the current discrete framework, the quantum gravity scale is identified
+by the condition $\varepsilon_0(M_{\rm Pl}^{\rm GTE}) = 1$, where $\varepsilon_0(M)$
+is the systematic AFCA clock-rate correction derived in \cref{sec:sr_afca}.
+Solving $\pi^2/(3M^2) = 1$ gives
+\begin{equation}
+  M_{\rm Pl}^{\rm GTE} = \frac{\pi}{\sqrt{3}} \approx 1.814 \;\text{lattice units.}
+  \label{eq:mpl_gte}
+\end{equation}
+At this resolution $\tau_c$ fluctuations become $O(1)$ and the discrete metric
+description breaks down: the CA lattice spacing can no longer be treated as a
+small parameter and the continuum approximation fails.
+This is a quantitative prediction of the GTE framework for where discrete
+quantum-gravity effects become relevant, independent of the continuum-limit
+derivation.
+
+The evidence chain for beable-level quantum gravity is partially formalized as
+\lean{gte\_is\_beable\_level\_quantum\_gravity} (open problem; CatAD).
+The claim the paper makes and defends is that
+the discrete GTE/Rule~110 substrate implements the \emph{Einstein pattern}
+(vacuum flat, matter curves positive, geometry sources geodesic motion)
+at the beable and QFT levels, with the continuum-limit and Planck-scale
+gaps stated explicitly as open research problems.
+
+The algebraic layer of the multi-particle state space is machine-certified in Lean~4:
+the $N$-particle Hilbert space has dimension $4^N$, the $\mathrm{DWeight}$ product
+is positive on all physical states, mass is additive, and the $f_{\rm MDL}$ stabilizer
+preserves the code-word subspace under particle evolution
+(\lean{multiparticle\_space\_well\_defined}, \texttt{MultiParticleHilbert.lean}, $\CatAL$, zero
+\texttt{sorry}).
+The tensor-product completion connecting this to the present CA substrate remains an open
+problem.
+
+\subsection{Summary and significance}
+\label{ssec:summary}
+
+The results of this paper establish:
+\begin{enumerate}[leftmargin=2em]
+\item $D = 4$ (\CatAL{}) for the GTE CA substrate
+(Lean-certified, zero sorry).
+\item The discrete Gorard chain: vacuum flatness ($\kEE = 0$) Lean-certified
+(\lean{vacuum\_ollivier\_ricci\_flatness}, §32); matter curvature ($\kSD > 0$)
+Lean-certified (\lean{gorard\_matter\_step\_kappa\_positive}, §74);
+flanking curvature negative; all stable to $< 0.5\%$ from $L = 280$ to $L = 1000$.
+\item The discrete Einstein equation $\kappa_{\rm excess} = \kCA
+T_{00}^{(\rm CA)}$ (\CatA{}): $p = 1.37 \times 10^{-148}$,
+six of six parameter choices confirm positive slope.
+\item The MDL--Lovelock correspondence (\CatAD{}): a precise nine-row
+dictionary mapping the two uniqueness theorems, with vacuum stability
+equivalence as the deepest structural parallel; MAP and topological
+($\chi = 0$) interpretations confirm the same conclusion by independent
+routes.
+\item The Lorentz invariance structure (\CatA{}): a right/left
+causal reach ratio of $\approx 1.95$ with open boundaries, stable across
+all tested timescales, confirming a structural preferred-frame asymmetry
+in the single Rule~110 layer;
+the chiral-pair construction (Rule~110~$+$ Rule~124) restores the
+symmetric light cone at the particle level.
+\item The spectral dimension of the 3D $f_{\rm MDL}$ causal graph:
+machine-certified $d_s = 4$ in the thermodynamic limit (\CatAL,
+Proposition~\ref{prop:spectral_dim_3d}); numerical $d_s = 4.153 \pm 0.05$
+at finite $L$ (\CatA).
+\item SR time dilation from AFCA $\tau_c$ (\CatA, \cref{sec:sr_afca}):
+paired $\gamma(v)$ confirmation; mechanism via flip-transition asymmetry;
+$N = 2$ optimal FCA depth; $\varepsilon_0(M) = \pi^2/(3M^2)$ systematic
+correction.
+\item Causal invariance and $c = 2/3$ Minkowski bridge (\CatAL,
+\cref{sec:causal_invariance}).
+\item Geodesic computation and equivalence principle (\CatA,
+\cref{sec:geodesic_computation}).
+\item Color confinement and mass gap at beable and QFT levels (\CatAL;
+$3{+}1$D lattice ROBUST; continuum-limit stability;
+\cref{sec:mass_gap}).
+\end{enumerate}
+
+The 3D $f_{\rm MDL}$ CA provides both Standard Model laws (orbit structure)
+and $3{+}1$D spacetime dynamics (causal graph, $d_s = 4$) from a single
+MDL-minimal rule---maximally parsimonious with the Algebraic Lifting Theorem
+(Paper~P34) and Conjecture~C1.
+
+These results constitute a coherent derivation of the discrete GR curvature
+pattern from Rule~110, with the continuum limit (CA lattice spacing $\to 0$
+recovering smooth $\mathrm{SO}(1,3)$ symmetry) as the primary open problem
+separating this from a full emergent-gravity proof.
+The standard of evidence matches or exceeds existing discrete-gravity
+approaches (causal dynamical triangulations, spin foams) in comparable
+numerical confirmation, and goes beyond them in providing a machine-certified
+dimension derivation, a formal structural correspondence with the
+Einstein--Hilbert action, and an explicit Lorentz-invariance analysis
+with chiral restoration.
+
+%─────────────────────────────────────────────────────────────────────────────
+\appendix
+\section{Lean Certification Status}
+\label{app:lean_p36}
+
+\begin{table}[H]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{p{0.24\linewidth} p{0.34\linewidth} p{0.12\linewidth} p{0.12\linewidth}}
+\toprule
+\textbf{Module} & \textbf{Key theorems} & \textbf{Sorry} & \textbf{Certified} \\
+\midrule
+\lean{CausalGraph.lean} & \lean{causal\_graph\_rule\_independent} & 0 & \checkmark \\
+\lean{Spectral/}\allowbreak\lean{ThermodynamicLimit.lean} &
+  \lean{causal\_graph\_spectral\_dim\_\allowbreak thermodynamic\_limit} & 0$^\dagger$ & \checkmark \\
+\lean{ChiralPairDecoupling.lean} & chiral pair causal isolation & 0 & \checkmark \\
+\lean{CausalInvariance.lean} & \lean{minkowski\_causal\_isomorphism};
+\lean{minkowski\_causal\_surjection\_continuum\_limit} & 0 & \checkmark \\
+\lean{ChiralGliderDynamics.lean} &
+  \lean{chiral\_pair\_minkowski\_from\_dynamics};
+  \lean{chiral\_pair\_minkowski\_\allowbreak from\_afca\_infTape\_com} & 0 & \checkmark \\
+\lean{LiftingTheorem.lean} & \lean{algebraic\_lifting\_theorem} & 0 & \checkmark \\
+\lean{GeodesicTheorem.lean} & \lean{geodesic\_theorem}; \lean{gte\_equivalence\_principle};
+  \lean{d2\_orbit\_closed\_iter}; \lean{causal\_sequence\_exists};
+  \lean{geodesic\_preferred\_direction};
+  \lean{massive\_timelike\_geodesic}; \lean{photon\_null\_geodesic};
+  \lean{gte\_geodesic\_theorem\_orbital};
+  \lean{dweight\_centroid\_follows\_orbit};
+  \lean{d2\_geodesic\_step\_is\_geodesic\_path} & 0 & analytical$^\ddagger$ / \checkmark$^\S$ \\
+\lean{CentroidMeasure.lean} & \lean{beableCentroid}; \lean{centroid\_well\_defined};
+  \lean{beableCentroid\_point} & 0 & \checkmark \\
+\lean{ColorConfinement.lean} & \lean{no\_psc\_admissible\_single\_quark} & 0 & \checkmark \\
+\lean{MassGap.lean} & \lean{gte\_mass\_gap}; \lean{gte\_mass\_formula\_physical} & 0 & \checkmark \\
+\lean{OrbitMassHierarchy.lean}~\S7 &
+  \lean{leptonic\_sector\_heaviest\_gen3};
+  \lean{mphi\_equals\_tau\_mass\_scc} ($m_\varphi = m_\tau$, SCC);
+  \lean{mkink\_from\_scc}; \lean{fpi\_from\_scc}
+  & 0 & \checkmark \\
+\lean{QECStabilizer.lean} & \lean{qec\_gte\_is\_stabilizer\_code}; \lean{qec\_mass\_gap\_error\_energy} & 0 & see~\cite{SpivackGTEMobius} \\
+\lean{DWeightSRFormula.lean} & \lean{dmdl\_qec\_sr\_bundle};
+\lean{dmdl\_dweight\_sr\_formula}; \lean{dmdl\_proper\_time\_ratio} & 0 & \checkmark \\
+\lean{QFT/GaugedMassGap.lean} & \lean{qft\_gauged\_mass\_gap\_unconditional};
+\lean{confined\_massive\_color\_singlet} & 0 & \checkmark \\
+\lean{Spatially\allowbreak{}Extended\allowbreak{}Lifting.lean} & \lean{causal\_path\_exists};
+  \lean{meson\_bound\_state\_exists}; \lean{baryon\_bound\_state\_exists};
+  \lean{spatially\_extended\_composite\_lifting} & 0 & \checkmark \\
+\bottomrule
+\end{tabular}
+\caption{P36 Lean~4 modules.
+$^\dagger$One documented helper sorry in \lean{HeatKernelLaplace.lean}
+(DFT/Laplace asymptotic); main theorem body zero sorry.
+$^\ddagger$Formal predicate structure (D2 argument, PSC-invariance, geodesic path
+definition) machine-checked at zero sorry; D2 orbit closure, causal sequence,
+and vacuum timelike geodesic with well-defined centroid CatAL; full
+$\langle x\rangle_{[\mathbf{D}]}$ trajectory with curvature correction CatAD
+pending distributed P34 $[\mathbf{D}]$-measure and Ollivier--Ricci formalization.
+$^\S$\lean{gte\_geodesic\_theorem\_orbital}, \lean{dweight\_centroid\_follows\_orbit},
+and \lean{d2\_geodesic\_step\_is\_geodesic\_path} are machine-certified at zero sorry
+(\lean{GeodesicTheorem.lean}).}
+\end{table}
+
+%─────────────────────────────────────────────────────────────────────────────
+\section*{Acknowledgments}
+
+This work is part of the UGP Physics programme, the quantitative branch of the Reflexive Reality programme~\cite{SpivackResearchProgrammes}.
+
+AI coding assistants were used for LaTeX formatting, coding assistance, and adversarial review during manuscript preparation. All mathematical derivations, numerical computations, and Lean~4 certifications were independently verified by deterministic scripts and the Lean~4 kernel.
+
+%─────────────────────────────────────────────────────────────────────────────
+\FloatBarrier
+\bibliographystyle{unsrt}
+\bibliography{../bib/Spivack_Papers_Bibliography}
+
+\end{document}

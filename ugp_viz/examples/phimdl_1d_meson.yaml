@@ -1,0 +1,50 @@
+# Phi_MDL 1D meson breather experiment.
+# Injects a kink-antikink pair at d=10 and lets it evolve for T=200.
+
+model: phimdl_1d
+params:
+  N: 512
+  dx: 1.0
+  dt: 0.01
+  c: 1.0
+  m: 0.5
+  g: 0.5
+  N_phi: 7
+  N_chi: 3
+
+steps: 20000           # T_total = 200 (n_steps * dt)
+sample_every: 100
+
+initial_condition:
+  kind: vacuum
+
+injections:
+  - kind: meson
+    position: 256
+    params:
+      separation: 10
+
+measurements:
+  - tau_c_mean
+  - binding_energy
+  - kink_centers
+
+output:
+  data: phimdl_1d_meson.json
+  figures:
+    - type: field_1d
+      file: phimdl_1d_meson_field.png
+      params:
+        title: "phi(x) — meson breather (kink+antikink, d=10, T=200)"
+    - type: energy
+      file: phimdl_1d_meson_energy.png
+      params:
+        title: "Total energy E(t) — meson breather"
+    - type: tau_c_heatmap
+      file: phimdl_1d_meson_tau.png
+      params:
+        title: "tau_c proxy heatmap — meson breather"
+    - type: spacetime
+      file: phimdl_1d_meson_spacetime.png
+      params:
+        title: "phi spacetime (sign) — meson breather"

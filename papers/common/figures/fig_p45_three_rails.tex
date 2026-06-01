@@ -1,0 +1,64 @@
+% P45 Figure: three parallel rails and shared outer clock
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=0.92, every node/.style={font=\small}]
+  % Shared clock bus
+  \draw[very thick] (-4.5,3.5) -- (4.8,3.5);
+  \node[font=\scriptsize,anchor=west] at (-4.5,3.78) {shared outer clock $\tau_c^{\rm out}$};
+  \foreach \x in {-3.6,-1.2,1.2,3.6} {
+    \fill[black] (\x,3.5) circle (2.5pt);
+    \draw[ugparr,dashed] (\x,3.35) -- (\x,2.95);
+  }
+  \draw[ugparr] (4.8,3.5) -- (5.5,3.5) node[right,font=\scriptsize] {time};
+  % Three rails
+  \def\raily{2.45}
+  \def\railm{1.55}
+  \def\railx{0.65}
+  \foreach \tape/\y/\col in {z/\raily/blue!60, y/\railm/green!50!black, x/\railx/orange!70!black} {
+    \node[anchor=east,font=\scriptsize] at (-4.7,\y) {tape~\tape};
+    \draw[thick,\col] (-4.3,\y) -- (4.8,\y);
+    \foreach \x in {-3.6,-1.2,1.2,3.6} {
+      \fill[\col] (\x,\y) circle (3pt);
+    }
+    \draw[ugparr,\col] (4.8,\y) -- (5.5,\y);
+  }
+  % Sync column at index p
+  \def\syncX{1.2}
+  \draw[dashed,thick,gray] (\syncX,0.25) -- (\syncX,3.25);
+  \node[font=\scriptsize] at (\syncX,0.05) {index $p$};
+  \draw[decorate,decoration={brace,mirror,amplitude=5pt}]
+    (1.35,0.65) -- (1.35,2.45);
+  \node[font=\scriptsize,align=left,anchor=west,yshift=-2pt] at (1.55,1.62)
+    {same $p$ on all tapes at\\one $\tau_c^{\rm out}$ tick};
+  % Emergent spatial point at sync column p (windings label field content, not yet a particle)
+  \node[draw,rounded corners,fill=yellow!8,font=\scriptsize,align=center,inner sep=4pt]
+    (epoint) at (-0.85,1.55) {emergent point\\[-2pt]$(p;\,w_x,w_y,w_z)$};
+  \foreach \y/\col in {\railx/orange!70!black,\railm/green!50!black,\raily/blue!60} {
+    \draw[->,thick,\col] (epoint.east) -- ({\syncX-0.12},\y);
+    \fill[\col] (\syncX,\y) circle (3.5pt);
+  }
+  % NOT a 3D grid (crossed out)
+  \begin{scope}[shift={(6.6,1.6)}]
+    \foreach \i in {0,1,2} {
+      \foreach \j in {0,1,2} {
+        \draw[gray!40,thin] (\i*0.35,\j*0.35) rectangle ++(0.35,0.35);
+      }
+    }
+    \draw[red!70!black,very thick] (0,0) -- (1.05,1.05);
+    \draw[red!70!black,very thick] (1.05,0) -- (0,1.05);
+    \node[font=\scriptsize,align=center,red!70!black] at (0.52,-0.38)
+      {not an\\$L^3$ voxel grid};
+  \end{scope}
+  % Each tape = CMCA — below rails, no overlap
+  \node[cmcaCert,font=\scriptsize,align=center,minimum width=4.2cm] at (0,-0.55)
+    {each tape $=$ full single-tape CMCA (3 internal layers)};
+\end{tikzpicture}
+\caption{Three independent one-dimensional CMCA instances (rails) share one
+  outer clock~$\tau_c^{\rm out}$. An \emph{emergent} point in $3{+}1$D is a
+  synchronized triple of cell indices $(p,p,p)$ at one clock tick, with
+  winding readout $(w_x,w_y,w_z)$ on the three tapes---not a cell in a
+  three-dimensional lattice. A \emph{particle} is a specific non-vacuum
+  excitation of that structure (e.g.\ uniform triple $(w,w,w)$ for SM states;
+  see \S\ref{sec:sm}).}
+\label{fig:three_rails_shared_clock}
+\end{figure}

@@ -1,0 +1,32 @@
+experiment:
+  name: lock_stability_phase2
+  description: "Lock stability analysis with deeper windows and extended parameter ranges"
+  
+  inputs:
+    runs:
+      - "UGP_discovery_lab_runs/exp_*/results/reports/experiment_results.json"
+      - "UGP_discovery_lab_runs/exp_*/results/reports/*_results.json"
+  
+  stability:
+    seeds: [42, 100, 200, 500, 1000]
+    windows: [13, 14, 15, 16, 17]
+    laws:
+      - { c_policy: mersenne, b_policy: fib, a_policy: gte, mirror: d2 }
+      - { c_policy: mersenne, b_policy: lucas, a_policy: gte, mirror: d2 }
+      - { c_policy: repunit, repunit_base: 3, b_policy: fib, a_policy: gte, mirror: d2 }
+      - { c_policy: mersenne, b_policy: fib, a_policy: gte, mirror: d4 }
+      - { c_policy: mersenne, b_policy: fib, a_policy: gte, mirror: d5 }
+      - { c_policy: mersenne, b_policy: fib, a_policy: gte, mirror: d6 }
+  
+  analysis:
+    tolerance: 1e-6
+    min_stability_threshold: 0.95
+    generate_heatmaps: true
+    
+  run:
+    steps: 2000
+    evolution_window: 64
+    
+  integrity:
+    fail_on_warning: true
+    require_real_data: true

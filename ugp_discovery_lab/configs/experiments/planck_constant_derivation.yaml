@@ -1,0 +1,39 @@
+experiment:
+  name: planck_constant_derivation
+  description: "Derives the effective Planck constant ħ_eff from UGP's fundamental constants using the Fisher curvature framework from the Theoretical Architecture Document (TAD)."
+  inputs:
+    # This experiment uses theoretical calculations, not external data files
+    runs:
+      - "foundational_validation_results.json"  # For consistency with framework
+  analysis:
+    # UGP Elegant Kernel constants
+    k_L_squared: 0.013671875  # 7/512 (exact value)
+    
+    # Reference masses for calculation (MeV)
+    reference_masses: [0.51099895000]  # Electron mass
+    
+    # Physical constants
+    speed_of_light: 1.0  # c = 1 in natural units
+    planck_constant_experimental: 6.582119569e-22  # ħ in MeV·s
+    
+    # Fisher curvature calculation
+    kappa_L_formula: "2 * k_L_squared"  # Quadratic coefficient for L component
+    kappa_T_value: 1.0  # Temporal normalization in natural units
+    
+    # Validation parameters
+    validation_tolerance: 1e-6    # For perfect match detection
+    physical_bounds:
+      hbar_min: 1e-25          # Minimum reasonable ħ (MeV·s)
+      hbar_max: 1e-20          # Maximum reasonable ħ (MeV·s)
+  
+  report:
+    export_md: true
+    export_json: true
+    plots: true  # Generate ħ comparison and error analysis plots
+    csv_export: true  # Export detailed results table
+  
+  integrity:
+    fail_on_warning: true
+    require_real_data: false  # This is a theoretical derivation
+    validate_physical_bounds: true
+    check_formula_consistency: true
