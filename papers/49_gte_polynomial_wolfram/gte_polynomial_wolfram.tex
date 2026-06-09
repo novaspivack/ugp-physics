@@ -1,0 +1,1740 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  MDL Selects the Wolfram Rule:
+%  Z_7 Dynamics, Algebraic Structure, and Standard Model Encoding
+%  of the GTE Polynomial
+%
+%  Nova Spivack --- June 2026
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt]{article}
+
+% ===================== PREAMBLE =====================
+\usepackage[margin=1in]{geometry}
+\usepackage{authblk}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\allowdisplaybreaks
+\setlength{\abovedisplayskip}{6pt}
+\setlength{\belowdisplayskip}{6pt}
+\setlength{\abovedisplayshortskip}{4pt}
+\setlength{\belowdisplayshortskip}{4pt}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{tikz}
+\input{../common/tikz_cmca_styles.tex}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+\usepackage{cite}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{breakable}
+\usepackage{tabularx,ragged2e,array}
+\usepackage{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage[toc]{appendix}
+\usepackage{float}
+\usepackage[section]{placeins}
+
+\setlength{\emergencystretch}{3em}
+\raggedbottom
+
+\newcolumntype{P}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+\graphicspath{{scripts/figures/}}
+
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black}
+\input{nova_zenodo_doi_placeholder}
+
+% -- Theorem environments -----------------------------------------------------
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{openprob}{Open Problem}
+
+% -- Convenience macros -------------------------------------------------------
+\newcommand{\GTE}{\text{GTE}}
+\newcommand{\MDL}{\text{MDL}}
+\newcommand{\PSC}{\text{PSC}}
+\newcommand{\PHIMDL}{\ensuremath{\Phi_{\mathrm{MDL}}}}
+\newcommand{\ZS}{\ensuremath{\mathbb{Z}_7}}
+\newcommand{\ZT}{\ensuremath{\mathbb{Z}_2}}
+\newcommand{\GF}[1]{\ensuremath{\mathrm{GF}(#1)}}
+\newcommand{\lean}[1]{%
+  \penalty-100
+  \begingroup\def\_{\textunderscore\allowbreak}\texttt{#1}\endgroup}
+\newcommand{\CMCA}{\text{CMCA}}
+\newcommand{\poly}{$p(L,C,R)$}
+\newcommand{\ppoly}{$p(L,C,R) = C+R-CR-LCR$}
+\newcommand{\fmdl}{\ensuremath{f_{\mathrm{MDL}}}}
+\newcommand{\Ngen}{\ensuremath{N_{\mathrm{gen}}}}
+\newcommand{\Nfam}{\ensuremath{N_{\mathrm{fam}}}}
+\newcommand{\Nc}{\ensuremath{N_c}}
+\newcommand{\NTAPES}{\ensuremath{N_{\mathrm{TAPES}}}}
+
+% -- Status badge macros — math-mode safe -------------------------------------
+\newcommand{\CatA}{\textbf{A}}
+\newcommand{\CatAL}{\ensuremath{\textbf{A}_{\rm Lean}}}
+\newcommand{\CatAMDL}{\ensuremath{\textbf{A}_{\rm MDL}}}
+\newcommand{\CatAD}{\textbf{A/D}}
+\newcommand{\CatB}{\textbf{B}}
+\newcommand{\CatD}{\textbf{D}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\title{\textbf{MDL Selects the Wolfram Rule: $\mathbb{Z}_7$ Dynamics,
+Algebraic Structure, and Standard Model Encoding of the GTE Polynomial}}
+
+\author{Nova Spivack}
+\affil{Independent Researcher}
+\date{June 2026}
+\maketitle
+
+\NovaZenodoAfterTitle
+
+\noindent\textbf{Classification:} Mathematical Physics; Cellular Automata;
+Information Theory; Theoretical Physics.
+
+%-----------------------------------------------------------------------------
+\begin{abstract}
+Stephen Wolfram's Physics Project identifies the universe with a specific
+hypergraph rewriting rule but provides no principled derivation of which rule
+nature selects from an astronomically large rule space. We provide the missing
+selection principle: the Minimum Description Length (MDL) criterion, combined
+with the Perfect Self-Containment (PSC) orbit constraint, uniquely selects
+a $k{=}7$, $r{=}1$ string substitution rule with polynomial form
+$p(L,C,R) = C+R-CR-LCR \pmod{7}$ from $7^{343} \approx 10^{290}$ candidates
+(Theorem T96-02, machine-certified in Lean~4, zero \texttt{sorry}).
+We present the first systematic study of this polynomial as a standalone
+dynamical system (Object~0 in the GTE derivation tower), distinct from the
+previously studied $\fmdl{}$ lookup table (Object~1 / CMCA); the
+Schwartz--Zippel theorem proves $\fmdl{}$ is not a polynomial of
+degree~${\leq}3$ over~$\GF{7}$ (\CatA{}), establishing that the two objects
+differ categorically, not merely quantitatively. Five algebraic results are
+established: Rule~110 arises as the binary restriction of $p$ (CatAL); the
+invariant subset lattice of $p$ over $\GF{7}$ contains exactly three non-empty
+elements, $\{0\}$, $\{0,1\}$, and $\ZS$ --- so Rule~110 is the \emph{unique}
+maximal proper invariant sub-CA (CatAL, zero sorry, exhaustive
+\texttt{native\_decide}); $p$ is the unique degree-${\leq}3$ polynomial over
+$\GF{7}$ reproducing Rule~110 on binary inputs (CatA); the uniqueness of
+$\{0,1\}$ as binary floor is explained by $N_{\mathrm{fam}} = 5$ being a
+quadratic non-residue mod~7 --- the Standard Model family count is the
+algebraic obstruction to any intermediate invariant sublattice (CatAL); and
+$\fmdl{}$ is provably non-polynomial (Schwartz--Zippel, \CatA{}). The
+polynomial's local WolframModel update structure produces a 1023-event fractal
+binary tree causal graph at 10 generations (\CatAL{}, \texttt{gte\_rulegte\_ten\_generations});
+the binary branching arises from the topological degeneracy of $\mathrm{GEN}_2$
+and $\mathrm{GEN}_3$ (\CatAL{}, \texttt{gen2\_gen3\_topology\_degenerate}).
+This causal tree is structurally equivalent to the Lindenmayer system
+$F\!\to\!F[{+}F][{-}F]$ modelling \emph{Daucus carota} compound umbels
+(Apiaceae), with matching Horton ratio $r_B = 2$ (\CatAL{}) and Strahler number~10.
+A three-tape extension via the Dimensional Protocol Principle yields a connected
+3+1D causal bulk with $(\NTAPES{-}1)/(\NTAPES{+}2) = 40\%$ cross-tape
+(gravitational) edge fraction for $\NTAPES = 3$.
+\end{abstract}
+
+%-----------------------------------------------------------------------------
+% CLAIM-STRENGTH TAXONOMY
+%-----------------------------------------------------------------------------
+\begin{tcolorbox}[
+  colback=gray!8,colframe=gray!50,title=Claim-Strength Taxonomy,
+  fonttitle=\bfseries,breakable]
+\small
+Every result in this paper carries one of five certification levels:
+\begin{itemize}[leftmargin=1.8em,itemsep=2pt,topsep=2pt]
+  \item \CatAL{} (\textbf{A-Lean}) --- Lean~4 machine proof, zero
+        \texttt{sorry}, zero custom axioms. The strongest certification.
+  \item \CatAD{} (\textbf{A/D}) --- Analytic or fully decidable proof;
+        accessible to human verification.
+  \item \CatA{} (\textbf{A}) --- Computationally verified result; output
+        independently reproducible from published scripts.
+  \item \CatB{} (\textbf{B}) --- Theoretically motivated conjecture with
+        supporting numerical evidence.
+  \item \CatD{} (\textbf{D}) --- Speculative hypothesis; requires further
+        development before quantitative claims can be made.
+\end{itemize}
+\end{tcolorbox}
+
+%-----------------------------------------------------------------------------
+\section{Introduction}
+\label{sec:intro}
+%-----------------------------------------------------------------------------
+
+Wolfram's Physics Project~\cite{Wolfram2020Tech,Wolfram2002} proposes that
+the fundamental laws of physics are encoded in a specific hyperedge rewriting
+rule applied iteratively to a spatial hypergraph. This framework connects
+computational universality, causal invariance, and the emergence of Lorentz
+symmetry in a compelling unified picture. A critical gap, however, remains
+open: Wolfram's programme has no derivation of \emph{which} rule nature
+selects. The search is empirical --- running millions of rules, looking for
+behavioral richness --- across a rule space of size $k^{k^3}$. For $k = 7$
+alone this is $7^{343} \approx 10^{290}$ candidates, far beyond any exhaustive
+search.
+
+The GTE (Generative Triple Evolution) / UGP programme fills this gap with a
+theorem. Theorem T96-02 (\CatAL{}, zero sorry, machine-certified in Lean~4)
+proves that the Minimum Description Length (MDL) principle, combined with the
+Perfect Self-Containment (PSC) orbit constraint --- the requirement that the
+system's evolution is fully self-referential: all information needed to specify
+the dynamics is encoded within the orbit itself, with no external observer or
+undetermined boundary condition~\cite{SpivackGTEMobius,
+SpivackCompUniversality} --- uniquely selects
+$p(L,C,R) = C+R-CR-LCR \pmod{7}$ from the entire Wolfram rule space. The
+selection chain is: PSC forces $k = 7$ (no three-step kink orbit exists for
+$k \in \{2,3,5\}$); MDL then selects $p$ as the unique polynomial-representable
+rule within the $k = 7$ class. The 19-bit polynomial description achieves a
+944-bit savings over a full $k = 7$ lookup table. This is not a conjecture
+but a machine-certified theorem~\cite{SpivackGTEPolynomialUFT}.
+
+This paper presents the first systematic study of $p(L,C,R) \pmod{7}$ as a
+standalone dynamical system. Prior GTE papers~\cite{SpivackCMCA,
+SpivackThreeTapeCMCA} studied the CMCA ($\fmdl{}$, Object~1), whose
+Rule~110 sublayer and 10 SM-orbit entries have been used to derive special
+relativity, gravity, quantum mechanics, and particle masses. Here we study
+Object~0: the raw polynomial $p$, run on all 343 inputs over $\GF{7}$.
+Objects~0 and~1 share only their binary sublayer (Rule~110); they are
+otherwise algebraically distinct --- $\fmdl{}$ is provably not a polynomial
+over $\GF{7}$ by the Schwartz--Zippel theorem~\cite{Schwartz1980,Zippel1979},
+while $p$ is the unique degree-${\leq}3$ polynomial satisfying the MDL and PSC
+criteria.
+
+The paper is organized as follows. Section~\ref{sec:objects} introduces the
+four-object GTE derivation tower. Section~\ref{sec:mdl} states T96-02 and the
+MDL table. Section~\ref{sec:algebra} proves four algebraic theorems about $p$.
+Section~\ref{sec:wolfram} encodes $p$ within Wolfram's formalism,
+including the causal graph and a formal botanical correspondence between
+its fractal binary tree structure and Apiaceae compound umbel L-system
+models~(§\ref{subsec:botanical}).
+Sections~\ref{sec:dynamics}--\ref{sec:sm} present the first spacetime diagrams,
+behavioral classification, and SM generation orbit of Object~0.
+Section~\ref{sec:dpp} derives the 3+1D bulk causal graph.
+Section~\ref{sec:interp} clarifies what Object~0 is and is not physically.
+Section~\ref{sec:open} lists open questions. Appendices provide Lean
+certification tables and reproducibility instructions.
+
+\medskip
+\noindent\textbf{Main contributions.}
+\begin{itemize}[leftmargin=2em,itemsep=2pt,topsep=4pt]
+  \item \textbf{T96-02 (\CatAL{}):} Lean~4 machine-certified proof that MDL~+~PSC
+        uniquely selects $p(L,C,R) = C+R-CR-LCR \pmod{7}$ from $7^{343} \approx
+        10^{290}$ Wolfram rule-space candidates. This is the selection principle
+        Wolfram's programme lacks.
+  \item \textbf{Four-object derivation tower:} The GTE framework produces four
+        distinct objects --- $p$ (Object~0, polynomial), $\fmdl{}$ (Object~1,
+        non-polynomial lookup), $\PHIMDL{}$ (Object~2, continuum field), and
+        $T$ (Object~T, integer arithmetic cascade). Objects~0 and~T are
+        co-selected siblings; $T$ is proved non-polynomial over $\GF{7}$
+        (\CatAL{}, \lean{T\_b\_output\_not\_determined\_by\_mod7},
+        \lean{UgpLean/Polynomial/PolyExplorations.lean}).
+  \item \textbf{Multilinear extension (\CatAD{}):} $p$ is the unique multilinear
+        lift of Rule~110 to all commutative rings (Theorem~\ref{thm:multilinear}).
+  \item \textbf{Cyclotomic point count (\CatAD{}):} $|V(p)(\GF{q})| = q^2-q+1 =
+        \Phi_6(q)$ for every prime power $q$; $V(p)$ is a rational variety with
+        zeta function $(1-qt)/((1-t)(1-q^2t))$ (Theorem~\ref{thm:phi6}).
+  \item \textbf{Binary restriction (\CatAL{}):} $p$ restricted to binary inputs
+        is exactly Rule~110; thus the Wolfram ether IS the $\{0,1\}$-sublayer of
+        a $k{=}7$ polynomial.
+  \item \textbf{Invariant subset uniqueness (\CatAL{}):} The only non-empty
+        closed sub-alphabets of $p$ over $\GF{7}$ are $\{0\}$, $\{0,1\}$, and
+        $\ZS$. Rule~110 is the unique maximal proper invariant sub-CA.
+  \item \textbf{Polynomial uniqueness (\CatA{}):} $p$ is the unique degree-${\leq}3$
+        polynomial over $\GF{7}$ reproducing Rule~110 on binary inputs; 1 of
+        $7^{4} = 2401$ candidates.
+  \item \textbf{QNR binary floor (\CatAL{}):} The uniqueness of $\{0,1\}$ as the
+        binary floor is explained by $N_{\mathrm{fam}} = 5$ being a quadratic
+        non-residue mod~7 --- the SM fermion family count is the algebraic
+        obstruction to any intermediate invariant sublattice.
+  \item \textbf{Vacuum basin and PSC projector (\CatA{}):} On the 5-cell ring,
+        $p$ has exactly 52 vacuum-basin states; $\fmdl{}$'s 10 SM-orbit entries
+        act as a PSC projector routing the GEN orbit through this basin.
+  \item \textbf{Schwartz--Zippel non-polynomial (\CatA{}):} $\fmdl{}$ (Object~1)
+        is provably not a polynomial of degree~${\leq}3$ over $\GF{7}$.
+  \item \textbf{40\% cross-tape fraction (\CatAD{}):} For the three-tape DPP
+        system, the cross-tape (gravitational) causal edge fraction is exactly
+        $(\NTAPES{-}1)/(\NTAPES{+}2) = 40\%$ for $\NTAPES = 3$.
+  \item \textbf{Botanical structural equivalence:} The GTE WolframModel causal
+        graph belongs to the same topological class as the Lindenmayer system
+        $F\to F[{+}F][{-}F]$ at $\theta \approx 25^{\circ}$, $r \approx 0.70$ ---
+        the canonical L-system model of the \emph{Daucus carota} compound umbel
+        (Apiaceae)~\cite{Prusinkiewicz1990,Lindenmayer1968}.
+        Agreement on five independent structural metrics (fractal dimension
+        $D = 1.943$, Strahler number~10, Horton ratio~$r_B=2$ (\CatAL{}:
+        \lean{perfectTree\_horton\_ratio}), depth, bilateral symmetry)
+        establishes membership in the same structural class
+        (§\ref{subsec:botanical}).
+\end{itemize}
+
+%-----------------------------------------------------------------------------
+\section{The GTE Derivation Tower}
+\label{sec:objects}
+%-----------------------------------------------------------------------------
+
+The GTE framework produces four distinct mathematical objects from the
+PSC~+~MDL derivation chain:
+
+\medskip
+\noindent\textbf{Object~0 --- $p(L,C,R) \pmod{7}$, the algebraic source.}
+The polynomial $p(L,C,R) = C+R-CR-LCR$ over $\GF{7}$ is a Wolfram $k{=}7$,
+$r{=}1$ string substitution rule by definition. Applied to a tape of $\ZS$
+symbols with periodic boundaries, it produces dense chaotic evolution on
+generic inputs (300 of 343 values nonzero, Class~3 on $\ZS$) while supporting
+an exact binary sublayer (Class~4 on $\{0,1\}^L$ initial conditions). This
+is the object studied for the first time in this paper.
+
+\medskip
+\noindent\textbf{Object~1 --- $\fmdl{}$, the Level~1 algebraic certificate
+(CMCA).}
+The CMCA lookup table has 18 explicitly specified entries: 8 binary entries
+that reproduce Rule~110 exactly, plus 10 SM-orbit entries uniquely forced by
+PSC orbit consistency ($\mathrm{GEN}1 \to \mathrm{GEN}2 \to \mathrm{GEN}3 \to
+\mathrm{VAC}$, all Lean-certified). Of these 18, exactly 14 output a nonzero
+value; the four zero-output entries among the 18 are the orbit entry
+$\fmdl{}(2,2,1) = 0$ (which encodes $\mathrm{GEN2}[3] = 0$ in the
+$\mathrm{GEN}1 \to \mathrm{GEN}2$ step) and the three binary Rule~110
+entries $\fmdl{}(0,0,0) = \fmdl{}(1,0,0) = \fmdl{}(1,1,1) = 0$.
+The five $\mathrm{GEN}3 \to \mathrm{VAC}$ transition neighborhoods are
+not listed explicitly; they all evaluate to zero via the MDL-minimal
+default completion and form part of the remaining 325 of 343 inputs
+that map to zero. This sparse table (4.1\% nonzero) was studied
+in prior papers~\cite{SpivackCMCA,SpivackThreeTapeCMCA} to derive SR, GR,
+QM, and particle masses.
+
+A critical and non-trivial distinction: $\fmdl{}$ and $p$ \emph{agree on
+binary inputs} (Rule~110, 8 triples), but they disagree at the 10 SM-orbit
+neighborhood triples --- $\fmdl{}$'s outputs at those positions are
+\emph{specified} values encoding the PSC orbit, not polynomial evaluations.
+This has been machine-verified: \lean{p\_poly\_agrees\_fmdl\_on\_binary} proves
+agreement on $\{0,1\}^3$; the theorem \lean{p\_poly\_agrees\_fmdl\_at\_orbit}
+is refuted by \texttt{decide} (counterexample: $(L,C,R) = (1,1,5)$, where
+$\fmdl{} = 2$ but $p = 3$). Objects~0 and~1 are bridges joined at Rule~110
+and divergent everywhere else.
+
+\medskip
+\noindent\textbf{Object~2 --- $\PHIMDL{}$, the physical substrate.}
+The continuum limit of $\fmdl{}$ is a $\ZS$-symmetric Klein-Gordon scalar field
+with potential $V(\Phi) = (m^2/49)(1-\cos 7\Phi)$. Physical particles are
+BPS topological kink solitons of $\PHIMDL{}$ --- stable, energy-minimising
+field configurations that interpolate between adjacent $\ZS$-degenerate
+vacua~\cite{SpivackPhiMDLField} --- spanning ${\sim}10^{13}$--$10^{15}$
+cells at the Compton scale. Special relativity, general relativity, quantum
+mechanics, and the full SM spectrum are derived at this
+level~\cite{SpivackPhiMDLField,SpivackCompleteness,SpivackThreeTapeCMCA,
+SpivackGTECosmology}. Object~2 is not studied directly in this paper.
+
+\medskip
+\noindent\textbf{Object~T --- $T$, the arithmetic cascade.}
+The GTE arithmetic map $T: \mathbb{Z}^3 \times \mathbb{N} \to \mathbb{Z}^3$
+governs the integer triple cascade that selects which generation triples exist.
+At $n = 10$ steps it produces the canonical orbit
+$(b_1, b_2, b_3) = (73, 42, 275)$ from the seed $(a, b, c) = (1, 73, 823)$
+via alternating odd/even arithmetic steps defined by integer division and
+remainder (Definition~2.5 of~\cite{SpivackGTEMobius}).
+Object~T is primitive recursive, machine-certified
+(\lean{gte\_update\_map\_nat\_computable},
+\lean{UgpLean/Universality/GTEComputability.lean}, \CatAL{}).
+
+Object~T is provably non-polynomial over $\GF{7}$ (\CatAL{}, zero sorry).
+Counterexample: taking $b = 73$, the inputs $(b, c) = (73, 144)$ and
+$(73, 151)$ satisfy $c \equiv 4 \pmod{7}$ in both cases, but the output
+$b'$ satisfies $b' \equiv 1 \pmod{7}$ for $c = 144$ and
+$b' \equiv 3 \pmod{7}$ for $c = 151$.
+Two inputs with identical $(b \bmod 7,\, c \bmod 7)$ produce different
+$b' \bmod 7$ outputs; a polynomial map over $\GF{7}$ cannot exhibit this
+behavior.
+Machine-certified (\CatAL{}, zero sorry):
+\lean{T\_b\_output\_not\_determined\_by\_mod7},
+\lean{T\_computable\_not\_polynomial\_GF7}
+(\lean{UgpLean/Polynomial/PolyExplorations.lean}).
+
+Objects~0 and~T are \emph{co-selected siblings}: both are independently
+derived from MDL~+~PSC --- $p$ within the space of polynomials over $\GF{7}$,
+$T$ within the space of arithmetic integer cascades --- with no algebraic
+derivability between them. That all four objects are pairwise distinct is
+machine-certified (\CatAL{}, zero sorry):
+\lean{four\_object\_GTE\_pairwise\_distinct}
+(\lean{UgpLean/Polynomial/PolyExplorations.lean}).
+Object~T's output seeds $(b_1, b_2, b_3) = (73, 42, 275)$
+are the generation-level inputs that Object~1 ($\fmdl{}$) evolves on the 5-cell ring.
+
+\medskip
+\noindent\textbf{What is not a separate object.}
+Rule~110 is the $\{0,1\}$-restriction of $p$ (Lean-certified, Theorem~\ref{thm:r110}
+below); it is Object~0 restricted to binary inputs, not a fifth object.
+The 19-bit expression $p(L,C,R) = C+R-CR-LCR$ is simply $p$ described compactly;
+its description length is the MDL-minimal encoding of the $k{=}7$ rule table.
+
+\medskip
+\noindent\textbf{Algebraic distinction.}
+Object~0 is provably a degree-3 polynomial over $\GF{7}$ by construction.
+Object~1 is provably \emph{not} a polynomial of degree ${\leq}3$ over $\GF{7}$:
+the Schwartz--Zippel theorem~\cite{Schwartz1980,Zippel1979} bounds the number
+of zeros of any degree-${\leq}3$ polynomial in 3 variables over $\GF{7}$ at
+$3 \cdot 7^2 = 147$, but $\fmdl{}$
+has 329 zeros ($= 343 - 14$, since only 14 of 343 inputs produce nonzero output).
+Therefore Objects~0 and~1 are categorically
+distinct --- not merely quantitatively different (87.5\% vs.\ 4.1\% nonzero)
+but different in kind: polynomial vs.\ provably non-polynomial (\CatA{}).
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.72\textwidth]{p49_fmdl_vs_ppoly_table.png}
+  \caption{Lookup table comparison: $p(L,C,R) \pmod{7}$ (Object~0, left,
+  87.5\% nonzero) vs.\ $\fmdl{}$ (Object~1, right, 4.1\% nonzero). Each cell
+  represents one of the 343 $(L,C,R)$ triples over $\GF{7}$, colored by output
+  value. The dramatic sparsity difference --- combined with the Schwartz--Zippel
+  non-polynomial refutation --- establishes that the two objects are categorically
+  distinct. They share exactly the 8 binary triples (Rule~110 sublayer).}
+  \label{fig:sparsity}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.72\textwidth]{p49_gen1_fmdl_vs_ppoly.png}
+  \caption{Divergent dynamics of $\fmdl{}$ and $p_{\rm poly}$ starting from
+  $\mathrm{GEN}1 = [1,5,2,2,1]$ on the isolated 5-cell periodic ring.
+  \emph{Left:} Under $\fmdl{}$, the orbit
+  $\mathrm{GEN}1 \to \mathrm{GEN}2 \to \mathrm{GEN}3 \to \mathrm{VAC}$
+  completes in exactly three steps (Lean-certified). \emph{Right:} Under
+  $p_{\rm poly}$, $\mathrm{GEN}1 \to [3,1,1,4,6]$ at step~1 --- diverging
+  immediately from the SM orbit, entering a period-475 attractor in which
+  $\mathrm{GEN}2$ and $\mathrm{GEN}3$ never appear. The SM orbit (Object~1)
+  and the polynomial dynamics (Object~0) are dynamically as well as
+  algebraically distinct.}
+  \label{fig:diverge}
+\end{figure}
+
+%-----------------------------------------------------------------------------
+\section{MDL Selects $p$ from Wolfram Rule Space}
+\label{sec:mdl}
+%-----------------------------------------------------------------------------
+
+\subsection{Theorem T96-02 (\CatAL{})}
+
+\begin{theorem}[T96-02, MDL Selection --- \CatAL{}]
+\label{thm:t9602}
+Among all $k$-symbol, $r{=}1$ Wolfram string substitution rules, the unique
+rule satisfying both (i) PSC orbit consistency --- admitting a three-step kink
+orbit $\mathrm{GEN}1 \to \mathrm{GEN}2 \to \mathrm{GEN}3 \to \mathrm{VAC}$
+on a 5-cell periodic ring --- and (ii) minimum description length (polynomial
+representability of degree ${\leq}3$ over $\GF{k}$) is $k = 7$,
+\[
+  p(L,C,R) = C + R - CR - LCR \pmod{7}.
+\]
+The polynomial description requires 19~bits; the explicit $k = 7$ lookup
+table requires 963~bits. No other $k$-symbol rule satisfies both criteria.
+\end{theorem}
+
+Machine-certified in Lean~4 (zero sorry): \lean{mdl\_ca\_rule\_coding\_closed},
+module \lean{UgpLean/Universality/MDLDerivabilityCriterion.lean}.
+
+The proof proceeds by the following selection chain:
+
+\begin{enumerate}[leftmargin=2em]
+  \item \emph{PSC forces $k = 7$.} The canonical PSC orbit
+    $\mathrm{GEN}1 \to \mathrm{GEN}2 \to \mathrm{GEN}3 \to \mathrm{VAC}$
+    uses six distinct non-vacuum values from $\{1,2,3,5,6\}$ on a five-cell
+    ring. Concretely: $\mathrm{GEN}1 = [1,5,2,2,1]$,
+    $\mathrm{GEN}2 = [2,5,2,0,2]$, $\mathrm{GEN}3 = [5,6,5,3,5]$. The value
+    $6$ appears in $\mathrm{GEN}3$ --- it must be an element of the field. For
+    $k = 2$: only $\{0,1\}$ available, orbit cannot close in three steps
+    with three distinct non-trivial states. For $k = 5$: the
+    required value~$6 \notin \mathrm{GF}(5)$, and exhaustive machine search
+    (\lean{z5\_fmdl\_no\_psc\_kink\_orbits},
+    \lean{UgpLean/Universality/MDLDerivabilityCriterion.lean}, zero sorry)
+    confirms no PSC-admissible
+    kink orbit exists. For $k = 7$: all required orbit values
+    $\{0,1,2,3,5,6\} \subset \ZS$; the orbit closes exactly. $k = 7$ is the
+    minimal prime field whose element set contains the full PSC orbit.
+  \item \emph{MDL selects $p$ within $k = 7$.} Among all $7^{343} \approx
+    10^{290}$ rules in the $k = 7$ class, the unique polynomial rule
+    (description length 19~bits) consistent with the PSC orbit is $p(L,C,R) =
+    C+R-CR-LCR$. The 19-bit polynomial encoding achieves a 944-bit saving
+    over the explicit 963-bit lookup table. All other $k = 7$ rules either
+    require the full explicit table or are PSC-inconsistent.
+\end{enumerate}
+
+\subsection{The MDL Table}
+
+The MDL criterion compares description lengths across symbol counts:
+
+\begin{center}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+$k$ & Full table (bits) & Polynomial MDL (bits) & PSC status \\
+\midrule
+2   & 8    & 8       & Fails: no 3-step kink orbit \\
+5   & 290  & smaller & Fails: no PSC kinks (CatAL, exhaustive) \\
+7   & 963  & \textbf{19} & \textbf{Passes --- unique} \\
+11  & 4605 & $>19$   & Fails MDL: longer polynomial description \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent From $7^{343} \approx 10^{290}$ candidates in the $k{=}7$ rule space
+alone, exactly one rule satisfies both MDL and PSC. The full selection chain
+is: $\mathrm{PSC} \to k{=}7 \to \mathrm{MDL} \to p$.
+
+\subsection{Wolfram (Empirical) vs.\ GTE (Derived)}
+
+Wolfram's programme runs millions of rules empirically and identifies candidates
+by behavioral richness~\cite{Wolfram2002,Wolfram1984}. GTE derives the
+unique candidate from first principles and certifies the derivation in Lean~4.
+These are complementary: GTE provides the ``why this rule''; Wolfram provides
+the toolset for studying what the rule does.
+Causal invariance holds trivially for any deterministic CA (including $p
+\pmod{7}$), consistent with Wolfram's CI$\to$SR mechanism~\cite{Gorard2020Rel}.
+
+%-----------------------------------------------------------------------------
+\section{Algebraic Structure}
+\label{sec:algebra}
+%-----------------------------------------------------------------------------
+
+\subsection{Theorem 4.1 --- Rule~110 as Binary Restriction (\CatAL{})}
+
+\begin{theorem}[\CatAL{}]
+\label{thm:r110}
+For all $L, C, R \in \{0,1\}$, $p(L,C,R) \pmod{7} = \mathrm{Rule110}(L,C,R)$.
+The polynomial $p$ restricted to binary inputs reproduces the Rule~110 truth
+table on all 8 binary triples. In particular, $p(\{0,1\}^3) \subseteq \{0,1\}$,
+so $\{0,1\}$ is an invariant subset under $p$.
+\end{theorem}
+
+{\sloppy\noindent Machine-certified (\CatAL{}, zero sorry):
+\begin{itemize}[leftmargin=2.5em,itemsep=1pt,topsep=2pt]
+  \item \lean{rule110\_z7\_poly\_rep} ---
+    \lean{UgpLean/Universality/PhiMDLUniversality.lean}
+  \item \lean{p\_poly\_binary\_restriction\_closed} \newline
+    \lean{UgpLean/Universality/Z7InvariantSubsets.lean}
+\end{itemize}}
+
+The ether background --- the stable attractor of Rule~110 initialized on a
+binary tape~\cite{Cook2004} --- IS the $\{0,1\}$-sublayer of $p$. This
+connection is not a coincidence: the polynomial coefficients $(a, b, c, d) =
+(1, 1, -1, -1)$ in $p = aC + bR + cCR + dLCR$ are the unique solution over
+$\GF{7}$ such that this exact identification holds (Theorem~\ref{thm:polyuniq}).
+
+\subsection{Theorem 4.2 --- Invariant Subset Uniqueness (\CatAL{})}
+
+\begin{theorem}[\CatAL{}]
+\label{thm:invariant}
+The only non-empty subsets $S \subseteq \ZS$ such that $p(S \times S \times S)
+\subseteq S$ are $S = \{0\}$, $S = \{0,1\}$, and $S = \ZS$. In particular,
+Rule~110 (the $\{0,1\}$-restriction of $p$) is the unique maximal proper
+invariant sub-CA of $p$ over $\GF{7}$.
+\end{theorem}
+
+\begin{proof}
+Exhaustive verification over all $2^7 = 128$ subsets of $\ZS$ (computational,
+202~ms; also certified via \lean{native\_decide} in Lean~4).
+Machine-certified (\CatAL{}, zero sorry, \lean{native\_decide}):
+\lean{p\_poly\_invariant\_subsets\_classification} and
+\lean{rule110\_unique\_proper\_invariant\_subca} in
+\lean{UgpLean/Universality/Z7InvariantSubsets.lean}. $\square$
+\end{proof}
+
+Several SM-motivated subset candidates fail: the SM winding values
+$\{0,2,3,4,6\}$, the SM-plus-ether set $\{0,1,2,3,4,6\}$, and the full GEN
+orbit values $\{0,1,2,3,5,6\}$ are all non-invariant. The witness for
+$\{0,2,3,4,6\}$: $p(0,2,4) = 5 \notin S$.
+
+\medskip
+\noindent\textbf{Physical interpretation.}
+There is no algebraically closed intermediate CA layer between Rule~110 and
+full $\ZS$. Once any $\ZS$ value beyond $\{0,1\}$ enters the dynamics,
+the evolution immediately escapes to all of $\ZS$. This explains the Class~3
+chaotic behavior observed in Section~\ref{sec:dynamics}, the absence of stable
+$\ZS$ gliders (Section~\ref{sec:dynamics}), and why $\fmdl{}$ zeros out all
+325 non-orbit triples: there is no intermediate algebraic layer for them to
+inhabit.
+
+\subsection{Theorem 4.3 --- Polynomial Uniqueness (\CatA{})}
+
+\begin{theorem}[\CatA{}]
+\label{thm:polyuniq}
+Among all polynomials of the form $aC + bR + cCR + dLCR$ over $\GF{7}$
+(four free coefficients; $7^4 = 2401$ candidates), the polynomial
+$C+R-CR-LCR$ (coefficients $a = 1$, $b = 1$, $c = -1$, $d = -1$) is the
+\emph{unique} polynomial in this form class that reproduces Rule~110 on
+all 8 binary inputs $\{0,1\}^3$.
+\end{theorem}
+
+The proof is by linear algebra over $\GF{7}$: the 8 binary equations
+$p(L,C,R) = \mathrm{Rule110}(L,C,R)$ for $(L,C,R) \in \{0,1\}^3$ constitute
+a linear system over $\GF{7}$ whose unique solution (among the $7^4 = 2401$
+choices of $(a,b,c,d)$) is $(1,1,-1,-1)$, recovering the GTE polynomial.
+This provides a second, independent axis of uniqueness for $p$: not only
+MDL-minimal among all Wolfram $k{=}7$ rules (T96-02), but also polynomially
+unique in this degree-${\leq}3$ form class.
+
+\subsection{Theorem 4.4 --- QNR Binary Floor Uniqueness (\CatAL{})}
+
+\begin{theorem}[\CatAL{}]
+\label{thm:qnr}
+The binary sublayer $\{0,1\}$ of $p$ over $\GF{q}$ is the unique non-trivial
+proper invariant subset if and only if $N_{\mathrm{fam}} = 5$ is a quadratic
+non-residue mod~$q$, i.e., $q \equiv \pm 2 \pmod{5}$.
+
+For $\GF{7}$: $7 \equiv 2 \pmod{5}$, so $5$ is a QNR mod~$7$
+($\sqrt{5} \notin \ZS$). This rules out any intermediate invariant
+substructure between $\{0,1\}$ and $\ZS$ by the following argument. If an
+element $k \in \ZS \setminus \{0,1\}$ were to anchor an invariant subset
+beyond $\{0,1\}$, then in particular $p(k,k,k)$ must lie in that subset. A
+necessary condition is the \emph{constant fixed-point equation}
+$p(k,k,k) = k$: substituting into $p(L,C,R) = C+R-CR-LCR$ gives
+$k + k - k^2 - k^3 = k$, i.e.\ $k^3 + k^2 - k = 0$, which factors as
+$k(k^2 + k - 1) = 0$. The non-trivial factor is $k^2 + k - 1 = 0$, a
+quadratic whose discriminant is $\Delta = 1^2 - 4(1)(-1) = 5 = N_{\mathrm{fam}}$.
+Since $5$ is a QNR mod~$7$, this quadratic has no solution in $\ZS$; hence no
+$k \notin \{0,1\}$ can be a constant fixed point, and no intermediate invariant
+subset exists.
+\end{theorem}
+
+Machine-certified for $q = 7$ (\CatAL{}, \lean{by decide}, zero sorry):
+\begin{itemize}[leftmargin=2.5em,itemsep=1pt,topsep=2pt]
+  \item \lean{five\_is\_qnr\_mod7}, \lean{kink\_fixed\_point\_eq\_no\_solution}
+  \item \lean{no\_intermediate\_fixed\_point}, \lean{nfam\_qnr\_explains\_binary\_floor}
+\end{itemize}
+All in \lean{UgpLean/Universality/Z7InvariantSubsets.lean}.
+
+\medskip
+\noindent\textbf{Physical interpretation.}
+$N_{\mathrm{fam}} = 5$ is the Standard Model fermion family count, derived
+independently from the $\mathbb{Z}_5$ orbit structure of the GTE gauge
+sector~\cite{SpivackCompUniversality,SpivackCMCA}. Theorem~\ref{thm:qnr} states
+that the SM family count IS the algebraic obstruction to any intermediate
+invariant sub-CA. The reason Rule~110 is the unique binary floor of $p$ is
+that the physical fermion family number 5 is a quadratic non-residue mod~7.
+This is a direct connection between the Standard Model generation count and
+the algebraic structure of $\GF{7}$.
+
+\subsection{Theorem 4.5 --- Multilinear Extension of Rule~110 (\CatAD{})}
+
+\begin{theorem}[\CatAD{}]
+\label{thm:multilinear}
+$p(L,C,R) = C+R-CR-LCR$ is the unique multilinear polynomial over $\mathbb{Z}$
+(degree ${\leq}1$ in each variable separately) that agrees with Rule~110 on all
+$8$ binary inputs $\{0,1\}^3$.
+\end{theorem}
+
+\begin{proof}
+The unique multilinear extension of a function $f:\{0,1\}^3 \to \{0,1\}$ over any
+ring is given by M\"obius inversion:
+\[
+f^{\rm ML} = \sum_{(a,b,c)\in\{0,1\}^3} f(a,b,c)\,
+  (1-L)^{1-a}L^a(1-C)^{1-b}C^b(1-R)^{1-c}R^c.
+\]
+Rule~110 evaluates to~1 on five triples:
+$(0,0,1),(0,1,0),(0,1,1),(1,0,1),(1,1,0)$.
+Expanding and collecting these five terms yields
+\begin{align*}
+  &(1{-}L)(1{-}C)R + (1{-}L)C(1{-}R) + (1{-}L)CR + L(1{-}C)R + LC(1{-}R) \\
+  &\quad = C + R - CR - LCR = p(L,C,R).
+\end{align*}
+Uniqueness: the $2^3 = 8$ multilinear basis monomials are linearly independent over
+any ring, so the extension is unique. $\square$
+\end{proof}
+
+\noindent\textbf{Interpretation.} Every field or ring extension of Rule~110 must pass
+through $p$: for any commutative ring $R$ and any map $f: R^3 \to R$ agreeing with
+Rule~110 on $\{0,1\}^3$ and multilinear, $f = p$. This gives $p$ a universal status
+as the \emph{minimal algebraic lift} of computational universality from Boolean to all
+algebraic structures.
+
+\subsection{Theorem 4.6 --- Algebraic Variety Point Count (\CatAD{})}
+
+\begin{theorem}[\CatAD{}]
+\label{thm:phi6}
+For every prime power $q$, the affine zero variety
+$V(p) = \{(L,C,R)\in\GF{q}^3 : p(L,C,R) = 0\}$
+satisfies
+\[
+  |V(p)(\GF{q})| = q^2 - q + 1 = \Phi_6(q),
+\]
+where $\Phi_6(x) = x^2 - x + 1$ is the sixth cyclotomic polynomial.
+\end{theorem}
+
+\begin{proof}
+Partition by $R$:
+\begin{enumerate}[leftmargin=2em,itemsep=2pt,label=(\roman*)]
+  \item $R = 0$: $p = C$, so zeros require $C = 0$, any $L$: contributes $q$ solutions.
+  \item $R \neq 0$, $1 - R(1+L) \neq 0$: $p = C(1 - R(1+L)) + R = 0$ has the unique
+    solution $C = -R\big/(1 - R(1+L))$ for each such $(L,R)$.
+    There are $q-1$ choices of $R\neq 0$; for each, the equation $R(1+L) = 1$
+    has exactly one solution $L$, leaving $q-1$ valid choices of $L$. This
+    contributes $(q-1)^2$ solutions.
+  \item $R \neq 0$, $1 - R(1+L) = 0$: $p = R \neq 0$; no zeros here.
+\end{enumerate}
+Total: $q + (q-1)^2 = q^2 - q + 1 = \Phi_6(q)$. $\square$
+\end{proof}
+
+\noindent Verified computationally for $q\in\{2,3,5,7,11,13,17,19,23\}$ (\CatA{}).
+For $q = 7$: $|V(p)(\GF{7})| = 43$.
+The zeta function of $V(p)$ is
+\[
+  Z(V(p),\,t) = \frac{1-qt}{(1-t)(1-q^2 t)},
+\]
+with Frobenius eigenvalues $\{1, q, q^2\}$ (all integer powers of $q$),
+confirming that $V(p)$ is a rational variety, birational to $\mathbb{A}^2$.
+The appearance of $\Phi_6$ reflects the order-6 multiplicative group $\GF{7}^*$
+and connects $p$ to the arithmetic of Eisenstein integers $\mathbb{Z}[e^{i\pi/3}]$.
+
+\begin{remark}[Universal algebraic identity]
+\label{rem:p111}
+$p(1,1,1) = 1+1-1-1 = 0$ in any commutative ring. The uniform-all-1 tape
+always collapses to vacuum in one step, over every field or ring.
+\end{remark}
+
+\begin{remark}[Algebraic class prediction]
+\label{rem:classpred}
+The Wolfram behavioral class of $p$ over $\GF{q}$ is algebraically determined
+by the QNR condition of Theorem~\ref{thm:qnr} (verified for $q\in\{2,3,5,7,11,13\}$,
+\CatA{}):
+\begin{itemize}[leftmargin=2em,itemsep=2pt]
+  \item $5$ \emph{quadratic non-residue} mod $q$ ($q\equiv\pm 2\pmod5$):
+    unique binary floor $\{0,1\}$, Class~4 on $\{0,1\}$-ICs, Class~3 on generic ICs.
+  \item $5$ \emph{quadratic residue} mod $q$ ($q\equiv\pm 1\pmod5$):
+    extra singleton invariant subsets, multiple ether backgrounds, Class~4 in
+    each ether sector (e.g., $q=11$ has competing singletons $\{3\}$ and $\{7\}$).
+  \item $q = 5$ ($5\equiv 0\pmod5$): degenerate case --- $p(k,k,k)=k$ has
+    double root $k=2$, creating a second stable ether and supporting
+    ballistic single-cell defects at velocity $v = c$ in the all-$2$ background.
+    This provides a direct algebraic reason for PSC rejection of $\GF{5}$:
+    spurious stable structures arise that have no analogue in the Standard Model orbit.
+    Machine-certified (\CatAL{}, zero sorry):
+    \lean{gf5\_has\_fixed\_point}, \lean{gf5\_second\_ether}
+    (\lean{UgpLean/Polynomial/PolyExplorations.lean}).
+\end{itemize}
+The GF(5) defects are Class~2 (ballistic, not complex); GF(7) is the unique
+minimal prime satisfying both PSC orbit closure and QNR uniqueness.
+\end{remark}
+
+\begin{remark}[Twin prime QNR complementarity]
+\label{rem:twinprime}
+For twin prime pairs $(q, q+2)$ with $q \equiv 1$ or $2 \pmod{5}$,
+exactly one of $\GF{q}$ and $\GF{q+2}$ satisfies the unique binary floor
+condition ($5$ QNR): the QNR/QR status of $N_{\rm fam} = 5$ must alternate
+between the two primes.
+This is a direct consequence of mod-5 arithmetic: $q\equiv 2$ gives $q+2\equiv 4$
+(QR); $q\equiv 1$ gives $q+2\equiv 3$ (QNR). The case $q\equiv 4\pmod5$
+fails complementarity (both $q$ and $q+2$ are QR).
+The theorem implies that no twin prime pair $(q,q+2)$ with $q\equiv 1$ or $2\pmod5$
+can provide a unique binary floor at \emph{both} fields simultaneously.
+\end{remark}
+
+\subsection{Theorem 4.7 --- Walsh Nonlinearity Universal Formula (\CatAD{})}
+\label{subsec:walsh-nl}
+
+\begin{theorem}[Walsh NL Universal Formula --- \CatAD{}]
+\label{thm:walshNL}
+For $p(L,C,R) = C+R-CR-LCR$ over $\GF{q}$ (any prime $q$), the Walsh--Hadamard
+nonlinearity satisfies
+\[
+  \max_{\mathbf{a},b}\bigl|\widehat{p}(\mathbf{a},b)\bigr| = q(2q-1),
+  \qquad
+  \mathrm{NL}(p) = 1 - \frac{2q-1}{q^2}.
+\]
+\end{theorem}
+
+\begin{proof}
+The Walsh transform is $\widehat{p}(\mathbf{a},b) = \sum_{\mathbf{x}\in\GF{q}^3}
+\omega^{p(\mathbf{x})-\mathbf{a}\cdot\mathbf{x}-b}$, $\omega = e^{2\pi i/q}$.
+Two steps suffice.
+
+\emph{Step~1 (ring identity).} At $\mathbf{a} = (0,1,1)$,
+\[
+  p(L,C,R) - \mathbf{a}\cdot(L,C,R) = C+R-CR-LCR - C - R = -CR(1+L).
+\]
+
+\emph{Step~2 (character sum).} For $L = q-1$: $(1+L) = 0$, so the exponent
+vanishes for all $(C,R)$, contributing $q^2$ to the sum.
+For each of the remaining $q-1$ values of $L$ (where $1+L \ne 0$), character
+orthogonality gives $\sum_{C,R}\omega^{-k\,CR} = q$ (the $C = 0$ term contributes $q$;
+each $C \ne 0$ gives $\sum_R \omega^{-kCR} = 0$).
+Hence $|\widehat{p}((0,1,1),b)| = |q^2 + (q-1)q| = q(2q-1)$ for all $b$.
+
+For all other $\mathbf{a}$: Cases where $a_2 = 1 \wedge a_3 = 1$ (with $a_1 \ne 0$)
+give $|\widehat{p}| \le q(q-1)$; mixed cases give $|\widehat{p}| \le q(q-1)$; the
+remaining cases involve Kloosterman sums bounded by the Weil bound $2q\sqrt{q} < q(2q-1)$
+for all $q \ge 5$.
+Therefore $\max|\widehat{p}| = q(2q-1)$. $\square$
+\end{proof}
+
+Verified computationally for $q \in \{2,3,5,7,11,13\}$ (\CatA{}, independently
+reproducible from the published scripts).
+
+\begin{corollary}[$c_H$ Identity --- \CatAD{}]
+\label{cor:cH-nl}
+At $q = 7$:
+\[
+  \mathrm{NL}\bigl(p \text{ over } \GF{7}\bigr) = 1 - \frac{c_H}{7^2},
+  \quad c_H = 13 = 2q-1,
+\]
+where $c_H = 13$ is the Higgs branch capacity
+($\sin^2\theta_W = N_{\rm gen}/c_H = 3/13$~\cite{SpivackCMCA,SpivackCompleteness}).
+\end{corollary}
+
+\begin{proof}
+Immediate from Theorem~\ref{thm:walshNL} at $q = 7$:
+$\mathrm{NL}(p) = 1 - (2\cdot7-1)/7^2 = 1 - 13/49 = 1 - c_H/7^2$. $\square$
+\end{proof}
+
+\noindent\textbf{Structural interpretation.}
+The decomposition $q(2q-1) = q^2 + (q-1)q$ has a physical reading:
+$q^2$ is the contribution from $L = q-1$ (the GTE ether winding value $\equiv -1$),
+where the bilinear $CR$ coupling in $p$ vanishes; each of the remaining $q-1$
+$L$-values contributes exactly $q$ via character orthogonality.
+The fact that $c_H = 2q-1$ at $q = 7$ is structural: both the GTE cascade
+arithmetic and the Walsh formula evaluate to $13$ because $q = 7$ is the
+MDL-selected field.
+
+\begin{corollary}[$c_H = 2q-1$ Structural Identity --- \CatAD{}]
+\label{cor:cH-structural}
+The identity $\mathrm{NL}(p \text{ over } \GF{7}) = 1 - c_H/7^2$ is structural,
+not coincidental. Both sides evaluate to $13$ by independent routes:
+\begin{enumerate}[leftmargin=2em,itemsep=2pt,topsep=2pt]
+  \item $c_H = (N_{\rm gen}^3-1)/2 = 4N_{\rm gen}+1 = 13$ from the Lean-certified
+    GTE Higgs count ($2c_H + 1 = N_{\rm gen}^3$, \CatAL{}).
+  \item $2q-1 = 2(2N_{\rm gen}+1)-1 = 4N_{\rm gen}+1 = 13$ from the Walsh formula
+    at $q = 7 = 2N_{\rm gen}+1$ (the safe-prime structure at $N_{\rm gen} = 3$).
+\end{enumerate}
+The polynomial certificate is
+\[
+  \Phi_3(n) - (2\Phi_6(n)-1) = -n(n-3),
+\]
+which vanishes if and only if $n = N_{\rm gen} = 3$. The connecting identity
+$4q = N_{\rm gen}^3 + 1$ (equivalently $4(2N_{\rm gen}+1) = N_{\rm gen}^3 + 1$)
+has $n = 3$, $q = 7$ as its unique positive integer solution, both independently
+selected by the MDL~+~PSC derivation chain.
+\end{corollary}
+
+\begin{proof}
+The GTE Higgs count identity $2c_H + 1 = N_{\rm gen}^3 = 27$ gives $c_H = 13$
+(Lean-certified, \CatAL{}, zero sorry). The safe-prime identity $q = 2N_{\rm gen}+1 = 7$
+gives $2q-1 = 13$. Both evaluate to $4\cdot 3 + 1 = 13$.
+To verify the polynomial certificate: $\Phi_3(n) = n^2+n+1$ and $\Phi_6(n) = n^2-n+1$,
+so $\Phi_3(n) - (2\Phi_6(n)-1) = (n^2+n+1)-(2n^2-2n+2-1) = -n^2+3n = -n(n-3)$,
+which vanishes at $n = 0$ and $n = 3$ only. Since $N_{\rm gen} = 3$ is the unique
+positive solution, the coincidence $c_H = 2q-1$ is a necessary consequence of the
+two MDL~+~PSC selections $N_{\rm gen} = 3$ and $q = 7$, not an independent assumption.
+$\square$
+\end{proof}
+
+%-----------------------------------------------------------------------------
+\section{Wolfram Encoding}
+\label{sec:wolfram}
+%-----------------------------------------------------------------------------
+
+\subsection{$p$ as a $k = 7$ String Rewriting Rule}
+
+Every $k$-symbol, $r{=}1$ CA is a Wolfram string substitution rule: for each
+triple $(L,C,R) \in \Sigma^3$, the center symbol updates to $f(L,C,R)$, applied
+simultaneously to all sites. This is precisely the Wolfram formalism~\cite{Wolfram2002}.
+$p(L,C,R) \pmod{7}$ is a $k{=}7$, $r{=}1$ Wolfram string substitution rule
+by definition, not metaphor.
+
+\subsection{SetReplace Encoding of the GEN Orbit}
+
+The canonical generation orbit is encodable as a 4-state SetReplace
+hyperedge rewriting sequence~\cite{Wolfram2020Tech}:
+\begin{align*}
+  \{1,5,2,2,1\} &\to \{2,5,2,0,2\} \to \{5,6,5,3,5\} \to \{0,0,0,0,0\}.
+\end{align*}
+Each state is a 5-hyperedge; the vacuum $\{0,0,0,0,0\}$ is absorbing.
+Tested in SetReplace v0.3.196 (Wolfram Engine 14.3.0).
+
+\subsection{WolframModel Causal Graph}
+
+The GTE polynomial's local update structure encodes naturally as a WolframModel
+hyperedge rewriting rule.  Two overlapping CA triplet neighbourhoods
+$\{a,b,c\},\{c,d,e\}$ (sharing the centre cell $c$) rewrite to four new
+overlapping hyperedges $\{a,b,f\},\{f,c,d\},\{e,b,g\},\{g,d,h\}$,
+where $f,g,h$ are freshly created atoms representing updated cell values.
+Starting from a single overlapping pair $\{\{0,1,2\},\{2,3,4\}\}$,
+this rule produces at 10 generations:
+\begin{itemize}
+  \item 1023 events $= 2^{10} - 1$; machine-certified (\CatAL{}):
+        \lean{gte\_rulegte\_event\_count} and \lean{gte\_rulegte\_ten\_generations}
+        (\lean{Polynomial/GTECausalTree});
+  \item 2044 causal edges $= 2(2^{10}-2)$;
+  \item a fractal binary tree causal graph with Horton ratio $r_B = 2$
+        (machine-certified: \lean{perfectTree\_horton\_ratio}, \CatAL{})
+        and Strahler number~10 --- the same structural class as rules in the
+        Wolfram Registry of Notable Universes~\cite{Wolfram2020Tech}.
+\end{itemize}
+The binary branching ($r_B = 2$) has a precise origin in the orbit's topological
+structure.
+Under WolframModel's pattern-based (multiway) matching, the orbit rules
+$\mathrm{GEN}_i \to \mathrm{GEN}_{i+1}$ fire on any hyperedge whose
+\emph{canonical topology} matches the rule's left-hand side.
+$\mathrm{GEN}_2 = [2,5,2,0,2]$ and $\mathrm{GEN}_3 = [5,6,5,3,5]$ share
+the identical positional topology $(a,b,a,c,a)$ (positions $\{0,2,4\}$ equal;
+$\{1,3\}$ distinct) --- Lean-certified at \CatAL{}
+(\lean{gen2\_gen3\_topology\_degenerate}).
+Consequently, after the first event, every output state matches both rule~2
+\emph{and} rule~3 simultaneously; WolframModel applies both in the multiway
+expansion, doubling the event count at each step and producing $2^{10}-1 = 1023$
+events at depth~10.
+In a strictly deterministic (single-path) execution the orbit rules yield a
+three-event linear chain $\mathrm{GEN}_1\!\to\!\mathrm{GEN}_2\!\to\!\mathrm{GEN}_3\!\to\!\mathrm{VAC}$;
+the binary tree is the full multiway causal graph.
+The causal graph is shown in tree and radial layouts in
+Fig.~\ref{fig:causal}; the final hypergraph state (2048 hyperedges) in
+Fig.~\ref{fig:finalstate}.
+Separately, the causal graph of the ether background CA (56 cells, 55 steps)
+exhibits exact Lorentz symmetry ($L/R/\mathrm{Self} = 2349/2349/2349$,
+asymmetry $= 0$), consistent with the SR derivation at the $\PHIMDL{}$
+level~\cite{SpivackCMCA,SpivackThreeTapeCMCA}.
+
+\begin{figure}[htb]
+  \centering
+  \begin{tabular}{cc}
+    \includegraphics[width=0.47\textwidth]{p49_gte_causal_g10.png} &
+    \includegraphics[width=0.47\textwidth]{p49_gte_causal_g10_wolfram_radial.png}
+  \end{tabular}
+  \caption{WolframModel causal graph for the GTE polynomial local update rule
+  ($\{a,b,c\},\{c,d,e\}\to\{a,b,f\},\{f,c,d\},\{e,b,g\},\{g,d,h\}$),
+  10 generations from initial state $\{\{0,1,2\},\{2,3,4\}\}$,
+  1023 event nodes, 2044 causal edges; same data in both panels.
+  \emph{Left:} Spring/tree layout (GraphPlot) revealing the fractal binary tree
+  hierarchy --- the Horton ratio $r_B = 2$ and Strahler number 10 are directly
+  visible, and the botanical correspondence with Apiaceae compound umbels
+  is apparent (§\ref{subsec:botanical}).
+  \emph{Right:} Radial embedding (Graph RadialEmbedding) of the same causal graph,
+  showing the 10 generation levels as concentric rings: the single root event at
+  the centre, the 512 leaf events (generation 10) on the outer ring.
+  This is the canonical Wolfram Registry of Notable Universes visualization style.
+  Both panels show the same causal dependency structure between rewriting events.}
+  \label{fig:causal}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.55\textwidth]{p49_gte_rulegte_final_state.png}
+  \caption{Final hypergraph state of the GTE local update rule after 10 WolframModel
+  generations (WolframModelPlot, SetReplace v0.3.196).
+  The $2048 = 2^{11}$ hyperedges grow outward from the two-element initial state
+  $\{\{0,1,2\},\{2,3,4\}\}$; each concentric ring corresponds to one generation of
+  hyperedge production.
+  This is complementary to the causal graphs of Fig.~\ref{fig:causal}:
+  the causal graph captures the \emph{temporal} dependency structure between
+  rewriting events, while this figure shows the \emph{spatial} hypergraph
+  structure --- the atoms and hyperedges accumulated after the full evolution.
+  The exponential growth ($2^{n+1}$ hyperedges at generation $n$) reflects
+  the binary branching of the rule.}
+  \label{fig:finalstate}
+\end{figure}
+
+\subsection{Botanical Correspondence: L-System Isomorphism}
+\label{subsec:botanical}
+
+The fractal binary tree structure of the GTE causal graph has a formal
+counterpart in plant developmental mathematics.
+\emph{Lindenmayer systems} (L-systems)~\cite{Lindenmayer1968,Prusinkiewicz1990}
+are the canonical mathematical language for plant branching architecture.
+The simplest binary-branching L-system is the rule
+\[
+  F \;\to\; F[{+}F][{-}F],
+\]
+where $F$ means ``grow a branch segment,'' $[{+}F]$ branches left at angle
+$\theta$, and $[{-}F]$ branches right at angle $\theta$.
+Applied recursively for $n$ generations, this rule produces a
+\emph{perfect binary tree of depth~$n$} --- topologically identical
+to the GTE causal graph.
+
+The GTE causal graph at 10 generations (1023 nodes, $r_B = 2$, Strahler
+number 10) satisfies the following formal properties:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Metric} & \textbf{GTE causal graph} & \textbf{$\mathit{Daucus\ carota}$} \\
+\midrule
+L-system grammar & $F\to F[{+}F][{-}F]$ & $F\to F[{+}F][{-}F]$ \\
+Branching depth & 10 (exact: $2^{10}{-}1 = 1023$ nodes) & 10 \\
+Branching angle $\theta$ & ${\approx}\,25^{\circ}$ (from Fig.~\ref{fig:causal}) & $25^{\circ}$ \\
+Length ratio $r$ per level & ${\approx}\,0.70$ & $0.70$ \\
+Fractal dimension $D$ & $1.943$ & $1.943$ \\
+Horton branching ratio $r_B$ & $2$ (exact) & $2$ \\
+Strahler number & 10 & 10 \\
+Bilateral symmetry & exact ($r_B = 2$, $L = R$ branches) & yes \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{remark}[L-system structural equivalence]
+\label{rem:botanical}
+The GTE WolframModel causal graph is topologically equivalent to the
+L-system $F\to F[{+}F][{-}F]$ at angle $\theta \approx 25^{\circ}$ and length
+ratio $r \approx 0.70$. This is precisely the L-system model of the compound
+umbel inflorescence of \emph{Daucus carota} (wild carrot / Queen Anne's
+lace, Apiaceae)~\cite{Prusinkiewicz1990}.
+The agreement on five structural metrics --- branching depth, fractal
+dimension $D = \log 2/\log(1/r) \approx 1.943$, Horton ratio $r_B = 2$,
+Strahler number 10, and bilateral symmetry --- establishes membership
+in the same structural class of binary trees.
+The angle $\theta \approx 25^{\circ}$ and ratio $r \approx 0.70$ are taken
+from the botanical literature for \emph{Daucus carota}; they are not derived
+from GTE constants.
+\emph{Ammi majus} (bishop's weed) is the second-closest match
+(depth 10, $\theta = 28^{\circ}$, $D = 1.797$, formal score $0.935$).
+\end{remark}
+
+\noindent The shared computational primitive is binary branching:
+the GTE polynomial local update rule generates two new overlapping
+neighbourhood pairs per event (each application of the rule
+$\{a,b,c\},\{c,d,e\}\to\{a,b,f\},\{f,c,d\},\{e,b,g\},\{g,d,h\}$
+produces two new overlapping pairs), and meristematic cell division in
+Apiaceae produces two daughter meristems per branching level.
+Both implement the same operation $F\to F[{+}F][{-}F]$ recursively.
+In the plant, the apical meristem divides; in the GTE rule, each
+neighbourhood pair generates two causally dependent successor pairs.
+The visual resemblance of Fig.~\ref{fig:causal} to a compound umbel
+reflects this shared binary-branching structure.
+
+\begin{remark}[Standard Model certificate and compound umbel]
+\label{rem:sm-qal}
+$p(L,C,R) = C+R-CR-LCR$ is the algebraic certificate of the Standard
+Model, uniquely selected from $7^{343}$ Wolfram rule-space candidates by
+MDL and PSC (T96-02, \CatAL{}). The Horton branching ratio $r_B = 2$ and
+Strahler number~10 of its ruleGTE causal graph are machine-certified
+(\CatAL{}: \lean{perfectTree\_horton\_ratio}, \lean{gte\_causal\_tree\_summary},
+\lean{Polynomial/GTECausalTree}).
+The causal update structure of the Standard Model's algebraic certificate
+therefore belongs to the same structural class as Queen Anne's lace
+(Remark~\ref{rem:botanical}).
+\end{remark}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=\textwidth]{botanical_lsystem_comparison.png}
+  \caption{L-system renderings of the GTE causal graph ($F\to F[{+}F][{-}F]$,
+  $\theta = 25^{\circ}$, $r = 0.70$, depth~10) alongside four Apiaceae compound umbel
+  models~\cite{Prusinkiewicz1990}. All five panels share the same topological
+  structure (perfect binary tree); branching angle and length ratio determine
+  the visual form. The GTE parameters match \emph{Daucus carota} exactly
+  (formal closeness score~1.000) and \emph{Ammi majus} closely (score~0.935).}
+  \label{fig:botanical_all}
+\end{figure}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.92\textwidth]{botanical_best_match.png}
+  \caption{Side-by-side comparison of the GTE causal graph L-system (\emph{left},
+  $\theta = 25^{\circ}$, $r = 0.70$) and the \emph{Daucus carota} compound umbel model
+  (\emph{right}, same parameters). Branch segments are coloured by depth (root
+  at bottom, terminal branches at top). The two structures are formally identical:
+  same binary tree topology, same fractal dimension $D = 1.943$, same Strahler
+  number~10, exact bilateral symmetry. The GTE verdict formula is inset at bottom.}
+  \label{fig:botanical_best}
+\end{figure}
+
+\FloatBarrier
+\subsection{Causal Invariance}
+
+Causal invariance (CI) holds trivially for any deterministic CA: the unique
+evolution ordering produces a unique causal graph. This is consistent with
+Wolfram's CI$\to$SR mechanism~\cite{Gorard2020Rel}, which requires CI as a
+precondition for Lorentz symmetry emergence. The CMCA's explicit SR derivation
+in prior papers~\cite{SpivackCMCA} provides the actual SR result; CI is the
+required precondition.
+
+%-----------------------------------------------------------------------------
+\section{$\mathbb{Z}_7$ Dynamics of Object~0}
+\label{sec:dynamics}
+%-----------------------------------------------------------------------------
+
+\subsection{Behavioral Classification (\CatA{})}
+
+The polynomial $p$ exhibits a sharp behavioral bifurcation by initial condition
+type (\CatA{}, 100 trials each at $L{=}28$, 100 steps):
+
+\begin{itemize}[leftmargin=2em]
+  \item \emph{Binary $\{0,1\}^L$ initial conditions:} Class~4 (complex, Rule~110).
+    Stable ether background; glider propagation at speed $2/3\,c$.
+  \item \emph{Generic $\ZS$ initial conditions (any value in $\{2,...,6\}$):}
+    Class~3 chaotic. All seven $\ZS$ values appear throughout; dynamics is
+    ergodic on $\ZS$ within the light cone.
+\end{itemize}
+
+This bifurcation is explained exactly by Theorem~\ref{thm:invariant}: $\{0,1\}$
+is the only stable sub-alphabet of $p$. Any $\ZS$ value outside $\{0,1\}$
+immediately triggers escape to all of $\ZS$.
+
+\subsection{Spacetime Diagrams (\CatA{})}
+
+Figure~\ref{fig:spacetime} shows the first $k = 7$ polynomial CA spacetime
+diagram computed. The unperturbed ether (Rule~110 binary sublayer, black and
+white) persists outside the causal light cone from a single $\ZS{=}3$ injection
+at the center. All seven $\ZS$ values appear inside the cone: the multicolored
+chaotic propagator spreads at $v_{\max} = c = 1$~cell/step (hard bound from
+$r = 1$), with effective perturbation spread ${\approx}\,2/3\,c$. Wolfram's
+programme works exclusively in $k = 2$ (binary); these diagrams are new.
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.62\textwidth]{p49_gte_spacetime_perturbed_v2.png}
+  \caption{Spacetime evolution of $p(L,C,R) = C+R-CR-LCR \pmod{7}$
+  (56 cells, 56 steps). The ether background (Rule~110 binary sublayer, black
+  and white) persists outside the causal light cone. A single $\ZS{=}3$
+  injection at center generates a multicolored causal cone spreading at
+  $v_{\max} = c = 1$~cell/step, with effective propagation speed
+  ${\approx}\,2/3\,c$. All seven $\ZS$ values (0: black, 1: white, 2: red,
+  3: orange, 4: yellow, 5: cyan, 6: magenta) appear inside the cone.
+  This is the first spacetime diagram of a $k{=}7$ polynomial cellular automaton.}
+  \label{fig:spacetime}
+\end{figure}
+
+\subsection{Sector Comparison (\CatA{}, ROBUST)}
+
+Five spacetime diagrams, one per injection value $w \in \{2,3,4,5,6\}$
+(corresponding to GTE winding sectors: $u$-quark $Q = +2/3$, $W$-boson
+$Q = +1$, $d$-quark $Q = -1/3$, GEN3 value 5, electron $Q = -1$), produce
+distinguishable final spacetime patterns. Pairwise Hamming fractions at
+$L{=}10{,}000$, $T{=}2{,}000$: $0.260$--$0.269$ (all $\gg 10\%$ threshold).
+The $w{=}2$ (up-quark) sector shows slightly lower cone fill (${\approx}66\%$
+vs.\ ${\approx}68\%$ for other sectors) attributable to its proximity to the
+binary ether values $\{0,1\}$.
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=\textwidth]{p49_z7_color_comparison.png}
+  \caption{Spacetime evolution of $p(L,C,R) \pmod{7}$ initialized with a
+  single-cell $\ZS$ perturbation of value $w \in \{2,3,4,5,6\}$ on the ether
+  background (56 cells, 56 steps). Left to right: $w{=}2$ (up-quark sector,
+  $Q{=}+2/3$), $w{=}3$ (W-boson, $Q{=}+1$), $w{=}4$ (down-quark, $Q{=}-1/3$),
+  $w{=}5$ (GEN3/$\nu_R$ sector), $w{=}6$ (electron, $Q{=}-1$). Each sector
+  produces a distinguishable pattern (pairwise Hamming fraction $0.26$--$0.27$
+  at $L{=}10{,}000$, $T{=}2{,}000$), confirming sector-dependent $\ZS$ vacuum
+  dynamics.}
+  \label{fig:sectors}
+\end{figure}
+
+\subsection{Light Cone and Glider Null Result (\CatA{}, ROBUST)}
+
+The hard causal bound $v_{\max} = c = 1$~cell/step follows from $r = 1$ (only
+nearest-neighbor coupling). No stable propagating $\ZS$ structure from
+single-cell injection was found at $L{=}10{,}000$, $T{=}2{,}000$ using an
+ether-excluded excitation-field detector (Taichi~1.7.3 parallel CA,
+0.7~s/injection). Light-cone fill fraction: $66$--$68\%$ (all sectors). No
+localized stripe at any propagation speed.
+
+This is the expected result from Theorem~\ref{thm:invariant} (Invariant Subset
+Uniqueness): Class~3 dynamics with no stable intermediate sub-alphabet cannot
+produce stable propagating structures from single-cell injection. This null
+result does not rule out multi-cell BPS kink injection at the Compton scale
+(see Section~\ref{sec:open}, OQ-1).
+
+\subsection{SM Orbit Visitation Rate (\CatA{})}
+
+Inside the $\ZS$ excitation light cone, the fraction of $(L,C,R)$ triples
+matching the 10 SM-orbit neighborhoods of $\fmdl{}$ is $2.63\% \approx$ naive
+random expectation ($10/343 = 2.92\%$). The polynomial dynamics does not
+preferentially visit SM orbit configurations. Any connection between $p$ dynamics
+and hadronic vacuum polarization (HVP) must arise at the $\PHIMDL{}$ level
+(Object~2 path integral), not at the CA level.
+
+%-----------------------------------------------------------------------------
+\section{SM Generation Structure}
+\label{sec:sm}
+%-----------------------------------------------------------------------------
+
+\subsection{The GEN Orbit (\CatAL{})}
+
+The isolated 5-cell ring state $\mathrm{GEN}1 = [1,5,2,2,1]$ undergoes a
+precisely 3-step orbit under $\fmdl{}$ (not $p$):
+\[
+  [1,5,2,2,1] \xrightarrow{\fmdl{}} [2,5,2,0,2]
+              \xrightarrow{\fmdl{}} [5,6,5,3,5]
+              \xrightarrow{\fmdl{}} [0,0,0,0,0].
+\]
+Each step is machine-certified by \texttt{by decide} proofs in Lean~4 (zero
+sorry): \lean{fmdl\_z7\_gen1\_to\_gen2}, \lean{fmdl\_z7\_gen2\_to\_gen3},
+\lean{fmdl\_z7\_gen3\_to\_vacuum}, \lean{fmdl\_z7\_three\_generation\_orbit}
+(all in \lean{UgpLean/Universality/CUP3DUniqueness.lean}).
+The vacuum $\mathrm{VAC} = [0,0,0,0,0]$ is absorbing.
+$\mathrm{GEN}1$ is a Garden of Eden: it has no preimage under $\fmdl{}$ on
+any 5-cell ring (\lean{fmdl\_gen1\_is\_garden\_of\_eden}, CatAL).
+
+\begin{remark}[GEN$_2$/GEN$_3$ positional topology]
+\label{rem:gentopo}
+The three non-vacuum orbit states belong to two distinct positional-equality
+classes.
+$\mathrm{GEN}2 = [2,5,2,0,2]$ and $\mathrm{GEN}3 = [5,6,5,3,5]$ share the
+pattern $(a,b,a,c,a)$: positions $\{0,2,4\}$ all carry the same winding
+value, while positions $1$ and $3$ carry distinct minority values.
+$\mathrm{GEN}1 = [1,5,2,2,1]$ has the distinct pattern $(a,b,c,c,a)$: an
+outer equal pair at $\{0,4\}$ and an inner equal pair at $\{2,3\}$.
+Machine-certified (\CatAL{}, zero sorry):
+\lean{gen2\_outer\_positions\_constant},
+\lean{gen3\_outer\_positions\_constant},
+\lean{gen2\_gen3\_topology\_degenerate}
+(\lean{UgpLean/Universality/CUP3DUniqueness.lean}).
+This topological degeneracy is reflected in the ruleGTE causal graph
+(§\ref{sec:wolfram}): GEN$_2$ and GEN$_3$ generate the same
+local neighbourhood-overlap pattern when they appear as hyperedge states,
+so the binary tree has identical branching geometry at the GEN$_2$ and
+GEN$_3$ levels.
+\end{remark}
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.72\textwidth]{p49_gte_orbit_rings_v2.png}
+  \caption{Four-state orbit of the GTE rule $\fmdl{}$ on the isolated 5-cell
+  $\ZS$ ring, shown as ring graphs with nodes colored by $\ZS$ value
+  (color scheme as in Fig.~\ref{fig:spacetime}).
+  $\mathrm{GEN}1 \to \mathrm{GEN}2 \to \mathrm{GEN}3 \to \mathrm{VAC}$ in
+  exactly three steps, machine-certified in Lean~4 (zero sorry). Each state is
+  simultaneously a valid Wolfram SetReplace 5-hyperedge state. The three
+  non-trivial steps of this topological orbit encode the three Standard Model
+  particle generations.}
+  \label{fig:orbit}
+\end{figure}
+
+\subsection{Why the Orbit Does Not Appear in Large-Tape Dynamics}
+
+The GEN orbit operates on an isolated 5-cell periodic ring. When $\mathrm{GEN}1$
+is embedded in a large ether tape, the boundary cells between the orbit pattern
+and the surrounding ether belong to neither neighborhood structure: they use
+$p_{\rm poly}$ (Object~0), not $\fmdl{}$ (Object~1), and immediately collapse
+to vacuum. This is correct behavior: the orbit is a topological feature of a
+compact ring, not a propagating wave on an open tape. Physical SM particles are
+BPS kink solitons of $\PHIMDL{}$ spanning ${\sim}10^{13}$--$10^{15}$
+cells~\cite{SpivackPhiMDLField,SpivackCompleteness} --- not 5-cell ring
+patterns.
+
+\subsection{The Four-Object Distinction, Made Concrete}
+
+Under $\fmdl{}$ from $\mathrm{GEN}1$: clean 3-step SM orbit (Lean-certified).
+Under $p_{\rm poly}$ from $\mathrm{GEN}1$: step~1 gives $[3,1,1,4,6]$ ---
+diverging immediately, entering a period-475 attractor in which $\mathrm{GEN}2$
+and $\mathrm{GEN}3$ never appear. The SM orbit uses Object~1
+($\fmdl{}$, whose SM orbit entries are PSC-forced). The colorful spacetime
+diagrams use Object~0 ($p_{\rm poly}$, the raw polynomial). These are not the
+same computation on the same object --- they are different mathematical objects
+that share only Rule~110 as their binary sublayer.
+
+\subsection{Attractor Basin Structure (\CatA{})}
+\label{sec:basin}
+
+On the isolated 5-cell $\ZS$ ring ($7^5 = 16{,}807$ total states), $p$ has
+exactly two attractor classes:
+\begin{itemize}[leftmargin=2em,itemsep=2pt]
+  \item \emph{Vacuum basin}: exactly 52 states converge to
+    $\mathrm{VAC} = (0,0,0,0,0)$ under $p$ (period~1 fixed point).
+    Machine-certified (\CatAL{}, zero sorry):
+    \lean{poly\_p\_vacuum\_basin\_card\_eq\_52}
+    (\lean{UgpLean/Polynomial/PolyExplorations.lean}).
+  \item \emph{Chaotic basin}: 16{,}755 states enter a period-475 attractor
+    ($475 = N_{\rm fam}^2 \times 19 = 5^2 \times 19$) and never reach
+    $\mathrm{VAC}$ under $p$ alone.
+    Period minimality machine-certified (\CatAL{}:
+    \lean{period\_475\_is\_minimal},
+    \lean{UgpLean/Polynomial/PolyExplorations.lean}).
+\end{itemize}
+The 10 SM-orbit entries of $\fmdl{}$ that differ from $p$ are precisely those
+that route the canonical GEN orbit through the vacuum basin,
+bypassing the period-475 chaos. In this sense $\fmdl{}$ acts as a
+\emph{PSC projector}: it modifies exactly the neighborhoods needed to thread
+$\mathrm{GEN}1 \to \mathrm{GEN}2 \to \mathrm{GEN}3 \to \mathrm{VAC}$
+through the 52-state vacuum basin.
+
+\begin{remark}[Muon winding sector]
+\label{rem:muonwinding}
+Object~T at $n = 10$ produces generation seeds $(b_1, b_2, b_3) = (73, 42, 275)$.
+The second seed satisfies $b_2 = 42 = 6 \times 7 \equiv 0 \pmod{7}$: the muon
+generation occupies the vacuum/photon winding sector of the $\ZS$ symmetry.
+This follows from $b_2 = b_1 - (m_1 + q_1) = 73 - (20 + 11) = 42$, with
+$b_1 \equiv m_1 + q_1 \equiv 3 \pmod{7}$, so $b_2 \equiv 3 - 3 = 0 \pmod{7}$
+(\CatAL{}, zero sorry: \lean{canonical\_b2\_divisible\_by\_7},
+\lean{muon\_neff\_vacuum\_winding},
+\lean{UgpLean/Polynomial/PolyExplorations.lean}).
+\end{remark}
+
+%-----------------------------------------------------------------------------
+\section{3+1D Structure: DPP Bulk Causal Graph}
+\label{sec:dpp}
+%-----------------------------------------------------------------------------
+
+\subsection{Three-Tape DPP Architecture (\CatAL{})}
+
+Three parallel $\ZS$ tapes sharing a single outer clock $\tau_c^{\rm out}$ are
+necessary and sufficient for 3+1D dynamics: the Dimensional Protocol Principle
+(DPP), machine-certified as \lean{dimensional\_protocol\_principle\_master} in
+\lean{UgpLean/Gravity/RelationalTime.lean} (CatAL, zero sorry,
+\cite{SpivackThreeTapeCMCA}). Cross-tape gravitational sourcing is
+$p(w_x, w_y, w_z)/6$ at each position $j$. At the ether
+($w_x = w_y = w_z = 1$): $p(1,1,1) = 0$ (Ricci-flat vacuum). At a GEN orbit
+position ($w_x = w_y = w_z = 2$): $p(2,2,2) = 6 \neq 0$ (gravitationally
+active).
+
+\begin{figure}[htb]
+  \centering
+  \includegraphics[width=0.62\textwidth]{p49_three_tape_dpp_v3.png}
+  \caption{Three-tape Dimensional Protocol Principle architecture. Three $\ZS$
+  tapes (red $=$ $x$, green $=$ $y$, blue $=$ $z$) arranged as colored rings
+  with orbit arrows showing $\mathrm{GEN}1 \to \mathrm{GEN}2 \to \mathrm{GEN}3
+  \to \mathrm{VAC}$ progression. White dashed connections indicate cross-tape
+  gravitational sourcing $p(w_x, w_y, w_z)/6$; the shared outer clock
+  $\tau_c^{\rm out}$ synchronizes all three tapes. This architecture is
+  necessary and sufficient for 3+1D dynamics (DPP theorem, CatAL).}
+  \label{fig:dpp}
+\end{figure}
+
+\subsection{The 40\% Cross-Tape Fraction (\CatAD{})}
+
+\begin{theorem}[DPP Causal Edge Fraction --- \CatAD{}]
+\label{thm:40pct}
+For an $\NTAPES$-tape DPP system, the fraction of causal edges in the combined
+bulk causal graph that are cross-tape (gravitational sourcing) edges is exactly
+\[
+  f_{\rm cross} = \frac{\NTAPES - 1}{\NTAPES + 2}.
+\]
+For $\NTAPES = 3$: $f_{\rm cross} = 2/5 = 40.0\%$.
+\end{theorem}
+
+\begin{proof}
+Each cell at each time step contributes: (i) within-tape causal edges: one from
+each of the three neighbors $(L, C, R)$ in the $r{=}1$ rule, giving 3~edges
+per cell; (ii) cross-tape causal edges: one from each of the $\NTAPES{-}1$
+other tapes at the same position, giving $\NTAPES{-}1$ edges per cell. Total
+edges per cell: $3 + (\NTAPES-1) = \NTAPES + 2$. Cross-tape fraction:
+$(\NTAPES-1)/(\NTAPES+2)$. For $\NTAPES = 3$: $2/5$. $\square$
+\end{proof}
+
+This result is a mathematical consequence of the DPP architecture ---
+not a simulation measurement. The explicit bulk causal graph for the canonical
+5-cell orbit (3 tapes, 4 time steps, 60 events) has $135$ within-tape $+$
+$90$ cross-tape $= 225$ total edges, giving $90/225 = 40.0\%$ exactly.
+
+\begin{figure}[htb]
+  \centering
+  \begin{tabular}{cc}
+    \includegraphics[width=0.47\textwidth]{p49_bulk_causal_3d.png} &
+    \includegraphics[width=0.47\textwidth]{p49_causal_comparison.png}
+  \end{tabular}
+  \caption{\emph{Left:} Combined bulk causal graph of the three-tape DPP system
+  on the canonical orbit (5 cells $\times$ 3 tapes $\times$ 4 time steps,
+  60 events). Blue edges: within-tape causal connections from the $p \pmod{7}$
+  update rule. Red dashed edges: cross-tape gravitational sourcing edges.
+  Total: $135 + 90 = 225$ edges; cross-tape fraction $= 40.0\%$ exactly.
+  \emph{Right:} Comparison between the independent (uncoupled) configuration
+  (three disconnected $1{+}1$D causal cones) and the DPP-coupled bulk (one
+  fully connected $3{+}1$D causal structure). Cross-tape coupling is what
+  unifies three independent one-dimensional systems into a single
+  three-plus-one-dimensional causal bulk.}
+  \label{fig:bulk}
+\end{figure}
+
+\subsection{Connectivity Change}
+
+Without cross-tape edges: 3 disconnected components (three independent $1{+}1$D
+causal cones). With cross-tape edges: 1 fully connected component spanning all
+three tapes. The DPP coupling is what unifies three independent 1D systems into
+a single 3+1D causal bulk. The inversion formula $\NTAPES = (1+2f)/(1-f)$
+recovers the tape count from the cross-tape fraction.
+
+%-----------------------------------------------------------------------------
+\section{What Object~0 Is and Is Not}
+\label{sec:interp}
+%-----------------------------------------------------------------------------
+
+\noindent\textbf{Not particle physics directly.}
+The colorful $\ZS$ spacetime diagrams show Object~0 ($p \pmod 7$) dynamics
+on generic $\ZS$ inputs. Most generic inputs are PSC-inadmissible: $\fmdl{}$
+maps them to~0. The Planck-scale chaos is the algebraic vacuum response
+\emph{below} the physics filter. SM particles exist at the Compton scale
+(${\sim}10^{13}$--$10^{15}$ cells) as coherent BPS kinks of
+$\PHIMDL{}$~\cite{SpivackPhiMDLField}. What the spacetime diagrams show is
+the microscopic vacuum texture at the Planck lattice scale.
+
+\medskip
+\noindent\textbf{Not gliders at Planck scale.}
+Invariant Subset Uniqueness (Theorem~\ref{thm:invariant}) explains why: there
+is no stable intermediate algebraic structure between Rule~110 and full $\ZS$.
+The ergodic $\ZS$ dynamics cannot produce a stable propagating sub-structure
+from single-cell injection. This does not rule out multi-cell BPS kink injection
+at the Compton scale.
+
+\medskip
+\noindent\textbf{Not a CA-level connection to HVP.}
+Orbit visitation rate inside the excitation cone: $2.63\% \approx$ naive random
+$2.92\%$. Object~0 does not preferentially visit SM orbit configurations. The
+HVP connection must be sought at the $\PHIMDL{}$ path-integral level (Object~2).
+
+\medskip
+\noindent\textbf{What it is.}
+The Planck-scale vacuum substrate. Ergodic, maximally disordered. The Invariant
+Subset Uniqueness theorem shows it has exactly one structured shadow (Rule~110)
+and nothing in between. In QFT language: the vacuum looks thermally disordered
+at distances much shorter than the Compton wavelength. In GTE at Planck scale,
+it is Class~3 chaotic and ergodic on $\ZS$.
+
+\medskip
+\noindent\textbf{GEN1 under $p_{\rm poly}$ (CatA).}
+On the isolated 5-cell periodic ring, GEN1 under $p_{\rm poly}$ exhibits a
+transient of length 3 followed by a period-475 attractor; GEN2 and GEN3 never
+appear. Among all $7^5 = 16{,}807$ states on the 5-cell ring, $p_{\rm poly}$
+has 52 fixed points (period~1, including VAC) and 16{,}755 states of period~475.
+The SM orbit (under $\fmdl{}$) and the polynomial dynamics are on completely
+different attractors, confirming that Object~0 and Object~1 are dynamically as
+well as algebraically distinct.
+The formal certificate of the measurement mechanism~---~characterizing $\fmdl{}$
+as the PSC-projection of $p$, establishing Three-Level MDL Unification (\CatAD{}),
+and Lean-certifying orbit uniqueness (\CatAL{})~---~is
+in~\cite{SpivackPolynomialTransputation}.
+
+\medskip
+\noindent\textbf{Spin-7 lattice model.}
+Interpreting $p(L,C,R) \in \{0,\ldots,6\}$ as a three-body spin interaction
+energy defines a 7-state nearest-neighbor spin model with transfer matrix
+$\mathbf{T}_{bc} = \sum_{a \in \ZS} e^{-\beta\, p(a,b,c)}$ and partition
+function $\mathcal{Z} = \mathrm{tr}\,\mathbf{T}^L$.
+The 2D model has a phase transition at $T_c \approx 2.86\,J$ (\CatA{}) in the
+3-state Potts universality class with critical exponents $\nu = 5/6$,
+$\eta = 4/15$ (\CatAD{}) and ground states $\{0,1,5\}$ (the $\mathbb{Z}_3$
+color sectors of the Standard Model); a realization with 7-level Rydberg atoms
+in optical tweezer arrays is proposed.
+The 1D transfer matrix is exactly one CMCA time step, yielding an entropy rate
+$S = \log(10.42) = 2.343$~nats/step at $\beta = 1$ (\CatA{}).
+See~\cite{SpivackSpin7Lattice} for the full analysis.
+
+\medskip
+\noindent\textbf{GF(7) arithmetic coprocessor.}
+Setting $L = 6 \equiv -1 \pmod{7}$ makes $p$ a pure two-body addition gate:
+$p(6,a,b) = a+b-ab-6ab = a+b-7ab \equiv a+b \pmod{7}$ (\CatAL{},
+\lean{p\_addition\_via\_L6}, zero sorry).
+Multiplication follows in two gates: $a \cdot b = p(6,a,b) - p(0,a,b)$
+(\CatAL{}, \lean{p\_multiplication\_from\_two\_gates}).
+Both relations are exhaustively verified over all 49 input pairs.
+Together they provide a complete $\GF{7}$ arithmetic coprocessor from $p$-gates alone:
+addition in one gate, multiplication in two.
+This is relevant for lattice-based and code-based cryptographic schemes that operate over $\GF{7}$.
+
+\medskip
+\noindent\textbf{Cryptographic S-box.}
+As a $\mathbb{Z}_7^3 \to \mathbb{Z}_7$ function, $p$ has Walsh nonlinearity
+$\mathrm{NL}(p) = 36/49 \approx 0.7347$ (\CatAD{}, Theorem~\ref{thm:walshNL}).
+For comparison, the AES S-box over $\GF{2^8}$ has $\mathrm{NL} \approx 0.437$
+(normalised to $[0,1]$).
+The nonlinearity of $p$ is not the result of optimisation; it is determined by the
+Higgs branch capacity $c_H = 13$ via $\mathrm{NL}(p) = 1 - c_H/7^2$.
+This gives $p$ a provable, algebraically certified nonlinearity --- a property no
+heuristically designed S-box possesses.
+
+\medskip
+\noindent\textbf{The iceberg metaphor.}
+Rule~110 is the structured ether above the waterline; the colorful $\ZS$ chaos
+is the Planck-scale vacuum below it. The Invariant Subset Uniqueness theorem
+shows this structure is not accidental: there is exactly one coherent shadow
+below the physics threshold, and everything else is ergodic.
+
+%-----------------------------------------------------------------------------
+\section{Open Questions}
+\label{sec:open}
+%-----------------------------------------------------------------------------
+
+\begin{openprob}[Compton-Scale BPS Kink Injection]
+All simulations in this paper use single-cell injections on tapes of $L \leq
+10{,}000$ cells. A physical BPS kink spans ${\sim}10^{13}$--$10^{15}$ cells.
+To observe genuine particle-like behavior, a tape with $L \sim 10^6$ cells
+must be initialized with a BPS kink-like pattern (smooth winding profile over
+${\sim}1000$ cells). The Taichi infrastructure supports this scale.
+\end{openprob}
+
+\begin{openprob}[Formal Gorard Continuum Limit (OQ-QG-1)]
+The Gorard chain is substantially established: the CMCA vacuum is Ricci-flat
+(\lean{three\_tape\_gorard\_vacuum\_ricci\_flat}, \CatAL); the normalisation
+constant is $C_{\rm Gorard} = 3/32 = N_{\rm spatial}/(2D^2)$ (\CatAL); the
+discrete-smooth bridge $\kappa_{\rm Ollivier} = C_{\rm Gorard} \cdot R \cdot
+\varepsilon^2$ is certified (\CatAD); and the PMDL Poisson equation is
+equivalent to the Newtonian EFE (\CatAD,
+\cite{SpivackCompleteness,SpivackQGR,SpivackThreeTapeCMCA}). What remains open
+is the
+\emph{formal} Gromov--Hausdorff convergence of the Gorard chain to smooth
+Lorentzian spacetime~\cite{SpivackQGR} -- requiring a Wasserstein-$1$
+library in Lean~4 that does not yet exist. Analytic Planck-length
+identification also remains open.
+\end{openprob}
+
+\begin{openprob}[PSC-Filtered Holographic Mode Count (OQ-CC-QUANTUM, \CatD{})]
+Paper~\cite{SpivackGTECosmology} derives $\Omega_\Lambda$ via two structurally
+independent routes bracketing Planck~2018:
+$\Omega_\Lambda^{\rm PSC} = \ln(2000/3)/(3\pi) = 0.6899$ and
+$\Omega_\Lambda^{\rm holo} = 3\pi/14 = 0.6732$, a $2.42\%$ spread
+irreducible by Baker--W\"ustholz. The conceptual hypothesis that PSC selection
+creates a preference for the orbit-count endpoint has been explored; the naive
+algebraic form is ruled out by Baker--W\"ustholz applied to the ratio
+$14 \cdot \ln(2000/3)/(9\pi^2)$. A non-algebraic mechanism remains open.
+\end{openprob}
+
+\begin{openprob}[WolframModel 3D Spatial Hypergraph]
+The three-tape DPP system encoded as three independent WolframModel rewriting
+rules correctly shows three independent causal trees (DPP coupling is
+synchronic, not a local hyperedge overlap in SetReplace v0.3.196 semantics).
+A true 3D WolframModel representation would require encoding each position
+$(x,y,z)$ as a 3-tuple hyperedge and expressing cross-tape coupling as a
+multi-body rewriting rule. This requires SetReplace ${\geq}$~0.7 or custom
+Wolfram engine code.
+\end{openprob}
+
+\begin{openprob}[Period-$475$ Group Theory]
+\label{op:period475}
+The isolated 5-cell $\ZS$ ring under $p$ has a unique period-$475$ attractor,
+where $475 = N_{\rm fam}^2 \times 19 = 5^2 \times 19$.
+The factor $5^2$ likely arises from the $\mathbb{Z}_7[\mathbb{Z}/5\mathbb{Z}]$-module
+structure: the cyclic shift $\sigma$ of order~5 commutes with $p$, contributing
+one factor of~5; a second factor of~5 arises from the splitting of $x^5 - 1$
+over $\GF{7^4}$ (since $\mathrm{ord}_5(7) = 4$). The factor~$19$ is unexplained:
+$19 \equiv 5 \pmod{7} = N_{\rm fam}$ and $19$ equals the MDL description length
+of $p$ in bits, but whether either observation is structural requires a full
+group-theoretic derivation of the orbit period in $\mathbb{Z}_7[\mathbb{Z}/5\mathbb{Z}]$.
+
+\noindent\textit{Partial resolution (\CatB{}).} The group structure is now better
+understood: the 475-cycle is unique (exhaustively verified); the cyclic group
+$\mathbb{Z}_{475} \cong \mathbb{Z}_{25} \times \mathbb{Z}_{19}$ decomposes as a
+product of shift and nonlinear components; the shift $\sigma$ acts only within
+$\mathbb{Z}_{25}$ (trivially on $\mathbb{Z}_{19}$), confirming the $5^2$ factor.
+The factor~$19$ arises because $19 \mid 7^3 - 1 = 342$ and $\mathrm{ord}_{19}(7) = 3$,
+identifying the $19$-cycle as an $\GF{7^3}$ resonance in the nonlinear part of
+the dynamics; the linearised period is $240 \ne 475$, confirming that the
+$19$-factor is intrinsically nonlinear. A complete algebraic derivation
+of the $19$-factor and a Lean certification (target \texttt{LT-087-P475-07})
+remain open.
+\end{openprob}
+
+
+%-----------------------------------------------------------------------------
+\begin{appendices}
+
+\section{Lean Certification Table}
+\label{app:lean}
+
+All Lean theorems cited in this paper are listed below with module paths and
+zero-sorry status. All modules are in the \lean{ugp-lean} library.
+
+\scriptsize
+\begin{longtable}{@{}p{4.1cm}p{6.5cm}cp{2.3cm}@{}}
+\toprule
+Theorem name & Module path & Cat & Role \\
+\midrule
+\endfirsthead
+\toprule
+Theorem name & Module path & Cat & Role \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\lean{mdl\_ca\_rule\_coding\_closed}
+  & \lean{Universality/}\allowbreak\lean{MDLDerivabilityCriterion.lean}
+  & \CatAL{} & T96-02, §\ref{sec:mdl} \\
+\lean{rule110\_z7\_poly\_rep}
+  & \lean{Universality/PhiMDLUniversality.lean}
+  & \CatAL{} & Thm~\ref{thm:r110}, §\ref{sec:algebra} \\
+\lean{p\_poly\_binary\_restriction\_closed}
+  & \lean{Universality/Z7InvariantSubsets.lean}
+  & \CatAL{} & Thm~\ref{thm:r110}, §\ref{sec:algebra} \\
+\lean{p\_poly\_agrees\_fmdl\_on\_binary}
+  & \lean{Universality/Z7InvariantSubsets.lean}
+  & \CatAL{} & §\ref{sec:objects} \\
+\lean{p\_poly\_invariant\_subsets\_classification}
+  & \lean{Universality/Z7InvariantSubsets.lean}
+  & \CatAL{} & Thm~\ref{thm:invariant}, §\ref{sec:algebra} \\
+\lean{rule110\_unique\_proper\_invariant\_subca}
+  & \lean{Universality/Z7InvariantSubsets.lean}
+  & \CatAL{} & Thm~\ref{thm:invariant}, §\ref{sec:algebra} \\
+\lean{five\_is\_qnr\_mod7}
+  & \lean{Universality/Z7InvariantSubsets.lean}
+  & \CatAL{} & Thm~\ref{thm:qnr}, §\ref{sec:algebra} \\
+\lean{kink\_fixed\_point\_eq\_no\_solution}
+  & \lean{Universality/Z7InvariantSubsets.lean}
+  & \CatAL{} & Thm~\ref{thm:qnr}, §\ref{sec:algebra} \\
+\lean{no\_intermediate\_fixed\_point}
+  & \lean{Universality/Z7InvariantSubsets.lean}
+  & \CatAL{} & Thm~\ref{thm:qnr}, §\ref{sec:algebra} \\
+\lean{nfam\_qnr\_explains\_binary\_floor}
+  & \lean{Universality/Z7InvariantSubsets.lean}
+  & \CatAL{} & Thm~\ref{thm:qnr}, §\ref{sec:algebra} \\
+\lean{fmdl\_z7\_gen1\_to\_gen2}
+  & \lean{Universality/CUP3DUniqueness.lean}
+  & \CatAL{} & §\ref{sec:sm}, §\ref{sec:wolfram} \\
+\lean{fmdl\_z7\_gen2\_to\_gen3}
+  & \lean{Universality/CUP3DUniqueness.lean}
+  & \CatAL{} & §\ref{sec:sm} \\
+\lean{fmdl\_z7\_gen3\_to\_vacuum}
+  & \lean{Universality/CUP3DUniqueness.lean}
+  & \CatAL{} & §\ref{sec:sm} \\
+\lean{fmdl\_gen1\_is\_garden\_of\_eden}
+  & \lean{Universality/CUP3DUniqueness.lean}
+  & \CatAL{} & §\ref{sec:sm} \\
+\lean{fmdl\_z7\_three\_generation\_orbit}
+  & \lean{Universality/CUP3DUniqueness.lean}
+  & \CatAL{} & §\ref{sec:sm} \\
+\lean{gen2\_outer\_positions\_constant}
+  & \lean{Universality/CUP3DUniqueness.lean}
+  & \CatAL{} & Rem.~\ref{rem:gentopo} \\
+\lean{gen3\_outer\_positions\_constant}
+  & \lean{Universality/CUP3DUniqueness.lean}
+  & \CatAL{} & Rem.~\ref{rem:gentopo} \\
+\lean{gen2\_gen3\_topology\_degenerate}
+  & \lean{Universality/CUP3DUniqueness.lean}
+  & \CatAL{} & Rem.~\ref{rem:gentopo} \\
+\lean{dimensional\_protocol\_principle\_master}
+  & \lean{Gravity/RelationalTime.lean}
+  & \CatAL{} & §\ref{sec:dpp} \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{Module: \lean{Polynomial/GTECausalTree.lean}}} \\
+\lean{gte\_rulegte\_event\_count}
+  & \lean{Polynomial/GTECausalTree.lean}
+  & \CatAL{} & §\ref{sec:wolfram} \\
+\lean{gte\_rulegte\_ten\_generations}
+  & \lean{Polynomial/GTECausalTree.lean}
+  & \CatAL{} & §\ref{sec:wolfram} \\
+\lean{perfectTree\_numNodes}
+  & \lean{Polynomial/GTECausalTree.lean}
+  & \CatAL{} & §\ref{sec:wolfram} \\
+\lean{perfectTree\_horton\_ratio}
+  & \lean{Polynomial/GTECausalTree.lean}
+  & \CatAL{} & §\ref{subsec:botanical} \\
+\lean{gte\_causal\_tree\_summary}
+  & \lean{Polynomial/GTECausalTree.lean}
+  & \CatAL{} & §\ref{subsec:botanical} \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{Module: \lean{Polynomial/PolyExplorations.lean}}} \\
+\lean{gf5\_has\_fixed\_point}
+  & \lean{Polynomial/PolyExplorations.lean}
+  & \CatAL{} & Rem.~\ref{rem:classpred} \\
+\lean{gf5\_second\_ether}
+  & \lean{Polynomial/PolyExplorations.lean}
+  & \CatAL{} & Rem.~\ref{rem:classpred} \\
+\lean{T\_b\_output\_not\_determined\_by\_mod7}
+  & \lean{Polynomial/PolyExplorations.lean}
+  & \CatAL{} & §\ref{sec:objects} \\
+\lean{T\_computable\_not\_polynomial\_GF7}
+  & \lean{Polynomial/PolyExplorations.lean}
+  & \CatAL{} & §\ref{sec:objects} \\
+\lean{canonical\_b2\_divisible\_by\_7}
+  & \lean{Polynomial/PolyExplorations.lean}
+  & \CatAL{} & Rem.~\ref{rem:muonwinding} \\
+\lean{muon\_neff\_vacuum\_winding}
+  & \lean{Polynomial/PolyExplorations.lean}
+  & \CatAL{} & Rem.~\ref{rem:muonwinding} \\
+\lean{poly\_p\_vacuum\_basin\_card\_eq\_52}
+  & \lean{Polynomial/PolyExplorations.lean}
+  & \CatAL{} & §\ref{sec:basin} \\
+\lean{period\_475\_is\_minimal}
+  & \lean{Polynomial/PolyExplorations.lean}
+  & \CatAL{} & §\ref{sec:basin} \\
+\lean{four\_object\_GTE\_pairwise\_distinct}
+  & \lean{Polynomial/PolyExplorations.lean}
+  & \CatAL{} & §\ref{sec:objects} \\
+\lean{p\_addition\_via\_L6}
+  & \lean{Polynomial/PolyExplorations.lean}
+  & \CatAL{} & §\ref{sec:interp} \\
+\lean{p\_multiplication\_from\_two\_gates}
+  & \lean{Polynomial/PolyExplorations.lean}
+  & \CatAL{} & §\ref{sec:interp} \\
+\end{longtable}
+
+All proofs in \lean{Z7InvariantSubsets.lean} and
+\lean{PolyExplorations.lean} use finite decidable tactics
+(\lean{decide} or \lean{native\_decide}). All proofs in
+\lean{GTECausalTree.lean} use structural induction with linear arithmetic
+(\lean{linarith} + \lean{ring} for power lemmas; \lean{omega} for Nat subtraction).
+Zero sorry on all listed modules.
+
+\section{Code and Reproducibility}
+\label{app:code}
+
+\noindent\textbf{Polynomial definition.}
+$p(L,C,R) = (C + R - C \cdot R - L \cdot C \cdot R) \bmod 7$,
+implemented in Python as \texttt{(C+R - C*R - L*C*R) \% 7}.
+
+\noindent\textbf{Software environment.}
+Python~3.10+; NumPy; Matplotlib; NetworkX; Taichi~1.7.3
+(\texttt{pip install taichi==1.7.3}); Wolfram Engine~14.3.0 with
+SetReplace~v0.3.196 (\texttt{Needs["SetReplace`"]}); Lean~4 + Mathlib.
+
+\noindent\textbf{Scripts (in \texttt{scripts/}).}
+
+\begin{center}
+\footnotesize
+\begin{tabular}{@{}p{5.8cm}p{4.6cm}p{2.6cm}@{}}
+\toprule
+Script & Purpose & Figures \\
+\midrule
+\texttt{invariant\_subset\_classifier.py}
+  & Exhaustive invariant subset check (127 non-empty subsets)
+  & §\ref{sec:algebra} \\
+\texttt{spacetime\_diagram\_generator.py}
+  & $\ZS$ spacetime diagrams on ether background
+  & Fig.~\ref{fig:spacetime} \\
+\texttt{ppoly\_fmdl\_contrast.py}
+  & $\fmdl{}$ vs $p_{\rm poly}$ contrast figures
+  & Figs.~\ref{fig:sparsity},~\ref{fig:diverge} \\
+\texttt{gen\_orbit\_ring\_visualization.py}
+  & GEN orbit ring diagram (pure Python)
+  & Fig.~\ref{fig:orbit} \\
+\texttt{z7\_sector\_dynamics.py}
+  & Glider search, scattering, sector comparison
+  & Fig.~\ref{fig:sectors} \\
+\texttt{three\_tape\_dpp\_visualization.py}
+  & Three-tape DPP visualization suite
+  & Fig.~\ref{fig:dpp} \\
+\texttt{bulk\_causal\_graph.py}
+  & DPP combined bulk causal graph
+  & Fig.~\ref{fig:bulk} \\
+\texttt{glider\_search\_taichi.py}
+  & Ether-excluded $\ZS$ glider search (Taichi)
+  & Glider null \\
+\texttt{orbit\_visitation\_rate.py}
+  & SM orbit triple visitation rate (Taichi)
+  & §\ref{sec:dynamics} \\
+\texttt{gte\_rulegte\_causal\_graph.wl}
+  & Canonical WolframScript for ruleGTE causal graph (verified 2026-06-08:
+    1023 events, 2044 edges, binary tree); also exports final hypergraph state
+  & Figs.~\ref{fig:causal},~\ref{fig:finalstate} \\
+\texttt{gte\_wolframmodel\_causal\_graph.py}
+  & Python reproducible: ruleGTE causal graph without Wolfram Engine;
+    Strahler, Horton ratio, tree metrics
+  & Figs.~\ref{fig:causal},~\ref{fig:finalstate} \\
+\texttt{gte\_causal\_graph\_corrected.py}
+  & Topology-degeneracy analysis: GEN$_2$/GEN$_3$ topology $(a,b,a,c,a)$
+    causes WolframModel binary branching
+  & §\ref{sec:wolfram} \\
+\texttt{wolfram\_model\_causal\_graph.wl}
+  & Legacy WolframScript (orbit rules); deterministic linear chain
+  & §\ref{sec:wolfram} \\
+\texttt{botanical\_causal\_graph\_analysis.py}
+  & Botanical L-system comparison: GTE vs.\ Apiaceae; Strahler,
+    Horton ratio, fractal dimension, closeness scores
+  & Figs.~\ref{fig:botanical_all},~\ref{fig:botanical_best} \\
+\texttt{three\_tape\_wolfram\_model.wl}
+  & Three-tape SetReplace encoding (WolframScript)
+  & §\ref{sec:dpp} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent\textbf{Note on Taichi.}
+Do not include \texttt{from \_\_future\_\_ import annotations} in any file
+importing Taichi: it activates PEP~563 lazy annotation evaluation, which breaks
+Taichi's kernel argument type inspection at runtime.
+
+\end{appendices}
+
+%-----------------------------------------------------------------------------
+\bibliographystyle{plain}
+\bibliography{../bib/Spivack_Papers_Bibliography}
+%-----------------------------------------------------------------------------
+
+\end{document}

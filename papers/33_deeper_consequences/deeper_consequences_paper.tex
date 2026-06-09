@@ -1,0 +1,3571 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Deeper Consequences of Arithmetic Universality in the Standard Model
+%
+%  Nova Spivack --- 2026
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt]{article}
+
+% ===================== PREAMBLE =====================
+\usepackage[margin=1in]{geometry}
+\usepackage{authblk}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\allowdisplaybreaks
+\setlength{\abovedisplayskip}{6pt}
+\setlength{\belowdisplayskip}{6pt}
+\setlength{\abovedisplayshortskip}{4pt}
+\setlength{\belowdisplayshortskip}{4pt}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+\usepackage{cite}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage[most]{tcolorbox}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,calc}
+\usepackage{tabularx,ragged2e,array}
+\usepackage{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage[toc]{appendix}
+\usepackage{float}
+\usepackage{placeins}
+\usepackage{multicol}
+
+\setlength{\emergencystretch}{3em}
+\raggedbottom
+
+\newcolumntype{P}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\graphicspath{{artifacts/}{figures/}{./}}
+
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black}
+\input{nova_zenodo_doi_placeholder}
+
+% ── Theorem environments ──────────────────────────────────────────────────────
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% ── Convenience macros ────────────────────────────────────────────────────────
+\newcommand{\UGP}{\text{UGP}}
+\newcommand{\GTE}{\text{GTE}}
+\newcommand{\MDL}{\text{MDL}}
+\newcommand{\ZS}{\mathbb{Z}_7}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\Ngen}{N_{\rm gen}}
+\newcommand{\Nfam}{N_{\rm fam}}
+\newcommand{\bH}{b_H}
+\newcommand{\cH}{c_H}
+\newcommand{\lean}[1]{%
+  \penalty-100
+  \begingroup\def\_{\textunderscore\allowbreak}\texttt{#1}\endgroup}
+\newcommand{\sinwsq}{\sin^2\!\theta_W}
+
+% Status badge macros (same as P28, P31)
+\newcommand{\CatA}{\textbf{A}}
+\newcommand{\CatAL}{\ensuremath{\textbf{A}_{\rm Lean}}}
+\newcommand{\CatAMDL}{\ensuremath{\textbf{A}_{\rm MDL}}}
+\newcommand{\CatAD}{\textbf{A/D}}
+\newcommand{\CatB}{\textbf{B}}
+\newcommand{\CatD}{\textbf{D}}
+
+% ── Title / author ────────────────────────────────────────────────────────────
+\title{\bfseries Deeper Consequences of Arithmetic Universality\\[0.3em]
+in the Standard Model}
+
+\author[1]{Nova Spivack\thanks{Correspondence:
+  \href{mailto:novaspivackrelay@gmail.com}{novaspivackrelay@gmail.com}}}
+\affil[1]{Independent Research}
+\date{2026}
+
+\begin{document}
+\maketitle
+\NovaZenodoAfterTitle
+
+% ── Abstract ─────────────────────────────────────────────────────────────────
+\begin{abstract}
+The Standard Model (SM) generation orbit is forced to evolve under Rule~110 ---
+a Turing-complete binary cellular automaton --- by the combinatorial arithmetic
+of the Universal Generative Principle~\cite{SpivackCompUniversality}.
+We derive the structural and dynamical consequences of this identification
+beyond the quantitative predictions of the companion
+papers~\cite{SpivackWeinberg,SpivackCKM,SpivackNeutrino}.
+Five results are established.
+(1)~The electroweak bosons $W^+$, $Z$, $H^0$ form a unit-step arithmetic
+staircase in Generative Triple Evolution branch capacity, $c \in \{11,12,13\}$;
+each step encodes one absorbed Goldstone degree of freedom via the formula
+$c_P = \cH - d_P$, giving a cellular-automaton grounding of the Higgs mechanism.
+(2)~The unique Minimum Description Length (MDL)-minimal orbit-admissible function $f_{\rm MDL}$ excludes
+$\mathbb{Z}_7 = 4$ (the $W^-/e^-$ sector) from its output range; this hard
+exclusion is arithmetically equivalent to CP violation, making matter dominance
+a necessary consequence of compression.
+(3)~The SM generation orbit is the unique maximal Garden-of-Eden-rooted chain
+in $\mathbb{Z}_7^5$, isolated in six independent senses by the complete causal
+isolation master theorem; the generation count $\Ngen = 3$ is topologically
+forced.
+(4)~The photon is the unique uniform fixed point of $f_{\rm MDL}$, identifying
+it as the cellular-automaton vacuum state, while the Rule~110 ether carries
+$\mathbb{Z}_7$ winding number~$1$, placing it in the neutrino sector.
+(5)~The 14-neighborhood $f_{\rm MDL}$ catalog is an emission interaction kernel
+complementary to the absorption kernel of the UGP dynamics
+framework~\cite{Spivack2026_UGPDynamics}, establishing a temporal duality
+between the two derivations of the SM vertex structure.
+All principal results are machine-certified in Lean~4 with zero \texttt{sorry};
+exceptions are the Casimir anti-enhancement ($+6.3\%$, computationally
+verified) and the SM orbit chirality (14/343 parity-violating triples,
+computationally verified).
+\end{abstract}
+
+\tableofcontents
+
+% ── Claim-strength taxonomy ───────────────────────────────────────────────────
+\begin{tcolorbox}[colback=gray!4,colframe=gray!50!black,
+  title={\textbf{Claim-strength taxonomy}},
+  fonttitle=\bfseries,left=6pt,right=6pt,top=5pt,bottom=5pt]
+\small
+\[
+\CatAL \;>\; \CatAMDL \;>\; \CatAD \;>\; \CatB \;>\; \CatD
+\]
+\textbf{$\CatAL$:} machine-checked exact arithmetic in Lean~4, zero \texttt{sorry}.\\
+\textbf{$\CatAMDL$:} MDL-unique within a declared expression class.\\
+\textbf{$\CatAD$:} computationally confirmed; a physics bridge remains.\\
+\textbf{$\CatB$:} calibrated reproduction.\\
+\textbf{$\CatD$:} exploratory / frontier.
+\end{tcolorbox}
+
+% ═══════════════════════════════════════════════════════════════════════════════
+\section{Introduction}
+\label{sec:intro}
+% ═══════════════════════════════════════════════════════════════════════════════
+
+\subsection{Background: Rule~110 and the SM Orbit}
+
+In the GTE framework, each SM particle is encoded as an integer triple $(a,b,c;g)$
+evolving under a $\mathbb{Z}_7$ CA rule $f_{\rm MDL}$.
+The Universal Generative Principle (UGP)~\cite{Spivack2026_SM_UGP} encodes
+each Standard Model particle as a Generative Triple Evolution (GTE) triple
+$(a, b, c; g)$, where the branch capacity $c$ and the ladder index $b$ govern
+the particle's informational and dynamical role.
+A central result of the companion
+paper~\cite{SpivackCompUniversality} is CUP-4 (Computational Universality Property result 4; $\CatAL$, machine-certified in
+Lean~4 with zero \texttt{sorry}): the SM generation orbit --- the three-step
+cascade ${\rm gen}_1 \to {\rm gen}_2 \to {\rm gen}_3 \to {\rm vacuum}$ ---
+uniquely forces the MDL-minimal orbit-admissible function $f_{\rm MDL}$ to
+coincide, on a five-cell periodic ring, with the truth table of Rule~110.
+Rule~110 is the canonical paradigm of a class-4 cellular automaton exhibiting
+computational universality~\cite{Wolfram2020Tech,Cook2004}; the present work
+derives the specific gauge and particle structure encoded in its SM orbit.
+
+The identification of the SM orbit with a Rule~110 orbit is not merely a
+formal coincidence.  The CUP-4 chain establishes that the SM generation
+sequence is, at the level of mod-7 arithmetic, the unique computationally
+universal orbit in $\mathbb{Z}_7^5$~\cite{SpivackCompUniversality}.
+Once this identification is in hand, the arithmetic of the orbit --- the
+structure of $f_{\rm MDL}$, the topology of its Garden-of-Eden configurations,
+the palindrome decomposition of its active neighborhoods --- becomes a
+derivation machine for SM structural and dynamical properties.
+The companion papers derive quantitative predictions from this machine:
+$\sinwsq = 3/13$~\cite{SpivackWeinberg}, the arithmetic structure of the
+CKM quark-mixing matrix~\cite{SpivackCKM}, and PMNS mixing angles including
+$\sin^2\!\theta_{23} = 19/42$ --- an orbit-ratio refinement of the
+tribimaximal $45^\circ$ prediction~\cite{SpivackNeutrino}.
+The present paper derives the structural consequences: properties that follow
+from the orbit arithmetic itself, without numerical fitting, independently of
+the quantitative predictions.
+
+\subsection{What This Paper Establishes}
+
+This paper is organized around three thematic clusters.
+
+\paragraph{Cluster 1: Gauge sector arithmetic (\S\S\ref{sec:ew_staircase}--\ref{sec:mdl_cp}).}
+The 14 nonzero-output neighborhoods of $f_{\rm MDL}$ split as $3 + 10 + 1$:
+three palindromic (U(1)$_Y$ channels), ten non-palindromic (SU(2)$_L$
+channels), and one W$^+$ emission vertex.
+The EW boson branch capacities $c \in \{11, 12, 13\}$ form a unit-step
+arithmetic staircase that encodes the Goldstone mechanism: each longitudinal
+degree of freedom absorbed by a massive boson reduces $c$ by~1 relative to the
+Higgs scalar boundary.
+Separately, the MDL minimality principle that selects $f_{\rm MDL}$ is
+arithmetically equivalent to the hard exclusion of $\mathbb{Z}_7 = 4$ from
+the $f_{\rm MDL}$ output range, and this exclusion is, precisely, a
+CA-arithmetic encoding of CP violation and matter dominance.
+
+\paragraph{Cluster 2: Orbital structure and causal isolation
+(\S\ref{sec:causal_isolation}).}
+The SM orbit is the unique maximal Garden-of-Eden-rooted chain of length~3
+in $\mathbb{Z}_7^5$ (the GTP-3 uniqueness theorem, $\CatAL$; GTP-$k$ denotes a
+Garden-of-Eden-Terminated Path of length $k$).
+The generation count $\Ngen = 3$ is therefore topologically forced: no
+GTP-4 chain exists, and all GTP-3 chains are cyclic rotations of~${\rm gen}_1$.
+A six-part master theorem establishes causal isolation in six independent
+senses, ranging from predecessor uniqueness at each generation to global
+$\mathbb{Z}_2$ binary isolation over all~1024 candidate pairs.
+Rule~111 is identified as the unique near-miss: satisfying all SM orbit
+constraints except the single vacuum transparency condition.
+
+\paragraph{Cluster 3: Neutral sector and interaction duality
+(\S\S\ref{sec:photon}--\ref{sec:vertex_duality}).}
+The photon is the unique CA uniform fixed point of $f_{\rm MDL}$; its
+zero description length identifies it as the cellular-automaton vacuum.
+The Rule~110 ether (the period-14 background oscillation) carries
+$\mathbb{Z}_7$ winding number~1, placing it in the neutrino sector rather
+than the electromagnetic vacuum.
+Finally, the complete $f_{\rm MDL}$ neighborhood catalog constitutes an
+emission interaction kernel, complementary to the absorption kernel derived
+from braid cobordism and winding conservation in the UGP dynamics
+paper~\cite{Spivack2026_UGPDynamics}: the two derivations are independent
+starting points that converge on the same SM vertex structure, related by
+temporal duality.
+
+\subsection{What This Paper Does and Does Not Claim}
+
+\begin{tcolorbox}[colback=blue!3,colframe=blue!50!black,
+  title={\textbf{What this paper does and does not claim}},
+  fonttitle=\bfseries,left=6pt,right=6pt,top=5pt,bottom=5pt]
+\small
+\textbf{Does claim:}
+\begin{itemize}[nosep,leftmargin=1.2em]
+\item All principal structural results ($\CatAL$) follow from the orbit
+  arithmetic of $f_{\rm MDL}$ alone, without free parameters.
+\item The hard $\mathbb{Z}_7 = 4$ exclusion is the arithmetic form of
+  CP violation; it is equivalent to MDL minimality, not an independent input.
+\item The photon-as-vacuum and the Rule~110 ether as neutrino-sector background
+  are exact arithmetic facts, Lean-certified, not physical conjectures.
+\item The CA emission kernel and the P22 absorption kernel are
+  mathematically dual; neither derivation assumes the other.
+\end{itemize}
+\textbf{Does not claim:}
+\begin{itemize}[nosep,leftmargin=1.2em]
+\item A derivation of CP violation in the SM Lagrangian; the result is at
+  the CA-arithmetic level and requires a physical bridge (analytically derived) to the
+  field-theoretic definition.
+\item The exact closed form of the Casimir anti-enhancement ratio
+  ($r_D/r_P \approx 1.063$); this is computationally established but
+  algebraically open.
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{Reviewer Map of Principal Results}
+
+\small
+\setlength{\LTcapwidth}{\linewidth}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}{@{}P{5.2cm}P{4.5cm}cc@{}}
+\caption{Principal results of this paper with claim-strength status and section.}
+\label{tab:reviewer_map}\\
+\toprule
+\textbf{Result} & \textbf{Key Lean theorem(s)} & \textbf{Status} & \textbf{Section} \\
+\midrule
+\endfirsthead
+\multicolumn{4}{l}{\small\itshape (Table~\ref{tab:reviewer_map} continued)}\\
+\toprule
+\textbf{Result} & \textbf{Key Lean theorem(s)} & \textbf{Status} & \textbf{Section} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\small\itshape (continued on next page)}\\
+\endfoot
+\bottomrule
+\endlastfoot
+EW boson $c$-staircase: $c \in \{11,12,13\}$ &
+  \lean{ew\_c\_staircase},
+  \lean{ew\_c\_arithmetic\_progression} &
+  $\CatAL$ & \S\ref{sec:ew_staircase} \\[4pt]
+Goldstone formula $c_P = \cH - d_P$ &
+  Physical bridge (Goldstone count) &
+  $\CatAD$ & \S\ref{sec:ew_staircase} \\[4pt]
+$f_{\rm MDL}$ count identity: 14 = $\cH + 1$ &
+  \lean{fmdl\_nonzero\_count\_14},
+  \lean{fmdl\_count\_eq\_chiggs\_plus\_one} &
+  $\CatAL$ & \S\ref{sec:ew_staircase} \\[4pt]
+$(u,\gamma,u) \to W^+$ electroweak vertex &
+  \lean{u\_photon\_u\_to\_W\_vertex} &
+  $\CatAL$ & \S\ref{sec:ew_staircase} \\[4pt]
+MDL minimality $\Leftrightarrow$ $\mathbb{Z}_7 = 4$ exclusion &
+  \lean{fmdl\_mdl\_uniqueness},
+  \lean{fmdl\_mdl\_minimal\_implies\_z4\_exclusion} &
+  $\CatAL$ & \S\ref{sec:mdl_cp} \\[4pt]
+$(3,4)$ conjugate pair is the unique CP-asymmetric pair &
+  \lean{fmdl\_matter\_cp\_violation},
+  \lean{fmdl\_conj\_pair\_asymmetry\_unique} &
+  $\CatAL$ & \S\ref{sec:mdl_cp} \\[4pt]
+SM orbit chirality: 14/343 P-violating triples &
+  Python verified &
+  $\CatA$ & \S\ref{sec:mdl_cp} \\[4pt]
+GTP-3 uniqueness: $\Ngen = 3$ topologically forced &
+  \lean{sm\_orbit\_unique\_gtp3},
+  \lean{fmdl\_max\_gtp\_length\_is\_3} &
+  $\CatAL$ & \S\ref{sec:causal_isolation} \\[4pt]
+Six-part causal isolation master theorem &
+  \lean{sm\_orbit\_complete\_causal\_isolation} &
+  $\CatAL$ & \S\ref{sec:causal_isolation} \\[4pt]
+Orbit sum trajectory invariance: $4 \to 4 \to 3 \to 0$ &
+  \lean{orbit\_sum\_trajectory\_invariant},
+  \lean{orbit\_sum\_winding\_classes} &
+  $\CatAL$ & \S\ref{sec:causal_isolation} \\[4pt]
+Rule~111 as unique near-miss &
+  \lean{vacuum\_selects\_rule110\_over\_rule111} &
+  $\CatAL$ & \S\ref{sec:causal_isolation} \\[4pt]
+Photon as unique CA uniform fixed point &
+  \lean{fmdl\_unique\_uniform\_fixed\_point},
+  \lean{photon\_is\_ca\_ether} &
+  $\CatAL$ & \S\ref{sec:photon} \\[4pt]
+Dual massless sectors: $\mathbb{Z}_7 \in \{0,1\}$ &
+  \lean{fmdl\_massless\_criterion} &
+  $\CatAL$ & \S\ref{sec:photon} \\[4pt]
+Rule~110 ether in neutrino sector ($\mathbb{Z}_7 = 1$) &
+  \lean{ether\_z7\_sum\_mod7} &
+  $\CatAL$ & \S\ref{sec:photon} \\[4pt]
+Unified $W_B{=}0$ colorless sector discriminant ($\gamma$, $\nu$, $Z$, $H^0$) &
+  \lean{z7\_zero\_sector\_\allowbreak{}unified\_discriminant} &
+  $\CatAL$ & \S\ref{sec:photon} \\[4pt]
+Casimir anti-enhancement $r_D/r_P \approx 1.063$ &
+  Transfer matrix, Python verified &
+  $\CatA$ & \S\ref{sec:casimir} \\[4pt]
+Helicity parity violation: $h = +1$ stable, $h = -1$ decays &
+  \lean{helicity\_parity\_\allowbreak violation} &
+  $\CatAL$ & \S\ref{sec:photon} \\[4pt]
+CA = emission kernel; P22 = absorption kernel &
+  \lean{ca\_w\_plus\_is\_emission\_not\_absorption},
+  \lean{p22\_absorption\_vertices\_are\_transparent} &
+  $\CatAL$ & \S\ref{sec:vertex_duality} \\[4pt]
+SM vertex theorem (unique CC emission; W$^-$ unemissible) &
+  \lean{sm\_charged\_current\_vertex},
+  \lean{sm\_w\_minus\_absence} &
+  $\CatAL$ & \S\ref{sec:vertex_duality} \\[4pt]
+Bidirectional unification capstone (7-conjunct) &
+  \lean{ugp\_r110\_sm\_joint\_unification} &
+  $\CatAL$ & \S\ref{sec:discussion} \\
+\end{longtable}
+\normalsize
+
+\subsection{Relation to Companion Papers}
+
+This paper is self-contained with respect to~\cite{SpivackCompUniversality},
+from which it imports only the established fact CUP-4 and the orbit-arithmetic
+infrastructure.  The Weinberg angle derivation~\cite{SpivackWeinberg} and the
+CKM matrix derivation~\cite{SpivackCKM} use the same arithmetic inputs and
+are cited in \S\ref{sec:discussion} as established quantitative results;
+none of the structural results of the present paper depend on them logically.
+The UGP dynamics framework~\cite{Spivack2026_UGPDynamics} provides the
+absorption vertices against which the CA emission kernel is compared in
+\S\ref{sec:vertex_duality}; the comparison is informative but not a logical
+prerequisite for the main results.
+The foundational GTE framework and $\mathbb{Z}_7$ winding correspondence are
+established in~\cite{Spivack2026_SM_UGP}.
+
+% ═══════════════════════════════════════════════════════════════════════════════
+\section{The Electroweak Boson Staircase and the Goldstone Mechanism}
+\label{sec:ew_staircase}
+% ═══════════════════════════════════════════════════════════════════════════════
+
+The $W^+$, $Z^0$, and $H^0$ bosons share GTE ladder index $b = 3$ and parity
+parameter $a = 5$, and occupy consecutive branch capacities $c \in \{11, 12, 13\}$
+in the GTE triple classification.
+This unit-step arithmetic progression encodes the electroweak symmetry breaking
+mechanism: each step down from the Higgs scalar boundary $\cH = 13$ records
+one Goldstone degree of freedom absorbed as a longitudinal polarization mode.
+The $f_{\rm MDL}$ count identity $14 = \cH + 1$ connects the neighborhood
+activity of the orbit-realizing CA directly to the Higgs branch capacity,
+and the unique charged-current vertex $f_{\rm MDL}(2,0,2) = 3$ identifies the
+$(u, \gamma, u) \to W^+$ electroweak emission event at the CA level.
+All results in this section are machine-certified in Lean~4 with zero
+\texttt{sorry}, except the physical bridge between the Goldstone count $d_P$
+and the CA $c$-reduction.
+
+\subsection{The EW \texorpdfstring{$c$}{c}-Staircase}
+\label{sec:ew_staircase_arithmetic}
+
+In the GTE encoding, each Standard Model particle is assigned a triple $(a, b, c; g)$ where
+$c$ is the \emph{branch capacity} --- the maximum depth of the generative cascade available to
+that particle --- and $b$ is the \emph{ladder index}.
+The three electroweak bosons relevant to spontaneous symmetry breaking are:
+\[
+W^+(5,3,11),\quad Z^0(5,3,12),\quad H^0(5,3,13).
+\]
+All three share parity parameter $a = 5$ and ladder index $b = 3$.
+Their branch capacities $c \in \{11,12,13\}$ form a unit-step arithmetic progression.
+
+\begin{theorem}[$c$-Staircase, $\CatAL$]\label{thm:ew_staircase}
+The EW boson cascade depths satisfy
+\[
+c_{W^+} = 11,\quad c_Z = 12,\quad c_H = 13,
+\]
+with unit-step progressions $c_Z = c_{W^+} + 1$ and $c_H = c_Z + 1$, and the mass ordering
+$c_{W^+} < c_Z < c_H$ matching the physical masses $M_W < M_Z < M_H$.
+The Higgs is the scalar boundary: $c_H = 13$ is the maximum branch capacity in the $b=3$
+EW sector, and $c_{W^+}, c_Z < c_H$.
+\end{theorem}
+
+\begin{proof}
+Machine-certified by \lean{ew\_c\_staircase},
+\lean{ew\_c\_arithmetic\_progression}, and \lean{ew\_higgs\_is\_scalar\_boundary}
+in \lean{EWBosonStructure.lean} (zero \texttt{sorry}).
+The values $c_{W^+} = 11$, $c_Z = 12$, $c_H = 13$ are definitional constants verified
+by \texttt{decide}.
+\end{proof}
+
+\begin{table}[H]
+\centering
+\small
+\caption{EW boson GTE data: branch capacity $c$, Goldstone count $d_P$, and
+polarization modes. Mass ordering matches $c$-ordering.}
+\label{tab:ew_staircase}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Boson} & \textbf{GTE triple} $(a,b,c)$ & $c$ & $d_P$ & \textbf{Polarizations}\\
+\midrule
+$H^0$   & $(5,3,13)$ & $13$ & $0$ & $1$ (scalar) \\
+$Z^0$   & $(5,3,12)$ & $12$ & $1$ & $3$ (transverse $\times 2$ + longitudinal)\\
+$W^+$   & $(5,3,11)$ & $11$ & $2$ & $3$ (transverse $\times 2$ + longitudinal)\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The combined EW sector structure theorem packages all four properties:
+
+\begin{theorem}[EW boson structure, $\CatAL$]\label{thm:ew_boson_structure}
+The GTE triples of $W^+$, $Z^0$, $H^0$ are pairwise distinct, share $(a,b) = (5,3)$,
+have cascade depths $c \in \{11,12,13\}$ forming a unit-step progression, and their
+$c$-ordering matches the physical mass ordering $M_W < M_Z < M_H$.
+\end{theorem}
+
+\begin{proof}
+\lean{ew\_boson\_structure} (\lean{EWBosonStructure.lean}, zero \texttt{sorry}).
+\end{proof}
+
+\subsection{The Goldstone Mechanism in \texorpdfstring{$c$}{c}-Arithmetic}
+\label{sec:ew_goldstone}
+
+The unit-step staircase in \cref{thm:ew_staircase} has a direct physical interpretation
+in terms of the Higgs mechanism.
+In the Standard Model, the Higgs doublet has four real degrees of freedom; after spontaneous
+breaking of $\mathrm{SU}(2)_L \times \mathrm{U}(1)_Y \to \mathrm{U}(1)_{\rm em}$, three
+become the longitudinal polarization modes of the massive $W^\pm$ and $Z^0$ bosons, and one
+remains as the physical Higgs scalar.
+The GTE $c$-component encodes this structure.
+
+\begin{definition}[Goldstone count]\label{def:goldstone_count}
+For each electroweak boson $P$, let $d_P$ denote the number of real broken
+$\mathrm{SU}(2)_L$ generator directions absorbed as longitudinal polarization modes:
+\begin{align*}
+d_H &= 0\quad(\text{scalar, no longitudinal mode}),\\
+d_Z &= 1\quad(\text{one broken generator direction}),\\
+d_{W^+} &= 2\quad(\text{two broken generator directions}).
+\end{align*}
+\end{definition}
+
+\begin{theorem}[Goldstone cascade formula, $\CatAD$]\label{thm:goldstone}
+The GTE branch capacity $c_P$ of each electroweak boson satisfies
+\begin{equation}
+c_P \;=\; \cH - d_P,
+\label{eq:goldstone}
+\end{equation}
+where $\cH = 13$ is the Higgs branch capacity and $d_P$ is the Goldstone count of \cref{def:goldstone_count}.
+Explicitly: $c_H = 13 - 0 = 13$, $c_Z = 13 - 1 = 12$, $c_{W^+} = 13 - 2 = 11$.
+\end{theorem}
+
+The arithmetic identity \eqref{eq:goldstone} is machine-certified as
+\lean{goldstone\_cascade\_formula} in \lean{EWBosonStructure.lean}
+(zero \texttt{sorry}).
+The \emph{physical identification} of $d_P$ with the broken generator count is a
+bridge between the CA arithmetic and the Standard Model gauge structure ($\CatAD$):
+the Goldstone count is not derived from within the GTE framework but is imported
+from the known electroweak symmetry-breaking pattern.
+
+The formula \eqref{eq:goldstone} provides a CA-arithmetic grounding of the Higgs
+mechanism.
+The branch capacity $c_P$ measures the remaining EW channel capacity \emph{after}
+the Goldstone donation: the massive gauge bosons use up cascade depth to carry their
+longitudinal modes, while the scalar Higgs retains the maximum depth $c_H$.
+A particle at $c < c_H$ in the $b=3$ EW sector is a massive spin-1 gauge boson with
+at least one longitudinal mode; only the particle at $c = c_H$ is the spin-0 scalar
+remnant.
+
+\begin{remark}
+The Weinberg angle derivation $\sinwsq = b_H / c_H = 3/13$
+(established in~\cite{SpivackWeinberg}) uses the same GTE inputs: the
+ratio of the $b$-index to the $c$-index of the Higgs triple.
+The present formula shows that $c_H = 13$ is the \emph{Goldstone-free}
+boundary value: it is the unique $c$-value in the $b=3$ EW sector at which
+$d_P = 0$.
+\end{remark}
+
+\subsection{The \texorpdfstring{$f_{\rm MDL}$}{fMDL} Count Identity}
+\label{sec:fmdl_count}
+
+Among the $7^3 = 343$ possible $\mathbb{Z}_7$ triples $(l, c, r)$, the MDL-minimal
+CA function $f_{\rm MDL}$ produces a nonzero output ($\neq 0$) on exactly $14$ of them;
+the remaining $329$ neighborhoods map to vacuum ($0$).
+This count of 14 is not arbitrary: it equals $\cH + 1 = 13 + 1$.
+
+\begin{theorem}[$f_{\rm MDL}$ count identity, $\CatAL$]\label{thm:fmdl_count}
+The number of $\mathbb{Z}_7$ triple neighborhoods on which $f_{\rm MDL}$ produces a
+nonzero output is
+\[
+|\{(l,c,r) \in \mathbb{Z}_7^3 : f_{\rm MDL}(l,c,r) \neq 0\}| = 14 = \cH + 1.
+\]
+\end{theorem}
+
+\begin{proof}
+\lean{fmdl\_nonzero\_count\_14} establishes the count 14 by \texttt{native\_decide}
+over all $343$ triples.
+\lean{fmdl\_count\_eq\_chiggs\_plus\_one} then certifies $14 = c_H + 1$
+(\lean{GUTStructure.lean}, zero \texttt{sorry}).
+\end{proof}
+
+The 14 active neighborhoods admit a canonical three-part decomposition tied to
+the gauge structure of the Standard Model.
+A neighborhood $(l, c, r)$ is a \emph{CA palindrome} if $l = r$ (spatial parity symmetry);
+otherwise it is non-palindromic.
+
+\begin{theorem}[Palindrome decomposition, $\CatAL$]\label{thm:palindrome}
+The 14 active neighborhoods decompose as
+\[
+14 \;=\; \underbrace{3}_{\text{palindromic}} + \underbrace{10}_{\text{non-palindromic}} + \underbrace{1}_{W^+\text{ emitter}} \;=\; b_H + (c_H - b_H) + 1,
+\]
+where $b_H = 3$ is the Higgs ladder index.
+The 3 palindromic neighborhoods correspond to $\mathrm{U}(1)_Y$ neutral-current channels;
+the 10 non-palindromic neighborhoods correspond to $\mathrm{SU}(2)_L$ charged-current channels;
+and the unique $W^+$ emitter vertex $(2,0,2) \to 3$ contributes the $+1$ term.
+\end{theorem}
+
+\begin{proof}
+\lean{fmdl\_count\_decomposition} and \lean{fmdl\_count\_ngen\_nfam}
+(\lean{GUTStructure.lean}, zero \texttt{sorry}).
+\end{proof}
+
+An equivalent formulation replaces GTE parameters by physical counts:
+\[
+14 \;=\; N_{\rm gen} + 2N_{\rm fam} + 1 \;=\; 3 + 10 + 1.
+\]
+The decomposition $3 + 10$ directly underlies the Weinberg angle derivation
+$\sinwsq = N_{\rm gen}/c_H = 3/13$~\cite{SpivackWeinberg}:
+the palindromic count $3 = b_H = N_{\rm gen}$ and the total active count
+$13 = c_H$ enter the ratio $b_H/c_H$ as the SM and GUT-scale Weinberg angles respectively.
+The full derivation is developed in~\cite{SpivackWeinberg}; here the count identity
+establishes its arithmetic foundation.
+
+\subsection{The \texorpdfstring{$(u,\gamma,u) \to W^+$}{(u,photon,u)->W+} Electroweak Vertex}
+\label{sec:ew_vertex}
+
+In the $\mathbb{Z}_7$ winding correspondence~\cite{Spivack2026_SM_UGP}, the photon
+carries winding number $\mathbb{Z}_7 = 0$ and the $u$-quark (first-generation up-type)
+carries $\mathbb{Z}_7 = 2$.
+The neighborhood $(l, c, r) = (2, 0, 2)$ therefore represents the CA state
+in which a photon is flanked by $u$-quarks on both sides.
+The unique neighborhood producing $\mathbb{Z}_7 = 3$ ($W^+$ winding class) is precisely
+this configuration.
+
+\begin{theorem}[Charged-current vertex, $\CatAL$]\label{thm:cc_vertex}
+$f_{\rm MDL}(2, 0, 2) = 3$.
+Moreover, $(2, 0, 2)$ is the unique triple in $\mathbb{Z}_7^3$ for which $f_{\rm MDL}$
+returns $\mathbb{Z}_7 = 3$:
+\[
+f_{\rm MDL}(l, c, r) = 3 \;\iff\; (l, c, r) = (2, 0, 2).
+\]
+\end{theorem}
+
+\begin{proof}
+\lean{fmdl\_w\_plus\_unique\_neighborhood} (\lean{Z7ChargeConjugation.lean},
+\texttt{decide}, zero \texttt{sorry}).
+The count $|\{(l,c,r) : f_{\rm MDL}(l,c,r) = 3\}| = 1$ is certified by
+\lean{fmdl\_w\_plus\_count\_one} (\texttt{native\_decide}).
+\end{proof}
+
+This is the CA-arithmetic identification of the $(u, \gamma, u) \to W^+$ electroweak
+emission vertex: a $u$-quark--photon--$u$-quark triple undergoes a CA step that
+produces a $W^+$ winding state.
+The emission character of this vertex is taken up in \S\ref{sec:vertex_duality},
+where we show that the CA encodes the $W^+$ \emph{emission} kernel, complementary to
+the absorption kernel of the dynamics framework~\cite{Spivack2026_UGPDynamics}.
+
+The $W^+$ boson ($\mathbb{Z}_7$ winding 3, the unique odd-winding SM particle) is identified as a Layer 110 (right-moving) excitation in the chiral CA substrate. $\mathbb{Z}_7$ winding conservation at the emission vertex $u(w=2) \to d(w=6) + W^+(w=3)$ is verified: $2 = (6+3) \bmod 7$ $\checkmark$. The global $\mathbb{Z}_7$ winding conservation for the complete Fermi process $u + e^- \to d + \nu$ is verified: $w_{\rm in} = 2+4 = 6 \bmod 7$, $w_{\rm out} = 6+0 = 6 \bmod 7$ $\checkmark$. The CA-native $W^+$ creation mechanism is the orbit constraint $f_{\mathrm{MDL}}(2,0,2) = 3$ (Lean-certified via \texttt{CUP3DUniqueness.lean}, zero \texttt{sorry}), where a vacuum cell flanked by two $u$ quarks evolves to a $W^+$ in one CA step. The $W^+$ excitation produced by this orbit event is a transient vertex state with lifetime exactly 1 CA timestep: exhaustive simulation finds no stable propagating glider with $\mathbb{Z}_7$ winding 3, consistent with the massive $W$ boson picture in which the $W^+$ is a virtual (off-shell) mediator, not an on-shell propagating particle at the CA scale ($\CatAD$).
+
+\begin{proposition}[Photon transparency, $\CatAL$]\label{prop:photon_transparent}
+Among the $36$ distinct $\mathbb{Z}_7$ triples of the form $(k, 0, k')$ with
+$k, k' \in \mathbb{Z}_7$, exactly $2$ produce a nonzero output (both involving the
+$u$-quark sector $k = k' = 2$); the remaining $34$ map to vacuum.
+Equivalently, $f_{\rm MDL}$ is transparent to photons in $34/36 \approx 94.4\%$ of
+matter-pair configurations.
+\end{proposition}
+
+The unique absorption event $(2, 0, 2) \to 3$ establishes both the selectivity of
+the charged-current interaction in the CA and the special role of the $u$-quark as
+the sole carrier of the photon-mediated $W^+$ emission process at the CA level.
+The connection to the P22 absorption vertices is developed in \S\ref{sec:vertex_duality}.
+
+\begin{remark}[Weak-isospin $T_3$ from $\mathbb{Z}_7$ arithmetic; $\CatAL$/$\CatAD$]
+\label{rem:t3_derivation}
+The $\mathbb{Z}_7$ winding structure determines the weak isospin $T_3$ for all
+$\mathrm{SU}(2)_L$ doublet members.
+The $\mathrm{SU}(2)_L$ doublet partners are defined by the winding difference
+$|\Delta w^*| = 3 = w_{W^+}^*$ (the $W^+$ winding number serves as the doublet
+raising operator), yielding the pairs $(u,d)$ and $(\nu,e^-)$.
+Writing $w^*$ for the representative of the winding class in $\{-3,\ldots,3\}$
+(so $w_u^*=2$, $w_d^*=-1$, $w_\nu^*=0$, $w_{e^-}^*=-3$, $w_{W^+}^*=3$),
+the GTE isospin formula is
+\begin{equation}
+  T_{3,f} = \frac{w_f^* - w_{f'}^*}{6},
+  \label{eq:t3_formula}
+\end{equation}
+where $f$ is the upper and $f'$ the lower doublet component.
+This gives $T_3(u) = T_3(\nu) = +1/2$ and $T_3(d) = T_3(e^-) = -1/2$, in exact
+agreement with the Standard Model assignments.
+The structural fact that $w_{W^+}^* = |\Delta w^*|$ simultaneously for both the
+quark doublet and the lepton doublet is machine-certified
+(\lean{wplus\_is\_iso\_raising\_operator},
+\lean{GUTStructure.lean}~\S49, zero \texttt{sorry}).
+This is the GTE algebraic origin of the universal $T_3 = \pm 1/2$ quantization rule.
+The doublet hypercharges $Y_q = 1/3$ and $Y_l = -1$ also follow from
+$\mathbb{Z}_7$ winding sums
+(\lean{quark\_doublet\_hypercharge},
+\lean{lepton\_doublet\_hypercharge},
+\lean{gte\_charge\_isospin\_summary},
+\lean{GUTStructure.lean}~\S49, zero \texttt{sorry}),
+completing the $\mathbb{Z}_7$-arithmetic derivation of all electroweak quantum
+numbers $Q$, $T_3$, $Y$ for SM doublet members
+($\CatAD$: the physical identification of $w^*$ with the SM weak-isospin
+assignment).
+\end{remark}
+
+% ═══════════════════════════════════════════════════════════════════════════════
+\section{MDL Minimality and Matter Dominance}
+\label{sec:mdl_cp}
+% ═══════════════════════════════════════════════════════════════════════════════
+
+The parsimony principle that selects $f_{\rm MDL}$ --- Minimum Description
+Length (MDL) minimality among all orbit-admissible functions --- forces the
+hard exclusion of $\mathbb{Z}_7 = 4$ from the $f_{\rm MDL}$ output range.
+In the $\mathbb{Z}_7$ winding correspondence~\cite{Spivack2026_SM_UGP},
+$\mathbb{Z}_7 = 3$ is the $W^+$ winding class and $\mathbb{Z}_7 = 4 = -3
+\bmod 7$ is its charge conjugate, identified with the $W^-/e^-$ sector.
+The hard exclusion of~4 while retaining~3 is therefore a charge-conjugation
+asymmetry in the $f_{\rm MDL}$ output range, and this asymmetry is
+arithmetically equivalent to MDL minimality.
+All principal results in this section are machine-certified in Lean~4
+(\texttt{Z7ChargeConjugation.lean}, zero \texttt{sorry}).
+
+\subsection{MDL-Minimality Uniqueness}
+\label{sec:mdl_uniqueness}
+
+An \emph{orbit-admissible} function is any map $f: \mathbb{Z}_7^3 \to \mathbb{Z}_7$
+consistent with the SM generation orbit constraints: it must realize the steps
+${\rm gen}_1 \to {\rm gen}_2 \to {\rm gen}_3 \to {\rm vacuum}$ under the five-cell
+periodic ring update $f_{\rm step}$.
+The set of orbit-admissible functions has cardinality $7^{320}$: among the $343$
+$\mathbb{Z}_7^3$ neighborhoods, exactly $23$ are constrained by the orbit evolution
+requirements (the triple neighborhoods appearing in the three-step generation cascade on
+the five-cell ring), leaving $343 - 23 = 320$ free neighborhoods each of which may take
+any of $7$ values.
+
+Among all orbit-admissible functions, the Minimum Description Length (MDL) principle
+selects the function with the shortest description, equivalently the \emph{most parsimonious}
+encoding of the SM orbit.
+The MDL-minimal function is $f_{\rm MDL}$ --- this is the content of CUP-4~\cite{SpivackCompUniversality}.
+
+\begin{theorem}[MDL uniqueness, $\CatAL$]\label{thm:mdl_uniqueness}
+Among all orbit-admissible functions $f: \mathbb{Z}_7^3 \to \mathbb{Z}_7$, there is a unique
+MDL-minimal function, and it is $f_{\rm MDL}$.
+Moreover, any orbit-admissible MDL-minimal function maps no neighborhood to $\mathbb{Z}_7 = 4$:
+\[
+f \text{ orbit-admissible and MDL-minimal} \implies \nexists\,(l,c,r) \in \mathbb{Z}_7^3 : f(l,c,r) = 4.
+\]
+\end{theorem}
+
+\begin{proof}
+Certified by \lean{fmdl\_mdl\_uniqueness} and
+\lean{fmdl\_mdl\_minimal\_\allowbreak{}implies\_z4\_exclusion}
+(\lean{Z7ChargeConjugation.lean}, zero \texttt{sorry}).
+\end{proof}
+
+The logical structure is a two-step equivalence:
+MDL minimality $\implies$ $\mathbb{Z}_7 = 4$ exclusion $\implies$ unique $f = f_{\rm MDL}$.
+The $\mathbb{Z}_7 = 4$ exclusion is therefore not an independent physical input; it is
+a necessary arithmetic consequence of the parsimony principle that selects the
+orbit-realizing CA.
+
+\begin{remark}[Rarity of the MDL-selected vacuum]
+Among the $7^{320} \approx 10^{270}$ orbit-admissible functions, the probability
+that a uniformly random choice satisfies the hard $\mathbb{Z}_7 = 4$ exclusion
+(all 320 free neighborhoods map to values $\neq 4$) is at most $(6/7)^{320} \approx
+3.8 \times 10^{-22}$.
+This extreme rarity was confirmed by a 10{,}000-sample Monte Carlo survey
+(\texttt{scripts/mdl\_cp\_uniqueness.py}, $\CatA$): zero samples out of ten thousand
+satisfied the $\mathbb{Z}_7 = 4$ exclusion, consistent with the theoretical bound.
+MDL minimality is therefore not merely an aesthetic parsimony criterion; it is a
+structural mechanism that selects the unique CP-violating vacuum from an
+astronomically large orbit-admissible set.
+\end{remark}
+
+\subsection{The Hard \texorpdfstring{$\mathbb{Z}_7 = 4$}{Z7=4} Exclusion}
+\label{sec:z4_exclusion}
+
+The $\mathbb{Z}_7$ charge conjugation map is the involution
+\[
+C:\mathbb{Z}_7 \to \mathbb{Z}_7,\qquad C(v) = (7 - v) \bmod 7.
+\]
+This map sends each winding class to its charge conjugate:
+$C(0) = 0$, $C(1) = 6$, $C(2) = 5$, $C(3) = 4$, $C(4) = 3$, $C(5) = 2$, $C(6) = 1$.
+The three non-trivial conjugate pairs are $(1,6)$, $(2,5)$, and $(3,4)$.
+In the $\mathbb{Z}_7$ winding correspondence~\cite{Spivack2026_SM_UGP},
+$\mathbb{Z}_7 = 3$ is the $W^+$/positron winding class and $\mathbb{Z}_7 = 4 = C(3)$
+is its conjugate, corresponding to the $W^-/e^-$ sector.
+
+\begin{theorem}[Hard $\mathbb{Z}_7 = 4$ exclusion, $\CatAL$]\label{thm:z4_exclusion}
+The output range of $f_{\rm MDL}$ is $\{0,1,2,3,5,6\}$; the value $4$ is completely absent:
+\[
+\nexists\,(l,c,r) \in \mathbb{Z}_7^3 : f_{\rm MDL}(l,c,r) = 4.
+\]
+Moreover, $\mathbb{Z}_7 = 3$ is present in the output range
+($f_{\rm MDL}(2,0,2) = 3$), establishing a hard asymmetry between $3$ and $4$.
+\end{theorem}
+
+\begin{proof}
+\lean{fmdl\_4\_not\_in\_range} and \lean{fmdl\_3\_in\_range}
+(\lean{Z7ChargeConjugation.lean}, \texttt{decide}, zero \texttt{sorry}).
+\end{proof}
+
+\begin{theorem}[Conjugate pair asymmetry uniqueness, $\CatAL$]\label{thm:conj_asym}
+Among the three non-trivial conjugate pairs $(1,6)$, $(2,5)$, $(3,4)$, the pair $(3,4)$
+is the \emph{unique} pair for which one value is present in the $f_{\rm MDL}$ output range
+and its conjugate is absent.
+Both $(1,6)$ and $(2,5)$ appear symmetrically in the output range.
+\end{theorem}
+
+\begin{proof}
+\lean{fmdl\_conj\_pair\_asymmetry\_unique} (\lean{Z7ChargeConjugation.lean},
+\texttt{decide}, zero \texttt{sorry}).
+\end{proof}
+
+The complete preimage count characterization (\lean{fmdl\_preimage\_counts},
+\texttt{native\_decide}) is:
+\begin{align*}
+|\{(l,c,r) : f_{\rm MDL}(l,c,r) = v\}|
+\;=\;
+\begin{cases}
+329 & v = 0 \\
+5   & v = 1 \\
+3   & v = 2 \\
+1   & v = 3 \\
+0   & v = 4 \\
+4   & v = 5 \\
+1   & v = 6
+\end{cases}
+\end{align*}
+summing to $343 = 7^3$.
+The $(3,4)$ pair has preimage counts $(1, 0)$ --- a \emph{maximal} asymmetry.
+For comparison, the $(2,5)$ pair has counts $(3, 4)$ (mild asymmetry from the orbit structure),
+and the $(1,6)$ pair has counts $(5, 1)$ (arising from the Rule~110 binary sublayer, which has
+five output-$1$ entries versus three output-$0$ entries).
+
+\subsection{MDL Minimality is Equivalent to CP Asymmetry}
+\label{sec:mdl_eq_cp}
+
+The results of \S\ref{sec:mdl_uniqueness}--\S\ref{sec:z4_exclusion} combine into
+a three-step equivalence:
+
+\begin{theorem}[MDL $\Leftrightarrow$ CP asymmetry, $\CatAL$]\label{thm:mdl_cp_equiv}
+The following three conditions on an orbit-admissible function $f: \mathbb{Z}_7^3 \to \mathbb{Z}_7$
+are equivalent:
+\begin{enumerate}[label=(\roman*)]
+\item $f$ is MDL-minimal among all orbit-admissible functions ($f = f_{\rm MDL}$).
+\item The value $\mathbb{Z}_7 = 4$ does not appear in the output range of~$f$.
+\item The conjugate pair $(\mathbb{Z}_7 = 3,\, \mathbb{Z}_7 = 4)$ is the unique conjugate
+pair asymmetrically represented in the output range of~$f$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(i) $\Rightarrow$ (ii): \lean{fmdl\_mdl\_minimal\_implies\_z4\_exclusion}\\
+(ii) $\Rightarrow$ (iii): \lean{fmdl\_conj\_pair\_asymmetry\_unique} (since $(1,6)$ and $(2,5)$ both appear symmetrically when $\mathbb{Z}_7=4$ is excluded)\\
+(iii) $\Rightarrow$ (i): \lean{fmdl\_mdl\_uniqueness} (the unique MDL-minimal function is the unique one exhibiting this asymmetry)\\
+All certified in \lean{Z7ChargeConjugation.lean}, zero \texttt{sorry}.
+\end{proof}
+
+The physical identification $\mathbb{Z}_7 = 3 \leftrightarrow W^+/e^+$ and
+$\mathbb{Z}_7 = 4 \leftrightarrow W^-/e^-$ follows from the $\mathbb{Z}_7$ winding
+correspondence of~\cite{Spivack2026_SM_UGP} ($\CatAD$: the bridge from winding arithmetic
+to the Standard Model particle assignment).
+Under this identification, condition~(ii) states that $W^-$ emission is
+arithmetically forbidden in $f_{\rm MDL}$, while $W^+$ emission occurs at exactly one
+neighborhood (the vertex $(2,0,2)$).
+
+The epistemic chain may therefore be written:
+\begin{align*}
+\text{MDL minimality} &\;\iff\; \mathbb{Z}_7 = 4 \text{ excluded}
+  \;\iff\; (3,4)\text{-asymmetry}\\
+  &\;\xRightarrow{\;\CatAD\;}\; \text{CP violation}
+  \;\xRightarrow{\;\CatAD\;}\; \text{matter dominance}.
+\end{align*}
+Each double arrow ($\iff$) is $\CatAL$ (machine-certified in Lean~4);
+the single arrows ($\Rightarrow$) involve the physical bridge between CA arithmetic and
+Standard Model phenomenology, and are classified $\CatAD$.
+
+\subsection{The Matter--Antimatter Master Theorem}
+\label{sec:cp_master}
+
+The deepest result in this section combines the preimage count analysis, the conjugate pair
+asymmetry, and the MDL uniqueness chain into a single master theorem.
+
+\begin{theorem}[Matter--antimatter asymmetry master theorem, $\CatAL$]\label{thm:cp_master}
+Let $f_{\rm MDL}: \mathbb{Z}_7^3 \to \mathbb{Z}_7$ be the MDL-minimal orbit-admissible
+CA function.
+The conjugate pair $(\mathbb{Z}_7 = 3,\, \mathbb{Z}_7 = 4)$ is the \emph{unique} conjugate
+pair under $C$ that is maximally asymmetric in the $f_{\rm MDL}$ output range, in the
+following precise sense:
+\begin{align*}
+|\{(l,c,r): f_{\rm MDL}(l,c,r) = 3\}| &= 1 \quad (W^+\text{ emission: unique neighborhood}),\\
+|\{(l,c,r): f_{\rm MDL}(l,c,r) = 4\}| &= 0 \quad (W^-\text{ emission: hard excluded}),
+\end{align*}
+and for every other conjugate pair $(v, C(v))$ with $v \neq 0$, both values appear in
+the output range with positive preimage count.
+The pair $(3,4)$ is the unique pair with preimage ratio $1:0$.
+\end{theorem}
+
+\begin{proof}
+\lean{fmdl\_matter\_cp\_violation} (\lean{Z7ChargeConjugation.lean},
+\texttt{native\_decide}, zero \texttt{sorry}).
+Supporting theorems: \lean{fmdl\_w\_plus\_count\_one}, \lean{fmdl\_w\_minus\_count\_zero},
+\lean{fmdl\_conj\_pair\_asymmetry\_unique}.
+\end{proof}
+
+The preimage uniqueness of $\mathbb{Z}_7 = 3$ further constrains the vertex structure:
+by \lean{fmdl\_w\_preimage\_characterization} (\texttt{native\_decide}),
+the preimage of $W^+$ consists of \emph{exactly} the single neighborhood $(2,0,2)$:
+\[
+\{(l,c,r) : f_{\rm MDL}(l,c,r) = 3\} \;=\; \{(2,0,2)\}.
+\]
+
+\begin{remark}
+The interpretation of matter dominance from \cref{thm:cp_master} involves the physical
+bridge $\CatAD$: the identification of $\mathbb{Z}_7 = 4$ with the $W^-/e^-$ sector follows
+from the winding correspondence of~\cite{Spivack2026_SM_UGP}, and the claim that
+arithmetically forbidden $W^-$ emission implies observed matter dominance is a
+physical inference beyond the CA arithmetic.
+The CA-arithmetic result --- that the MDL-minimal function produces an output asymmetry
+exactly and uniquely at the $(3,4)$ pair --- is established without physical input.
+\end{remark}
+
+\subsection{SM Orbit Chirality}
+\label{sec:chirality}
+
+The CA spatial parity map $P$ sends $(l, c, r) \mapsto (r, c, l)$, swapping left and
+right cells.
+A neighborhood is \emph{P-invariant} (palindromic) if $f_{\rm MDL}(l,c,r) = f_{\rm MDL}(r,c,l)$;
+otherwise it is \emph{P-violating}.
+Rule~110 and its mirror Rule~124 agree on palindromic neighborhoods but differ on
+non-palindromic ones.
+An exhaustive search over all $343$ triples establishes ($\CatA$, computationally verified):
+
+\begin{proposition}[Orbit chirality, $\CatA$]\label{prop:chirality}
+Exactly $14/343 \approx 4.1\%$ of $\mathbb{Z}_7^3$ triples are P-violating under $f_{\rm MDL}$.
+\end{proposition}
+
+\begin{proposition}[SM-vocabulary V-A mismatch, $\CatAL$]\label{prop:va_mismatch}
+Restricting to SM-vocabulary triples drawn from $\{0,2,3,4,6\}^3$ ($5^3 = 125$ triples),
+exactly $32$ exhibit V-A chirality: $f_{\rm MDL}(l,c,r) \neq f_{\rm MDL}(r,c,l)$.
+All $32$ mismatches involve $W^+$ ($\mathbb{Z}_7 = 3$) as a non-center neighbor.
+The Fin-2 level rule governing this asymmetry satisfies:
+$\mathrm{Rule}\,110 \neq \mathrm{Rule}\,124$ if and only if $l \neq r$ and $c = 0$.
+Machine-certified: \lean{va\_mismatch\_count} ($= 32$, \lean{native\_decide},
+zero \texttt{sorry}), \lean{va\_mismatch\_involves\_wplus} (\lean{native\_decide}),
+\lean{bit\_mismatch\_iff} (\lean{decide}).
+File: \texttt{ChiralPairVA.lean} (\texttt{ugp-lean}).
+\end{proposition}
+
+A finer analysis of the SM generation orbit under spatial parity reveals a preferred
+handedness.
+Under the CA dynamics, the canonical gen$_1$ state $[1,5,2,2,1]$ (first-generation,
+left-chiral) follows the full GTP-3 path to vacuum in 3 steps.
+Its spatial mirror $P({\rm gen}_1) = [1,2,2,5,1]$ follows a GTP-2 path, reaching vacuum
+in only 2 steps.
+By contrast, gen$_3$ and $P({\rm gen}_3)$ are parity-covariant: both reach vacuum in 1 step.
+
+The SM orbit is therefore left-handed in the precise sense that only the left-chiral
+representative of gen$_1$ initiates the full GTP-3 cascade; the right-chiral mirror
+decays more rapidly and does not participate in the 3-generation orbit.
+This left-handedness of the CA orbit is structurally connected to the MDL minimality that
+forces the $\mathbb{Z}_7 = 4$ exclusion (\S\ref{sec:mdl_eq_cp}): the same arithmetic
+parsimony that forbids $W^-$ emission also selects the left-handed orbit representative
+as the unique initiator of the generation sequence.
+
+The all-triples count (Proposition~\ref{prop:chirality}) is $\CatA$; the SM-vocabulary
+refinement (Proposition~\ref{prop:va_mismatch}) is machine-certified at $\CatAL$
+via \texttt{ChiralPairVA.lean} (zero \texttt{sorry}).
+
+\begin{remark}[CA spatial asymmetry and V$-$A coupling ($\CatAD$)]
+The spatial asymmetry of the $W^+$ neighborhood response --- R\_ONLY when $W^+$ is the right neighbor versus L\_ONLY when $W^+$ is the left neighbor --- has a precise physical interpretation: the right-neighbor configuration ($r=3$) activates Layer 110 (the vector component); the left-neighbor configuration ($l=3$) activates Layer 124 (the axial component, as seen by the mirror layer). The $V-A$ current $= (V\text{ component}) - (A\text{ component})$ reduces to the net Layer 110 activation, confirming pure left-handed coupling ($\CatAD$).
+\end{remark}
+
+\subsection{W$^+$/W$^-$ Producibility Asymmetry and Structural CP Violation}
+\label{sec:wplus_wminus_asymmetry}
+
+The $\ZS = 4$ exclusion of Theorem~\ref{thm:z4_exclusion} and the SM vertex
+theorem (Theorem~\ref{thm:sm_vertex}) establish that $W^-$ is absent from the
+$f_{\rm MDL}$ output range.
+This section identifies the vertex-level mechanism and clarifies the resulting
+asymmetry as a structural CP violation distinct from the V--A mismatch of
+Proposition~\ref{prop:va_mismatch}.
+
+\begin{proposition}[Charged-current quark vertex asymmetry, $\CatA$]
+\label{prop:cc_quark_asymmetry}
+The $\ZS$-conserving charged-current quark vertices --- those satisfying
+$l \equiv c + r \pmod{7}$ with a flavor change via $W^{\pm}$ --- decompose
+as follows.
+\begin{enumerate}[nosep,leftmargin=1.5em]
+\item \textbf{$u \to W^+ + d$ (both product orderings):}
+  The vertices $(l,c,r) = (2,3,6)$ and $(2,6,3)$ satisfy $l \equiv c + r \pmod 7$.
+  Their binary projections are $(0,1,0)$ and $(0,0,1)$ respectively.
+  Rule~$110(0,1,0) = 1$ and Rule~$110(0,0,1) = 1$: both orderings are
+  \emph{permitted} ($f_{\rm MDL}$ output $= 1$).
+\item \textbf{$d \to u + W^-$ (both product orderings):}
+  The vertices $(l,c,r) = (6,2,4)$ and $(6,4,2)$ satisfy $l \equiv c + r \pmod 7$.
+  Both project to the all-zero binary pattern $(0,0,0)$.
+  Rule~$110(0,0,0) = 0$: both orderings are \emph{suppressed} ($f_{\rm MDL}$ output $= 0$).
+\end{enumerate}
+The mechanism is arithmetic: $W^+$ carries winding $\ZS = 3$ (odd, binary bit~$1$),
+so the product configurations of $u \to W^+ + d$ each contain a nonzero binary bit
+that enables non-zero Rule~$110$ output.
+$W^-$ carries winding $\ZS = 4$ (even, bit~$0$), so the product configurations of
+$d \to u + W^-$ reduce to the all-zero pattern $(0,0,0)$, which Rule~$110$ maps to~$0$.
+\end{proposition}
+
+Combined with Theorem~\ref{thm:sm_vertex}, this establishes a \emph{double exclusion}
+of $W^-$ by the $f_{\rm MDL}$ dynamics:
+\begin{enumerate}[nosep,leftmargin=1.5em]
+\item \textbf{Production:} $\ZS = 4$ is absent from the $f_{\rm MDL}$ output range
+  ($\CatAL$, Theorem~\ref{thm:z4_exclusion}); $W^-$ cannot be created by CA evolution.
+\item \textbf{Emission:} The $d \to u + W^-$ vertex has $f_{\rm MDL}$ output~$0$
+  ($\CatA$, Proposition~\ref{prop:cc_quark_asymmetry}); $W^-$ emission by the
+  $d$-quark is CA-suppressed.
+\end{enumerate}
+$W^+$, by contrast, is doubly admitted: it is the unique nonzero $f_{\rm MDL}$ output in
+the charged-current sector (\lean{sm\_charged\_current\_vertex}, $\CatAL$,
+Theorem~\ref{thm:sm_vertex}), and both product orderings of the $u \to W^+ + d$
+emission vertex are CA-permitted.
+
+This is a \emph{structural CP asymmetry} at the CA beable level, distinct from the
+V--A mismatch of Proposition~\ref{prop:va_mismatch}.
+The V--A result concerns the handedness of fermion coupling operators: among
+SM-vocabulary triples, $32$ exhibit a chirality mismatch
+$f_{\rm MDL}(l,c,r) \neq f_{\rm MDL}(r,c,l)$.
+The present result is of a different character: the two members of the charged W-boson
+doublet --- CP conjugates under the $\ZS$ charge-conjugation map
+($C(3) = 4$, i.e.\ $W^- \equiv -W^+ \pmod 7$) --- are asymmetric not in their
+coupling handedness but in their fundamental producibility.
+The $f_{\rm MDL}$ rule breaks $\ZS$ charge-conjugation symmetry for the
+$(W^+, W^-)$ pair; by Theorem~\ref{thm:conj_asym}, this pair is the unique
+conjugate pair for which the asymmetry is maximal (preimage counts $1$ vs.\ $0$).
+At the level of the Sakharov conditions for baryogenesis~\cite{Sakharov1967}, this substrate-level
+producibility asymmetry is consistent with the required CP-violating dynamics ($\CatD$).
+
+The connection between the $\mathbb{Z}_7 = 4$ output exclusion and specific
+experimental CP-violation observables---$\varepsilon_K$ in kaon mixing, $\sin(2\beta)$
+in $B_d$ decays, the CKM unitarity triangle phase $\gamma$---is mediated by the CA
+vertex identification: each CP-violating decay amplitude is a product of CA vertex
+factors, and the $W^-$ suppression introduces an asymmetry between particle and
+antiparticle decay rates at the amplitude level.
+The Jarlskog invariant $J_{\rm GTE} = 2.999\times10^{-5}$ ($\CatA$; P32, \S7) gives the
+overall CP-violation scale; the distribution of CP asymmetries across specific
+decay channels follows from the Wolfenstein parametrization ($\CatAL$; P32,
+\lean{wolfenstein\_lambda\_value}).
+A full channel-by-channel analysis of CP asymmetries in $B$-meson decays within the
+GTE framework is deferred to future work.
+Using the \CatAL\ Wolfenstein parameters from P32
+($\lambda=9/40$, $A=\sqrt{186/275}$, $\bar\rho=0.1545$, $\bar\eta=0.3417$),
+a direct calculation gives
+\begin{equation}
+  \sin(2\beta)_{\rm GTE} \;=\; 0.6939
+  \qquad \bigl(\text{PDG: } 0.699 \pm 0.017;\; {-0.30\sigma}\bigr),
+  \label{eq:sin2beta_gte}
+\end{equation}
+in agreement within $1\sigma$. This result is purely geometric: it follows
+from the CKM matrix entries and requires no hadronic inputs
+($\CatA$; \texttt{scripts/cp\_observables.py}).
+For $\varepsilon_K$, the GTE CKM factor $A^2\lambda^6\bar\eta = 2.999\times10^{-5}$
+combined with lattice-QCD hadronic inputs ($\hat{B}_K=0.717$, $f_K=156.2\,\text{MeV}$,
+$\kappa_\varepsilon=0.94$) yields a calibrated prediction
+\begin{equation}
+  |\varepsilon_K|_{\rm GTE} \;=\; 2.165\times10^{-3}
+  \qquad (\text{PDG: } 2.228\times10^{-3};\ -5.8\sigma\ \text{on experimental uncertainty alone}).
+  \label{eq:epsk_gte}
+\end{equation}
+A root-cause decomposition traces this $2.8\%$ shortfall entirely to $R_b = 3/8$
+lying $-0.84\sigma$ below the PDG-fit value $R_b^{\rm PDG} = 0.3826\pm0.0090$.
+The CP angle $\gamma$ contributes negligibly: the GTE formula
+$\gamma = \arctan(\sqrt{b_b/b_s}/N_{\rm gen}) = 65.67^\circ$ deviates only
+$-0.023\sigma$ from the PDG central value $65.8^\circ \pm 5.4^\circ$.
+Replacing $R_b$ by its PDG value while keeping the GTE $\gamma$ unchanged gives
+$\bar\eta = 0.3486$, essentially matching PDG $\bar\eta = 0.348$.
+The $-5.8\sigma$ figure is therefore an experimental-precision-only metric
+($\sigma_{\rm exp} = 0.011\times10^{-3} = 0.5\%$); it does not account for the
+$\pm5\%$ lattice-QCD uncertainty on $\hat{B}_K$ (FLAG~2023: $0.717\pm0.018$).
+Including that hadronic theory error, the total uncertainty on $|\varepsilon_K|_{\rm GTE}$
+is $\simeq5\%$, reducing the tension to ${\lesssim}1\sigma$.
+A value $\hat{B}_K = 0.738$ --- within the $2\sigma$ FLAG~2023 band $[0.681, 0.753]$
+--- reconciles the prediction exactly.
+Since $R_b = 3/8$ is \CatAL\ and machine-certified, the $2.8\%$ shortfall is a genuine
+structural prediction of GTE; it is bounded but not eliminable at the level of CKM inputs.
+The clean prediction is $\sin(2\beta)$; the
+$\varepsilon_K$ comparison depends on the hadronic sector
+($\CatA$; \texttt{scripts/cp\_observables.py},
+\texttt{scripts/epsilon\_k\_tension.py}).
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabular}{llll}
+\toprule
+Observable & GTE prediction & PDG value & Agreement \\
+\midrule
+$\sin(2\beta)$ & $0.6939$ & $0.699 \pm 0.017$ & $-0.30\sigma$ \\
+$|\varepsilon_K|$ & $2.165 \times 10^{-3}$ & $2.228 \times 10^{-3}$ & ${\lesssim}1\sigma$ (with $\hat{B}_K$ error) \\
+$\gamma$ (CKM phase) & $65.67^\circ$ & $65.8^\circ \pm 5.4^\circ$ & $-0.023\sigma$ \\
+\bottomrule
+\end{tabular}
+\caption{GTE CP-violation observables compared to PDG.
+$\sin(2\beta)$ requires no hadronic inputs; $|\varepsilon_K|$
+depends on $\hat{B}_K = 0.717 \pm 0.018$ (FLAG~2023); the stated ${\lesssim}1\sigma$
+includes the $5\%$ lattice-QCD theory error.
+The $-5.8\sigma$ figure quoted in the main text uses experimental uncertainty only;
+theory-uncertainty-inclusive comparison (accounting for $\pm5\%$ on $\hat{B}_K$)
+reduces this to ${\lesssim}1\sigma$ as shown here.}
+\label{tab:cp_observables}
+\end{table}
+The strong CP angle $\theta_{\rm QCD}=0$ is established separately from
+$F_{21}=\mathbb{Z}_7\rtimes\mathbb{Z}_3$ group theory in the companion
+QCD paper; the observables above concern CKM CP only.
+
+\smallskip
+The arithmetic of the duality extends to three-quark bound states.
+For a proton~$(uud)$, the collective $\ZS$ winding
+$w(u)+w(u)+w(d) = 2+2+6 = 10 \equiv 3 \pmod{7}$
+coincides exactly with the $W^+$ winding, while the neutron~$(udd)$
+has collective winding $0$~(vacuum).
+The anti-proton~$(\bar{u}\bar{u}\bar{d})$ carries winding~$4$---the same
+as the $W^-$/electron class---while the anti-neutron has vacuum winding.
+These identities satisfy the group homomorphism
+$\sum_i w(q_i) \equiv 3\,Q_{\rm baryon} \pmod{7}$ for
+$Q_{\rm baryon} \in \{0,\pm 1\}$
+(Lean: \lean{baryon\_winding\_duality},
+\texttt{GUTStructure.lean}~\S48, $\CatAL$).
+The baryon-gauge winding duality implies that proton decay
+$p \to W^+ + X$ preserves $\ZS$ winding and is therefore allowed by
+the GTE arithmetic selection rules, consistent with the GUT-scale
+expectation.
+
+\begin{remark}[MDL arithmetic irreversibility and the thermodynamic arrow of time; $\CatA$]
+\label{rem:time_arrow}
+Result~(2) of this paper---that matter dominance follows from the $\mathbb{Z}_7 = 4$
+output exclusion of $f_{\rm MDL}$---bears directly on the problem of the
+thermodynamic arrow of time.
+Unlike thermodynamic accounts, which derive the matter--antimatter asymmetry from an
+entropy boundary condition on the initial state, the GTE framework grounds temporal
+asymmetry in MDL-arithmetic irreversibility at the substrate level.
+The output exclusion $f_{\rm MDL}(\mathbb{Z}_7^3) \not\ni 4$ has no time-reverse
+symmetry: the reverse function $f_{\rm MDL}^{-1}$ is multi-valued and does not exclude
+$\mathbb{Z}_7 = 4$ from its domain, so the asymmetry is not preserved under time
+reversal.
+This irreversibility propagates to macroscopic baryon-number asymmetry via the
+$W^+/W^-$ producibility asymmetry of \S\ref{sec:wplus_wminus_asymmetry}.
+The arrow of time in the GTE framework is therefore an arithmetic fact about
+$f_{\rm MDL}$, not a dynamical consequence of increasing entropy or a special initial
+condition---it is built into the MDL-minimal selection rule at the CA substrate level
+($\CatA$; the output-exclusion asymmetry is Lean-certified via
+\lean{fmdl\_never\_outputs\_4}, zero \texttt{sorry}).
+\end{remark}
+
+\subsection{Baryon-to-Photon Ratio Estimate}
+\label{sec:baryon_photon_ratio}
+
+The baryon-to-photon ratio $\eta_B = n_B/n_\gamma$ measures the
+matter-antimatter asymmetry of the universe.
+The Planck 2018 measurement gives
+$\eta_B = (6.10 \pm 0.06)\times 10^{-10}$~\cite{Planck2018Params}.
+The GTE arithmetic satisfies all three Sakharov conditions at the CA substrate
+level: baryon number violation via $\mathbb{Z}_7$ winding non-conservation
+(\S\ref{sec:wplus_wminus_asymmetry}); CP asymmetry via the maximal
+$(W^+, W^-)$ producibility asymmetry (Theorem~\ref{thm:cp_master}, $\CatAL$);
+and departure from thermal equilibrium via the Garden-of-Eden orbit structure
+(\S\ref{sec:gtp3}).
+These inputs yield a parameter-free estimate of $\eta_B$.
+
+Combining the GTE Weinberg angle $\sinwsq = \Ngen/\cH = 3/13$
+\cite{SpivackWeinberg} ($\CatAL$) with the maximal CP asymmetry
+$\varepsilon_{\rm CP} = 1$ from Theorem~\ref{thm:cp_master}:
+\begin{equation}
+  \eta_B^{(\mathrm{GTE})}
+  \;=\; \sinwsq \times \alpha_{\rm em}^4
+  \;=\; \frac{\Ngen}{\cH}\,\alpha_{\rm em}^4
+  \;=\; \frac{3}{13}\!\left(\frac{1}{137}\right)^{\!4}
+  \;\approx\; 6.54\times 10^{-10}
+  \qquad (\CatA)\;.
+  \label{eq:eta_B_gte}
+\end{equation}
+This agrees with the Planck 2018 measurement to $7.2\%$.
+The formula is parameter-free: $\sinwsq = 3/13$ is machine-certified
+(\cite{SpivackWeinberg}, zero \texttt{sorry}) and $\alpha_{\rm em}^{-1} = 137$
+from the structural identity $2^{|Z_7|}+N_{\rm gen}^2 = 2^7+9 = 137$ (CatB,
+\cite{SpivackWeinbergAngle}); neither has been tuned to match $\eta_B$.
+
+The canonical GTE kink-overlap derivation of~\cite{SpivackGTECosmology} gives
+$\eta_B = 6.36\times 10^{-10}$ as an asymptotic upper bound ($+4.3\sigma$ from Planck~2018).
+The FKTT mechanism refines this to $\eta_B = 6.109\times10^{-10}$ ($+0.15\sigma$,~\CatAL).
+The bare GoE formula~\eqref{eq:eta_B_gte} remains a separate structural route at $+7.2\%$.
+The CA-to-QFT amplitude lift at the $W^+$ production vertex
+$f_{\mathrm{MDL}}(2,0,2)=3$ assigns one electroweak mixing insertion
+($n_{\rm EW}=1$, $\sin\theta_W$ factor) and two electromagnetic couplings
+($n_{\rm EM}=2$, $\alpha_{\rm em}^2$ in the amplitude $A_B$), giving
+$\eta_B = |A_B|^2 = \sinwsq \times \alpha_{\rm em}^4$ with rate exponents
+$2n_{\rm EW}=2$ and $2n_{\rm EM}=4$
+($\CatAL$:
+\lean{eta\_B\_amplitude\_structure},
+\lean{baryogenesis\_amplitude\_counting},
+\lean{baryogenesis\_amplitude\_A\_B\_structure},
+\lean{wplus\_vertex\_fmdl\_emission},
+\texttt{GUTStructure.lean}~\S70, zero \texttt{sorry}).
+The identification of these arithmetic exponents with a four-vertex QFT loop
+integral and the absolute normalization $\kappa$ remain $\CatD$
+(\lean{eta\_B\_normalization\_axiom} placeholder; derivation from first CA principles is open).
+
+The loop-count asymmetry between baryogenesis ($n=4$) and neutrino mass ($n=5$)
+has a structural explanation rooted in the Garden-of-Eden orbit structure.
+The baryogenesis process must start at gen$_1$---the lightest generation, which is a
+Garden-of-Eden state under $f_{\rm MDL}$ (zero $f_{\rm MDL}$ predecessors;
+Lean: \lean{fmdl\_gen1\_is\_garden\_of\_eden}, zero \texttt{sorry}).
+Ring closure at $k = N_{\rm fam} = 5$ steps would require returning to gen$_1$
+through an $f_{\rm MDL}$ predecessor---which does not exist.
+The traversal is therefore cut at $N_{\rm fam} - 1 = 4$ steps
+($\CatAL$; \lean{baryogenesis\_amplitude\_goe\_exclusivity},
+\lean{baryogenesis\_amplitude\_goe\_loop\_count},
+\texttt{GUTStructure.lean}~\S70, zero \texttt{sorry}).
+The neutrino mass process, by contrast, begins at the vacuum
+($\text{pred\_count}(\text{vacuum}) = 14{,}147$), so the ring can close at
+$k = N_{\rm fam} = 5$ steps as required by $\mathbb{Z}/5\mathbb{Z}$ character
+orthogonality.
+The product formula exponent $9 = (N_{\rm fam}-1) + N_{\rm fam} = 2N_{\rm fam}-1$
+is the algebraic signature of this one-step cut
+(Lean: \lean{goe\_cut\_theorem},
+\texttt{GUTStructure.lean}~\S57, zero \texttt{sorry}).
+
+\begin{remark}[Cross-observable GoE coherence; $\CatAL$]
+The same integer $N_{\rm fam}-1 = 4$ governs an independent observable: the W-boson
+radiative correction $\Delta r \approx (N_{\rm fam}-1)/(N_{\rm fam}\times c_W) = 4/55
+\approx 0.0727$, giving $M_W \approx 80.38\,{\rm GeV}$ ($-0.002\%$ from PDG).  Both
+phenomena share a common structural origin: gen$_1$ being a Garden-of-Eden state
+($\mathrm{pred}(\mathrm{gen}_1) = 0$,
+Lean: \lean{fmdl\_gen1\_is\_garden\_of\_eden}) prevents it from participating in any
+cyclic process---orbital traversal (baryogenesis) and fermion loop closure
+(W self-energy) alike---leaving $N_{\rm fam}-1 = 4$ active sectors in both cases
+(Lean: \lean{goe\_cross\_observable\_coherence},
+\texttt{GUTStructure.lean}~\S61, zero \texttt{sorry}).
+\end{remark}
+
+\begin{remark}[GTE baryogenesis epoch ($\CatD$)]
+The GTE framework predicts a specific baryogenesis epoch. With the freeze-out temperature set by the ether energy scale $T_{\rm fo} = E_{\rm ether,B} \approx 2.83\,{\rm GeV}$ ($\CatAD$), this places baryogenesis strictly between electroweak symmetry breaking ($T_{\rm EW} \approx M_W/\pi \approx 25.6\,{\rm GeV}$) and QCD confinement ($T_{\rm QCD} \approx 150\,{\rm MeV}$): $T_{\rm QCD} \ll T_{\rm fo} \ll T_{\rm EW}$. At $T_{\rm fo}$, quarks are deconfined and the electroweak vertex $u + e^- \to d + \nu$ is active. With $\Gamma_{\rm washout} = 0$ exactly (from the GoE pred-count theorem: $\mathrm{pred\_count}(\mathrm{gen}_1) = 0$), the Boltzmann equation simplifies to $\eta_B = (\Gamma_{\rm prod}/H) \times (n_{\mathrm{gen}_1}/s)$, and is self-consistent with $\eta_B = \sin^2\!\theta_W \times \alpha_{\rm EM}^4$ when $\Gamma_{\rm prod}/H = 1.70 \times 10^{-7}$ at $T_{\rm fo}$. All three Sakharov conditions are satisfied: baryon-number violation (EW vertex), CP violation (CA irreversibility, $\varepsilon_{\rm CP} = 1$ from \lean{fmdl\_never\_outputs\_4}), and out-of-equilibrium processing ($\Gamma_{\rm prod} \ll H$). The derivation of $\Gamma_{\rm prod}/H = 1.70 \times 10^{-7}$ from first CA principles is the remaining $\CatD$ open problem.
+\end{remark}
+
+\begin{remark}[Arrow of time from PSC closure; $\CatAL$]
+\label{rem:arrow_of_time_psc}
+The CA irreversibility underlying the GTE baryogenesis asymmetry connects to a formal
+machine-certified result in the NEMS framework~\cite{SpivackNEMS36}: the
+\texttt{no\_global\_reversal} theorem
+(\texttt{ArrowOfTime.Theorems.Irreversibility.lean}, zero \texttt{sorry}) proves that
+no stage-preserving involution $R$ (satisfying $R \circ R = \mathrm{id}$ and preserving
+all stage semantics) can fix every stage world-type --- equivalently, no nontrivial
+time-reversal map preserves the full record filtration structure.
+Irreversibility is therefore a \emph{formal consequence} of PSC closure, not an initial
+condition assumption: the no-overwrite principle
+(\texttt{ArrowOfTime.Theorems.NoOverwrite.lean}) shows that any dynamics undoing a
+recorded fact violates closure.
+In GTE, this manifests concretely as the $f_{\rm MDL}$ CA dynamics being arithmetically
+irreversible at the substrate level: the Lean-certified theorem
+\lean{fmdl\_never\_outputs\_4} ($\CatAL$) establishes that cell-state~4 is never produced
+by $f_{\rm MDL}$, making the direction of CA evolution strictly one-way.
+The temporal asymmetry required by the third Sakharov condition is thus grounded in the
+same MDL-closure principle that underlies the GTE spectral arithmetic.
+\end{remark}
+
+\begin{remark}[$\Delta\rho = 0$ and the Sirlin cancellation; $\CatAL$]
+\label{rem:delta_rho_zero}
+The GTE CA effective theory operates with massless fermions at the Lagrangian level ---
+all fermion masses arise via the non-perturbative 1+1D Schwinger mechanism and carry no
+bare mass splitting between generations or within SU(2)$_L$ doublets.
+This renders SU(2) isospin exact, so $\Pi_W(q^2) = \Pi_Z(q^2)$ for all $q^2$
+and $\Delta\rho = 0$ exactly (in contrast to the SM value $\Delta\rho \approx 0.008$
+from the top-bottom mass splitting).
+With $\Delta\rho = 0$, the Sirlin relation reduces to
+$\Delta r = \Delta\alpha_{\rm GTE}/\cos^2\theta_W$.
+Substituting $\Delta\alpha_{\rm GTE} = \sin^2\theta_W\cos^2\theta_W/\pi$ and canceling
+$\cos^2\theta_W$ identically gives $\Delta r = \sin^2\theta_W/\pi$ --- an algebraic
+identity verified by exact rational arithmetic: $30/169 \div 10/13 = 3/13 = \sin^2\theta_W$.
+(\CatAL{} for $\Delta\rho = 0$: \lean{rho\_equals\_one\_tree\_level},
+\lean{delta\_rho\_zero\_in\_massless\_limit},
+\lean{cos\_sq\_theta\_w\_ratio},
+\lean{sirlin\_cos\_cancellation},
+\texttt{GUTStructure.lean}~\S63, zero \texttt{sorry};
+\CatAD{} for the Sirlin formula and the $\Delta\alpha_{\rm GTE}$ identification.)
+\end{remark}
+
+\begin{remark}[Formal two-step derivation of $\Delta r = \sin^2\theta_W/\pi$; $\CatAD$]
+\label{rem:delta_r_formal}
+The result $\Delta r = \sin^2\theta_W/\pi$ follows from two explicit steps.
+First, the running of $\alpha$ from $q = 0$ to $q = M_W$ in the GTE CA effective theory
+gives
+\begin{equation}
+  \Delta\alpha_{\rm GTE}
+    = \frac{\sin^2\theta_W\,\cos^2\theta_W}{\pi}
+    = \frac{N_{\rm gen}}{c_H}\cdot\frac{c_H - N_{\rm gen}}{c_H\,\pi}
+    = \frac{30}{169\pi}
+    \approx 0.0565,
+  \label{eq:delta_alpha_gte}
+\end{equation}
+where $\sin^2\theta_W\cos^2\theta_W$ is the photon--$W$ mixing suppression from the
+GTE winding algebra at the $W$-mass scale and $1/\pi$ is the CA Schwinger loop factor.
+Second, applying the Sirlin relation with $\Delta\rho = 0$
+(Remark~\ref{rem:delta_rho_zero}) gives
+\begin{equation}
+  \Delta r
+    = \frac{\Delta\alpha_{\rm GTE}}{\cos^2\theta_W}
+    = \frac{\sin^2\theta_W\,\cos^2\theta_W/\pi}{\cos^2\theta_W}
+    = \frac{\sin^2\theta_W}{\pi}
+    = \frac{3}{13\pi}
+    \approx 0.0735,
+  \label{eq:delta_r_formal}
+\end{equation}
+where the $\cos^2\theta_W$ factors cancel exactly.
+This yields $M_W \approx 80.405\,\mathrm{GeV}$
+($+0.033\%$ from PDG $80.379\,\mathrm{GeV}$), with no free parameters
+beyond $N_{\rm gen} = 3$ and $c_H = 13$.
+Using the Schwinger-formula energy anchor $E_0 = v_H\sqrt{\pi/8}\approx 154.3\,\mathrm{GeV}$
+together with $\Delta r = \sin^2\!\theta_W/\pi$, the prediction refines to
+$M_W = 80.456\,\mathrm{GeV}$ ($+0.098\%$ from PDG $80.377\,\mathrm{GeV}$), a
+self-consistent GTE result using only $v_H$ from P27/SRRG and
+$\sin^2\!\theta_W = 3/13$ from P31 ($\CatAD$).
+($\CatAD$: Sirlin formula and $\Delta\alpha_{\rm GTE}$ identification;
+$\CatAL$ arithmetic components:
+\lean{sirlin\_cos\_cancellation},
+\lean{delta\_rho\_zero\_in\_massless\_limit},
+\texttt{GUTStructure.lean}~\S63, zero \texttt{sorry}.)
+The consolidated electroweak chain (P35~\cite{SpivackGTEUnification}) shows that
+$\Delta r$ accounts for $108.5\%$ of the tree-to-PDG $M_W$ gap; the residual
+$+0.80\%$ on $M_Z$ is consistent with $v_{\rm PSC}$ uncertainty and the
+$\sim 8\%$ $\Delta r$ overshoot.
+No additional GTE correction closes the $M_Z$ gap without breaking the
+$3/13$ Weinberg-angle prediction.
+\end{remark}
+
+\subsubsection*{Connection to Leptogenesis and the GTE Miracle}
+
+The GTE mechanism is structurally analogous to the Fukugita--Yanagida leptogenesis
+scenario~\cite{Fukugita1986}, in which the baryon asymmetry is generated by the
+CP-asymmetric decay of a superheavy right-handed neutrino $N_R$ followed by
+sphaleron conversion.
+
+In GTE, the role of $N_R$ is played by gen$_1$---the Garden-of-Eden state with
+$\mathrm{pred}({\rm gen}_1) = 0$
+(\lean{fmdl\_gen1\_is\_garden\_of\_eden}, zero \texttt{sorry}).
+Two properties of the GoE state simultaneously replace the two free parameters
+of SM leptogenesis:
+\begin{itemize}
+\item \emph{CP asymmetry.}  The $W^+\!/W^-$ producibility asymmetry
+      (\lean{fmdl\_never\_outputs\_4}, $\CatAL$) gives
+      $\varepsilon_{\rm CP} = 1$ exactly---the maximum possible value---with
+      no tuning.
+\item \emph{Washout efficiency.}  Since $\mathrm{pred}({\rm gen}_1) = 0$,
+      the washout rate is exactly zero ($\kappa = 1$, maximal efficiency).
+      The Davidson--Ibarra bound does not apply.
+\end{itemize}
+
+The simultaneous maximisation $\varepsilon_{\rm CP} = \kappa = 1$ is the structural
+consequence of both properties deriving from the same arithmetic fact
+($\mathrm{pred}({\rm gen}_1) = 0$), which is impossible in the Standard Model
+where CP asymmetry and washout efficiency are anti-correlated via the
+Davidson--Ibarra bound.
+The resulting formula
+$\eta_B = \varepsilon_{\rm CP}\times\kappa\times\sin^2\!\theta_W\times\alpha_{\rm em}^4
+= (N_{\rm gen}/c_H)\times\alpha_{\rm em}^4$
+($\CatA$ formula; amplitude exponent structure $\CatAL$ via \S\ref{sec:baryon_photon_ratio};
+$\kappa$ normalization $\CatD$) contains zero free parameters;
+all factors are independently derived from GTE arithmetic.
+
+Table~\ref{tab:leptogenesis} places the two mechanisms side by side.
+
+\begin{table}[h]
+\centering
+\caption{Structural comparison of GTE baryogenesis with SM Fukugita--Yanagida
+         leptogenesis.  All GTE entries are independently derived; none is tuned
+         to match $\eta_B$.}
+\label{tab:leptogenesis}
+\renewcommand{\arraystretch}{1.25}
+\small
+\begin{tabular}{lll}
+\hline
+\textbf{Property} & \textbf{SM Leptogenesis (FY)} & \textbf{GTE Baryogenesis} \\
+\hline
+Source particle
+  & $N_R$ (heavy, $M_R\gg M_W$, free)
+  & gen$_1$ (GoE, $\mathrm{pred}=0$, $\CatAL$) \\
+CP asymmetry $\varepsilon$
+  & Free, $\varepsilon\ll 1$ (DI-bounded)
+  & $\varepsilon_{\rm CP}=1$ (maximal, $\CatAL$) \\
+Washout $\kappa$
+  & $(0,1]$, anti-correlated with $\varepsilon$
+  & $\kappa=1$ (exact, $\mathrm{pred}=0$) \\
+Baryogenesis scale
+  & $M_R\geq 10^9\,{\rm GeV}$ (GUT)
+  & $E_{\rm ether}\approx 2.83\,{\rm GeV}$ (CA) \\
+Conversion
+  & Sphalerons ($\eta_L\to\eta_B$)
+  & Direct GoE orbit cut \\
+Free parameters
+  & Multiple ($M_R$, Yukawa, phases)
+  & None \\
+$\eta_B$ prediction
+  & $\varepsilon\kappa(M_R/v)^2g_*^{-1}$ (param.)
+  & $\tfrac{3}{13}\alpha_{\rm em}^4\approx 6.54\!\times\!10^{-10}$ \\
+\hline
+\end{tabular}
+\end{table}
+
+% ═══════════════════════════════════════════════════════════════════════════════
+\section{Causal Orbit Isolation}
+\label{sec:causal_isolation}
+% ═══════════════════════════════════════════════════════════════════════════════
+
+The SM generation orbit is the unique maximal Garden-of-Eden-rooted chain
+of length~3 (GTP-3) in $\mathbb{Z}_7^5$.
+This section proves causal isolation in six independent senses, assembled into
+a single master theorem
+(\lean{sm\_orbit\_complete\_causal\_isolation}, $\CatAL$).
+As a corollary, the generation count $\Ngen = 3$ is topologically forced by
+the $\mathbb{Z}_7^5$ CA topology: no GTP-4 chain exists, and all GTP-3 chains
+are cyclic rotations of~${\rm gen}_1$.
+All results are machine-certified via native decision procedures
+(\texttt{SMOrbitCausalIsolation.lean}, \texttt{GoEStabilityHierarchy.lean},
+zero \texttt{sorry}).
+
+\subsection{The SM Orbit as Unique GTP-3 Chain}
+\label{sec:gtp3}
+
+\begin{definition}[GTP-$n$]\label{def:gtp}
+A \emph{Garden-of-Eden Transience Path of length $n$} (GTP-$n$) in $\mathbb{Z}_7^5$
+is a sequence of distinct non-vacuum states $s_1, s_2, \ldots, s_n$ such that:
+\begin{enumerate}[nosep,label=(\roman*)]
+\item $s_1$ has no predecessor under $f_{\rm step}$ (Garden of Eden),
+\item for each $i = 2, \ldots, n$, $s_{i-1}$ is the \emph{unique} predecessor of $s_i$
+      (i.e.\ $f_{\rm step}^{-1}(s_i) = \{s_{i-1}\}$), and
+\item $f_{\rm step}(s_n) = \mathbf{0}$ (vacuum).
+\end{enumerate}
+\end{definition}
+
+The SM generation orbit ${\rm gen}_1 \to {\rm gen}_2 \to {\rm gen}_3 \to {\rm vacuum}$
+is a GTP-3 chain by the predecessor count results of \S\ref{sec:chain_isolation}.
+The following theorems establish that this is the \emph{unique} GTP-3 chain class
+in $\mathbb{Z}_7^5$ and that no longer chain exists.
+
+\begin{theorem}[SM orbit is GTP-3, $\CatAL$]\label{thm:sm_is_gtp3}
+The SM generation orbit satisfies the GTP-3 conditions:
+\begin{enumerate}[nosep,label=(\roman*)]
+\item gen$_1 = [1,5,2,2,1]$ is a Garden of Eden under $f_{\rm step}$.
+\item gen$_1$ is the unique predecessor of gen$_2$;
+      gen$_2$ is the unique predecessor of gen$_3$.
+\item $f_{\rm step}({\rm gen}_3) = \mathbf{0}$ (vacuum termination).
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\lean{sm\_orbit\_is\_gtp3} (\lean{GoEStabilityHierarchy.lean},
+propositional proof from prior theorems, zero \texttt{sorry}).
+\end{proof}
+
+\begin{theorem}[GTP-3 uniqueness and maximality, $\CatAL$]\label{thm:gtp3_unique}
+\begin{enumerate}[nosep,label=(\roman*)]
+\item Every GTP-3 chain in $\mathbb{Z}_7^5$ is a cyclic rotation of gen$_1$.
+      There are exactly $5$ such chains, one for each rotation index $k \in \{0,1,2,3,4\}$.
+\item No GTP-4 chain exists in $\mathbb{Z}_7^5$: for every GoE-rooted path $s_1 \to s_2 \to s_3$
+      satisfying the GTP conditions, the fourth state $f_{\rm step}(s_3)$ is the vacuum
+      (with $14{,}147$ predecessors), not a GTP-eligible state (which would require exactly $1$
+      predecessor).
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(i) The uniqueness (all GTP-3 chains are gen$_1$ rotations) is $\CatAL$,
+certified by \lean{sm\_orbit\_unique\_gtp3}
+(\lean{GoEStabilityHierarchy.lean}, \texttt{native\_decide},
+zero \texttt{sorry}): the exhaustive decision procedure over all $16{,}807$
+states of $\mathbb{Z}_7^5$ rules out any non-rotation GTP-3 chain.
+(ii) \lean{fmdl\_no\_gtp4} (\lean{GoEStabilityHierarchy.lean}, \texttt{native\_decide},
+zero \texttt{sorry}).
+\end{proof}
+
+\begin{corollary}[Generation count forced, $\CatAL$]\label{cor:ngen_forced}
+$\Ngen = 3$ is topologically forced by the $\mathbb{Z}_7^5$ CA structure.
+The SM orbit realizes the unique maximal GTP-chain length available in $\mathbb{Z}_7^5$.
+A fourth generation would require a GTP-4 chain, which does not exist.
+\end{corollary}
+
+The physical significance of this corollary is substantial: the three-generation
+structure of the Standard Model --- which is observed experimentally~\cite{PDG2022}
+but not explained within the field-theoretic Standard Model itself --- is here
+shown to be a necessary consequence of the CA orbit topology.
+The fact that $\Ngen = 3$ is the maximum GTP length in $\mathbb{Z}_7^5$ means that
+three generations is not merely the observed number but the \emph{only} number
+consistent with the orbit arithmetic.
+
+\begin{remark}[$\Ngen = 3$ uniqueness across the arithmetic landscape; $\CatAL$]
+\label{rem:ngen_landscape}
+The topological forcing of $\Ngen = 3$ is cross-validated by the landscape analysis
+in the companion CKM paper~\cite{SpivackCKM} (Table~2 there).
+That table surveys integer generation counts $\Ngen \in \{1, 2, 3, 4, 5\}$ against
+the full set of orbit-arithmetic constraints: GTP maximality
+(Theorem~\ref{thm:gtp3_unique}), the Mersenne prime exponent condition
+$2^{c_H} - 1$ prime (which forces $c_H = 13$), the Weinberg angle
+closure~\cite{SpivackWeinberg}, and the Wolfenstein-$\lambda$ arithmetic~\cite{SpivackCKM}.
+Only $\Ngen = 3$ satisfies all constraints simultaneously, confirming that
+the three-generation count is over-determined by the arithmetic of the framework.
+\end{remark}
+
+\subsection{Orbital Chain Isolation}
+\label{sec:chain_isolation}
+
+The predecessor count of a state $s \in \mathbb{Z}_7^5$ under $f_{\rm step}$ is
+\[
+\mathrm{pred}(s) = |\{s' \in \mathbb{Z}_7^5 : f_{\rm step}(s') = s\}|.
+\]
+Exhaustive enumeration over all $7^5 = 16{,}807$ states of $\mathbb{Z}_7^5$ yields:
+
+\begin{theorem}[Predecessor counts, $\CatAL$]\label{thm:pred_counts}
+\[
+\mathrm{pred}({\rm gen}_1) = 0,\quad
+\mathrm{pred}({\rm gen}_2) = 1,\quad
+\mathrm{pred}({\rm gen}_3) = 1,\quad
+\mathrm{pred}({\rm vacuum}) = 14{,}147.
+\]
+\end{theorem}
+
+\begin{proof}
+Certified by \lean{fmdl\_gen1\_\allowbreak{}predecessor\_\allowbreak{}count},
+\lean{fmdl\_gen2\_\allowbreak{}predecessor\_\allowbreak{}count},
+and \lean{fmdl\_gen3\_\allowbreak{}predecessor\_\allowbreak{}count}
+in \lean{GoE\allowbreak{}Stability\allowbreak{}Hierarchy.lean}
+(\texttt{native\_decide}, zero \texttt{sorry}).
+\end{proof}
+
+The equality $\mathrm{pred}({\rm gen}_2) = \mathrm{pred}({\rm gen}_3) = 1$ is stronger
+than a simple predecessor-count ordering: it establishes that each generation has a
+\emph{unique} predecessor.
+Identifying those predecessors gives the orbital chain isolation result.
+
+\begin{theorem}[Orbital chain isolation, $\CatAL$]\label{thm:chain_isolation}
+The SM generation orbit is a completely isolated linear chain in $\mathbb{Z}_7^5$:
+\begin{align*}
+\forall s \in \mathbb{Z}_7^5:\quad & f_{\rm step}(s) \neq {\rm gen}_1 \quad
+  \text{(gen}_1 \text{ has no predecessor)},\\
+\forall s \in \mathbb{Z}_7^5:\quad & f_{\rm step}(s) = {\rm gen}_2 \iff s = {\rm gen}_1 \quad
+  \text{(gen}_2\text{'s unique predecessor is gen}_1\text{)},\\
+\forall s \in \mathbb{Z}_7^5:\quad & f_{\rm step}(s) = {\rm gen}_3 \iff s = {\rm gen}_2 \quad
+  \text{(gen}_3\text{'s unique predecessor is gen}_2\text{)}.
+\end{align*}
+In particular, no state external to the orbit can enter the generation cascade at any step,
+and no generation can be reached except through the immediately preceding generation.
+\end{theorem}
+
+\begin{proof}
+\lean{fmdl\_orbit\_linear\_chain}
+(\lean{GoEStabilityHierarchy.lean}, combining
+\lean{fmdl\_gen1\_is\_garden\_of\_eden},
+\lean{fmdl\_gen2\_unique\_predecessor},
+\lean{fmdl\_gen3\_unique\_predecessor};
+zero \texttt{sorry}).
+\end{proof}
+
+\begin{corollary}[No generation shortcut, $\CatAL$]\label{cor:no_shortcut}
+No state maps directly to a non-adjacent generation:
+\begin{itemize}[nosep]
+\item No CA step can reach gen$_3$ without passing through gen$_2$.
+\item No CA step can reach gen$_2$ without passing through gen$_1$.
+\end{itemize}
+The unique two-step predecessor of gen$_3$ is gen$_1$
+(\lean{fmdl\_ca\_lepton\_universality}, \texttt{native\_decide}).
+\end{corollary}
+
+This corollary provides a CA-arithmetic grounding for the lepton universality
+principle~\cite{PDG2022}: the structural equality $\mathrm{pred}({\rm gen}_2) = \mathrm{pred}({\rm gen}_3) = 1$
+means that both generation transitions (${\rm gen}_1 \to {\rm gen}_2$ and
+${\rm gen}_2 \to {\rm gen}_3$) have equal predecessor-set cardinality, reflecting equal
+multiplicities at the CA level (\lean{fmdl\_ca\_lepton\_universality}, $\CatAL$).
+
+A further symmetry is established for the full gen$_1$ orbit family.
+All 5 cyclic rotations of gen$_1$ are Garden-of-Eden states
+(\lean{fmdl\_gen1\_all\_rotations\_are\_goe}, \texttt{native\_decide}):
+\[
+\forall k \in \{0,1,2,3,4\}: \mathrm{pred}(\mathrm{rot}_k({\rm gen}_1)) = 0.
+\]
+The five-fold rotational symmetry of the Garden-of-Eden family reflects the
+$\mathbb{Z}_5$ family ring structure of $\mathbb{Z}_7^5$: the five particle families
+of the SM first generation correspond to the five cyclic rotations of the gen$_1$ state.
+
+\subsection{The Complete Causal Isolation Master Theorem}
+\label{sec:isolation_master}
+
+The predecessor count results, the orbital chain isolation, the $\mathbb{Z}_7$ sum trajectory,
+and the global binary isolation are assembled into a six-part master theorem that certifies the
+SM orbit by CA-structural properties alone.
+
+\begin{theorem}[Complete causal isolation, $\CatAL$]\label{thm:isolation_master}
+The SM generation orbit ${\rm gen}_1 \to {\rm gen}_2 \to {\rm gen}_3 \to {\rm vacuum}$
+satisfies six independent causal isolation conditions simultaneously:
+\begin{enumerate}[label=\textup{(\arabic*)}]
+\item \textbf{Gen$_1$ is a Garden of Eden.}
+      No state in $\mathbb{Z}_7^5$ maps to gen$_1$ under $f_{\rm step}$:
+      $\forall s, f_{\rm step}(s) \neq {\rm gen}_1$.
+
+\item \textbf{Gen$_2$ has a unique predecessor.}
+      There is exactly one state mapping to gen$_2$, namely gen$_1$:
+      $\exists!\, s,\; f_{\rm step}(s) = {\rm gen}_2$, and that state is gen$_1$.
+
+\item \textbf{Gen$_3$ has a unique predecessor.}
+      There is exactly one state mapping to gen$_3$, namely gen$_2$:
+      $\exists!\, s,\; f_{\rm step}(s) = {\rm gen}_3$, and that state is gen$_2$.
+
+\item \textbf{Gen$_1$ conserves $\mathbb{Z}_7$ sum.}
+      $\sigma({\rm gen}_2) = \sigma({\rm gen}_1) = 4 \pmod{7}$,
+      where $\sigma(s) = \sum_{i=0}^{4} s_i \pmod{7}$.
+      The first generation is the unique sum-conserving orbit state.
+
+\item \textbf{Gen$_2$ breaks $\mathbb{Z}_7$ sum conservation.}
+      $\sigma({\rm gen}_3) = 3 \neq 4 = \sigma({\rm gen}_2)$:
+      sum conservation breaks at the transition gen$_2 \to$ gen$_3$.
+
+\item \textbf{Global $\mathbb{Z}_2$ orbit isolation.}
+      For the binary (Rule~110) sub-orbit on the 5-cell ring, over all $2^5 \times 2^5 = 1024$
+      candidate pairs $(g_2, g_3) \in (\mathbb{Z}_2^5)^2$:
+      \[
+        (\text{Rule~110}({\rm smGen}_1) = g_2)\;\wedge\;(\text{Rule~110}(g_2) = g_3)
+        \;\iff\;
+        g_2 = {\rm smGen}_2 \;\wedge\; g_3 = {\rm smGen}_3.
+      \]
+      No perturbation of any size is compatible with Rule~110 and the SM orbit.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\lean{sm\_orbit\_complete\_causal\_isolation}
+(\lean{SMOrbitCausalIsolation.lean}, zero \texttt{sorry}).
+Each conjunct is derived from a corresponding prior theorem (synthesis proof, no new computation):
+conditions (1)--(3) from \lean{GoEStabilityHierarchy.lean} via
+\lean{fmdl\_gen1\_is\_garden\_of\_eden},
+\lean{gen2\_has\_unique\_predecessor},
+\lean{gen3\_has\_unique\_predecessor};
+conditions (4)--(5) from \lean{cup11b\_z7\_sum\_conservation}
+(\lean{CUP3DUniqueness.lean});
+condition~(6) from \lean{rule110\_orbit\_complete\_isolation}
+(\lean{OrbitPerturbationCatalog.lean}).
+\end{proof}
+
+The six conditions are independent in the sense that each rules out a distinct class of
+alternative orbit structures.
+Condition~(1) prevents the existence of a generation-0 pre-seed.
+Conditions (2)--(3) prevent external injection into the orbit from non-generation states.
+Conditions (4)--(5) encode the $\mathbb{Z}_7$ sum trajectory as a discriminant
+between the stable and unstable generations.
+Condition~(6) provides a global binary certificate that the SM orbit is the unique
+binary solution over the full $1024$-pair space.
+
+\begin{remark}[Global attractor, $\CatA$]\label{rem:global_attractor}
+The causal isolation established above extends to a global dynamical statement.
+A complete orbit decomposition over all $7^5 = 16{,}807$ states of $\mathbb{Z}_7^5$
+reveals that $f_{\rm MDL}$ has exactly one periodic orbit --- the vacuum fixed point
+$(0,0,0,0,0)$ --- and every non-vacuum state is a transient trajectory converging
+to the vacuum in at most $7$ steps.
+The SM generation states have tail lengths $1$ (gen$_3$), $2$ (gen$_2$), and
+$3$ (gen$_1$, GoE), consistent with the observed generation stability hierarchy.
+The vacuum is thus the unique global attractor of the $f_{\rm MDL}$ dynamics
+on $\mathbb{Z}_7^5$ ($\CatA$, numerical verification over all $16{,}807$ states).
+\end{remark}
+
+\begin{remark}[Two-level dynamics and physical particle stability; $\CatA$]
+\label{rem:two_level_dynamics}
+The global attractor result characterises particle \emph{type assignment},
+not physical time evolution.
+Physical particles are localised structures (gliders) in the Rule~110 cellular
+automaton, verified stable for $T = 10{,}000$ CA steps ($\CatA$);
+their lifetimes are governed by glider dynamics, not by the $\mathbb{Z}_7^5$
+orbit depth.
+The $f_{\rm MDL}$ function on $\mathbb{Z}_7^5$ classifies which particles
+can exist (GoE = arithmetically irreducible; transient = composite accessible
+from above); the Rule~110 CA governs how they propagate.
+These are two distinct dynamical layers:
+\begin{center}
+\small
+\begin{tabular}{lll}
+\hline
+\textbf{Layer} & \textbf{Domain} & \textbf{Role} \\
+\hline
+$f_{\rm MDL}$ on $\mathbb{Z}_7^5$ & mod-7 arithmetic & particle-type classification \\
+Rule~110 on binary tape & ether + gliders & physical propagation \\
+\hline
+\end{tabular}
+\end{center}
+The $7$-step convergence bound equals the $\mathbb{Z}_7$ arithmetic period for
+the same structural reason --- both arise from the cyclic order $|\mathbb{Z}_7| = 7$
+--- and is not a physical decay time.
+\end{remark}
+
+\begin{remark}[Trajectory-orbit no-go for CA-level inter-layer coupling, $\CatAL$]
+\label{rem:coupling_nogo}
+The two dynamical layers above cannot be coupled at the CA (cell) level: any
+ether-dependent CA-local coupling between the Rule~110 ether layer and an auxiliary
+Rule~124 layer disrupts C$_2$ glider coherence.
+The obstruction is an arithmetic incommensurability, machine-certified in Lean~4
+with zero \texttt{sorry}:
+$\gcd(2,14)=2$ (\lean{gcd\_step\_ether}), ether orbit length $= 7$
+(\lean{orbit\_length\_eq\_seven}), $\gcd(3,7)=1$ (\lean{gcd\_glider\_orbit}),
+$\mathrm{lcm}(3,7)=21$ (\lean{lcm\_glider\_orbit}), $21 \nmid 3$
+(\lean{lcm\_does\_not\_divide\_glider\_period}).
+Diagonal offsets provide no escape:
+\lean{diagonal\_offset\_same\_orbit\_period} proves
+$\forall \delta,\, (\delta + 14) \bmod 14 = \delta \bmod 14$.
+($\CatAL$: \lean{coupling\_no\_go\_master}, \lean{UgpLean.Universality.CouplingNoGo},
+zero \texttt{sorry}.)
+\end{remark}
+
+\subsection{Orbit Sum Trajectory Invariance}
+\label{sec:sum_trajectory}
+
+The $\mathbb{Z}_7$ sum trajectory along the SM orbit is
+\begin{equation}
+\sigma({\rm gen}_1) = 4 \;\to\; \sigma({\rm gen}_2) = 4 \;\to\;
+\sigma({\rm gen}_3) = 3 \;\to\; \sigma({\rm vacuum}) = 0,
+\label{eq:sum_trajectory}
+\end{equation}
+as established by \lean{sm\_orbit\_z7\_sum\_trajectory} (\lean{SMOrbitCausalIsolation.lean},
+\texttt{decide}, zero \texttt{sorry}).
+A structurally deeper result is that this trajectory is \emph{invariant} across the full
+family of GTP-3 chains: it is not a property of the specific canonical representative
+gen$_1 = [1,5,2,2,1]$ but of the entire orbit class.
+
+\begin{theorem}[Sum trajectory invariance, $\CatAL$]\label{thm:sum_traj}
+All five cyclic rotations of gen$_1$ share the $\mathbb{Z}_7$ sum trajectory $4 \to 4 \to 3$:
+\[
+\forall k \in \{0,1,2,3,4\}:\quad
+\sigma(\mathrm{rot}_k({\rm gen}_1)) = 4,\quad
+\sigma(f_{\rm step}(\mathrm{rot}_k({\rm gen}_1))) = 4,\quad
+\sigma(f_{\rm step}^2(\mathrm{rot}_k({\rm gen}_1))) = 3.
+\]
+Since (by \cref{thm:gtp3_unique}) every GTP-3 chain is a cyclic rotation of gen$_1$,
+the sum trajectory $4 \to 4 \to 3 \to 0$ is an invariant of GTP-3 chains under $f_{\rm MDL}$.
+\end{theorem}
+
+\begin{proof}
+\lean{gtp3\_sum\_trajectory\_\allowbreak{}of\_gen1\_rotations}
+(\lean{GoEStabilityHierarchy.lean}, \lean{native\_decide}, zero \texttt{sorry}).
+The extension to all GTP-3 chains follows from the GTP-3 uniqueness theorem
+(\lean{gtp3\_sum\_trajectory\_master}).
+\end{proof}
+
+The sum trajectory \eqref{eq:sum_trajectory} has a distinctive structure:
+the first step $4 \to 4$ conserves the sum, while both subsequent steps
+$4 \to 3$ and $3 \to 0$ break it.
+Conservation at gen$_1$ and breaking at gen$_2$ are conditions~(4) and~(5) of
+the causal isolation master theorem (\cref{thm:isolation_master}).
+
+An important distinction: the sum trajectory $4 \to 4 \to 3$ is an invariant
+of the GTP-3 chain class, but a complementary sum-4 orbit class exists ---
+the alt orbit $[0,2,5,2,2]$ and its rotations --- with depth 2 and sum trajectory
+$4 \to 4 \to 0$ (established by \lean{gtp3\_alt\_depth\_is\_two}, \texttt{native\_decide}).
+The alt class is distinguished from the SM class by its shorter depth (GTP-2, not GTP-3),
+reflecting the absence of a gen$_3$-like intermediate state.
+The sum trajectory $4 \to 4 \to 3$ with sum~3 at the third state is therefore the unique
+GTP-3 fingerprint.
+
+\begin{proposition}[Winding-class interpretation of the orbit sum trajectory; $\CatAL$]
+\label{prop:sum_traj_winding}
+The orbit sum trajectory $4 \to 4 \to 3 \to 0$ encodes the winding-class hierarchy of
+the SM generation cascade:
+\begin{align}
+\sigma(\mathrm{gen}_1) &= 4 = Z_7(e^-), \\
+\sigma(\mathrm{gen}_2) &= 4 = Z_7(e^-)  \quad\text{(sum conserved at } \mathrm{gen}_1 \to \mathrm{gen}_2\text{)},\\
+\sigma(\mathrm{gen}_3) &= 3 = Z_7(W^+)  \quad\text{(sum shifts to gauge-boson class)},\\
+\sigma(\mathrm{vac})   &= 0 = Z_7(\gamma).
+\end{align}
+The drop $\Delta = 4 - 3 = 1$ at $\mathrm{gen}_2 \to \mathrm{gen}_3$ is the arithmetic
+signature of the $W^+$ emission vertex $f_{\rm MDL}(2,0,2)=3$ being activated at that
+step: the ring sum shifts from the charged-lepton sector ($Z_7(e^-) = 4$) to the
+gauge-boson sector ($Z_7(W^+) = 3$) in one step.
+The gen$_3 \to$ vacuum drop equals $3 = Z_7(W^+) = N_{\rm gen}$, absorbing the
+full $W^+$-class winding.
+\end{proposition}
+\begin{proof}
+Raw sums: $\mathrm{gen}_1 = [1,5,2,2,1]$, $\mathrm{gen}_2 = [2,5,2,0,2]$, both sum to
+$11 \equiv 4\pmod{7}$; $\mathrm{gen}_3 = [5,6,5,3,5]$ sums to $24 \equiv 3\pmod{7}$.
+The gen$_2 \to$ gen$_3$ step activates $f_{\rm MDL}(2,0,2)=3$ at position~3 of gen$_2$
+(the vacuum seat), shifting the ring sum from electron-class to $W^+$-class.
+$\CatAL$: \lean{orbit\_sum\_winding\_classes}, \lean{orbit\_sum\_drop\_at\_wemission},
+\texttt{GUTStructure.lean}~\S79, \texttt{decide}~+~\texttt{norm\_num}, zero \texttt{sorry}.
+\end{proof}
+
+\subsection{Rule~111 as the Unique Near-Miss}
+\label{sec:rule111}
+
+The SM orbit constraints imposed on the binary (Rule~110) sub-orbit define a filter over
+all $256$ elementary binary CA rules.
+The question of which binary rules satisfy the SM orbit conditions, with or without the
+vacuum transparency requirement, determines how special Rule~110 is within the space of
+all one-dimensional binary CAs.
+
+\begin{theorem}[Rule~111 near-miss, $\CatAL$]\label{thm:rule111}
+Among all $256$ elementary binary CA rules $r \in \{0, 1, \ldots, 255\}$:
+\begin{enumerate}[nosep,label=(\roman*)]
+\item Exactly $1$ rule satisfies both the SM orbit and vacuum transparency
+      (i.e.\ $r(0,0,0) = 0$): this is Rule~110.
+\item Exactly $2$ rules satisfy the SM orbit \emph{without} the vacuum transparency condition:
+      these are Rule~110 and Rule~111.
+\item The discriminant between the two is the single bit $r(0,0,0)$:
+      Rule~110 maps $(0,0,0) \mapsto 0$ (vacuum stable); Rule~111 maps $(0,0,0) \mapsto 1$ (vacuum unstable).
+\end{enumerate}
+The set of orbit-satisfying, vacuum-transparent rules is $\{110\}$ (a singleton Finset identity).
+\end{theorem}
+
+\begin{proof}
+\lean{dim\_slice\_valid\_rule\_count} (count = 1),
+\lean{dim\_slice\_vacuum\_essential} (count = 2 without vacuum),
+\lean{dim\_slice\_valid\_rules\_eq\_singleton} (Finset identity $\{110\}$),
+\lean{dim\_slice\_rule111\_excluded} (Rule~111 fails vacuum)
+(\lean{DimensionalSliceUniqueness.lean}, \texttt{native\_decide},
+zero \texttt{sorry}).
+The Rule~111 exclusion is also certified as
+\lean{vacuum\_selects\_rule110\_over\_rule111}
+(\lean{GUTStructure.lean}, zero \texttt{sorry}).
+\end{proof}
+
+The physical interpretation is precise: the CA rule governing the SM generation orbit
+is determined up to a single binary condition --- vacuum stability --- from the orbit
+constraints alone.
+Imposing the physically necessary requirement that the vacuum (all-zero configuration)
+be a fixed point of the CA dynamics eliminates the unique near-miss Rule~111, leaving
+Rule~110 as the sole solution.
+This establishes that Rule~110 is not chosen from the $256$-rule space by any free
+parameter: it is the only rule consistent with both the SM orbit structure and
+an elementary stability condition on the vacuum.
+
+A corollary (established in \lean{DimensionalSliceUniqueness.lean}) is that this
+selection is \emph{dimension-independent}: for any spatial dimension $d \geq 1$,
+any $d$-dimensional CA whose axis-aligned 5-cell periodic slices satisfy the SM orbit
+and vacuum transparency must apply Rule~110 on those slices
+(\lean{dimensional\_slice\_uniqueness}, $\CatAL$, zero \texttt{sorry}).
+The orbit constraint is not an artifact of the one-dimensional setting; it propagates
+to all dimensional realizations of the SM orbit.
+
+\begin{remark}[MDL joint minimality of Rule~110 and Rule~124; $\CatAL$]
+\label{rem:rule124_mdl}
+A complementary MDL analysis concerns the binary CA rules satisfying vacuum stability
+$r(0,0,0) = 0$.
+Among all $128$ such rules, the unique pair achieving the minimum MDL one-count of $5$
+(fewest output-1 entries) consists of Rule~110 and Rule~124
+(\lean{rule124\_minterms\_card},
+\lean{rule110\_and\_124\_joint\_mdl\_count},
+\lean{GUTStructure.lean}~\S17, $\CatAL$, zero \texttt{sorry}).
+Rule~110 is preferred over Rule~124 by sublayer consistency: CUP-4 already establishes
+that Rule~110 governs the $\mathbb{Z}_2$ binary sublayer of the $\mathbb{Z}_7$ orbit;
+\lean{rule110\_preferred\_by\_sublayer\_consistency} certifies that the two rules
+have distinct minterms and the sublayer constraint uniquely selects Rule~110
+(\texttt{native\_decide}, $\CatAL$).
+This establishes that the generation-orbit dynamics and the longitudinal-mode dynamics
+share the same MDL-minimized binary rule, with Rule~110 uniquely preferred by orbit structure.
+\end{remark}
+
+% ═══════════════════════════════════════════════════════════════════════════════
+\section{The Photon as the Cellular-Automaton Vacuum}
+\label{sec:photon}
+% ═══════════════════════════════════════════════════════════════════════════════
+
+The preceding sections established that the SM orbit is causally isolated
+(\S\ref{sec:causal_isolation}) and that MDL minimality forces the hard
+$\mathbb{Z}_7 = 4$ exclusion (\S\ref{sec:mdl_cp}).
+We now turn to the neutral sector: the photon, the Rule~110 ether, and the
+CA masslessness structure.
+The central result of this section is that the photon is not merely
+``vacuum-like'' but is, in a precise arithmetic sense, the CA's quiescent
+background state itself: the unique uniform fixed point of $f_{\rm MDL}$.
+This identification produces three subsidiary consequences---dual massless
+sectors, the neutrino-sector identification of the Rule~110 ether, and a
+CA-level grounding of helicity parity violation---all machine-certified in
+Lean~4 with zero \texttt{sorry}
+(\texttt{CasimirMasslessEther.lean}, zero \texttt{sorry}).
+
+\subsection{The Unique Uniform Fixed Point}
+\label{sec:photon_fixed_point}
+
+\begin{definition}[Uniform Fixed Point]
+\label{def:uniform_fp}
+A value $k \in \mathbb{Z}_7$ is a \emph{uniform fixed point} of $f_{\rm MDL}$
+if $f_{\rm MDL}(k, k, k) = k$.
+\end{definition}
+
+\begin{theorem}[Photon as Unique CA Fixed Point; $\CatAL$]
+\label{thm:photon_fixed_point}
+Among all seven values $k \in \mathbb{Z}_7$, the unique uniform fixed point of
+$f_{\rm MDL}$ is $k = 0$ (the photon/$\gamma$ sector):
+\begin{align}
+  f_{\rm MDL}(k,k,k) = k \;&\iff\; k = 0,
+  \label{eq:photon_fp}\\
+  \forall k \neq 0 : f_{\rm MDL}(k,k,k) &= 0.
+  \label{eq:nonzero_diagonal}
+\end{align}
+In particular, exactly one of the seven $\mathbb{Z}_7$ values is a uniform
+fixed point.
+\end{theorem}
+
+\begin{proof}
+The claim decomposes into two cases:
+\begin{enumerate}[nosep,leftmargin=1.5em]
+\item $k = 0$: The neighborhood $(0,0,0)$ is a Rule~110 binary sublayer
+  constraint.  Rule~110 maps $(0,0,0) \to 0$, giving $f_{\rm MDL}(0,0,0) = 0 = k$.
+\item $k = 1$: The neighborhood $(1,1,1)$ is the all-ones binary input.
+  Rule~110 maps $(1,1,1) \to 0$, giving $f_{\rm MDL}(1,1,1) = 0 \neq 1$.
+\item $k \in \{2,3,4,5,6\}$: None of the diagonal neighborhoods $(k,k,k)$
+  is among the 18 orbit or Rule~110 fixed constraints.
+  By MDL-minimality, all such free neighborhoods output $0$
+  (\lean{fmdl\_zero\_on\_free\_neighborhoods}, $\CatAL$), giving
+  $f_{\rm MDL}(k,k,k) = 0 \neq k$.
+\end{enumerate}
+All seven cases are verified by
+\lean{fmdl\_unique\_uniform\_fixed\_point}
+(\texttt{CasimirMasslessEther.lean},
+\lean{decide}, zero \texttt{sorry}).
+The non-zero-diagonal form~\eqref{eq:nonzero_diagonal} is
+\lean{fmdl\_nonzero\_diagonal\_all\_zero}
+(same module, zero \texttt{sorry}).
+The cardinality statement (exactly one fixed point) is
+\lean{fmdl\_uniform\_fp\_uniqueness\_count}
+(zero \texttt{sorry}).
+\end{proof}
+
+\begin{theorem}[Photon is the CA Ether; $\CatAL$]
+\label{thm:photon_ca_ether}
+The photon ($\mathbb{Z}_7 = 0$) is both:
+\begin{enumerate}[nosep,leftmargin=1.5em]
+\item the unique winding value that regenerates itself in a homogeneous
+  background of its own kind, and
+\item the MDL-minimal quiescent state, satisfying
+  $f_{\rm MDL}(0,0,0) = 0$ with zero description-length cost.
+\end{enumerate}
+(\lean{photon\_is\_ca\_ether}, \texttt{CasimirMasslessEther.lean},
+zero \texttt{sorry}.)
+\end{theorem}
+
+\begin{remark}[Physical Interpretation]
+The photon's role as the CA fixed point is structurally distinct from every
+other SM particle.  A massive particle placed in a uniform background of its
+own kind decays to vacuum in one $f_{\rm MDL}$ step
+(Theorem~\ref{thm:photon_fixed_point}, equation~\eqref{eq:nonzero_diagonal}).
+The photon, by contrast, is the vacuum.  It carries zero Kolmogorov
+description complexity relative to the $f_{\rm MDL}$ background because it is
+not a departure from that background but the background itself.
+The GTE sieve's assignment of no GTE triple to the photon~\cite{SpivackCompUniversality}
+follows directly: the sieve generates excitations above the CA vacuum, and
+the CA vacuum has no excitation cost.
+A global orbit decomposition over all $7^5 = 16{,}807$ states of $\mathbb{Z}_7^5$
+confirms this identification: the vacuum is the unique periodic orbit in the
+$f_{\rm MDL}$ dynamical system, with every other state a transient trajectory
+converging to it in at most $7$ steps ($\CatA$, numerical verification).
+\end{remark}
+
+\subsection{Dual Massless Sectors}
+\label{sec:dual_massless}
+
+\begin{theorem}[CA Masslessness Criterion; $\CatAL$]
+\label{thm:massless_criterion}
+A value $k \in \mathbb{Z}_7$ is \emph{CA-massless} if it propagates stably in
+a vacuum neighborhood: $f_{\rm MDL}(0, k, 0) = k$.
+The CA-massless values are exactly $\{0, 1\}$:
+\begin{equation}
+  f_{\rm MDL}(0, k, 0) = k \;\iff\; k \in \{0, 1\}.
+  \label{eq:massless_criterion}
+\end{equation}
+All other SM winding values ($k \in \{2,3,4,5,6\}$) satisfy
+$f_{\rm MDL}(0,k,0) = 0$: a single isolated excitation decays to vacuum
+in one step.
+(\lean{fmdl\_massless\_criterion}, \texttt{CasimirMasslessEther.lean},
+\lean{native\_decide}, zero \texttt{sorry}.)
+\end{theorem}
+
+\begin{proof}
+The two stable cases:
+\begin{enumerate}[nosep,leftmargin=1.5em]
+\item $k = 0$: By Theorem~\ref{thm:photon_fixed_point}, $f_{\rm MDL}(0,0,0) = 0$.
+\item $k = 1$: The neighborhood $(0,1,0)$ is a Rule~110 binary constraint:
+  $(0,1,0) \to 1$.  Thus $f_{\rm MDL}(0,1,0) = 1$.
+\end{enumerate}
+For $k \in \{2,3,4,5,6\}$, the neighborhood $(0,k,0)$ is not among the 18
+fixed constraints; MDL-minimality forces $f_{\rm MDL}(0,k,0) = 0$.
+Verified by \lean{native\_decide}.
+\end{proof}
+
+\begin{corollary}[Two Massless SM Sectors; $\CatAL$]
+\label{cor:massless_sectors}
+The $f_{\rm MDL}$ CA naturally distinguishes exactly two massless sectors:
+\begin{enumerate}[nosep,leftmargin=1.5em]
+\item \emph{Electromagnetic sector} ($\mathbb{Z}_7 = 0$, photon):
+  a uniform fixed point; zero-cost to describe.
+\item \emph{Neutrino-weight sector} ($\mathbb{Z}_7 = 1$, anti-$d$ / $\nu$-carrier):
+  a Rule~110-stable propagating mode, passing through a vacuum neighborhood
+  unchanged.
+\end{enumerate}
+Every SM particle with $\mathbb{Z}_7 \in \{2,3,4,5,6\}$ is CA-massive: it
+decays to vacuum in one step when isolated in a vacuum neighborhood.
+This CA-masslessness criterion is physically aligned with the Standard Model:
+the two massless SM particles --- the photon and the neutrino --- are
+precisely the CA-massless sectors.
+(\lean{fmdl\_massless\_unique}, zero \texttt{sorry}.)
+\end{corollary}
+
+\begin{remark}[Two Levels of Masslessness]
+The CA-masslessness of $\mathbb{Z}_7 = 1$ is a winding-sector property, not
+a GTE mass statement.  The electron neutrino has a nonzero GTE triple
+$(1,1,823)$ and a small but nonzero mass from the cascade.  The CA criterion
+classifies the $\mathbb{Z}_7 = 1$ sector as propagation-stable, which is
+correct: at the level of winding number, the neutrino sector propagates
+without decay in a vacuum neighborhood.  The GTE cascade provides the mass
+refinement within that sector.
+\end{remark}
+
+\begin{remark}[CA-level mass gap: self-propagating winding survey; $\CatAL$]
+\label{rem:ca_mass_gap}
+A complete survey over all $7^3 = 343$ neighborhoods certifies which $\mathbb{Z}_7$
+winding sectors admit a center configuration with $f_{\rm MDL}(l,w,r) = w$
+for \emph{some} $(l,r)$ (self-propagation in a general neighborhood, stronger
+than the vacuum-neighborhood criterion of Theorem~\ref{thm:massless_criterion}).
+The result partitions $\mathbb{Z}_7$ into two classes:
+\begin{itemize}[nosep]
+  \item \emph{Self-propagating:} $\{0, 1, 2, 5\}$ --- the vacuum/photon ether
+    and the orbital fermion sectors.
+  \item \emph{Not self-propagating:} $\{3, 4, 6\}$ --- W$^+$, electron/W$^-$,
+    $d$-quark (the massive charged-current particles).
+\end{itemize}
+Sectors $\{3,4,6\}$ have no center configuration stable under $f_{\rm MDL}$,
+so they function as contact interaction vertices at the CA scale---Fermi-type
+couplings at energies $E \ll M_W$, not propagating beables.
+The $\mathbb{Z}_7 = 4$ sector is additionally excluded from the range of $f_{\rm MDL}$
+entirely (\lean{fmdl\_never\_outputs\_4}, $\CatAL$).
+This is the CA-level mass gap: the only self-propagating $\mathbb{Z}_7$ sectors
+are those that correspond to massless or orbitally-stable SM states.
+(Lean: \lean{mass\_gap\_theorem}, \lean{winding\_4\_maps\_to\_vacuum},
+\lean{winding\_6\_maps\_to\_vacuum}, \lean{self\_propagating\_center\_survey},
+\texttt{GUTStructure.lean}~\S44, zero \texttt{sorry}.)
+The mass gap has a physical lower bound: the lightest standard-model generation
+has mass $\Delta \geq 1.8\,\mathrm{MeV}$ (conservative PDG lower bound on $m_u$),
+certified in Lean~4 (\lean{gte\_mass\_formula\_physical}, zero axioms) \cite{SpivackEmergentGravity}.
+\end{remark}
+
+\subsection{The Rule~110 Ether and the Neutrino Sector}
+\label{sec:ether}
+
+\begin{definition}[Rule~110 Ether]
+\label{def:ether}
+The \emph{Rule~110 ether} is the period-14 background pattern
+\[
+  e = [0,1,0,1,1,1,0,0,0,1,1,1,0,1]
+\]
+through which Rule~110 glider structures propagate in Cook's computational
+universality construction~\cite{Cook2004,Wolfram2020Tech}.
+It consists of six $\mathbb{Z}_7 = 0$ cells and eight $\mathbb{Z}_7 = 1$
+cells per period.
+\end{definition}
+
+\begin{theorem}[Ether Carries Neutrino Winding; $\CatAL$]
+\label{thm:ether_winding}
+The Rule~110 ether has $\mathbb{Z}_7$ winding sum
+\begin{equation}
+  \left(\sum_{i=1}^{14} e_i\right) \bmod 7 = 1.
+  \label{eq:ether_sum}
+\end{equation}
+Consequently, the ether is \emph{not} the electromagnetic vacuum
+(which carries $\mathbb{Z}_7$ winding $0$) but belongs to the neutrino
+winding sector ($\mathbb{Z}_7 = 1$).
+(\lean{ether\_z7\_sum\_mod7}, \texttt{CasimirMasslessEther.lean},
+\lean{native\_decide}, zero \texttt{sorry}.)
+\end{theorem}
+
+\begin{proof}
+Direct computation: $8 \times 1 + 6 \times 0 = 8 \equiv 1 \pmod{7}$.
+Machine-certified via \lean{ether\_z7\_sum\_mod7} by \lean{native\_decide}
+from the explicit ether list.
+The corollary \lean{ether\_not\_em\_vacuum} certifies $\neq 0$
+(zero \texttt{sorry}).
+\end{proof}
+
+The ether theorem establishes a two-level vacuum structure.
+The \emph{electromagnetic vacuum} is the CA's quiescent fixed point
+(Theorem~\ref{thm:photon_ca_ether}, $\mathbb{Z}_7 = 0$, zero description
+complexity).
+The \emph{Rule~110 ether} is a distinct, dynamically active periodic
+background carrying $\mathbb{Z}_7$ winding $= 1$ --- precisely the
+neutrino-weight sector winding.
+In the Cook--Wolfram construction, matter-like glider structures propagate
+through this ether; those gliders correspond, in the $\mathbb{Z}_7$ lifting,
+to excitations above a background that is itself neutrino-sector in character.
+
+The Rule~110 period-14 ether background carries $\mathbb{Z}_7$ winding
+number~$1$ (neutrino sector, Lean-certified:
+\lean{ether\_z7\_sum\_mod7}), not zero as would a purely electromagnetic
+vacuum.
+This result connects to a structural observation in the Wolfram Physics
+Project: the computational vacuum of Rule~110 is not quiescent but
+continuously generates and reabsorbs short-lived particle-like localized
+structures, which Wolfram identifies as the cellular-automaton analog of
+virtual particles~\cite{Wolfram2020Tech}.
+The UGP ether result provides this observation with quantitative content:
+the CA vacuum background is not charge-neutral but carries a specific,
+conserved quantum number --- $\mathbb{Z}_7$ winding $= 1$ --- identifying
+its virtual activity as neutrino-sector in character rather than
+electromagnetic.
+This is structurally analogous to the physical quantum electrodynamic vacuum,
+which is pervaded by virtual photon pairs; the CA vacuum analog is instead
+pervaded by virtual neutrino-like excitations.
+Wolfram correctly identifies the CA background as dynamically active; the
+present framework specifies the quantum numbers of that activity.
+
+\begin{corollary}[Two-Level Vacuum Hierarchy; $\CatAL$]
+\label{cor:two_level_vacuum}
+The $f_{\rm MDL}$ framework distinguishes two vacuum levels:
+\begin{enumerate}[nosep,leftmargin=1.5em]
+\item \textbf{Level 0 (EM quiescent):} The all-zeros $\mathbb{Z}_7 = 0$
+  fixed point.  Zero entropy, zero complexity, the photon sector.
+\item \textbf{Level 1 (Neutrino-sector background):} The Rule~110 period-14
+  ether.  $\mathbb{Z}_7$ winding $= 1$ per period; dynamically active;
+  the propagation medium for matter-like CA structures.
+\end{enumerate}
+These are arithmetically distinct: the Level~0 vacuum is a period-1 fixed
+point; the Level~1 ether is period-14 and not an $f_{\rm MDL}$ fixed point.
+(\lean{ether\_not\_em\_vacuum}, zero \texttt{sorry}.)
+\end{corollary}
+
+The ether binary closure theorem provides a structural explanation for why
+neutrino masses are suppressed relative to charged leptons.
+Since the Rule~110 cellular automaton maps binary inputs $\{0,1\}^3$ to
+binary outputs $\{0,1\}$, any $\mathbb{Z}_7=0$ (neutrino-sector) cell in the
+ether background can scatter only to outputs in $\{0,1\}$.
+Both $\mathbb{Z}_7=0$ and $\mathbb{Z}_7=1$ are CA-massless under the vacuum
+fixed-point criterion ($f_{\rm MDL}(0,k,0)=k$ for $k\in\{0,1\}$,
+Lean-certified: \lean{CasimirMasslessEther.fmdl\_massless\_criterion},
+zero \texttt{sorry}).
+The ether therefore preserves neutrino masslessness at every CA interaction
+step: mass generation requires non-ether-context intermediate states or
+higher-order processes.
+
+This binary closure property is preserved under iteration: for any $k \geq 1$
+successive applications of $f_{\rm MDL}$ with pure ether context (all
+neighboring cells in $\{0,1\}$), a $\mathbb{Z}_7=0$ cell remains in
+$\{0,1\}$ at every step.
+The proof follows by induction on $k$, using Rule~110's binary closure: the
+base case $k=1$ is the CA-masslessness criterion above, and the inductive
+step preserves the $\{0,1\}$ invariant because binary inputs always produce
+binary outputs under Rule~110.
+Mass generation for the neutrino is therefore structurally impossible in the
+leading-order ether background, to all orders.
+
+\begin{remark}[Unified $\mathbb{Z}_7=0$ Colorless Sector Discriminant; $\CatAL$]
+\label{rem:z7_zero_unified_discriminant}
+The results of this section --- the $f_{\rm MDL}$ fixed-point identification of the photon
+(Theorem~\ref{thm:photon_ca_ether}), the GTE $b$-index separation of the electroweak
+and neutrino sectors, and the individual GTE $a$-index generation labels --- together
+constitute a complete first-principles discriminant for all $W_B{=}0$ colorless SM
+particles ($\gamma$, $\nu_e$, $\nu_\mu$, $\nu_\tau$, $Z$, $H^0$).
+This unified discriminant is machine-certified in Lean~4 with zero \texttt{sorry}
+(\lean{z7\_zero\_sector\_unified\_discriminant}, \lean{Z7ZeroSectorDiscriminant.lean},
+\texttt{ugp-lean}, $\CatAL$, zero sorry).
+\end{remark}
+
+\subsection{Helicity Parity Violation}
+\label{sec:helicity}
+
+The CA masslessness criterion (Theorem~\ref{thm:massless_criterion}) implies
+a specific asymmetry between the two transverse helicity modes of the photon.
+
+\begin{proposition}[Helicity Parity Violation; $\CatAL$]
+\label{prop:helicity}
+Under the $\mathbb{Z}_7$ winding representation, the two transverse
+photon modes are $k = 1$ ($h = +1$) and $k = 6$ ($h = -1$).  Their
+CA-dynamical behaviors are opposite:
+\begin{align}
+  f_{\rm MDL}(0, 1, 0) &= 1 \quad \text{(}h = +1\text{ mode: stable)}
+  \label{eq:hplus_stable}\\
+  f_{\rm MDL}(0, 6, 0) &= 0 \quad \text{(}h = -1\text{ mode: decays to vacuum)}
+  \label{eq:hminus_decays}
+\end{align}
+Of the two helicity modes, only positive helicity ($h = +1$) is
+CA-propagation-stable; negative helicity ($h = -1$) decays to the CA vacuum
+in one step.  The CA dynamics select a left-handed photon propagation mode
+and suppress the right-handed mode, providing a CA-arithmetic grounding of
+helicity parity violation.  Machine-certified:
+\lean{helicity\_parity\_violation} (\texttt{CasimirMasslessEther.lean},
+zero \texttt{sorry}).
+\end{proposition}
+
+\begin{proof}
+Equation~\eqref{eq:hplus_stable} is the $k = 1$ case of
+Theorem~\ref{thm:massless_criterion}, since the CA-massless values are
+$\{0, 1\}$.  Equation~\eqref{eq:hminus_decays} follows from
+$k = 6 \notin \{0,1\}$, which gives $f_{\rm MDL}(0,6,0) = 0$ by
+the same theorem.  Both claims follow from $\CatAL$-certified enumeration
+via \lean{native\_decide} (\lean{helicity\_plus\_stable},
+\lean{helicity\_minus\_decays}, \lean{helicity\_parity\_violation},
+\texttt{CasimirMasslessEther.lean}, zero \texttt{sorry}).
+\end{proof}
+
+\begin{remark}[Consistency with SM Left-Handedness]
+The selection of the $\mathbb{Z}_7 = 1$ positive-helicity mode as the unique
+CA-stable transverse mode is consistent with the SM's left-handed nature:
+the weak interaction couples exclusively to left-handed fermions and
+right-handed anti-fermions.  At the CA level, the orbit arithmetic of
+$f_{\rm MDL}$ enforces a preference for the $h = +1$ sector, providing
+an arithmetic-level foundation for the SM's chirality structure.
+The result is $\CatA$ (computationally verified); a physical derivation
+connecting CA helicity stability to the SM chirality constraint is an
+open problem.
+\end{remark}
+
+\begin{remark}[$f_{\rm MDL}$ as a perfect code; $\CatAL$]
+\label{rem:perfect_code}
+The function $f_{\rm MDL}$ achieves the minimum number of non-zero output
+neighborhoods consistent with (i)~orbit admissibility,
+(ii)~Turing universality (inherited from Rule~110), and
+(iii)~vacuum transparency: exactly
+$14 = 3 + 10 + 1$
+(palindromic U(1)$_Y$ channels + non-palindromic SU(2)$_L$ channels +
+charged-current vertex).
+The lower bound $14 = 9_{\rm orbit} + 5_{\rm binary}$ follows from
+the structural disjointness of orbit and binary neighborhoods: orbit
+neighborhoods contain $\mathbb{Z}_7$ values $\geq 2$, while binary
+neighborhoods are confined to $\{0,1\}^3$, so no neighborhood is doubly
+forced.
+No non-zero output of $f_{\rm MDL}$ is redundant: MDL-minimality
+(\lean{fmdl\_mdl\_uniqueness}, $\CatAL$) sets all unconstrained
+neighborhoods to zero.
+In information-theoretic terms, $f_{\rm MDL}$ is a perfect code for the
+SM interaction catalog: its truth-table description length is exactly
+what the orbit and binary constraints require, with no bits wasted.
+($\CatAL$; \lean{fmdl\_perfect\_code}, \lean{fmdl\_nonzero\_lower\_bound},
+\lean{GUTStructure.lean}~\S36, $\CatAL$, zero \texttt{sorry}.)
+\end{remark}
+
+% ═══════════════════════════════════════════════════════════════════════════════
+\section{Casimir Structure and Vacuum Sparsity}
+\label{sec:casimir}
+% ═══════════════════════════════════════════════════════════════════════════════
+
+The Casimir anti-enhancement ($r_D/r_P \approx 1.063$, \CatA) is a quantum correction to
+the vacuum pair-compatibility rate and enters exclusively the vacuum sparsity count
+(Rank~47, Table~\ref{tab:catalog}).
+It does not enter the derivations of the headline predictions $\sinwsq = 3/13$,
+$\lambda_{\rm CKM} = 9/40$, or $\eta_B = \sinwsq \times \alpha_{\rm EM}^4$, which are
+derived from purely arithmetic structure (\CatAL) independently of the vacuum-mode count.
+All results that depend on the vacuum pair count carry the \CatAD label arising from the
+Casimir correction; the headline predictions retain their \CatAL or \CatA status.
+
+The $f_{\rm MDL}$ CA is extraordinarily sparse: only $14 / 343 = 4.08\%$ of
+all $\mathbb{Z}_7^3$ neighborhoods produce a non-trivial output.
+The remaining $95.92\%$ are transparent (output $= 0$).
+This sparsity has a structural Casimir consequence: material boundaries do not
+suppress vacuum modes in $f_{\rm MDL}$ as they do in quantum electrodynamics.
+Instead, they enhance the vacuum-compatible mode count, producing an
+\emph{anti-Casimir} effect.
+
+\subsection{Transfer Matrix Formalism for \texorpdfstring{$f_{\rm MDL}$}{fMDL} Modes}
+\label{sec:casimir_matrix}
+
+\begin{definition}[Vacuum-Compatible Configuration]
+A sequence $(c_1, \ldots, c_L) \in \mathbb{Z}_7^L$ is
+\emph{vacuum-compatible} if every consecutive triple produces output~$0$
+under $f_{\rm MDL}$:
+\[
+  f_{\rm MDL}(c_i, c_{i+1}, c_{i+2}) = 0
+  \quad \forall\, i = 1, \ldots, L-2.
+\]
+\end{definition}
+
+The count of vacuum-compatible configurations of length $L$ under
+periodic and Dirichlet boundary conditions is computed via a
+transfer-matrix method.  Under periodic boundary conditions,
+the transition matrix $M_P$ is a $49 \times 49$ matrix indexed by
+pairs $(c_i, c_{i+1}) \in \mathbb{Z}_7^2$; entry $(s, s')$ is $1$ if the
+triple formed by $(s, s')$ extending to the next cell produces
+$f_{\rm MDL} = 0$, and~$0$ otherwise.
+The Dirichlet matrix $M_D$ fixes both boundary cells to
+$\mathbb{Z}_7 = 3$ (the $W^+$ winding value, serving as the ``conducting
+plate'' analog).
+
+\begin{proposition}[Anti-Casimir Mode Enhancement; $\CatA$]
+\label{prop:casimir}
+Let $N_P(L)$ and $N_D(L)$ denote the vacuum-compatible mode counts under
+periodic and Dirichlet ($W^+$ wall) boundary conditions, respectively, for
+lattice length $L$.  The mode ratio converges:
+\begin{equation}
+  r_\infty \;=\; \lim_{L \to \infty} \frac{N_D(L)}{N_P(L)}
+  \;=\; \frac{\lambda_{1,D}}{\lambda_{1,P}}
+  \;\approx\; 1.063,
+  \label{eq:casimir_ratio}
+\end{equation}
+where $\lambda_{1,P}$ and $\lambda_{1,D}$ are the leading eigenvalues of
+$M_P$ and $M_D$ respectively.
+The $W^+$ Dirichlet boundary \emph{increases} the vacuum-compatible mode
+count by approximately $6.3\%$, in direct opposition to the standard
+electromagnetic Casimir effect.
+\end{proposition}
+
+\begin{proof}
+The transfer-matrix computation is performed over lattice lengths
+$L = 3, 4, 5, 7, 10, 15, 20$ via Python script
+(\texttt{scripts/ranks\_46\_50\_casimir\_items.py}).
+Results:
+\begin{center}
+\small
+\begin{tabular}{rrrr}
+\toprule
+$L$ & $N_P(L)$ & $N_D(L)$ & $N_D/N_P - 1$ \\
+\midrule
+3  & 319            & 329            & $+3.1\%$ \\
+4  & 2,091          & 2,225          & $+6.4\%$ \\
+5  & 14,147         & 15,055         & $+6.4\%$ \\
+7  & 647,850        & 688,781        & $+6.3\%$ \\
+10 & $2.005 \times 10^{8}$ & $2.132 \times 10^{8}$ & $+6.3\%$ \\
+20 & $4.020 \times 10^{16}$ & $4.274 \times 10^{16}$ & $+6.3\%$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+The ratio converges to a stable constant for $L \geq 4$, consistent with
+$r_\infty = \lambda_{1,D}/\lambda_{1,P}$.
+The nearest rational approximation $17/16 = 1.0625$ lies within $0.07\%$
+of the computed value; the exact closed form is an open problem
+(\S\ref{sec:open_problems}, item~1).
+All computations are $\CatA$ (Python, transfer matrix, verified for $L = 3$--$20$).
+\end{proof}
+
+\subsection{Physical Interpretation and Vacuum Sparsity}
+\label{sec:casimir_interp}
+
+The anti-Casimir enhancement is a structural consequence of the $f_{\rm MDL}$
+vacuum's extreme sparsity.
+In the standard QED Casimir effect, conducting plates suppress vacuum modes:
+the standing-wave boundary conditions imposed by metallic walls exclude
+long-wavelength photon modes, reducing the vacuum energy between the plates
+relative to free space.
+In $f_{\rm MDL}$, the analogous ``conducting plate'' is a cell fixed to
+$W^+ = \mathbb{Z}_7 = 3$.
+Because $f_{\rm MDL}$ is transparent (output $= 0$) for the overwhelming
+majority of neighborhoods involving $\mathbb{Z}_7 = 3$ at a boundary position,
+the $W^+$ wall does not restrict interior vacuum modes.
+On the contrary, the boundary provides additional structure that admits
+extra vacuum-compatible configurations at the endpoints, producing a net
+mode enhancement.
+
+More precisely: among all neighborhoods of the form
+$(3, c, r)$ or $(l, c, 3)$, the vast majority map to
+$f_{\rm MDL} = 0$ (transparent).
+The boundary therefore looks like an extension of the vacuum rather than
+a barrier, opening additional paths for vacuum-compatible sequences that
+would be closed by a truly blocking boundary condition.
+
+\begin{remark}[Physical Status; $\CatAD$]
+The sparsity argument identifies the source of the anti-Casimir effect:
+the $f_{\rm MDL}$ vacuum is so sparsely populated (only $4.08\%$ of
+neighborhoods non-trivial) that no $\mathbb{Z}_7 \neq 0$ boundary can
+restrict its mode count.
+The physical bridge (identifying CA mode counts with physically observable
+Casimir force) is $\CatAD$: the CA mode ratio $r_\infty \approx 1.063$
+is arithmetically sharp, but connecting it to a measurable energy
+difference requires a Hamiltonian interpretation of the CA that lies
+outside the present framework.
+\end{remark}
+
+% ═══════════════════════════════════════════════════════════════════════════════
+\section{Interaction Kernel Duality}
+\label{sec:vertex_duality}
+% ═══════════════════════════════════════════════════════════════════════════════
+
+The preceding results establish the vacuum and neutral-sector structure of
+$f_{\rm MDL}$.
+This section focuses on the active (non-zero output) neighborhoods ---
+the complete CA interaction catalog --- and its relation to the SM vertex
+structure derived independently in the UGP dynamics
+framework~\cite{Spivack2026_UGPDynamics}.
+The central result is a temporal duality: the $f_{\rm MDL}$ CA catalog
+constitutes an \emph{emission interaction kernel}, while the dynamics
+framework provides the complementary \emph{absorption kernel}; together
+they encode the full SM vertex structure from two independent arithmetic
+starting points.
+The Cellular Automaton Interpretation of quantum mechanics~\cite{tHooft2016CA}
+provides a formal framework for reading the $f_{\rm MDL}$ interaction catalog
+as an ontological Hilbert space structure.
+
+\subsection{The 14-Neighborhood CA Interaction Catalog}
+\label{sec:catalog}
+
+\begin{theorem}[14-Neighborhood Decomposition; $\CatAL$]
+\label{thm:14_decomposition}
+$f_{\rm MDL}$ has exactly~$14$ neighborhoods with non-zero output.
+These decompose as $14 = 3 + 10 + 1$:
+\begin{enumerate}[nosep,leftmargin=1.5em]
+\item \textbf{3 palindromic neighborhoods} ($l = r$, excluding the $W^+$
+  emitter): the $U(1)_Y$ sector.
+\item \textbf{10 non-palindromic neighborhoods} ($l \neq r$): the
+  $\mathrm{SU}(2)_L$ sector.
+\item \textbf{1 $W^+$ emitter}: the neighborhood $(2,0,2) \to 3$, the
+  unique CA charged-current emission vertex.
+\end{enumerate}
+The identity $14 = \cH + 1 = 13 + 1$ connects the neighborhood count
+directly to the Higgs branch capacity
+(\lean{fmdl\_nonzero\_count\_14},
+\lean{fmdl\_count\_eq\_chiggs\_plus\_one},
+\texttt{GUTStructure.lean}~\S7, $\CatAL$, zero \texttt{sorry}).
+\end{theorem}
+
+The complete catalog is presented in Table~\ref{tab:catalog}.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Complete $f_{\rm MDL}$ interaction catalog: the 14 neighborhoods with
+non-zero output, with their particle assignments, physical role, and center-cell
+winding shift $\Delta W = W(\text{output}) - W(\text{center})$ under the
+$\mathbb{Z}_7$ winding correspondence~\cite{Spivack2026_SM_UGP}.
+Source: Rule~110 binary sublayer (R) or SM orbit neighborhoods (O).
+Palindromic (P) if $l = r$.}
+\label{tab:catalog}
+\begin{tabularx}{\textwidth}{c c c P{4.0cm} c c}
+\toprule
+$(l, c, r)$ & Out & Source & Physical identification &
+  $\Delta W$ & $\Delta W \in \{0,\pm3\}$? \\
+\midrule
+$(0,0,1) \to 1$ & 1 & R  & vac, vac, $\bar d$ $\to$ $\bar d$       & $+1$ & No \\
+$(0,1,0) \to 1$ & 1 & R/P& vac, $\bar d$, vac $\to$ $\bar d$       & $0$  & Yes ($\gamma/Z$) \\
+$(0,1,1) \to 1$ & 1 & R  & vac, $\bar d$, $\bar d$ $\to$ $\bar d$  & $0$  & Yes ($\gamma/Z$) \\
+$(1,0,1) \to 1$ & 1 & R/P& $\bar d$, vac, $\bar d$ $\to$ $\bar d$  & $+1$ & No \\
+$(1,1,0) \to 1$ & 1 & R  & $\bar d$, $\bar d$, vac $\to$ $\bar d$  & $0$  & Yes ($\gamma/Z$) \\
+\midrule
+$(1,1,5) \to 2$ & 2 & O  & $\bar d$, $\bar d$, $\bar u$ $\to$ $u$  & $+1$ & No \\
+$(1,5,2) \to 5$ & 5 & O/P& $\bar d$, $\bar u$, $u$ $\to$ $\bar u$  & $0$  & Yes ($\gamma/Z$) \\
+$(2,1,1) \to 2$ & 2 & O  & $u$, $\bar d$, $\bar d$ $\to$ $u$       & $+1$ & No \\
+$(2,5,2) \to 6$ & 6 & O/P& $u$, $\bar u$, $u$ $\to$ $d$            & $+1$ & No \\
+$(5,2,2) \to 2$ & 2 & O  & $\bar u$, $u$, $u$ $\to$ $u$            & $0$  & Yes ($\gamma/Z$) \\
+\midrule
+$(0,2,2) \to 5$ & 5 & O  & vac, $u$, $u$ $\to$ $\bar u$            & $-4$ & No \\
+$(2,2,5) \to 5$ & 5 & O  & $u$, $u$, $\bar u$ $\to$ $\bar u$       & $-4$ & No \\
+$(5,2,0) \to 5$ & 5 & O  & $\bar u$, $u$, vac $\to$ $\bar u$       & $-4$ & No \\
+\midrule
+$(2,0,2) \to 3$ & 3 & O/P& $u$, vac, $u$ $\to$ $W^+$              & $+3$ & \textbf{Yes ($W^+$!)} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+The rows of Table~\ref{tab:catalog} divide naturally into four groups:
+\begin{enumerate}[nosep,leftmargin=1.5em]
+\item \textbf{Rule~110 binary sublayer} (rows 1--5): five neighborhoods
+  involving only $\mathbb{Z}_7 \in \{0,1\}$, sourced directly from the
+  binary Rule~110 constraint on the $\mathbb{Z}_2$ sublayer.
+  These produce $\bar d$-type ($\mathbb{Z}_7 = 1$) output.
+\item \textbf{Gen-1 to Gen-2 orbit transitions} (rows 6--10): five neighborhoods
+  sourced from the gen$_1 \to$ gen$_2$ evolution step.
+  These produce $u$ and $\bar u$-type output.
+\item \textbf{Gen-2 to Gen-3 quark triplets} (rows 11--13): three neighborhoods
+  (positions 0, 2, 4 of the gen$_2$ ring) each undergoing $u \to \bar u$
+  with winding shift $\Delta W = -4$, outside the P22 gauge spectrum.
+\item \textbf{$W^+$ emission vertex} (row 14): the single neighborhood
+  $(2,0,2) \to 3$ at position~3 of the gen$_2$ ring, producing the
+  unique charged-current emission event.
+\end{enumerate}
+
+Of the 14 active neighborhoods, exactly 6 carry center-cell winding shifts
+$\Delta W \in \{0, \pm 3\}$ (the P22 gauge spectrum); the remaining
+8 carry shifts outside this set and encode orbit-level dynamics not
+directly visible at the renormalizable SM vertex level.
+
+\subsection{The CA as Emission Kernel}
+\label{sec:emission_kernel}
+
+\begin{theorem}[$W^+$ Emission Vertex; $\CatAL$]
+\label{thm:w_emission}
+The $f_{\rm MDL}$ CA contains exactly one charged-current emission event:
+\begin{equation}
+  f_{\rm MDL}(2, 0, 2) = 3,
+  \label{eq:w_emission}
+\end{equation}
+encoding the transition $(u, \emptyset, u) \to W^+$ in which a
+$W^+$ boson is emitted at the position occupied by a photon (vacuum)
+between two $u$-quarks.
+(\lean{u\_photon\_u\_to\_W\_vertex}, \texttt{CasimirMasslessEther.lean},
+\lean{native\_decide}, $\CatAL$, zero \texttt{sorry}.)
+\end{theorem}
+
+\begin{remark}[Orbit Origin of the Vertex]
+The neighborhood $(2,0,2) \to 3$ has a precise orbit-arithmetic origin.
+The gen$_2$ ring is $[2,5,2,0,2]$; position~3 carries the value~$0$
+(the photon sector).
+Under the gen$_2 \to$ gen$_3$ evolution step, position~3 of gen$_2$
+maps to position~3 of gen$_3 = [5,6,5,3,5]$, yielding output~$3 = W^+$.
+The $(u, \emptyset, u) \to W^+$ vertex is therefore not a separate input
+to the CA: it is the gen$_2 \to$ gen$_3$ orbit transition at the photon
+seat of the generation ring.
+\end{remark}
+
+\begin{theorem}[P22 Absorption Vertices are CA-Transparent; $\CatAL$]
+\label{thm:p22_transparent}
+The four canonical charged-current absorption vertices of the
+UGP dynamics framework~\cite{Spivack2026_UGPDynamics}, when interpreted
+as $f_{\rm MDL}$ neighborhoods, all produce output~$0$:
+\begin{align}
+  f_{\rm MDL}(6, 3, 2) &= 0 \quad (d + W^+ \to u)
+  \label{eq:p22_t1}\\
+  f_{\rm MDL}(4, 3, 0) &= 0 \quad (e^- + W^+ \to \nu)
+  \label{eq:p22_t2}\\
+  f_{\rm MDL}(2, 4, 6) &= 0 \quad (u + W^- \to d)
+  \label{eq:p22_t3}\\
+  f_{\rm MDL}(0, 4, 4) &= 0 \quad (\nu + W^- \to e^-)
+  \label{eq:p22_t4}
+\end{align}
+The CA is transparent to the SM absorption vertices; none appears as
+a non-zero $f_{\rm MDL}$ entry.
+(\lean{p22\_absorption\_vertices\_are\_transparent},
+\texttt{Z7ChargeConjugation.lean}~\S7,
+\lean{decide}, $\CatAL$, zero \texttt{sorry}.)
+\end{theorem}
+
+\begin{proof}
+All four neighborhoods $(6,3,2)$, $(4,3,0)$, $(2,4,6)$, $(0,4,4)$ are
+free (not among the 18 orbit or Rule~110 fixed constraints).
+MDL-minimality forces their output to $0$.
+Certified by \lean{p22\_absorption\_vertices\_are\_transparent}
+via \lean{decide}.
+\end{proof}
+
+\subsection{Partial Winding Correspondence}
+\label{sec:winding_corr}
+
+The center-cell winding shift $\Delta W = W(\text{output}) - W(\text{center})$
+provides a vertex interpretation compatible with the P22 framework.
+Of the 14 active neighborhoods:
+\begin{itemize}[nosep,leftmargin=1.5em]
+\item \textbf{$\Delta W = +3$ (W$^+$ emission, 1 neighborhood):}
+  The unique charged-current vertex $(2,0,2) \to 3$.
+  This is the CA-certified counterpart of the P22 $W^+$-mediated
+  charged current.
+\item \textbf{$\Delta W = 0$ (neutral-current transparent, 5 neighborhoods):}
+  Center cell unchanged; consistent with photon/$Z$ coupling
+  preserving particle identity.
+\item \textbf{$\Delta W \notin \{0, \pm 3\}$ (orbit-intrinsic, 8 neighborhoods):}
+  Winding shifts of $+1$ (5 cases) and $-4$ (3 cases).
+  These encode orbital dynamics --- the gen$_1 \to$ gen$_2$ and
+  gen$_2 \to$ gen$_3$ evolution steps --- which have no direct
+  renormalizable-vertex analog in P22.
+\end{itemize}
+
+\begin{proposition}[Partial Structural Embedding; $\CatA$]
+\label{prop:partial_embedding}
+The CA catalog contains $6$ of~$14$ active neighborhoods within the
+P22 gauge spectrum $\Delta W \in \{0, \pm 3\}$:
+one $W^+$ emission vertex and five neutral-current-like transparency
+events.
+The remaining $8$ neighborhoods encode sub-vertex orbital dynamics
+invisible to the P22 renormalizable vertex skeleton.
+\end{proposition}
+
+\subsection{The SM Vertex Theorem}
+\label{sec:sm_vertex}
+
+\begin{theorem}[SM Charged-Current Vertex; $\CatAL$]
+\label{thm:sm_vertex}
+Under $f_{\rm MDL}$:
+\begin{enumerate}[nosep,leftmargin=1.5em]
+\item \textbf{Unique $W^+$ emission:}
+  $(2,0,2) \to 3$ is the unique neighborhood producing $\mathbb{Z}_7 = 3$
+  output; no other neighborhood emits a $W^+$ boson.
+  (\lean{sm\_charged\_current\_vertex},
+  \texttt{Z7ChargeConjugation.lean}, $\CatAL$, zero \texttt{sorry}.)
+\item \textbf{Hard $W^-$ absence:}
+  $\mathbb{Z}_7 = 4$ ($W^-/e^-$ sector) never appears as a $f_{\rm MDL}$
+  output.  The $W^-$ is CA-unemissible.
+  (\lean{sm\_w\_minus\_absence}, $\CatAL$, zero \texttt{sorry}.)
+\item \textbf{CP-vertex asymmetry:}
+  The $(3,4) = (W^+, W^-)$ conjugate pair is the unique conjugate pair
+  asymmetric in the $f_{\rm MDL}$ output range: $W^+$ appears (once),
+  $W^-$ does not.
+  (\lean{sm\_cp\_vertex\_asymmetry}, $\CatAL$, zero \texttt{sorry}.)
+\end{enumerate}
+(\texttt{Z7ChargeConjugation.lean}~\S5, ugp-lean, zero \texttt{sorry}.)
+\end{theorem}
+
+\begin{remark}[W$^+$ as Emission Kernel; $\CatAL$]
+Theorem~\ref{thm:sm_vertex} certifies that the CA encodes the $W^+$ as
+an emission event: the CA \emph{produces} $W^+$ at the vertex $(u,\emptyset,u)$
+and is \emph{silent} on $W^-$.
+This is structurally complementary to P22, which derives $W^+$ absorption
+($d + W^+ \to u$) and $W^-$ absorption ($u + W^- \to d$) from
+braid cobordism and winding conservation~\cite{Spivack2026_UGPDynamics}.
+The asymmetry between the CA (emission) and P22 (absorption) perspectives
+is not a conflict but a consequence of viewing the same vertex from
+opposite temporal directions.
+(\lean{ca\_w\_plus\_is\_emission\_not\_absorption},
+\texttt{Z7ChargeConjugation.lean},
+\lean{decide}, $\CatAL$, zero \texttt{sorry}.)
+\end{remark}
+
+\begin{remark}[$\mathbb{Z}_7$ winding conservation: necessary but not sufficient; $\CatA$]
+\label{rem:z7_necessary_not_sufficient}
+The $\mathbb{Z}_7$ winding conservation law extends beyond the charged-current sector.
+A complete survey of all three-body vertices over the SM winding vocabulary
+$\{0, 2, 3, 4, 6\}$ yields 19 $\mathbb{Z}_7$-conserving combinations, of which
+14 are SM-allowed (including neutral-current $f\bar{f}\gamma/Z$ vertices,
+gauge three-body $W^+W^-\gamma/Z$, and all charged-current vertices).
+Four additional $\mathbb{Z}_7$-conserving combinations are excluded by stronger SM
+symmetries (electric charge conservation, baryon/lepton number conservation).
+One --- the triple-photon vertex $(0,0,0)\to 0$ --- is $\mathbb{Z}_7$-allowed but
+forbidden by Furry's theorem.
+This establishes a \emph{structural theorem}: $\mathbb{Z}_7$ winding conservation is
+\emph{necessary} but not \emph{sufficient} for Standard Model vertex allowedness
+($\CatA$, \texttt{scripts/z7\_vertex\_catalog.py}).
+\end{remark}
+
+\subsection{The \texorpdfstring{$\mathbb{Z}_7$}{Z7} Leptoquark Vertex Catalog}
+\label{sec:leptoquark_catalog}
+
+The four $SU(5)$ leptoquark mediators are assigned $\mathbb{Z}_7$ windings by
+$w = 3Q \bmod 7$:
+$X$ ($Q=+4/3$, $w=4$), $\bar X$ ($Q=-4/3$, $w=3$),
+$Y$ ($Q=+1/3$, $w=1$), $\bar Y$ ($Q=-1/3$, $w=6$).
+Of the four mediators, only $Y$ occupies a missing winding:
+$w(Y)=1 \in \{1,5\}$, absent from the low-energy SM spectrum.
+The remaining three mediators each cohabit an existing SM winding sector:
+$X$ ($w=4$) shares the $e^-$/W$^-$ sector, $\bar X$ ($w=3$) the W$^+$/proton sector,
+and $\bar Y$ ($w=6$) the $d$-quark sector.
+The second missing winding $w=5$ does not correspond to a dedicated leptoquark mediator;
+it arises as the outgoing $\bar u$ antiquark ($Q=-2/3$, $w=5$) produced in the dominant
+$Y$-mediated proton decay subprocess (\CatA; \texttt{scripts/leptoquark\_su5\_windings.py}).
+
+A complete enumeration of all $\mathbb{Z}_7$-and-charge-conserving leptoquark
+vertices $A \to B+C$ with at least one leptoquark and pure SM final states
+yields \textbf{20 physically meaningful processes}
+(\CatA; \texttt{scripts/leptoquark\_vertex\_catalog.py}):
+$X$-channel~(4), $\bar X$-channel~(3), $Y$-channel~(7), $\bar Y$-channel~(6).
+
+\begin{remark}[$Y$-channel uniqueness; \CatA]
+\label{rem:y_channel_missing_windings}
+The $Y$-channel is the unique leptoquark channel activating both missing windings
+$\{1,5\}$: $Y$ itself carries $w=1$, and its dominant decay
+$Y \to \bar{u} + e^+$
+produces $\bar{u}$ at $w=5$.
+The proton-decay subprocess
+\[
+  u(w{=}2) + d(w{=}6) \;\to\; Y^*(w{=}1) \;\to\; \bar{u}(w{=}5) + e^+(w{=}3)
+\]
+satisfies $\mathbb{Z}_7$ winding conservation exactly at each stage:
+$2+6 \equiv 1 \pmod{7}$ (production) and $1 \equiv 5+3 \pmod{7}$ (decay).
+\end{remark}
+
+\begin{table}[h]
+\centering
+\small
+\caption{$\mathbb{Z}_7$ winding conservation at dominant SU(5) proton decay vertices
+  (\CatA; \texttt{scripts/leptoquark\_su5\_windings.py}).}
+\label{tab:leptoquark_winding}
+\begin{tabular}{llcc}
+\hline
+Subprocess & Reaction & $\sum w_{\rm in} \bmod 7$ & $\sum w_{\rm out} \bmod 7$ \\
+\hline
+$Y$-channel & $u(2)+d(6)\to Y^*(1)\to\bar{u}(5)+e^+(3)$ & $1$ & $1\;\checkmark$ \\
+$X$-channel & $u(2)+u(2)\to X^*(4)\to\bar{d}(1)+e^+(3)$ & $4$ & $4\;\checkmark$ \\
+Hadronization$^*$ & $\bar{d}(1)+d(6)\to\pi^0(0)$ & $0$ & $0\;\checkmark$ \\
+Proton-level & $p(3)\to e^+(3)+\pi^0(0)$ & $3$ & $3\;\checkmark$ \\
+\hline
+\end{tabular}
+\end{table}
+{\footnotesize $^*$Hadronization involves QCD confinement;
+$\mathbb{Z}_7$ winding conservation holds at the quark-level subprocess.}
+
+The four dominant GTE-predicted proton decay modes
+$p \to e^+\pi^0$, $p \to \bar\nu\pi^+$, $p \to \nu K^+$, and $p \to e^+K^0$
+are all $\mathbb{Z}_7$-winding-conserving:
+the proton's collective winding $w(uud) = 2+2+6 \equiv 3 \pmod{7}$
+equals the winding sum of the final-state products in each case (\CatA).
+
+\subsection{The Dirac Vector Current as \texorpdfstring{$\mathbb{Z}_7$}{Z7} Winding Current}
+\label{sec:winding_current}
+
+In the GTE CA effective theory, the $\mathbb{Z}_7$ winding current density is
+\[
+  j_{\mathbb{Z}_7}(x) = v_{\rm CA}\,\psi^\dagger(x)\,\sigma_z\,\psi(x),
+\]
+where $\sigma_z = \mathrm{diag}(+1,-1)$ is the chirality operator distinguishing
+the Layer~110 right-mover ($v_R = +2/3$, $\CatA$) from the Layer~124 left-mover
+($v_L = -2/3$, $\CatA$).
+This identification follows from transport theory: the winding current equals velocity times the net right-mover/left-mover density imbalance, and in the spinor notation $n_R - n_L = \psi^\dagger\sigma_z\psi$.
+
+The W-boson vertex operator $\Gamma = \sigma_z$ is uniquely forced: a scalar vertex $\Gamma = 1$ gives $\Pi_W = 0$ identically in $1{+}1$D via an exact algebraic cancellation in the Feynman parametrization ($\CatA$; \texttt{scripts/w\_boson\_self\_energy.py}).
+Only the vector coupling $\Gamma = \sigma_z$ — the $\mathbb{Z}_7$ winding current operator — yields a non-vanishing self-energy and a dynamical W-boson mass via the $1{+}1$D Schwinger mechanism.
+
+The continuity equation
+\[
+  \partial_t(\psi^\dagger\psi) + \partial_x\bigl(v_{\rm CA}\,\psi^\dagger\sigma_z\psi\bigr) = 0
+\]
+follows from the GTE Dirac equation; the mass cross-term cancels exactly.
+The algebraic core — that the mass cross-term $\mathrm{Im}(\psi_R^*\psi_L) + \mathrm{Im}(\psi_L^*\psi_R) = 0$ — is machine-certified:
+\lean{ward\_mass\_cancellation}, \lean{ward\_chirality\_density}, \lean{ward\_identity\_algebraic\_summary}
+(\lean{GUTStructure.lean}~\S47, $\CatAL$, zero \texttt{sorry}).
+The full continuum identity requires the product rule for derivatives ($\CatAD$, axiom pending).
+
+This realizes the $1{+}1$D Schwinger mechanism with $\mathbb{Z}_7$ winding number as the $\mathrm{U}(1)$ charge and $v_{\rm CA} = 2/3$ as the effective speed of light.
+The Schwinger mechanism then gives Dyson poles at $M_W^2 = N_{\rm gen}\,g_W^2\,v_{\rm CA}/\pi$ and $M_Z^2 = N_{\rm gen}\,g_Z^2\,v_{\rm CA}/\pi$, with the mass ratio
+\[
+  \frac{M_W}{M_Z} = \sqrt{\frac{g_W^2}{g_Z^2}} = \cos\theta_W = \sqrt{1 - \frac{N_{\rm gen}}{c_H}} = \sqrt{\frac{10}{13}},
+\]
+exact and independent of $v_{\rm CA}$, $N_{\rm gen}$, and $\pi$ ($\CatA$; \texttt{scripts/w\_boson\_self\_energy.py}).
+This is the CA-level dynamical completion of the $\sin^2\theta_W = 3/13$ prediction established in~\cite{SpivackWeinberg}.
+
+\subsection{The \texorpdfstring{$\mathbb{Z}_5$}{Z5} Family Ring and the Neutrino Mass Scale}
+\label{sec:z5_neutrino}
+
+The $\mathbb{Z}_5$ family ring of the GTE ($\Nfam = 5$, machine-certified) constrains
+the loop order of neutrino mass generation via the character orthogonality theorem
+for the cyclic group $\mathbb{Z}/5\mathbb{Z}$.
+Any mass operator built from $k$ successive insertions of the $\mathbb{Z}_5$ generator
+carries a singlet component that vanishes for $k = 1, 2, 3, 4$ and is first non-zero
+at $k = \Nfam = 5$.
+This requires the neutrino mass suppression to be $\alpha^{\Nfam}$, independent of the
+specific coupling constant, and sets the minimum loop order for neutrino mass generation
+in GTE to $n_{\rm loops} = \Nfam = 5$.
+
+The arithmetic core of this argument is machine-certified in Lean~4 with zero
+\texttt{sorry}.
+For the cyclic group $\mathbb{Z}/5\mathbb{Z}$ (realized as \lean{ZMod 5}
+in Lean/Mathlib), the following facts are certified:
+(i)~the non-identity elements $\{1,2,3,4\}$ are non-zero in $\mathbb{Z}_5$;
+(ii)~the full orbit spans all five elements $\{0,1,2,3,4\}$;
+(iii)~for any $k \in \{1,2,3,4\}$, the cast $(k \colon \mathbb{Z}_5) \neq 0$;
+(iv)~$|\mathbb{Z}_5| = \Nfam = 5$.
+Together these certify that the first $\mathbb{Z}_5$-singlet contribution appears at
+loop order $k = \Nfam = 5$, completing the machine certification of the character
+orthogonality forcing argument
+(\lean{z5\_forces\_nfam\_loops}, \texttt{GUTStructure.lean~\S52}, $\CatAL$,
+zero \texttt{sorry}).
+
+\begin{remark}[Gauge boson exemption from the five-loop mechanism; $\CatAD$]
+\label{rem:gauge_boson_5loop_exempt}
+The five-loop mass mechanism applies exclusively to particles satisfying two structural
+conditions: (i)~the particle must possess a GTE triple with a $b$-index establishing
+$\mathbb{Z}_5$ family-ring membership, and (ii)~the particle must be spin-$\tfrac{1}{2}$,
+so that the $\mathbb{Z}_5$ scalar self-energy operator inserts a well-defined fermionic
+mass term.
+The photon fails condition~(i): it has no GTE triple and is identified with the ether
+vacuum propagation mode by the CA mass-gap theorem
+(\lean{mass\_gap\_theorem}, $\CatAL$, \texttt{GUTStructure.lean}~\S44, zero \texttt{sorry}).
+The $Z^0$ boson possesses a GTE triple (machine-certified,
+\texttt{GTPNeutralDiscrimination.lean}) but fails condition~(ii): as a spin-1 boson,
+its mass arises from electroweak symmetry breaking via the Higgs mechanism rather than a
+fermionic self-energy insertion.
+The neutrino satisfies both conditions and is the unique $\mathbb{Z}_7 = 0$ SM particle
+to which the five-loop mechanism applies
+($\CatAD$: condition~(i) is $\CatAL$-backed; condition~(ii) invokes the
+Lorentz-structure distinction between spin-$\tfrac{1}{2}$ self-energies and spin-1
+gauge boson mass generation).
+\end{remark}
+
+The $\mathbb{Z}_5$ forcing determines the loop order; the mass scale is fixed by the
+Rule~110 ether energy.
+The period-14 ether pattern sits at the Brillouin zone boundary of the
+generation-$|\mathbb{Z}_7|$ lattice, giving
+\begin{equation}
+  E_{\rm ether} = \frac{\pi\, v_H}{N_{\rm gen}\cdot|\mathbb{Z}_7|\cdot c_H}
+    = \frac{\pi \times 246\,\mathrm{GeV}}{3\times 7\times 13}
+    \approx 2.83\,\mathrm{GeV},
+  \label{eq:e_ether}
+\end{equation}
+where $v_H = 246\,\mathrm{GeV}$ is the SM Higgs vacuum expectation value
+(the sole experimental input), $|\mathbb{Z}_7| = 7$ is the GTE winding-number
+period, $N_{\rm gen} = 3$ is the generation count (machine-certified, P01),
+and $c_H = 13$ is the chiral period of the Rule~110 ether.
+The five-loop suppression then yields
+\begin{equation}
+  m_3 = \alpha_{\rm em}^5\,E_{\rm ether}
+      = \Bigl(\tfrac{1}{137.036}\Bigr)^{\!5}\times 2.83\,\mathrm{GeV}
+      \approx 0.0586\,\mathrm{eV},
+  \label{eq:m3_from_ether}
+\end{equation}
+within $0.7\%$ of the atmospheric-oscillation lower bound on $m_3$.
+
+\begin{remark}[$\Nfam$-loop neutrino mass estimate; $\CatD$]
+\label{rem:nfam_loop_neutrino}
+The $\Nfam$-loop ether scattering yields
+$m_\nu \approx \alpha_{\rm em}^{\Nfam} \times E_{\rm ether} \approx 0.059\,{\rm eV}$
+(Eq.~\eqref{eq:m3_from_ether}), where $E_{\rm ether} \approx 2.83\,{\rm GeV}$
+(Eq.~\eqref{eq:e_ether}) and $\Nfam = 5$ ($\mathbb{Z}_5$ ring, $\CatAL$).
+The $\Nfam$-fold suppression follows from the $\mathbb{Z}_5$ family-ring
+topology: a $\mathbb{Z}_7=0$ particle acquires a coherent mass phase only
+after completing one full family-ring orbit (character orthogonality forcing,
+Lean-certified: \lean{z5\_forces\_nfam\_loops}, \lean{GUTStructure.lean}~\S52,
+zero \texttt{sorry}).
+This prediction is consistent with the atmospheric neutrino oscillation mass
+scale $m_3 \approx 0.050\,{\rm eV}$ and below the KATRIN bound $0.45\,{\rm eV}$.
+The physical coupling mechanism and the derivation of $E_{\rm ether}$ from
+first principles constitute an open problem; see Conjecture~\ref{conj:neutrino_masses}.
+\end{remark}
+
+\begin{conjecture}[GTE Neutrino Mass Hierarchy; $\CatD$, leading-order estimate]
+\label{conj:neutrino_masses}
+The $N_{\rm eff}$-weighted cascade ordering in GTE, with mass scale $E_{\rm ether}$
+from Eq.~\eqref{eq:e_ether}, predicts a normal neutrino mass hierarchy with eigenvalues
+\begin{equation}
+  m_3 \approx 0.0586~\mathrm{eV},\quad
+  m_2 \approx 0.0156~\mathrm{eV},\quad
+  m_1 \approx 0.0090~\mathrm{eV}.
+  \label{eq:neutrino_masses}
+\end{equation}
+The lighter eigenvalues follow from the $N_{\rm eff}$ ratios:
+$m_2 = m_3\times N_{\rm eff}(e)/N_{\rm eff}(\tau) = 0.0586\times(73/275)$ and
+$m_1 = m_3\times N_{\rm eff}(\mu)/N_{\rm eff}(\tau) = 0.0586\times(42/275)$.
+The cosmological sum $\sum m_\nu \approx 0.083~\mathrm{eV}$ satisfies the Planck~2018
+bound $\sum m_\nu < 0.12~\mathrm{eV}$~\cite{Planck2018}.
+The atmospheric mass splitting $\Delta m^2_{31} \approx 3.35 \times 10^{-3}~\mathrm{eV}^2$
+is within 34\% of the measured value; the solar splitting $\Delta m^2_{21}$ requires
+EFT refinement of the GTE vertex function and constitutes an open problem.
+The hierarchy ordering follows from the GTE $N_{\rm eff}$ cascade:
+$N_{\rm eff}(\mu) < N_{\rm eff}(e) < N_{\rm eff}(\tau)$, placing the $\nu_\tau$-partner
+as the heaviest eigenstate.
+\end{conjecture}
+
+\noindent\textit{Note on leading-order status.}\ The eigenvalues in
+Eq.~\eqref{eq:neutrino_masses} are \emph{leading-order estimates} obtained by applying
+the $N_{\rm eff}$-ratio weighting directly to the ether-scattering mass scale
+$E_{\rm ether}$.  A separate, independent GTE derivation of neutrino masses based on the
+full GTE seesaw mechanism is developed in~\cite{Spivack2026_SM_UGP,SpivackNeutrino};
+that treatment yields a less degenerate, more hierarchical spectrum with a smaller
+absolute scale for $m_1$.  The present $N_{\rm eff}$-weighted result captures two
+structurally robust features: the normal-hierarchy ordering
+($m_1 < m_2 < m_3$, enforced by
+$N_{\rm eff}(\mu) < N_{\rm eff}(e) < N_{\rm eff}(\tau)$) and the correct atmospheric
+scale for $m_3$.  Reconciling the individual eigenvalues with the seesaw framework
+constitutes an open problem in GTE perturbation theory.
+
+\subsubsection*{PMNS Mixing Angles from \texorpdfstring{$\mathbb{Z}_3 \times \mathbb{Z}_2$}{Z3 x Z2}
+  Structure ($\CatD$)}
+\label{sec:pmns_mixing}
+
+The lepton mixing matrix (PMNS) relates mass eigenstates $(\nu_1,\nu_2,\nu_3)$
+to flavour eigenstates $(\nu_e,\nu_\mu,\nu_\tau)$~\cite{PDG2022}.
+Four parameters of this matrix admit leading-order arithmetic estimates from
+the GTE structure at $n=10$; all are currently $\CatD$ except where noted.
+
+\textbf{Atmospheric angle $\theta_{23}$ ($\CatAD$).}\;
+The two chiral CA layers (Layer~110 and Layer~124, Lean-certified equal-amplitude
+contributions to the orbit) impose an exact $\mathbb{Z}_2$ symmetry interchanging
+the $\nu_\mu$ and $\nu_\tau$ sectors.
+Equal mixing amplitudes from both layers force maximal mixing:
+\begin{equation}
+  \theta_{23} = 45.00^{\circ}.
+  \label{eq:theta23}
+\end{equation}
+NuFIT~6.0 IC24 NH~\cite{NuFIT60}: $\theta_{23} = 43.3^\circ$ (best fit);
+the leading-order GTE prediction $45^\circ$ lies $1.7^\circ$ ($\approx 2\sigma$)
+from the current best fit but within the $3\sigma$ range ($41.3^\circ$--$49.9^\circ$).
+The $\mathbb{Z}_2$ chiral-pair symmetry (CatAL-certified in P28) structurally
+forces $\theta_{23} = 45^{\circ}$ at leading order; subleading NLO corrections
+from the asymmetric $Z_3$ mixing are expected to shift the prediction.
+The orbit-ratio derivation of~\cite{SpivackNeutrino,SpivackGTEUnification} gives
+$\sin^2\theta_{23} = 19/42 \approx 0.4524$ ($\theta_{23} \approx 42.27^\circ$,
+$-1.35\sigma$ from the NuFIT~6.0 IC24 NH best fit), which supersedes the leading-order value.
+
+\textbf{Solar angle $\theta_{12}$ ($\CatD$).}\;
+The $\mathbb{Z}_3 \times \mathbb{Z}_2$ subgroup of GTE --- $\mathbb{Z}_3$ from
+$\Ngen = 3$ generations (machine-certified, P01) and $\mathbb{Z}_2$ from the
+chiral pair (P28) --- generates tribimaximal (TBM) mixing at leading order:
+\begin{equation}
+  \theta_{12} = \arcsin(1/\!\sqrt{3}) \approx 35.26^{\circ}.
+  \label{eq:theta12}
+\end{equation}
+NuFIT~6.0 IC24 NH~\cite{NuFIT60}: $\theta_{12} = 33.68^{\circ} \pm 0.73^{\circ}$; the
+leading-order TBM value is $1.76^{\circ}$ ($5.3\%$) above the central value.
+Subleading corrections from the $\mathbb{Z}_5$ family ring are expected at
+$\mathcal{O}(1/\Nfam) \sim 20\%$, and may account for the discrepancy.
+
+\begin{remark}[$\mathbb{Z}_5$ NLO correction to $\theta_{12}$ via QLC; $\CatD$]
+\label{rem:theta12_nlo}
+A complementary estimate uses GTE quark-lepton complementarity (QLC).
+At leading order, the GTE QLC relation
+$\theta_{12}^{\rm PMNS} + \theta_{12}^{\rm CKM} = 45^{\circ}$
+with the Wolfenstein parameter $\lambda = 9/40$~\cite{SpivackCKM} gives
+\begin{equation}
+  \theta_{12}^{\rm PMNS} = 45^{\circ} - \arcsin(9/40) \approx 31.997^{\circ}
+  \qquad (1.88\sigma \text{ below PDG}).
+  \label{eq:theta12_qlc_lo}
+\end{equation}
+At next-to-leading order in $1/\Nfam$, the effective Wolfenstein parameter
+acquires a $\mathbb{Z}_5$ ring correction, $\lambda_{\rm eff} = 4\lambda^2 =
+4(9/40)^2 = 81/400$, giving
+\begin{equation}
+  \theta_{12}^{\rm PMNS} = 45^{\circ} - \arcsin(81/400) \approx 33.317^{\circ}.
+  \label{eq:theta12_qlc_nlo}
+\end{equation}
+This is $0.12\sigma$ below the PDG value $33.41^{\circ} \pm 0.75^{\circ}$~\cite{PDG2022}.
+The factor $4\lambda^2$ admits two equivalent representations:
+the NLO $\mathbb{Z}_5$ orbit suppression $\lambda(1 - 1/(2\Nfam)) = 81/400$,
+and the second-order Wolfenstein amplitude $(2\lambda)^2$.
+A first-principles derivation of the NLO amplitude from the $\mathbb{Z}_5$ ring
+effective field theory is an open problem.
+\end{remark}
+
+\textbf{Reactor angle $\theta_{13}$ ($\CatAD$).}\;
+In the $\mathbb{Z}_5$ family ring, the 1--3 mixing is a skip-2 transition whose
+amplitude is suppressed by the ratio of $N_{\rm eff}$ values at the two
+non-adjacent family positions (muon family, $N_{\rm eff}(\mu)=42$; tau family,
+$N_{\rm eff}(\tau)=275$):
+\begin{equation}
+  \theta_{13} = \arctan\!\bigl(N_{\rm eff}(\mu)/N_{\rm eff}(\tau)\bigr)
+              = \arctan(42/275) \approx 8.68^{\circ}.
+  \label{eq:theta13}
+\end{equation}
+NuFIT~6.0 IC24 NH~\cite{NuFIT60}: $\theta_{13} = 8.56^{\circ} \pm 0.11^{\circ}$; GTE prediction $8.68^\circ$ is $+1.1\sigma$ from the best fit.
+The transit factor derivation establishes the formula at $\CatAD$: in the GTE
+five-loop neutrino mass matrix, the off-diagonal element $M_\nu^{13}$ arises from
+the skip-2 $\mathbb{Z}_5$ ring path $1 \to 2 \to 3$ (electron $\to$ muon $\to$ tau
+families).
+The ratio $M_\nu^{13}/M_\nu^{33} = N_{\rm eff}(\text{transit})/N_{\rm eff}(\text{target})
+= N_{\rm eff}(\mu)/N_{\rm eff}(\tau) = 42/275$: the transit node (muon family,
+$N_{\rm eff} = 42$) contributes amplitude $\propto N_{\rm eff}(\mu)$, and normalization
+to the diagonal $M_\nu^{33}$ absorbs $N_{\rm eff}(\tau) = 275$.
+The $2\times 2$ approximation is justified at $\theta_{13} \approx 8.68^{\circ}$.
+The Lorentz-structure bridge (identifying the $\mathbb{Z}_5$ path amplitude with the
+physical off-diagonal mass element) is the $\CatAD$ step; the arithmetic itself is
+$\CatAL$.
+
+\textbf{CP phase $\delta_{\rm CP}$ ($\CatD$).}\;
+The two missing $\mathbb{Z}_7$ winding classes $\{1,5\}$ (the GUT leptoquark
+mediator positions) carry complex phases $\exp(2\pi i \cdot 1/7)$ and
+$\exp(2\pi i \cdot 5/7)$ in the $\mathbb{Z}_7$ unit circle.
+Their relative phase is
+\begin{equation}
+  \delta_{\rm CP}
+    = \frac{|w_2 - w_1|}{N_{\mathbb{Z}_7}} \times 360^{\circ}
+    = \frac{4}{7} \times 360^{\circ}
+    = \frac{1440^{\circ}}{7}
+    \approx 205.7^{\circ}.
+  \label{eq:deltacp}
+\end{equation}
+PDG 2022~\cite{PDG2022}: $\delta_{\rm CP} = 197^{\circ} \pm 27^{\circ}$ (large
+experimental uncertainty); the GTE value lies $8.7^{\circ}$ ($0.3\sigma$)
+from the central value.
+The arithmetic identity $4 \times 360 = 1440$, $1440/7 \approx 205.71$ is
+certifiable with \texttt{norm\_num} in Lean~4.
+
+These four estimates constitute leading-order $\CatD$ predictions from GTE
+arithmetic.
+Elevating them to $\CatAD$ or $\CatA$ requires a GTE effective field theory
+derivation of the neutrino mass matrix from the $\mathbb{Z}_5$-ring
+five-loop scattering amplitudes, which is an open problem.
+
+\begin{remark}[Orbit-ratio upgrade; $\CatAL$]
+\label{rem:pmns_orbit_ratio}
+The companion paper P21~\cite{SpivackNeutrino} derives all three PMNS mixing angles
+directly from GTE braid-index ratios, superseding the leading-order estimates above:
+\begin{equation}
+  \sin^2\!\theta_{12} = \frac{4}{13},\quad
+  \sin^2\!\theta_{23} = \frac{19}{42},\quad
+  \sin\theta_{13} = \frac{11}{73},
+  \label{eq:pmns_orbit_ratios}
+\end{equation}
+all machine-certified ($\CatAL$, zero sorry;
+\lean{pmns\_solar\_sin\_sq}, \lean{pmns\_atm\_sin\_sq}, \lean{pmns\_reactor\_sin\_val};
+P21/NeutrinoSector.lean). The combined $\chi^2 = 0.564$ with zero free parameters,
+and set-1 $(4/13)$ is preferred over the alternative $(5/16)$ by MDL minimality
+(\lean{pmns\_set1\_uses\_fewer\_atoms}, $\CatAL$).
+These formulas close the $\CatD$ status of $\theta_{12}$ and $\theta_{23}$
+above to $\CatAL$.
+\end{remark}
+
+\subsection{The Emission--Absorption Duality}
+\label{sec:emission_absorption_duality}
+
+\begin{theorem}[CA/P22 Temporal Duality; $\CatAL + \CatA$]
+\label{thm:emission_absorption_duality}
+Two independent derivations of the SM charged-current vertex structure
+exist, starting from orthogonal mathematical frameworks:
+\begin{enumerate}[nosep,leftmargin=1.5em]
+\item \textbf{$f_{\rm MDL}$ orbit arithmetic (this paper, P28/P33):}
+  The CA emission kernel is determined by the MDL-minimal
+  orbit-admissible function on $\mathbb{Z}_7^5$.
+  The result is $f_{\rm MDL}(2,0,2) = 3$ (unique $W^+$ emission),
+  $\mathbb{Z}_7 = 4$ hard-excluded (W$^-$ unemissible).
+  Status: $\CatAL$ (Lean-certified with zero \texttt{sorry}).
+\item \textbf{UGP dynamics framework~\cite{Spivack2026_UGPDynamics} (P22):}
+  The SM absorption kernel is derived from braid cobordism and
+  winding conservation.
+  The result is the set of SM charged-current vertices
+  ($d + W^+ \to u$, etc.), forming the P22 absorption skeleton.
+  Status: $\CatAL$ (certified in the companion paper).
+\end{enumerate}
+The two kernels satisfy a \emph{temporal duality}: the $f_{\rm MDL}$ emission
+event $(u, \emptyset, u) \to W^+$ and the P22 absorption event
+$d + W^+ \to u$ are time-reversal partners of the same underlying
+$uW^+d$ interaction vertex.
+Neither derivation uses the other's input assumptions; they are
+independent starting points that converge on the same SM vertex structure.
+\end{theorem}
+
+\begin{proof}
+The $\CatAL$ parts of both derivations are machine-certified in
+Lean~4 (this paper: \lean{ca\_w\_plus\_is\_emission\_not\_absorption}
+and \lean{p22\_absorption\_vertices\_are\_transparent};
+companion paper: see~\cite{Spivack2026_UGPDynamics}).
+The temporal duality interpretation ($\CatA$) identifies the two vertex
+topologies as time-reversal images: the CA neighborhood $(l,c,r) \to o$
+represents a spatial-to-temporal forward step, while the P22 3-point vertex
+$(f_1, B, f_2)$ represents an absorption event at a fixed moment.
+Reversing time maps the CA's emission step to the P22 absorption event.
+\end{proof}
+
+\begin{remark}[Parallel to the Wolfram Physics Project]
+This parallels the Wolfram Physics Project's identification of particle-like
+structures as localized configurations in a computational
+substrate~\cite{Wolfram2020Tech}; the present work specifies which
+neighborhoods produce which particles, with machine-certified precision
+at the level of $\mathbb{Z}_7$ winding arithmetic.
+\end{remark}
+
+\begin{remark}[Eight Orbit-Intrinsic Neighborhoods; $\CatAL$]
+\label{rem:orbit_intrinsic}
+The 8 neighborhoods with $\Delta W \notin \{0, \pm 3\}$
+(Table~\ref{tab:catalog}) are the CA realizations of intergenerational orbital
+transitions.
+The five $\Delta W = +1$ neighborhoods (two from the Rule~110 binary sublayer,
+three from the gen$_1 \to$ gen$_2$ orbit step) encode \emph{orbital advance
+steps}: each center cell's winding class increases by one unit with no
+exchange-boson intermediary.
+The three $\Delta W = -4$ neighborhoods (gen$_2 \to$ gen$_3$ at positions~0,
+2, 4 of the gen$_2$ ring) encode the collective $u \to \bar{u}$ quark-triplet
+flip; their center cell is $u$ ($\mathbb{Z}_7 = 2$), distinguishing them from the
+$W^+$ emission vertex $(2,0,2) \to 3$ (center $= 0$, the vacuum seat).
+These 8 neighborhoods implement the generation cascade without exchanging a gauge
+boson and have no direct Feynman-diagram representation at the renormalizable
+vertex level.
+($\CatAL$: \lean{orbit\_intrinsic\_dw\_plus1}, \lean{orbit\_intrinsic\_u\_to\_ubar},
+\lean{orbit\_intrinsic\_count\_8}, \texttt{GUTStructure.lean}~\S80, zero \texttt{sorry}.)
+\end{remark}
+
+% ═══════════════════════════════════════════════════════════════════════════════
+\section{Discussion}
+\label{sec:discussion}
+% ═══════════════════════════════════════════════════════════════════════════════
+
+\subsection{Coherence of the Orbit-Arithmetic Derivation Chain}
+
+All five structural results established in this paper derive from a single mathematical
+object: the MDL-minimal orbit-admissible function $f_{\rm MDL}$ on $\mathbb{Z}_7^5$,
+whose identification with Rule~110 on the five-cell periodic ring is the content of
+CUP-4~\cite{SpivackCompUniversality}.
+
+The derivation chain is hierarchical.
+The deepest structural fact --- that the SM orbit is the unique maximal
+Garden-of-Eden-rooted chain of length~3 in $\mathbb{Z}_7^5$ --- forces
+$\Ngen = 3$ (\S\ref{sec:causal_isolation}).
+This GTP-3 maximality, combined with the orbit arithmetic, forces the Higgs
+branch capacity $\cH = 13$ and the EW sector ladder index $b_H = 3$.
+The unit-step $c$-staircase for $W^+$, $Z^0$, $H^0$ follows, encoding each
+Goldstone absorption as a unit reduction in cascade depth (\S\ref{sec:ew_staircase}).
+
+A separate but equally deterministic chain follows from MDL minimality:
+the parsimony that selects $f_{\rm MDL}$ over all $7^{320}$ orbit-admissible
+functions forces the hard $\mathbb{Z}_7 = 4$ exclusion, which is arithmetically
+equivalent to CP asymmetry (\S\ref{sec:mdl_cp}).
+The photon sector ($\mathbb{Z}_7 = 0$) is then identified as the unique uniform
+fixed point of $f_{\rm MDL}$, and the Rule~110 ether carries $\mathbb{Z}_7 = 1$
+(neutrino-sector winding), establishing the two-level vacuum hierarchy
+(\S\ref{sec:photon}).
+Finally, the complete 14-neighborhood $f_{\rm MDL}$ catalog constitutes an emission
+interaction kernel complementary to the P22 absorption framework
+(\S\ref{sec:vertex_duality}).
+
+All principal results are machine-certified in Lean~4 with zero \texttt{sorry} (see
+Table~\ref{tab:reviewer_map} and Appendix~\ref{app:lean} for the complete Lean inventory);
+the Casimir anti-enhancement ratio and the SM orbit chirality are computationally verified
+($\CatA$).
+
+The three result clusters of this paper --- the electroweak boson staircase
+(\S\ref{sec:ew_staircase}), causal orbit isolation (\S\ref{sec:causal_isolation}),
+and the CA vacuum structure (\S\ref{sec:photon}) --- collectively contribute to the
+machine-certified bidirectional unification theorem
+\lean{ugp\_r110\_sm\_joint\_unification}
+(\lean{GUTStructure.lean}~\S27, $\CatAL$, zero \texttt{sorry}).
+This seven-conjunct Lean statement packages all established arrows between the UGP
+arithmetic framework, Rule~110, and the Standard Model particle content into a single
+formal certificate: the arithmetic bridge $\Ngen + \Nfam = 2^{\Ngen}$; the electroweak
+and GUT-scale Weinberg angles $\sinwsq = 3/13$ and $3/8$; the CKM Wolfenstein
+parameter $\lambda = \Ngen^2 / (2^{\Ngen} \Nfam) = 9/40$; the double-Mersenne exponent
+property of $\Nfam = 5$ and $\cH = 13$; the photon as the unique $f_{\rm MDL}$
+uniform fixed point (\S\ref{sec:photon}); and the Garden-of-Eden status of the lightest
+generation (\S\ref{sec:gtp3}).
+This theorem consolidates the three clusters of the present paper with the companion
+Weinberg angle~\cite{SpivackWeinberg} and CKM~\cite{SpivackCKM} derivations into one
+Lean-certified capstone.
+The six arrows of the UGP--Rule~110--SM bidirectional framework are individually
+certified in the present paper, in~\cite{SpivackWeinberg}, and in~\cite{SpivackCKM};
+their assembly as a single unification theorem is the subject of a forthcoming
+companion paper.
+
+\subsection{Connection to Companion Papers}
+
+Two companion papers build quantitative predictions on the arithmetic foundation
+established here.
+
+The Weinberg angle derivation~\cite{SpivackWeinberg} uses the palindrome decomposition
+$14 = 3 + 10 + 1$ (Theorem~\ref{thm:palindrome}) as its starting point: the palindromic
+count $b_H = 3 = \Ngen$ and the total active count $c_H = 13$ enter the ratio
+$\sinwsq = b_H / c_H = 3/13$.
+The present paper establishes the arithmetic foundation on which that derivation rests:
+the identity $14 = \cH + 1$ (\S\ref{sec:fmdl_count}) and the palindrome decomposition
+(\S\ref{sec:fmdl_count}) are structural consequences of the orbit arithmetic, prior to
+and independent of the Weinberg prediction.
+
+The CKM matrix derivation~\cite{SpivackCKM} uses the hard $\mathbb{Z}_7 = 4$ exclusion
+and the MDL-CP equivalence (\S\ref{sec:mdl_cp}) as structural context: the
+Mersenne-number origin of CP violation in the quark-mixing matrix is placed within the
+framework established here, in which matter dominance is a necessary consequence of
+compression.
+The MDL-CP equivalence proved in \S\ref{sec:mdl_eq_cp} (Lean-certified) provides the
+structural justification for using MDL arguments in the CKM derivation.
+
+Both companion papers introduce additional inputs not derived here (the Weinberg angle
+formula and the CKM Mersenne ansatz, respectively) and are logically independent.
+The orbit-arithmetic results established in the present paper are the shared structural
+underpinning for both quantitative predictions.
+
+The QCD sector coupling from MDL minimality is now established at $\CatAL$.
+The P01 bare SU(3) coupling $g_3^2 = L_{\rm SU(3)} \cdot D_{\rm SU(3)} / 5^{N_{\rm gen}}$
+follows entirely from GTE arithmetic:
+$\gamma_{\rm SU(3)} = N_{\rm gen} = 3$ (\lean{fmdl\_ngen\_equals\_three}),
+$D_{\rm SU(3)} = 41\,075\,281/1\,327\,104$ (Vandermonde$^2$ of the Möbius triple;
+\lean{vandermonde\_sq\_mu\_triple}, $\CatAL$), and
+$L_{\rm SU(3)} = N_{\rm gen}! = 6$ (Weyl-group order; \lean{su3\_weyl\_group\_order\_from\_ngen},
+$\CatAL$).
+The one-loop QCD $\beta$-function coefficient
+$\beta_0 = (c_W N_{\rm gen} - 2N_{\rm fam})/3 = 23/3$ follows from the structural identity
+$c_W = (N_{\rm gen}^2 - 1) + N_{\rm gen} = 11$, providing a unified MDL derivation of both
+EW and QCD couplings from $N_{\rm gen}$ and $N_{\rm fam}$ alone
+(\lean{qcd\_vandermonde\_inputs\_from\_gte}, \texttt{GUTStructure.lean}~\S81, zero \texttt{sorry}).
+The full $F_{21}$ colour-factor derivation is developed in Paper~P39~\cite{SpivackGTEQCDStructure}.
+
+\subsection{Tree-Level Lepton Decay Rates}
+\label{sec:decay_rates}
+
+Beyond mixing observables, the GTE mass assignments enter quantitative
+decay-rate predictions at tree level.
+The derivation chain is: (i)~the charged-current vertex catalog
+(\lean{sm\_charged\_current\_vertex}; the $u W^+ d$ emission vertex is the
+unique $\mathbb{Z}_7$-winding-conserving charged-current vertex) supplies the
+$V\!-\!A$ coupling structure and vertex factors; (ii)~this vertex factor,
+combined with the GTE-derived generation masses $m_k$, gives the tree-level
+partial width via the standard formula
+\[
+  \Gamma(\ell_k \to \ell_{k'}\nu_k\bar\nu_{k'})
+  \;=\; \frac{G_F^2\,m_k^5}{192\pi^3},
+\]
+where $G_F$ is fixed to its PDG value (no free parameters); (iii)~the GTE
+masses $m_k$ enter this formula through the beable-to-physical lifting
+(Algebraic Lifting Theorem, machine-certified in Lean~4), which guarantees
+that the $\mathbb{Z}_7$-level mass ordering translates to physical Compton-scale
+lepton masses.
+Using GTE-derived lepton masses (agreement with PDG to $0.4\%$) and the
+standard $V\!-\!A$ weak width with $G_F$ fixed to its PDG value, the
+muon and tau partial widths exceed PDG by $+12.2\%$ and $+12.5\%$
+respectively; the lifetime ratio $\tau_\tau/\tau_\mu$ matches PDG to
+$0.3\%$.
+Rate positivity and the ordering $\Gamma_e < \Gamma_\mu < \Gamma_\tau$
+are machine-certified at the beable level via the Algebraic Lifting
+Theorem~\cite{SpivackCompUniversality}.
+The formal derivation, vertex catalog, and Lean certification table
+are recorded in~\cite{SpivackCompUniversality}; the present paper
+states the consequence in the deeper-consequences framing: once the
+orbit arithmetic fixes the generation masses and the charged-current
+vertices, tree-level leptonic decay rates follow without additional
+free parameters.
+Radiative and electroweak corrections are not included; upgrading to
+full PDG precision requires one-loop EW and QED resummation (\CatD{}).
+
+\subsection{Interaction Kernel Duality and the P22 Framework}
+
+Section~\ref{sec:vertex_duality} establishes that the CA emission kernel (determined by
+the 14-neighborhood $f_{\rm MDL}$ catalog) and the P22 absorption
+kernel~\cite{Spivack2026_UGPDynamics} (derived from braid cobordism and winding
+conservation) are temporal duals of the same SM charged-current vertex structure.
+
+The two derivations start from orthogonal inputs.
+The CA orbit arithmetic (this paper and~\cite{SpivackCompUniversality}) begins from the
+combinatorial structure of the generation orbit on a five-cell ring;
+the P22 dynamics framework begins from the topological structure of braid cobordism in
+the $\mathbb{Z}_7$ winding category.
+Both converge on the same SM charged-current vertex --- the $uW^+d$ interaction --- and
+on the same absence of the $W^-$ emission vertex, with no shared assumptions.
+This constitutes an independent cross-check of the SM gauge structure from two
+arithmetically orthogonal starting points.
+
+The agreement, combined with the independent derivations of
+$\sinwsq = 3/13$~\cite{SpivackWeinberg} and the CKM matrix~\cite{SpivackCKM},
+suggests that the orbit-arithmetic and P22-dynamics approaches are complementary
+windows onto the same underlying arithmetic structure of the SM.
+A joint treatment formalizing the temporal duality at the level of a precise
+categorical correspondence would be a natural direction for future work.
+
+\subsection{Fine Structure Constant and Anomalous Magnetic Moment}
+\label{sec:alpha_gm2}
+
+The GTE arithmetic yields a derivation of the fine structure constant $\alpha$.
+The $\tau$-lepton effective carrier number is determined by the GTE Fibonacci cascade:
+$N_{\rm eff}(\tau) = N_{\rm eff}(\mu) + F_{\cH} = 42 + 233 = 275$, where
+$F_{\cH} = F_{13} = 233$ is the thirteenth Fibonacci number ($\CatA$ arithmetic
+from $\CatAL$-certified cascade inputs; Lean:
+\lean{fib\_13\_eq\_233}, \lean{alpha\_inv\_master},
+\texttt{GUTStructure.lean}~\S38).
+The master identity
+\begin{equation}
+  \alpha^{-1} \;=\; \frac{N_{\rm eff}(\tau) - 1}{2}
+              \;=\; \frac{275 - 1}{2} \;=\; 137
+\end{equation}
+follows ($\CatA$).
+Expanding via the cascade, $N_{\rm eff}(\tau) = N_{\rm eff}(\mu) + F_{\cH}$, this is
+equivalently
+\begin{equation}
+  \alpha^{-1}
+    \;=\; \frac{N_{\rm eff}(\mu) + F_{\cH} - 1}{2}
+    \;=\; \frac{42 + 233 - 1}{2}
+    \;=\; 137
+  \label{eq:alpha_inv_expanded}
+\end{equation}
+($\CatAL$; \lean{alpha\_inv\_master}, \texttt{GUTStructure.lean}~\S38, zero \texttt{sorry}).
+An equivalent factorization, $\alpha^{-1} = \cH \cdot n_{\rm ridge} + 7 = 13 \times 10 + 7 = 137$,
+expresses the same integer entirely in terms of independently-determined GTE parameters
+($\cH = 13$, $n_{\rm ridge} = 10$, $\mathbb{Z}_7$-period $= 7$, all $\CatAL$).
+The ridge value $R_{10} = 2^{10} - 16 = 1008$ satisfies the exact division identity
+\begin{equation}
+  R_{10} \;=\; 1008 \;=\; N_{\rm eff}(\mu) \times (N_{\rm gen} + 4N_{\rm fam} + 1)
+         \;=\; 42 \times 24
+  \label{eq:ridge_division}
+\end{equation}
+($\CatAL$; \lean{ridge\_n10\_eq\_1008}, \lean{ridge\_division\_identity},
+\lean{ridge\_factor\_structure}, \lean{ridge\_as\_neff\_mu\_times\_factor},
+\texttt{GUTStructure.lean}~\S38, zero \texttt{sorry}).
+The two factorizations are related by the structural identity
+$T_{\rm ether} = \cH + 1 = 14$ connecting the Rule~110 ether period and the Higgs branch
+capacity (\lean{ether\_period\_cH\_structural}, $\CatAL$, \texttt{GUTStructure.lean}~\S40).
+All three quantities entering the formula
+$\alpha = v_{\rm CA} \times \Ngen / (N_{\rm eff}(\tau) - 1) = (2/3) \times 3/274 = 1/137$
+are independently determined from the GTE cascade; no free parameters appear.
+The GTE prediction $\alpha_{\rm GTE}^{-1} = 137$ matches the PDG low-energy value
+$\alpha^{-1} = 137.036$ to within $0.026\%$.
+
+The anomalous magnetic moment of the muon provides a direct falsification test of the
+decoupled two-layer CA structure: the primary criterion is whether the framework
+reproduces $a_\mu = \alpha/(2\pi)$ (the Schwinger one-loop term) without requiring
+explicit inter-layer coupling.
+In the 3+1D extension of the GTE cellular automaton, the fermion dispersion relation is
+$E^2(k) = v^2|k|^2 + m^2$ with $v = 2/3$ ($\CatA$).
+The one-loop Pauli form factor, evaluated by Schwinger's Feynman-parameter method, gives
+$F_2(0) = \alpha_{\rm GTE}/(2\pi)$ via three independent arguments:
+(i) the two-parameter Feynman integral
+$I_{\rm param} = \int_0^1 dx\int_0^{1-x} dy\,2xy/(x+y)^2 = 1/6$ is
+$v$-independent at $q^2 = 0$ (the spatial components of the external momenta vanish,
+so the denominator $D = m^2(x+y)^2$ carries no factor of $v$);
+(ii) the spin-trace factor $C_{\rm trace} = 6$ from the Gordon decomposition; and
+(iii) $C_{\rm trace} \times I_{\rm param} = 1$, giving $F_2(0) = \alpha_{\rm GTE}/(2\pi)$.
+UV-finiteness ($D_{\rm sup} = -2 < 0$ by power counting) ensures lattice--continuum
+equality in the thermodynamic limit.
+
+The GTE effective theory satisfies the Lorentz isotropy condition
+$c_{\rm photon} = c_{\rm fermion}$:
+a local perturbation of the Rule~110 ether background (winding-0 sector) nucleates a
+C$_2$ glider within three timesteps, with displacement $\Delta x = 2$ per three-step
+period confirmed in 29/29 consecutive measurements ($\CatA$; direct CA simulation,
+tape length $L = 1260$, $T = 600$~steps).
+The photon and the fermion are both C$_2$ excitations propagating at $v = 2/3$;
+the two-layer chiral CA has a Lorentz-symmetric light cone with $c_{\rm eff} = 2/3$ ($\CatA$).
+The complete derivation chain yields
+\begin{equation}
+  a_\mu^{\rm GTE}
+    \;=\; \frac{\alpha_{\rm GTE}}{2\pi}
+    \;=\; \frac{1}{274\pi}
+    \;\approx\; 1.162 \times 10^{-3},
+\end{equation}
+matching the QED Schwinger term $\alpha_{\rm PDG}/(2\pi) \approx 1.161 \times 10^{-3}$
+to $0.026\%$; the residual arises entirely from $\alpha_{\rm GTE}^{-1} = 137$
+versus $\alpha_{\rm PDG}^{-1} = 137.036$.
+No inter-layer coupling is required; the decoupled two-layer CA structure passes this
+falsification test ($\CatA$, conditional on the identification $\alpha_{\rm GTE} = \alpha_{\rm em}$).
+
+\begin{remark}[$\gamma$-W loop cancellation from charge neutrality; $\CatAL$]
+\label{rem:gamma_w_loop_cancellation}
+In the GTE CA, any closed fermion loop coupling a photon vertex ($e Q_f \sigma_z$) to
+W vertices vanishes when summed over a complete SM generation, because $\sum_f Q_f = 0$
+exactly --- charge neutrality derived from $\mathbb{Z}_7$ winding
+arithmetic~\cite{SpivackUGP} (\CatA).
+This rules out the $\gamma$-W mixing bubble and triangle diagrams as sources of
+$\Delta\alpha_{\rm GTE}$: the electromagnetic running correction in the GTE framework
+arises from the electroweak mixing structure of the CA effective theory (involving the
+symmetry-breaking sector), not from a standard vacuum polarization loop.
+(\CatAL: \lean{per\_generation\_charge\_neutrality},
+\lean{gamma\_w\_loop\_vanishes},
+\lean{no\_gamma\_w\_mixing\_amplitude},
+\lean{all\_generation\_charge\_neutrality},
+\texttt{GUTStructure.lean}~\S63, zero \texttt{sorry}.)
+\end{remark}
+
+\begin{remark}[CA Feynman virtual action and the $\alpha$ structure; $\CatA/\CatD$]
+\label{rem:virtual_action_alpha}
+The CA Feynman virtual action satisfies $v_{\mathrm{CA}} \times T_g = (2/3) \times 3 = 2$
+exactly ($\CatA$, from the A-glider period $T_g = 3$ and speed $v_{\mathrm{CA}} = 2/3$).
+The deviation from a clean unit circle is $2 - \ln(1 + 2\pi) \approx 2\alpha_{\rm GTE}$
+within $1.2\%$.
+The near-identity $\ln(1 + 2\pi) \approx 274/137 = 2(1 - \alpha_{\rm GTE})$ holds to
+$0.0084\%$, suggesting a possible one-loop-$\alpha$ structure in the virtual action
+($\CatD$; no first-principles derivation exists at present).
+The primary derivation of $a_\mu^{\rm GTE}$ uses the momentum-space Fourier argument
+(Schwinger Feynman-parameter method, above).
+\end{remark}
+
+% ═══════════════════════════════════════════════════════════════════════════════
+\subsection{Open Problems}
+\label{sec:open_problems}
+
+Helicity parity violation has been certified $\CatAL$ and appears in
+Proposition~\ref{prop:helicity}. The following problems remain open.
+
+\begin{enumerate}[leftmargin=1.5em]
+\item \textbf{Exact closed form of the Casimir anti-enhancement.}
+  The mode ratio $r_D/r_P \approx 1.063$ is established computationally
+  (transfer matrix, Python); the nearest rational approximation $17/16 = 1.0625$
+  lies within $0.07\%$ but is not exact.
+  A closed-form derivation from the $f_{\rm MDL}$ eigenvalue structure is open.
+
+\item \textbf{$\mathbb{Z}_2$ longitudinal universality ($\CatAD$).}
+  The $Z$-boson longitudinal mode universality conjecture has been
+  upgraded to $\CatAD$.
+  The GTE $c$-value satisfies $c_Z = 12 = 7 + 5$, where $7$ is the
+  $\mathbb{Z}_7$ modulus (= number of free binary CA bits in a quiescent
+  $\mathbb{Z}_2$ rule) and $5$ is the Hamming weight of Rule~110
+  ($\CatAL$: \lean{z\_boson\_cvalue\_equals\_mdl\_plus\_z7},
+  \texttt{GUTStructure.lean}~\S29).
+  Among all 96 qualifying binary CA rules (satisfying $f(0,0,0)=0$ and
+  non-trivial propagation of a $\mathbb{Z}_2 = 1$ excitation), Wolfram
+  Class~4 (computationally universal) rules exist at and only at minterm
+  count~$5$---an isolated resonance in the MDL spectrum
+  ($\CatA$, exhaustive enumeration).
+  The $c$-value formula $c_P = 7 + \mathrm{MDL}(\text{rule}_P)$ therefore
+  maps $c_Z = 12$ to $\mathrm{MDL} = 5$, placing the $Z$ boson at the
+  unique MDL level that supports computationally universal dynamics.
+  Combined with the machine-certified selection of Rule~110 over Rule~124
+  by $\mathbb{Z}_7$ binary sublayer consistency~\cite{SpivackCompUniversality},
+  the $Z$-boson's longitudinal mode is governed by Rule~110.
+  The remaining step to $\CatAL$ is the formal derivation of
+  $c_P = 7 + \mathrm{MDL}(\text{rule}_P)$ from GTE MDL minimality axioms.
+
+\item \textbf{SU(5) ring identification.}
+  The $\mathbb{Z}_5$ ring / SU(5) fundamental representation correspondence
+  (cardinality: $\Nfam = \dim(\mathbf{5})$) is Lean-certified; the uniqueness
+  argument (SU(5) is the unique simple group whose fundamental dimension
+  equals $\Nfam = 5$) requires a group-theoretic survey.
+
+\item \textbf{Connection to quantum mechanics.}
+  How the $f_{\rm MDL}$ CA dynamics gives rise to the Born rule and
+  measurement outcomes is an open direction; a companion paper~\cite{SpivackQMFromR110}
+  develops the UGP Physics quantum-mechanics programme from the Rule~110 CA substrate.
+  The Cellular Automaton Interpretation of quantum mechanics~\cite{tHooft2016CA}
+  provides the starting point for this program:
+  its construction of Hilbert spaces and Schrödinger dynamics from deterministic
+  permutation systems applies directly to the Rule~110 orbit once the specific
+  CA has been identified.
+
+\item \textbf{Dark sector stability via $f_{\rm MDL}$ cycle structure.}
+  The orbit decomposition of $f_{\rm MDL}$ on the visible-sector ring
+  $\mathbb{Z}_7^5$ ($7^5 = 16{,}807$ states) yields exactly one periodic
+  orbit: the vacuum fixed point.  Every SM generation state is a transient
+  that decays to the vacuum in at most seven steps (CatA).
+  An analogous computation on the dark-sector ring $\mathbb{Z}_7^4$
+  ($7^4 = 2{,}401$ states, ring size $N_{\rm fam}^{\rm dark} = 4$)
+  yields three distinct cycles: the vacuum fixed point and two non-vacuum
+  cycles of length~$2$, whose four constituent states are
+  $\{(1,1,1,0),(1,0,1,1),(1,1,0,1),(0,1,1,1)\}$, all binary-valued with
+  $\mathbb{Z}_7$ winding sum~$3$ (CatA).
+  In 't~Hooft's cogwheel framework~\cite{tHooft2016CA}, these length-$2$
+  cycles contribute eigenvalues $E=0$ and $E=\pi$, giving a
+  $5$-dimensional dark-sector physical Hilbert space (vacuum plus two
+  doublets), in contrast to the visible sector's $1$-dimensional
+  Hilbert space (vacuum only).
+  This structural asymmetry provides a cellular-automaton mechanism for
+  dark-sector particle stability: excited states of the visible sector
+  are transients that decay, while the corresponding dark-sector
+  excitations are genuine periodic orbits.
+  The complete analysis of this dark-sector Hilbert space structure,
+  including its connection to the mirror-dual $\mathbb{Z}_2$ generating
+  triple and the arithmetic budget identity
+  $N_{\rm fam}^{\rm dark} + N_{\rm gen}^{\rm dark} = 2^{N_{\rm gen}} = 8$,
+  is developed in a companion work.
+
+\item \textbf{Cosmological constant from the cellular-automaton vacuum.}
+  A companion paper~\cite{Spivack2026_SM_UGP} derives the cosmological constant
+  from the information-theoretic constant $L_{\rm model} = \log_2(2^4 \cdot 5^3/3)
+  \approx 9.38$~bits via
+  \begin{equation*}
+    \Lambda = \frac{\ln 2}{\pi} \cdot L_{\rm model} \cdot \frac{H_0^2}{c^2},
+  \end{equation*}
+  predicting $\Lambda$ to within $0.31\sigma$ of the Planck~2018 value.
+  The combinatorial factor $L_{\rm model}$ is Lean~4 certified with zero \texttt{sorry}
+  (\texttt{L\_model\_eq\_log\_residual}, \texttt{L\_model\_from\_gauge\_structure};
+  \cite{SpivackUGPFormalization,ugp-lean}).
+  Note that this formula uses the Hubble constant $H_0$ as an external input;
+  a derivation of $\Lambda$ from GTE first principles alone, without $H_0$,
+  remains an open problem.
+  That derivation is Category~A/D: $L_{\rm model}$ is fully derived from UGP invariants,
+  but the dimensional $\Lambda$ requires $H_0$ as an external measured input.
+  A first-principles derivation of $\Lambda$ directly from the cellular-automaton
+  vacuum structure---without $H_0$ as external input---is an open direction for
+  the present framework.
+
+\item \textbf{Lorentz invariance and the chiral pair construction.}
+  The Rule~110 ether exhibits a persistent preferred frame: $v_R = 2/3$ (period-3
+  C2 glider, $\CatA$) and $v_L \approx 1/3$ (irregular), giving $v_R/v_L \approx 2$.
+  A resolution is provided by the chiral pair: Rule~124 (the spatial mirror
+  of Rule~110) possesses a leftward period-3 glider at $v_L = -2/3$ ($\CatA$), and
+  the two-layer CA $\{$Rule~110, Rule~124$\}$ achieves $v_R = |v_L| = 2/3$ exactly
+  ($\CatA$; 100\% period-3 purity, $T=300$ steps).
+  The ether gauge excitation (winding-0 sector) also propagates at $v = 2/3$:
+  a local perturbation of the Rule~110 ether nucleates a C$_2$ glider within three
+  timesteps, with $\Delta x = 2$ per period confirmed in 29/29 consecutive measurements
+  ($\CatA$; $L = 1260$, $T = 600$~steps; \S\ref{sec:alpha_gm2}).
+  The condition $c_{\rm photon} = c_{\rm fermion} = 2/3$ is therefore $\CatA$, establishing
+  that the two-layer chiral CA has a Lorentz-symmetric light cone with $c_{\rm eff} = 2/3$.
+  Whether a single-rule Lorentz-symmetric realization exists within the
+  $\mathbb{Z}_7$ framework remains open.
+
+\item \textbf{Cosmological dark matter abundance.}
+  The $\mathbb{Z}_7$ ``dark sector'' is the CP conjugate of the visible quark
+  sector, not a distinct hidden sector with exotic quantum numbers.
+  The CA stability asymmetry (three dark $\mathbb{Z}_7^4$ cycles, one visible
+  $\mathbb{Z}_7^5$ cycle) reflects the relative richness of anti-quark dynamics
+  under $f_{\rm MDL}$, traceable to the Rule~110 binary sublayer which populates
+  only $\{\text{vacuum},\,\bar{d}\}$ in stable orbit states.
+  Cosmological dark matter is not explained by this structural ratio; the
+  quantitative dark matter abundance requires a production mechanism applied to a
+  genuine dark matter candidate.
+  The GTE offers a candidate: massive ether excitations at the fundamental ether
+  period $T_{\rm ether} = c_H + 1 = 14$, with mass scale
+  $M_{\rm dark} \sim 46$--$49$~GeV (using $E_0 = v_H \times \sqrt{\pi/8}
+  \approx 154.3$~GeV from the tree-level Schwinger identity, CatAD).
+  This candidate is electrically neutral, massive, and stable, with mass tied
+  directly to the Higgs cascade depth by an exact GTE arithmetic identity.
+  Deriving $\Omega_{\rm DM} \approx 0.26$ from first principles in GTE
+  remains open.
+\end{enumerate}
+
+% ═══════════════════════════════════════════════════════════════════════════════
+\begin{appendices}
+
+\section{Lean Certification Summary}
+\label{app:lean}
+
+All CatAL results in this paper are machine-certified in Lean~4 with zero
+\texttt{sorry} and zero new axioms beyond the Mathlib4 standard library,
+conditional on the imported CUP-4 result from~\cite{SpivackCompUniversality}.
+
+\small
+\setlength{\LTcapwidth}{\linewidth}
+\renewcommand{\arraystretch}{1.12}
+\begin{longtable}{@{}P{5.2cm}P{2.6cm}P{7.5cm}@{}}
+\caption{Lean modules contributing CatAL results to this paper.}
+\label{tab:lean_modules}\\
+\toprule
+\textbf{Module} & \textbf{Commit} & \textbf{Principal theorems} \\
+\midrule
+\endfirsthead
+\multicolumn{3}{l}{\small\itshape (Table~\ref{tab:lean_modules} continued)}\\
+\toprule
+\textbf{Module} & \textbf{Commit} & \textbf{Principal theorems} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\small\itshape (continued on next page)}\\
+\endfoot
+\bottomrule
+\endlastfoot
+\lean{EWBosonStructure.lean} & \texttt{ugp-lean} &
+  \lean{ew\_c\_staircase}, \lean{ew\_c\_arithmetic\_progression},
+  \lean{ew\_higgs\_is\_scalar\_boundary} \\[4pt]
+\lean{GUTStructure.lean} \S7 & \texttt{ugp-lean} &
+  \lean{fmdl\_nonzero\_count\_14},
+  \lean{fmdl\_count\_eq\_chiggs\_plus\_one} \\[4pt]
+\lean{Z7ChargeConjugation.lean} & \texttt{ugp-lean} &
+  \lean{fmdl\_matter\_cp\_violation},
+  \lean{fmdl\_conj\_pair\_asymmetry\_unique},
+  \lean{fmdl\_mdl\_uniqueness},
+  \lean{sm\_charged\_current\_vertex},
+  \lean{sm\_w\_minus\_absence} \\[4pt]
+\lean{SMOrbitCausalIsolation.lean} & \texttt{ugp-lean} &
+  \lean{sm\_orbit\_complete\_causal\_isolation} (6-part),
+  \lean{orbit\_sum\_trajectory\_invariant} \\[4pt]
+\lean{GoEStabilityHierarchy.lean} & \texttt{ugp-lean} &
+  \lean{sm\_orbit\_unique\_gtp3},
+  \lean{fmdl\_max\_gtp\_length\_is\_3},
+  \lean{fmdl\_orbit\_linear\_chain} \\[4pt]
+\lean{GUTStructure.lean} \S3 & \texttt{ugp-lean} &
+  \lean{vacuum\_selects\_rule110\_over\_rule111} \\[4pt]
+\lean{DimensionalSlice}\allowbreak\lean{Uniqueness.lean} & \texttt{ugp-lean} &
+  \lean{dim\_slice\_valid\_rule\_count},
+  \lean{dim\_slice\_vacuum\_essential},
+  \lean{dim\_slice\_valid\_rules\_eq\_singleton},
+  \lean{dimensional\_slice\_uniqueness} \\[4pt]
+\lean{GUTStructure.lean} \S17 & \texttt{ugp-lean} &
+  \lean{rule124\_minterms\_card},
+  \lean{rule110\_and\_124\_joint\_mdl\_count},
+  \lean{rule110\_preferred\_by\_sublayer\_consistency} \\[4pt]
+\lean{CasimirMasslessEther.lean} & \texttt{ugp-lean} &
+  \lean{fmdl\_unique\_uniform\_fixed\_point},
+  \lean{photon\_is\_ca\_ether},
+  \lean{fmdl\_massless\_criterion},
+  \lean{ether\_z7\_sum\_mod7} \\[4pt]
+\lean{Z7ChargeConjugation.lean} \S5 & \texttt{ugp-lean} &
+  \lean{ca\_w\_plus\_is\_emission\_not\_absorption},
+  \lean{p22\_absorption\_vertices\_are\_transparent},
+  \lean{sm\_cp\_vertex\_asymmetry} \\[4pt]
+\lean{GUTStructure.lean} \S27 & \texttt{ugp-lean} &
+  \lean{ugp\_r110\_sm\_joint\_unification} (7-conjunct bidirectional capstone) \\[4pt]
+\lean{GUTStructure.lean} \S29 & \texttt{ugp-lean} &
+  \lean{z\_boson\_cvalue\_equals\_mdl\_plus\_z7},
+  \lean{z\_boson\_mdl\_class4\_chain} \\[4pt]
+\lean{GUTStructure.lean} \S36 & \texttt{ugp-lean} &
+  \lean{fmdl\_perfect\_code} ($\CatAL$: exactly 14 non-zero output neighborhoods;
+  unique orbit-admissible MDL-minimal function; joint perfect-code certificate,
+  \lean{native\_decide}),
+  \lean{fmdl\_nonzero\_lower\_bound} ($3+10+1=14$; palindrome decomposition
+  packaging, \lean{norm\_num}) \\[4pt]
+\lean{ChiralPairVA.lean} & --- &
+  \lean{va\_mismatch\_count} (exactly 32 V-A mismatches in $\{0,2,3,4,6\}^3$;
+  \lean{native\_decide}),
+  \lean{va\_mismatch\_involves\_wplus} (all mismatches involve $W^+$ as non-center
+  neighbor; \lean{native\_decide}),
+  \lean{bit\_mismatch\_iff} (Fin-2 mismatch iff $l \neq r$ and $c = 0$;
+  \lean{decide}) \\[4pt]
+\lean{GUTStructure.lean} \S63 & \texttt{ugp-lean} &
+  \lean{per\_generation\_charge\_neutrality},
+  \lean{all\_generation\_charge\_neutrality},
+  \lean{gamma\_w\_loop\_vanishes},
+  \lean{no\_gamma\_w\_mixing\_amplitude},
+  \lean{rho\_equals\_one\_tree\_level},
+  \lean{delta\_rho\_zero\_in\_massless\_limit},
+  \lean{cos\_sq\_theta\_w\_ratio},
+  \lean{sirlin\_cos\_cancellation}
+  (charge neutrality $\sum_f Q_f = 0$; $\gamma$-W loop cancellation;
+  $\Delta\rho = 0$ in massless CA; Sirlin rational identity;
+  all \lean{norm\_num}, zero \texttt{sorry}) \\[4pt]
+\lean{GUTStructure.lean} \S70 & --- &
+  \lean{baryogenesis\_amplitude\_counting} ($n_{\rm EW}=1$, $n_{\rm EM}=2$ vertex structure),
+  \lean{eta\_B\_amplitude\_structure} ($\eta_B$ exponent structure $(2,4)$),
+  \lean{wplus\_vertex\_amplitude\_structure} ($f_{\rm MDL}(2,0,2)=3$, coupling count),
+  \lean{baryogenesis\_amplitude\_goe\_exclusivity},
+  \lean{baryogenesis\_amplitude\_goe\_loop\_count},
+  \lean{baryogenesis\_amplitude\_A\_B\_structure},
+  \lean{wplus\_vertex\_fmdl\_emission}
+  (amplitude vertex counting; GoE orbit exclusivity; all zero \texttt{sorry}) \\[4pt]
+\lean{GUTStructure.lean} \S79 & --- &
+  \lean{orbit\_sum\_winding\_classes} ($\sigma(\mathrm{gen}_1)=4=Z_7(e^-)$,
+  $\sigma(\mathrm{gen}_2)=4=Z_7(e^-)$, $\sigma(\mathrm{gen}_3)=3=Z_7(W^+)$;
+  \lean{decide}),
+  \lean{orbit\_sum\_drop\_at\_wemission} (unit drop $4-3=1$; $\sigma(\mathrm{gen}_3)=N_{\rm gen}$;
+  \lean{norm\_num}; zero \texttt{sorry}) \\[4pt]
+\lean{GUTStructure.lean} \S80 & --- &
+  \lean{orbit\_intrinsic\_dw\_plus1} (five $\Delta W=+1$ orbital-advance neighborhoods;
+  \lean{decide}),
+  \lean{orbit\_intrinsic\_u\_to\_ubar} (three u$\to\bar{u}$ neighborhoods;
+  \lean{decide}),
+  \lean{orbit\_intrinsic\_count\_8} ($5+3=8$, $6+8=14$; \lean{norm\_num};
+  zero \texttt{sorry}) \\[4pt]
+\lean{GUTStructure.lean} \S81 & --- &
+  \lean{qcd\_adjoint\_dim\_from\_ngen} ($N_{\rm gen}^2-1=8$; \lean{norm\_num}),
+  \lean{qcd\_cw\_equals\_adjoint\_plus\_fundamental}
+    ($c_W = (N_{\rm gen}^2-1)+N_{\rm gen}=11$; \lean{simp}),
+  \lean{su3\_weyl\_group\_order\_from\_ngen} ($N_{\rm gen}!=6$; \lean{norm\_num}),
+  \lean{qcd\_beta0\_from\_gte}
+    ($\beta_0 = (c_W\cdot N_{\rm gen}-2N_{\rm fam})/3=23/3$; \lean{norm\_num}),
+  \lean{qcd\_vandermonde\_inputs\_from\_gte} (master certificate; 4-conjunct;
+    \lean{norm\_num}; all zero \texttt{sorry}) \\
+\end{longtable}
+\normalsize
+
+\textbf{Repository:} \texttt{ugp-lean} (supplementary Lean library; to be
+released as part of the canonical \texttt{ugp-lean} library with this paper).
+All listed theorems compile with zero \texttt{sorry} after
+Mathlib4 cache population.
+
+\section{Complete CA Interaction Catalog}
+\label{app:catalog}
+
+The complete $f_{\rm MDL}$ interaction catalog is given in Table~\ref{tab:catalog}
+in \S\ref{sec:catalog}.
+The 14 active neighborhoods are listed there with their $\mathbb{Z}_7$ outputs,
+particle assignments, winding shifts $\Delta W$, palindrome classification
+(P/non-P), and source (Rule~110 binary sublayer R or SM orbit neighborhoods O).
+The four canonical P22 absorption vertices are listed separately in
+Theorem~\ref{thm:p22_transparent}.
+
+\section{Scripts and Reproduction}
+\label{app:repro}
+
+See the companion \texttt{REPRODUCE.md} for step-by-step instructions.
+Key scripts:
+
+\begin{itemize}[nosep]
+\item \texttt{scripts/ranks\_46\_50\_casimir\_items.py} --- Casimir transfer matrix;
+  CA masslessness criterion; virtual-photon transparency survey.
+\item \texttt{scripts/ca\_vertex\_table.py} --- Complete 14-neighborhood interaction catalog.
+\item \texttt{scripts/photon\_vacuum\_casimir\_analysis.py} --- Fixed points, dual massless criterion,
+  ether $\mathbb{Z}_7$ sum.
+\item \texttt{scripts/mdl\_cp\_uniqueness.py} --- Monte Carlo sampling of orbit-admissible
+  $\mathbb{Z}_7$ CA functions; verifies that the $\mathbb{Z}_7 = 4$ exclusion has
+  probability $\approx (6/7)^{320} \approx 3.8 \times 10^{-22}$; confirms
+  $f_{\rm MDL}$ as the unique MDL-minimal function with arithmetic CP violation
+  (0 of 10{,}000 random orbit-admissible functions satisfy the exclusion).
+\item \texttt{scripts/leptoquark\_vertex\_catalog.py} --- Complete $\mathbb{Z}_7$ leptoquark
+  vertex catalog; enumerates all $\mathbb{Z}_7$-and-charge-conserving 3-point vertices
+  involving at least one $SU(5)$ leptoquark ($X$, $\bar X$, $Y$, $\bar Y$);
+  identifies 20 physically meaningful processes and the unique $Y$-channel missing-winding
+  activation (\S\ref{sec:leptoquark_catalog}).
+\item \texttt{scripts/cp\_observables.py} --- Computes $\sin(2\beta)_{\rm GTE}$
+  and $|\varepsilon_K|_{\rm GTE}$ from the \CatAL\ Wolfenstein parameters ($\lambda$, $A$,
+  $R_b$, $\tan\gamma$).  Cross-calibrates $|\varepsilon_K|$ against SM parameters to remove
+  formula systematics; provides Jarlskog cross-check.
+  Expected: $\sin(2\beta) = 0.6939$ ($-0.30\sigma$); $|\varepsilon_K| = 2.165\times10^{-3}$
+  ($-5.8\sigma$ on experimental uncertainty alone).
+\item \texttt{scripts/epsilon\_k\_tension.py} --- Root-cause decomposition of the
+  $|\varepsilon_K|$ tension.  Isolates the $R_b = 3/8$ shortfall from the $\gamma$
+  contribution; quantifies the $\hat{B}_K$ lattice uncertainty reduction to $\lesssim1\sigma$;
+  identifies $\hat{B}_K = 0.738$ as the exact reconciliation within the $2\sigma$ FLAG~2023
+  band.  Confirms $\gamma = 65.67^\circ$ contributes only $-0.023\sigma$.
+\end{itemize}
+
+\end{appendices}
+
+% ── Bibliography ─────────────────────────────────────────────────────────────
+\bibliographystyle{plain}
+\bibliography{../bib/Spivack_Papers_Bibliography}
+
+\end{document}

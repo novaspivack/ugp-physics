@@ -1,0 +1,1299 @@
+%% ugp_theory_overview.tex — UGP Physics: A Narrative Overview
+%% This file is included in the P00 survey guide as an introductory chapter.
+%% Maintained separately for ease of updates.
+%% Last updated: 2026-06-05
+%%
+%% DRAFT — for author review. Not final.
+
+% ====================================================================
+\clearpage
+\section{The UGP Framework: Foundations, Structure, and Results}
+\label{sec:overview}
+% ====================================================================
+
+\subsection{Introduction}
+\label{subsec:overview-intro}
+
+The Standard Model of particle physics has approximately 25 free parameters ---
+coupling constants, fermion masses, mixing angles, the cosmological constant ---
+whose numerical values have no theoretical origin within the Standard Model itself.
+The \textbf{UGP Physics programme}, the quantitative branch of the Reflexive Reality programme~\cite{SpivackResearchProgrammes}, addresses this
+directly: starting from one foundational principle --- \textbf{PSC (Perfect
+Self-Containment)} --- with MDL (Minimum Description Length) as its operational
+expression (Presentation Invariance, the Layer~II PSC axiom; PI $\equiv$ MDL,
+machine-certified), and locality and symmetry as structural requirements, it
+uniquely selects a continuum field theory whose internal arithmetic
+reproduces the SM particle spectrum, all three gauge coupling constants, all fermion
+masses, the electroweak mixing angle, CKM mixing parameters, and now gravitational
+and quantum-mechanical structure --- without a single free parameter.  A discrete
+algebraic certificate ($f_{\rm MDL}$, the CMCA) proves and compresses that
+arithmetic; it is not the physical substrate.
+
+What distinguishes UGP from prior unification programmes is that it works in the
+opposite direction: rather than postulating a larger symmetry group that contains
+the SM as a subgroup, it derives the SM gauge structure \emph{from below}, from the
+symmetry and orbit structure of a continuum field whose unique selection is forced
+by information-theoretic compressibility.  The physical substrate is not invented
+to fit the data; it is the unique solution to a self-consistency equation.
+The central object is the \textbf{$\Phi_{\rm MDL}$ field}, a
+$\mathbb{Z}_7$-symmetric Klein--Gordon gauge field whose internal discrete symmetry
+group is $F_{21} = \mathbb{Z}_7 \rtimes \mathbb{Z}_3$ --- the unique non-abelian
+group of order~21, a subgroup of $\mathrm{SU}(3)$ --- forced by minimum description
+length (MDL) minimality.  Stable topological kink defects of $\Phi_{\rm MDL}$ are
+the elementary particles of the Standard Model.  A discrete algebraic certificate
+--- the MDL-minimal $\mathbb{Z}_7$ cellular automaton $f_{\rm MDL}$ --- certifies
+the internal symmetry structure of $\Phi_{\rm MDL}$ and generates all SM quantum
+numbers from its orbit arithmetic; it is not the physical substrate.  Paper~P34
+formalises the abstract substrate architecture as the Möbius triple $(A,e,[D])$,
+with D1--D5 constraints governing transputation and the Born rule.  Quantum
+mechanics, special relativity, and gravity all emerge from the field's structure;
+none is postulated.
+
+Results throughout the programme are certified at multiple epistemic levels.  Many
+are \emph{machine-certified} in Lean~4 with zero \texttt{sorry} and the standard
+Mathlib axiom signature --- a level we denote $\mathbf{A}_{\rm Lean}$.  Others are
+analytically derived ($\mathbf{A/D}$) or numerically confirmed against PDG
+measurements.  This overview traces the logical arc from substrate selection to the
+complete unified framework, citing the relevant papers for technical detail.
+
+% ====================================================================
+\subsection{The Substrate: MDL Minimality and the Unique Selection of $\Phi_{\rm MDL}$}
+\label{subsec:overview-substrate}
+
+The framework begins with a question: among all field theories, which one minimizes
+the total description length of the laws governing a self-contained universe?
+The \textbf{Minimum Description Length (MDL)} principle --- the operational
+expression of PSC's Presentation Invariance (PI $\equiv$ MDL, Layer~II PSC axiom,
+machine-certified)~\cite{SpivackSM} --- formalises self-containment as a
+Kolmogorov-complexity criterion.
+Combined with locality and symmetry as structural requirements, MDL minimality
+uniquely selects the $\mathbb{Z}_7$-symmetric sine-Gordon field $\Phi_{\rm MDL}$:
+among all $\mathbb{Z}_N$-symmetric fields with BPS kinks and exact Lorentz invariance,
+$\Phi_{\rm MDL}$ has the smallest Kolmogorov complexity~\cite{SpivackCMCA,SpivackPhiMDLField}.
+(MDL is not an independent foundational axiom: PI is the Layer~II PSC axiom that
+selects $N_{\rm gen}=3$, and MDL is its physics-vocabulary expression.  `Why MDL?'
+reduces to `Why PSC?' --- the foundational question answered by the NEMS programme.)
+
+\paragraph{The physical substrate.}
+The \textbf{$\Phi_{\rm MDL}$ field} is the physical substrate of the universe.
+It is a real-valued $\mathbb{Z}_7$-symmetric Klein--Gordon gauge field evolving on
+$\mathbb{R}^{3+1}$:
+\[
+  \mathcal{L} = \tfrac{1}{2}(\partial_\mu\Phi)^2 - V(\Phi),
+  \qquad
+  V(\Phi) = \frac{m_\varphi^2}{49}(1-\cos 7\Phi),
+\]
+with field mass $m_\varphi = m_\tau = 1776.86$~MeV, derived from the $F_{21}$
+leptonic-sector self-consistency condition (SCC)~\cite{SpivackCompleteness}.
+Its seven global minima $\Phi_k = 2\pi k/7$, $k \in \mathbb{Z}_7$, define the
+vacuum manifold; the topological winding number $Q = (7/2\pi)\int\partial_x\Phi\,dx$
+takes values in $\mathbb{Z}_7$ and furnishes a superselection charge.
+Stable topological kink defects winding between adjacent vacua are identified with
+the elementary particles of the Standard Model.  Exact Lorentz invariance
+($\omega^2 = k^2 + m^2$) is machine-certified in Lean~4
+($\mathbf{A}_{\rm Lean}$, \lean{poincare\_invariance\_of\_kg})~\cite{SpivackPhiMDLField}.
+
+\paragraph{Scale hierarchy: substrate vs.\ particle.}
+\begin{center}
+\small
+\begin{tabular}{@{}p{4.5cm}p{5.5cm}p{4.0cm}@{}}
+\toprule
+\textbf{Object} & \textbf{Length scale} & \textbf{Energy scale} \\
+\midrule
+CMCA lattice (Planck resolution) & ${\sim}10^{-33}$~cm ($\ell_{\rm Pl}$) & ${\sim}10^{19}$~GeV \\
+$\Phi_{\rm MDL}$ kink width & ${\sim}1/m_\varphi \approx 10^{-13}$~cm & $m_{\rm kink} = 290$~MeV \\
+SM particles (Compton scale) & $10^{-13}$--$10^{-16}$~cm & MeV--TeV \\
+\bottomrule
+\end{tabular}
+\end{center}
+The CMCA operates at Planck-scale lattice resolution ($a \sim \ell_{\rm Pl} \approx 10^{-33}$~cm), but the kinks that emerge from it are \emph{macroscopic} relative to this scale.  The BPS kink width is $\sim 1/m_\varphi \sim 10^{-13}$~cm (hadronic scale), twenty orders of magnitude larger than the Planck length.  Kinks are therefore not sub-Planckian objects; they are Compton-wavelength-scale collective excitations of the Planck-scale substrate, precisely as phonons are macroscopic excitations of an atomic lattice.  This is the physical content of the no-CA-replica theorem: a finite-resolution CA at any $M$ cannot exactly reproduce the smooth Compton-scale kink profile because the kink extends over $\sim M^{-1}$ lattice sites in the continuum limit.  The Algebraic Lifting Theorem bridges the two scales without requiring a simulation of the Compton scale from first principles.
+
+\paragraph{The discrete algebraic certificate.}
+At the algebraic level, the orbit structure of $\Phi_{\rm MDL}$ is encoded by a
+compact discrete object: the \textbf{MDL-minimal $\mathbb{Z}_7$ update rule}
+$f_{\rm MDL}$, defined over $\mathrm{GF}(7)$ as
+$f_{\rm MDL}(L,C,R) = C + R - CR - LCR$, whose binary restriction is Rule~110.
+$f_{\rm MDL}$ is \emph{not} the physical substrate; it is the
+\textbf{algebraic certificate} --- a compact discrete representation of the
+symmetry structure, orbit arithmetic, and generation sequence of $\Phi_{\rm MDL}$.
+The $f_{\rm MDL}$ orbit over $\mathbb{Z}_7$ generates all SM quantum numbers via the
+GTE cascade (\S\ref{subsec:overview-gte}).
+
+The complete discrete algebraic certificate is the \textbf{Three-Layer Chiral
+Minkowski CA (CMCA)}~\cite{SpivackCMCA}: Rule~110 (right chiral layer) plus
+Rule~124 (left chiral layer) plus an inner $\tau_c$ Rule-110 clock per cell.
+The CMCA certifies all five structural features of $\Phi_{\rm MDL}$: $\mathbb{Z}_7$
+generation orbit ($N_{\rm gen}=3$), V$-$A chirality, Turing universality, and both
+observer-level and dynamics-level special relativity.  Its MDL complexity
+$K_{\rm CA} = 19$ bits saturates the construction-class lower bound
+($\mathbf{A}_{\rm Lean}$: \lean{CMCAMDLMinimality.lean})~\cite{SpivackCMCA}.
+
+\paragraph{The Three-Tape CMCA and 3+1D emergence.}
+The single-tape CMCA is a 1+1D algebraic certificate.  The \textbf{Three-Tape CMCA}
+(P45~\cite{SpivackThreeTapeCMCA}) extends this to three independent 1+1D CMCAs
+sharing a single outer clock period $\tau_c^{\rm out}$.  The
+\textbf{Dimensional Protocol Principle (DPP)}, machine-certified in Lean~4
+($\mathbf{A}_{\rm Lean}$), states that this shared clock is \emph{both necessary
+and sufficient} for 3+1D dynamics: without it the three tapes evolve as independent
+1+1D systems; with it they exhibit a single 3+1D Minkowski spacetime.  The DPP
+provides the first machine-verified derivation of why spacetime is $3+1$-dimensional
+within the GTE framework.  Temporal synchronisation is the causal prerequisite for
+spatial geometry --- the shared clock \emph{creates} space.
+
+The three-tape architecture additionally produces all 33 SM charged-current vertices
+via $\mathbb{Z}_7$ winding conservation, derives baryon number as a topological
+charge, and recovers colour confinement from the MDL description-length gap
+$\Delta K = \log_2 9 \approx 3.17$ bits forbidding free quarks (all $\mathbf{A}_{\rm Lean}$,
+zero sorry, P45/P46~\cite{SpivackGTEPolynomialUFT}).
+
+The three-tape gravity mechanism has been closed at $\mathbf{A/D}$ (CatAD).  The Physical Minimum Description Length (PMDL)
+Poisson equation $\nabla^2\Phi = G_{\rm eff}\,p(w_x,w_y,w_z)$ is $\mathbf{A}_{\rm Lean}$;
+the continuum-limit force law is derived analytically via the 3D Poisson Green's function
+and multipole expansion.  For a source of Algebraic-Lifting radius $\sigma_{\rm AL}$,
+the exact force is
+\[
+  F(b) \;=\; \frac{G_{\rm eff} M}{4\pi b^2}\,
+  \Bigl[1 - \tfrac{\sigma_{\rm AL}^2}{2b^2} + O\!\bigl(\sigma_{\rm AL}/b\bigr)^4\Bigr]
+  \;\xrightarrow{b/\sigma_{\rm AL}\to\infty}\;
+  \frac{G_{\rm eff} M}{4\pi b^2},
+\]
+recovering exactly Newtonian $F\propto r^{-2}$.  Prior discrete-simulation measurements
+($F\propto b^{-2.19\ldots-2.30}$) are finite-source-size artifacts: the exponent
+converges monotonically to $-2.000 \pm 0.005$ as $b/\sigma_{\rm AL}\to\infty$, confirmed
+numerically.  Three equivalent formulations are established: gradient-kick (Level~1
+computational), metric-perturbation/GR (Level~2 geometric), and equivalence-principle
+(deepest mechanical principle), with the Level~2 metric formulation isomorphic to the
+Level~1 result in the Newtonian limit.
+
+\paragraph{The two-level architecture.}
+The GTE/$\Phi_{\rm MDL}$ framework operates at two
+levels~\cite{SpivackCompleteness,SpivackCMCA}:
+\begin{description}[leftmargin=2.5cm,labelwidth=2.5cm]
+\item[\textit{Level~1}:] The CMCA --- a 1+1D discrete algebraic certificate.  Carries
+  all five Level-1 structural features.  This is \emph{not} the physical universe; it
+  is a mathematical proof system for the structure of $\Phi_{\rm MDL}$.
+\item[\textit{Level~2}:] $\Phi_{\rm MDL}$ in $3+1$ dimensions --- the physical
+  continuum field.  Quantum mechanics, Standard Model structure, and General
+  Relativity all emerge at this level.  The continuum limit of the CMCA is
+  identified with $\Phi_{\rm MDL}$ ($\mathbf{A}_{\rm Lean}$:
+  \lean{CMCAContinuumLimit.lean}).
+\end{description}
+
+\paragraph{The GTE-Möbius architecture specification (P34).}
+Paper~P34~\cite{SpivackGTEMobius} formalises the \emph{abstract architecture} shared
+by both levels as the Möbius triple $(A,\,e,\,[D])$:
+\begin{itemize}[noitemsep,topsep=2pt]
+  \item \textbf{$A$} --- the GTE arithmetic carrier ($\mathbb{Z}_7$ winding dynamics,
+    P28).  At Level~2, $A$ is realised as the PSC-admissible \emph{kink sector} of
+    $\Phi_{\rm MDL}$ (topological charges $Q \in \{0,1,2,3\}$).
+  \item \textbf{$e$} --- the self-encoding map conferring Turing completeness
+    (P30/P40; GF(7) polynomial route and Cook's Rule~110 construction).
+  \item \textbf{$[D]$} --- the class of PSC-consistent coherence measures satisfying
+    five constraints D1--D5 (non-negativity, PSC invariance, non-computability,
+    selection completeness, Born consistency).  $[D]$ realises \emph{transputation}:
+    non-computable, observer-free outcome selection at the computation/transputation
+    boundary.
+\end{itemize}
+The Möbius name reflects a single-surface architecture: computation (deterministic
+$f_{\rm MDL}$ evolution) and transputation ($[D]$-selection) share one substrate
+without a sharp syntactic boundary.  P34 is the \textbf{axiomatic foundation
+paper} for Group~7 (P34--P46): it specifies \emph{what kind of object} underlies the
+SM derivations; P35 synthesises the bidirectional correspondence; P42--P43 complete
+the $\Phi_{\rm MDL}$ field theory with D1--D5 as explicit axioms.
+
+\begin{tcolorbox}[colback=green!3,colframe=green!50!black,
+  title={\textbf{How the substrates and CA models relate}},
+  fonttitle=\bfseries,left=6pt,right=6pt,top=5pt,bottom=5pt]
+\small
+\begin{center}
+\begin{tabular}{@{}p{0.22\textwidth}p{0.30\textwidth}p{0.38\textwidth}@{}}
+\toprule
+\textbf{Object} & \textbf{Role} & \textbf{Key papers} \\
+\midrule
+$\Phi_{\rm MDL}$ field &
+  \textbf{Physical substrate} (Level~2): the universe &
+  P42, P43, P38, P44 \\
+CMCA (3-layer) &
+  Level-1 \emph{algebraic certificate}: chiral null structure, SR clock &
+  P41 \\
+Three-Tape CMCA &
+  Level-1 certificate extended to 3+1D via shared clock (DPP) &
+  P45 \\
+$f_{\rm MDL}$ / Rule~110 &
+  Minimal $\mathbb{Z}_7$ polynomial shadow of $A$; orbit arithmetic &
+  P28, P40, P46 \\
+$(A,e,[D])$ triple &
+  Abstract specification; D1--D5 axioms for QM/transputation &
+  P34 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\noindent\textbf{Final substrate:} $\Phi_{\rm MDL}$ in $3{+}1$D.  \textbf{Not the
+substrate:} any finite CA, including $f_{\rm MDL}$, Rule~110, or the CMCA
+(no-CA-replica theorem, P43).  \textbf{Relation:} discrete objects \emph{certify}
+and \emph{compress} the arithmetic of $\Phi_{\rm MDL}$; lifting/descent theorems
+(P34, P35) connect the levels.
+\end{tcolorbox}
+
+Results flow upward from discrete to physical via the \textbf{Algebraic Lifting
+Theorem} (\lean{algebraic\_lifting\_theorem}, $\mathbf{A}_{\rm Lean}$) and downward
+from continuum to discrete via the \textbf{Algebraic Descent Theorem}
+(\lean{AlgebraicDescentTheorem.lean}, $\mathbf{A}_{\rm Lean}$): every algebraic and
+topological property of $\Phi_{\rm MDL}$ depending only on the $F_{21}$ internal
+symmetry --- colour confinement, three generations, asymptotic freedom, strong~CP
+--- holds for $f_{\rm MDL}$ at every lattice resolution $M \geq 1$.
+
+\paragraph{The Single-Source Principle.}
+The GTE polynomial $p(L,C,R) = C + R - CR - LCR$ over $\mathrm{GF}(7)$, which
+requires exactly 19~bits to specify, simultaneously plays \emph{five} physical
+roles with zero additional specification cost per role
+(P46~\cite{SpivackGTEPolynomialUFT}; all roles $\mathbf{A}_{\rm Lean}$):
+(1)~\emph{spatial cellular-automaton dynamics} --- Rule~110 Turing-universal
+Class-4 behaviour;
+(2)~\emph{$\mathbb{Z}_7$ gauge vertex conservation} --- Standard Model
+charged-current vertices;
+(3)~\emph{gravitational coupling} --- the PMDL Poisson source term
+$\nabla^2\Phi = G_{\rm eff}\,p(w_x,w_y,w_z)$;
+(4)~\emph{quantum entanglement generator} (negativity $\mathcal{N} = 0.38$, Bell nonlocality $S = 2.4459$, $87\%$ of Tsirelson bound);
+(5)~\emph{baryon number}: $B = (1/3)\sum \chi_q(w_j)$ topological charge, $B = 1/3$ per quark from $N_{\rm tapes} = 3$
+($\mathbf{A}_{\rm Lean}$: \lean{gte\_baryon\_number\_topological\_charge}).
+This constitutes the \textbf{Single-Source Principle}: all of spacetime, matter,
+gravity, and quantum mechanics emerge from a single 19-bit description.
+The MDL uniqueness of this polynomial is proved in Lean~4: it is the unique
+degree-3 multilinear object over $\mathrm{GF}(7)$ satisfying $\mathbb{Z}_7$
+symmetry, Rule~110 restriction, and 19-bit MDL minimality.
+
+\paragraph{MDL uniqueness of $\mathbb{Z}_7$.}
+The integer $N = 7$ is uniquely forced by three independent arguments:
+(a)~MDL-minimality: $b_0 = 7N_{\rm gen}/3 = 7$ is a positive integer only for
+$N=7$, by the Algebraic Necessity Theorem
+($\mathbf{A}_{\rm Lean}$: \lean{algebraic\_necessity\_master\_bundle});
+(b)~the Frobenius prime identity $|\mathbb{Z}_7| = |\mathbb{Z}_3|^2 - |\mathbb{Z}_3|
++ 1 = 7$ ($\mathbf{A}_{\rm Lean}$: \lean{FrobeniusPrimeIdentity.lean});
+(c)~the gravitational hierarchy formula
+$M_{\rm Pl}/m_\tau = |F_{21}|^{10}|\mathbb{Z}_7|^7/2$ at $0.040\%$ precision
+requires $|\mathbb{Z}_7| = 7$~\cite{SpivackCompleteness}.
+Any other value of $N$ fails at least one of these three constraints.
+
+The five conditions that certify the orbit structure as uniquely admissible are
+formalised in the Perfect Self-Containment (PSC) framework: renormalisability (RC),
+structural stability (NM*), anomaly cancellation (AC), topological viability (TV),
+and spectral asymmetry (SA).  Among $34{,}560$ candidate dynamical systems, exactly
+12 pass Layer~I hard PSC filters ($0.03\%$); every Layer~I survivor carries
+$N_{\rm gen}=3$ ($\CatAL$, zero sorry:
+\lean{psc\_enumeration\_forces\_ngen\_3}).  Layer~II Presentation Invariance selects
+the unique MDL-minimum survivor at ridge level $n{=}10$, the GTE Lepton Seed
+$(1,\,73,\,823)$, proved in
+Lean~4~\cite{SpivackPSCConcordance,SpivackCompUniversality,SpivackGTEUnification}.
+(The Layer~II claim that Presentation Invariance selects the minimum-$K$ survivor
+among the 12 PSC-admissible gauge theories remains to be Lean-certified.)
+The Unified Rigidity Theorem~\cite{SpivackUnifiedRigidity} (P12) provides the
+synthesis proof that these three independent selection mechanisms --- PSC Layer~I/II
+theory-space selection, UGP arithmetic seed uniqueness, and the dynamical basin
+structure --- all converge on the same canonical branch, with every assumption
+explicitly typed and audited.
+
+The \textbf{Law~$=$~Description~$=$~Execution identity} holds for the discrete
+certificate: $f_{\rm MDL}$ is simultaneously (a)~the GTE evolution law,
+(b)~a compressed description encoding the 14 nonzero SM neighbourhoods, and
+(c)~the executing CA whose binary sublayer is Rule~110.  Machine-certified:
+\lean{fmdl\_law\_description\_execution} in
+\lean{FMDLClassification.lean} ($\mathbf{A}_{\rm Lean}$, zero sorry)~\cite{SpivackReflexiveLaw}.
+
+\begin{tcolorbox}[colback=blue!3,colframe=blue!50!black,
+  title={\textbf{The role of cellular automata in the GTE framework}},
+  fonttitle=\bfseries,left=6pt,right=6pt,top=5pt,bottom=5pt]
+\small
+The GTE framework involves cellular automata in a specific and limited role
+that differs from their role in other CA-based physics proposals.
+
+\textbf{What $f_{\rm MDL}$ / Rule~110 / the CMCA are:}
+\begin{itemize}[noitemsep,topsep=2pt]
+  \item The \emph{algebraic certificate}: a compact discrete representation of
+    $\Phi_{\rm MDL}$'s internal symmetry structure and orbit arithmetic.
+  \item The source of all SM generation quantum numbers via its $\mathbb{Z}_7$ orbit.
+  \item A structure whose binary restriction (Rule~110) is forced by the SM
+    generation sequence --- proved in Lean~4 with zero sorry.
+  \item The \emph{mathematical proof system} for why $\Phi_{\rm MDL}$ is the correct
+    continuum theory, not an alternative to it.
+\end{itemize}
+\textbf{What they are not:}
+\begin{itemize}[noitemsep,topsep=2pt]
+  \item NOT the physical substrate of the universe ($\Phi_{\rm MDL}$ is).
+  \item NOT the source of quantum mechanics (which emerges from $\Phi_{\rm MDL}$
+    at the continuum Level~2).
+  \item NOT a replacement for $\Phi_{\rm MDL}$: P43 proves
+    (\lean{no\_finite\_ca\_exact\_lorentz\_replica}, $\mathbf{A}_{\rm Lean}$) that
+    no finite-resolution CA, quantum CA, or rewriting system can exactly replicate
+    $\Phi_{\rm MDL}$'s Lorentz invariance.  The Nyquist residual
+    $\varepsilon_0(M) = \pi^2/(3M^2) > 0$ for all finite $M$; only the continuum
+    limit $M \to \infty$ recovers exact Lorentz symmetry, uniquely identifying
+    $\Phi_{\rm MDL}$~\cite{SpivackCompleteness}.
+\end{itemize}
+\end{tcolorbox}
+
+\paragraph{The computational/algebraic reframe.}
+The GTE framework realises a scientific reframe that is distinct from all prior
+computational-universe proposals.  The physical substrate is the continuum field
+$\Phi_{\rm MDL}$; no finite CA is the substrate (no-CA-replica theorem,
+\lean{no\_finite\_ca\_exact\_lorentz\_replica}, $\mathbf{A}_{\rm Lean}$).  What is
+fundamental is the \emph{algebraic structure}: $\mathbb{Z}_7$, $F_{21} =
+\mathbb{Z}_7\rtimes\mathbb{Z}_3$, and the GTE orbit arithmetic.  Three consequences
+follow at the foundational level.  First, the Law\,$=$\,Description\,$=$\,Execution
+identity (\lean{fmdl\_law\_description\_execution}, $\mathbf{A}_{\rm Lean}$,
+zero sorry) certifies that $f_{\rm MDL}$ is simultaneously the evolution law, a
+compressed description, and an executing CA --- the law of physics and its
+description are the same object.  Second, Turing universality is a structural lower
+bound on $\Phi_{\rm MDL}$ (not exact, since no finite CA equals it): the
+$\mathrm{GF}(7)$ polynomial representation forces Turing completeness via NAND,
+so the algebraic structure certifying $\Phi_{\rm MDL}$ is itself computationally
+universal.  Third, the geodesic computation principle (\S\ref{subsec:overview-gravity})
+identifies physical trajectories with minimum-description-length paths: gravity,
+inertia, and quantum measurement are all manifestations of MDL minimality in
+the algebraic structure.  These three results together constitute a reframe in which
+computation is the \emph{deep structure}, not the medium, of physical reality.
+
+% ====================================================================
+\subsection{The Generative Triple Evolution (GTE) Framework}
+\label{subsec:overview-gte}
+
+The orbit arithmetic of $f_{\rm MDL}$ organises into canonical integer triples
+$(a,\,b,\,c;\,g)$ --- the \textbf{Generative Triples} --- one per Standard Model
+particle species.  Three structural constants emerge from the orbit:
+\[
+  N_{\rm gen} = 3, \qquad N_{\rm fam} = 5, \qquad c_H = 13.
+\]
+
+\emph{All three are derived, not assumed.}  $N_{\rm gen} = 3$ follows from the
+Garden-of-Eden orbit depth: the first-generation beable has no $f_{\rm MDL}$
+predecessor, forcing the orbit to close after exactly three generations
+(Lean: \lean{fmdl\_gen1\_is\_garden\_of\_eden}, $\mathbf{A}_{\rm Lean}$).
+$N_{\rm fam} = 2^{N_{\rm gen}} - N_{\rm gen} = 5$ follows from the $\mathbb{Z}_5$
+ring structure of the generation orbit (Lean:
+\lean{gte\_master\_formula\_complete}, $\mathbf{A}_{\rm Lean}$).
+$c_H = 2^{N_{\rm gen}+1} - N_{\rm gen} = 13$ is the Higgs boundary parameter,
+determined by palindrome decomposition of the 13 active $f_{\rm MDL}$
+neighbourhoods.
+
+\paragraph{Frobenius-Generation Coincidence Identity (FGCI).}
+The lepton ladder index $b_{L_1} = 73$ admits two \emph{independent} derivations
+that agree if and only if $N_c = 3$:
+(1)~the \textbf{Frobenius chain formula} $F(n) = n^4 - n^2 + 1$ evaluated at
+$n = N_c = 3$ gives $81 - 9 + 1 = 73$;
+(2)~the \textbf{GTE cascade formula} $G(n) = n^4 - (n^2+1)/2 - n$ at $n=3$
+also gives $73$.  Both formulas coincide \emph{uniquely} at $n = N_c = 3$:
+for $n \neq 3$ the two expressions differ.  This witnesses that the algebraic
+structure (Frobenius group $F_{21}$) and dynamical structure (GTE cascade)
+are mutually consistent precisely at the physically realised colour-charge value.
+The muon ladder index $b_{L_2} = 42 = 2 \times N_c \times |Z_7|$ factors through
+both generators of $F_{21}$.  The FGCI is machine-certified in Lean~4
+(\lean{FrobeniusChain.lean}, 17 theorems, zero sorry, $\mathbf{A}_{\rm Lean}$;
+P01~\cite{SpivackSM}).
+
+The GTE cascade produces all SM fermion quantum numbers.  The $\mathbb{Z}_7$
+winding number $W_B$ is the interaction charge; the species formula
+$W_B = 4k \bmod 7$ for occupation~$k$ identifies: $k{=}1$ (charged leptons),
+$k{=}4$ (up-type quarks), $k{=}5$ (down-type quarks), $k{=}7\equiv 0$ (neutrinos).
+Three quark colours arise from the gen$_1$/gen$_2$ occupation ratio within a fixed
+composite.  The $\mathbb{Z}_3$ color charge $Q_\chi$ is the Sylow-3 dlog of
+$\mathrm{GF}(7)^*$ --- the unique Sylow-3 invariant, derived with zero SM input.
+The joint topological charges $(W_B,\, Q_\chi)$ are derived from first principles
+(proved $\mathbf{A/D}$, Lean-certified~\cite{SpivackGTEUnification}).
+
+\paragraph{Temporal winding and neutrino mass origin.}
+The P45 three-tape CMCA extends the winding space to
+$\mathbb{Z}_7^4 = (w_x, w_y, w_z, w_\tau)$, where $w_\tau$ is the temporal
+winding component of the $\tau_c$ clock field.  The neutrino sector
+($k = 7 \equiv 0$, $W_B = 0$) corresponds to vacuum temporal winding $w_\tau = 0$.
+The bion instanton mechanism for generating neutrino masses is ruled out at the
+GTE level: the kink action parameter satisfies $\beta^2 = 49 > 8\pi$, placing
+$\Phi_{\rm MDL}$ outside the bion-mass-generation regime (CatAL, Lean-certified).
+Neutrino masses therefore arise from non-topological dynamics, consistent with the
+seesaw structure derived in P21~\cite{SpivackNeutrino}.
+The neutrino mass sum $\Sigma m_\nu = 59.4$~meV is derived from the P47 cosmological
+framework via the holographic mode count applied to the neutrino sector: within the
+Planck~2018 bound $< 120$~meV, predicting normal mass ordering~\cite{SpivackGTECosmology}.
+
+Full details of the generation orbit, the Braid Atlas of topological signatures~\cite{SpivackBraidAtlas},
+and the cascade derivation of the fermion spectrum are in the Standard Model
+paper~\cite{SpivackSM}, the UGP dynamics paper~\cite{Spivack2026_UGPDynamics}, and
+the computational universality paper~\cite{SpivackCompUniversality}.
+
+% ====================================================================
+\subsection{The Standard Model from Orbit Arithmetic}
+\label{subsec:overview-sm}
+
+The GTE cascade generates the quantitative SM parameter spectrum from the single
+seed $(1,\,73,\,823)$ with zero free parameters.  Headline results
+from~\cite{SpivackSM}:
+
+\begin{itemize}[leftmargin=1.5em,itemsep=0.25em]
+  \item Nine charged-fermion masses at 0.293\% RMS with zero active parameters at
+    prediction time; a 1000-permutation null confirms arithmetic structure.
+  \item Bare gauge couplings $g_1^2,\, g_2^2,\, g_3^2$ are Lean-certified exact
+    rationals; $\alpha_s(M_Z) = 0.11822$ sits at $+0.24\sigma$ of PDG~2024, committed
+    43 days before the first PDG comparison.
+  \item Neutrino mass-squared ratio $\Delta m^2_{21}/\Delta m^2_{31} = 0.0294$ at
+    $0.16\sigma$ from NuFIT~6.0, parameter-free.
+  \item Cosmological constant from the derived model bit-length at $0.31\sigma$ from
+    Planck 2018 ($H_0$ is the sole external input).
+\end{itemize}
+
+\paragraph{Electroweak mixing.}
+The Weinberg angle is derived from the orbit constants in a ten-step chain, fully
+machine-certified:
+\[
+  \sin^2\theta_W \;=\; \frac{N_{\rm gen}}{c_H} \;=\; \frac{3}{13} \;=\; 0.23077.
+\]
+The Wolfenstein-corrected value $384729/1664000 \approx 0.23121$ sits $-0.42\sigma$ from PDG~2022.
+The two-loop SM Higgs-threshold correction with GTE-derived inputs gives
+$\sin^2\theta_W = 0.23129154$, within $+0.038\sigma$ of PDG~2024
+(CatB; all electroweak inputs GTE-derived except the structural identity
+$1/\alpha_{\rm em}(0) = 2^{|Z_7|} + N_{\rm gen}^2 = 137$).
+The $Z$-boson mass $M_Z = 91.914$
+GeV ($+0.80\%$ PDG) and $W$-boson mass $M_W = 80.614$ GeV ($+0.30\%$ PDG) follow
+from the same derivation chain ($\mathbf{A}_{\rm Lean}$
+conditional)~\cite{SpivackWeinbergAngle}.
+
+\paragraph{Electroweak VEV from SRRG.}
+An independent first-principles derivation of the electroweak scale is
+provided by the Self-Referential Renormalization Group (P27)~\cite{SpivackSRRG}.
+The SRRG flow maximises a net viability functional $F[S] = R[S] - C_\Lambda[S]$
+over the space of self-referential physical theories.  Its unique IR fixed
+point, with linearised contraction rate $1/\varphi$ (the golden ratio), selects
+the electroweak vacuum: $v_{\rm PSC} = 246.16$~GeV ($-0.024\%$ from PDG
+$246.22$~GeV).  This is machine-certified:
+\lean{psc\_ew\_entropy\_maximization} in \lean{GoldstoneEntropyCorrection.lean}
+($\mathbf{A}_{\rm Lean}$, zero sorry, zero open axioms).
+The result is independent of the Higgs mechanism; it requires only the $\mathbb{Z}_7$
+structure and the PSC closure condition.
+The SRRG--MDL equivalence (P27 Open Problem~9) has been substantially closed:
+\lean{op9\_catal\_unconditional} proves $K_{\rm alg}(g^*) = 0$ with unique zero on
+$(0,\infty)$ ($\mathbf{A}_{\rm Lean}$, zero sorry, unconditional), and
+\lean{srrg\_op9\_k\_alg\_biconditional} proves the full biconditional
+\textsc{IsSrrgFixedPoint} $\Leftrightarrow$ $K_{\rm alg}$ minimiser (CatAD, zero sorry,
+no hypothesis).  The SRRG fixed point $g^* = 1/\varphi$ is simultaneously the MDL-optimal
+coupling and the PSC-adjudication attractor: the same PSC axioms that select $N_{\rm gen}=3$
+also drive the SRRG flow to $g^*$ (CatAD, srrg-lean).
+
+\paragraph{SU(2)$_L$ gauging.}
+The within-tape weak-isospin doublet $(\Phi_+,\Phi_-)$ has $SU(2)_L$-invariant
+potential $V(|\Psi|)$ since $|U\Psi|=|\Psi|$.  The MDL principle forces minimal
+local gauging with zero extra specification cost ($\CatAL$, zero named axioms):
+\lean{phimdl\_potential\_su2l\_invariant} certifies $L_2$ norm invariance under
+$SU(2)$ rotation; \lean{su2l\_covariant\_derivative\_minimal} certifies the
+covariant derivative as MDL-minimal; \lean{su2l\_wpm\_generator\_algebra}
+certifies that $W^\pm$ satisfy the $SU(2)$ Lie algebra.  The master bundle
+\lean{su2l\_l2\_from\_phimdl\_potential\_catad} packages the full gauging chain
+(P46~\cite{SpivackGTEPolynomialUFT}, \texttt{GaugeMDL.lean}).
+
+\paragraph{CKM mixing.}
+All four Wolfenstein parameters of the CKM quark mixing matrix are derived from the
+GTE orbit constants with zero free parameters.  The leading Wolfenstein parameter
+\[
+  \lambda \;=\; \frac{N_{\rm gen}^2}{2^{N_{\rm gen}} \cdot N_{\rm fam}} \;=\;
+  \frac{9}{40} \;=\; 0.225,
+\]
+agrees with the PDG value to $0.0\sigma$ (Lean-certified)~\cite{SpivackCKM}.
+The hierarchy parameters $A$, $\bar\rho$, $\bar\eta$ follow from the quark-sector
+orbit indices, with the measured CP-violating phase~$\delta_{\rm CKM}$ reproduced
+without input.
+
+\paragraph{Fine structure constant.}
+The electromagnetic coupling constant
+$\alpha_{\rm EM}^{-1} = 137$ is derived via two independent routes: from the GTE
+cascade chain (Lean: \lean{alpha\_inv\_master}, $\mathbf{A}_{\rm Lean}$) and from
+$F_{21}$ Berry phase holonomy on a single $\Phi_{\rm MDL}$ kink substrate (ROBUST,
+$\mathbf{A}_{\rm Lean}$, eight independent audit passes)~\cite{SpivackGTEUnification}.
+
+\paragraph{Lepton mass scale.}
+The $\mathbb{Z}_7$ potential coefficient $c_V = 1/49 = 1/N_{Z_7}^2$ determines
+the tau-lepton Yukawa coupling exactly:
+\[
+  y_\tau \;=\; \frac{c_V}{N_{\rm mod2}} \;=\; \frac{1}{2 \times 7^2} \;=\; \frac{1}{98},
+\]
+where $N_{\rm mod2} = 2$ is the $\mathbb{Z}_2$ parity factor.  All three
+charged-lepton masses follow from $v_H$ alone:
+\[
+  m_\tau \;=\; \frac{v_H}{98\sqrt{2}} \;=\; 1776.57~\text{MeV} \quad (0.016\%).
+\]
+Via the Koide relation ($\theta = 2/9$ from $N_c = 3$; Lean-certified:
+\lean{koide\_angle\_from\_N\_c\_pure}), $m_\mu = 105.6$~MeV ($0.022\%$) and
+$m_e = 0.511$~MeV ($0.023\%$) follow with zero additional SM inputs.
+The sole dimensional anchor is $G_F$ (fixing $v_H = (\sqrt{2}\,G_F)^{-1/2}$);
+no fermion mass anchor is required.
+
+The Koide relation admits the reformulation $\mathrm{CV}(\sqrt{m}) = 1$: the
+coefficient of variation of the square-root masses equals unity, characterising
+the equal-irrep-norm (maximally-dispersed positive spectrum) condition.  This form
+is Lean-certified (CatAL): $Q = (1 + \mathrm{CV}^2)/3 = 2/3$ iff $\mathrm{CV} = 1$.
+The kink--Higgs coupling derived from $c_V$ is
+$g_{hKK} = 4/7^4 = M_{\rm kink}/(v_H/\sqrt{2})$,
+with the identity $y_\tau = c_V/N_{\rm mod2}$ algebraically exact (CatA).
+The cyclotomic structure underlying the Koide relation is established in P18~\cite{Spivack2026_Koide}.
+
+% ====================================================================
+\subsection{QCD and the Strong Force from $F_{21}$}
+\label{subsec:overview-qcd}
+
+The substrate's internal discrete symmetry group is identified as
+$F_{21} = \mathbb{Z}_7 \rtimes \mathbb{Z}_3 = \Sigma(21) \subset \mathrm{SU}(3)$ ---
+the unique non-abelian group of order~21 --- forced by MDL minimality (Lean-certified,
+$\mathbf{A}_{\rm Lean}$)~\cite{SpivackCompUniversality,SpivackGTEUnification}.
+Its abelianisation $F_{21}^{\rm ab} = \mathbb{Z}_3$ is the color gauge symmetry; its
+non-abelian structure at the group level provides exact QCD Casimir invariants and
+structure constants without introducing non-abelian gauge bosons in the low-energy
+Lagrangian.
+
+From $F_{21}$ the following QCD results are derived:
+
+\begin{itemize}[leftmargin=1.5em,itemsep=0.25em]
+  \item \textbf{Asymptotic freedom:} $b_0 = (11N_c - 2N_f)/3 = 7 = |{F_{21}}|/3$,
+    with $N_c = 3$ and $N_f = 2N_{\rm gen} = 6$ derived from the GTE structure.
+    $b_0 = |\mathbb{Z}_7|$ is Lean-certified
+    (\lean{b0\_eq\_z7\_order}, \lean{f21\_substrate\_asymptotic\_freedom},
+    $\mathbf{A}_{\rm Lean}$); the Frobenius prime identity
+    $|\mathbb{Z}_7| = |\mathbb{Z}_3|^2 - |\mathbb{Z}_3| + 1$ is separately
+    certified~\cite{SpivackGTEQCDStructure}.
+  \item \textbf{One-loop $\alpha_s$:} $\alpha_s(M_Z) = 0.1319$ (one-loop);
+    $\alpha_s = 0.1201$ at two loops with $N_f{=}5$ threshold --- within 2\% of
+    PDG~\cite{SpivackGTEQCDStructure}.
+  \item \textbf{Colour confinement:} No PSC-admissible single-quark state exists
+    (Lean: \lean{no\_psc\_admissible\_single\_quark}, $\mathbf{A}_{\rm Lean}$);
+    every physical state is PSC-admissible, confined, massive, and anomaly-free
+    (\lean{unified\_physical\_exclusion}, \lean{confined\_massive\_color\_singlet},
+    $\mathbf{A}_{\rm Lean}$)~\cite{SpivackEmergentGravity}.
+  \item \textbf{Strong CP problem:} $\theta_{\rm QCD} = 0$ exactly, derived from
+    three independent $F_{21}$ group-theory arguments:
+    $\pi_3(F_{21})=0$, element-wise $\det = 1$, and $\sum{\rm Im}(\chi_3)=0$.
+    All Lean-certified with zero sorry; no axion mechanism is
+    required~\cite{SpivackGTEQCDStructure}.
+  \item \textbf{Hadron spectroscopy:} The meson pseudoscalar nonet (9 states),
+    baryon octet (8), baryon decuplet (10), and vector meson nonet (9) are all
+    reproduced from GTE kink composites.  Casimir invariants $C_F = 4/3$,
+    $C_A = 3$, $T_F = 1/2$, and all nine structure constants $f^{abc}$ are
+    reproduced at machine precision from $F_{21}$ generators.  The $\eta$--$\eta'$
+    mixing angle $\theta_P = -13.08^\circ \pm 3.74^\circ$ lies in the PDG range
+    $[-14.3^\circ, -10.7^\circ]$ with zero PDG inputs.  All six quark masses are
+    reproduced within 7\% of PDG current values~\cite{SpivackGTEQCDStructure}.
+  \item \textbf{All 8 colour gluons} emerge from $F_{21}$ Berry holonomy on a single
+    $\Phi_{\rm MDL}$ kink substrate (PROVISIONAL-STRONG)~\cite{SpivackGTEUnification}.
+  \item \textbf{SU(3) UV completion ($\mathbf{A/D}$):}
+    Below $\Lambda_{\rm GTE} \approx 2$~GeV, the $F_{21}$ abelian gauge effective
+    theory is the correct description.
+    Above $\Lambda_{\rm GTE}$, $F_{21} \hookrightarrow \mathrm{SU}(3)$ faithfully
+    ($\mathbf{A}_{\rm Lean}$: \lean{F21SU3Embedding.lean}); the Burnside density
+    theorem establishes $\overline{\mathrm{span}}_\mathbb{C}\,\rho(F_{21}) =
+    M_3(\mathbb{C})$, and $\Phi_{\rm MDL}$ scalar fluctuations fill the
+    $\mathrm{SU}(3)/F_{21}$ coset, completing the UV theory as full SU(3)
+    Yang--Mills.
+    The na\"ive Wilsonian-flow approach from $F_{21}$ to $\mathrm{SU}(3)$ is
+    falsified: the discrete $F_{21}$ lattice does not continuously flow to
+    $\mathrm{SU}(3)$ in the IR; the UV completion is via Burnside density, not
+    RG flow~\cite{SpivackGTEUnification}.
+  \item \textbf{Predicted second Cartan gauge field $A'_\mu$:}
+    The $F_{21} \subset \mathrm{SU}(3)$ embedding has rank~2 (two Cartan
+    generators $\lambda_3$, $\lambda_8$).  The current GTE Lagrangian provides
+    only the first Cartan field $A_\mu$ ($H_A = (-T^3 + \sqrt{3}\,T^8)/2$).
+    A second Cartan field $A'_\mu$ ($H_{A'} = (\sqrt{3}\,T^3 + T^8)/2$) is
+    predicted but currently absent from the Lagrangian.
+    Its coupling $e' = e$ is forced by Killing-form equality
+    $\mathrm{tr}(H_A^2) = \mathrm{tr}(H_{A'}^2) = 1/2$; no new free parameters
+    are introduced ($\mathbf{A}_{\rm Lean}$).
+    In QCD, $\lambda_3$ and $\lambda_8$ are both present; GTE is predicting the
+    correct colour-sector structure.
+\end{itemize}
+
+The mass gap is established at the lattice level (ROBUST, $\mathbf{A}_{\rm Lean}$
+lower bound) with continuum-limit scaling confirmed~\cite{SpivackEmergentGravity}.
+A non-perturbative string tension computation on the three-dimensional $G_{13}$
+deformation lattice confirms $b_0 = 7 = |\mathbb{Z}_7|$ as the dominant RG
+coefficient; the non-perturbative contribution dominates over the one-loop term,
+and the quantisation factor $f_{\rm quant}$ is PROVISIONAL CatA~\cite{SpivackGTEQCDStructure}.
+
+% ====================================================================
+\subsection{Computational Universality: A Cook-Independent Proof}
+\label{subsec:overview-cup}
+
+Rule~110 is universally regarded as the canonical example of a computationally
+universal elementary cellular automaton, established by Cook's proof
+(2004)~\cite{Cook2004}.  The UGP Physics programme derives universality by an independent
+algebraic route that does not rely on Cook's CTS encoding
+construction~\cite{SpivackCookTheorem,SpivackGF7Universality}.
+
+The key result is an exact polynomial representation of the Rule~110 update rule
+over the Galois field $\mathrm{GF}(7) = \mathbb{Z}/7\mathbb{Z}$:
+\[
+  p(L,\,C,\,R) \;=\; C + R - C{\cdot}R - L{\cdot}C{\cdot}R,
+\]
+where $L, C, R \in \{0,1\} \subset \mathrm{GF}(7)$.  When $C = 1$, this simplifies
+to $p(L,1,R) = {\rm NAND}(L,R)$.  Since NAND is functionally complete (Sheffer
+1913), Turing universality follows immediately and unconditionally from the
+polynomial representation alone --- Cook's theorem is a corollary, not a foundation.
+The polynomial and NAND identity are Lean-certified with zero sorry
+(Lean: \lean{rule110\_z7\_poly\_rep}, \lean{rule110\_center1\_is\_nand}).
+Turing universality follows via \lean{phimdl\_turing\_universal}
+($\mathbf{A}_{\rm Lean}$ conditional; zero sorry; one named axiom:
+\lean{z7\_boolean\_completeness\_implies\_turing\_universal})~\cite{SpivackGF7Universality}.
+
+A further consequence is the \textbf{Algebraic Descent Theorem} (Lean-certified,
+$\mathbf{A}_{\rm Lean}$): every algebraic and topological property of $\Phi_{\rm MDL}$
+that depends only on the $F_{21}$ internal symmetry holds for $f_{\rm MDL}$ at any
+lattice resolution $M \geq 1$.  Three generations, colour confinement, asymptotic
+freedom, and strong CP are all resolution-independent --- proved at the algebraic level
+and therefore simultaneously valid for the discrete algebraic certificate and the
+continuum physical field theory~\cite{SpivackGTEUnification}.
+
+% ====================================================================
+\subsection{Quantum Mechanics from the $\Phi_{\rm MDL}$ Field}
+\label{subsec:overview-qm}
+
+Quantum mechanics in the GTE framework is not postulated; it is derived from the
+structure of the $\Phi_{\rm MDL}$ field and the $[D]$-selection
+mechanism~\cite{SpivackQMFromR110,SpivackPhiMDLField}.
+
+\paragraph{Two levels of description.}
+At the Level-1 algebraic beable level (the CMCA discrete certificate), orbit states
+are always definite: no superposition exists at this level.  At the Level-2 continuum,
+the $\Phi_{\rm MDL}$ field admits superpositions
+$\sum_k c_k\lvert{\rm kink}_k\rangle$ over its $\mathbb{Z}_7$ winding sectors.
+Quantum mechanics emerges entirely at Level~2; the discrete certificate provides
+the algebraic labelling of the winding sectors.
+
+The selection mechanism rests on the GTE-Möbius architecture framework~\cite{SpivackGTEMobius}: the abstract triple $(A, e, [D])$ where $A$ is the Z$_7$ arithmetic carrier, $e$ is the GF(7)/Cook self-encoding map, and $[D]$ is the class of PSC-consistent coherence measures characterised by five constraints (D1--D5: non-negativity, PSC invariance, non-computability, selection completeness, Born consistency). The abstract carrier $A$ has its concrete physical realisation as the PSC-admissible kink sector of $\Phi_{\rm MDL}$; the five constraints are established in P34~\cite{SpivackGTEMobius} and serve as the axiomatic foundation of the quantum field-theoretic results in P42--P43. Two functions implement quantum mechanics on this substrate:
+
+\begin{enumerate}[leftmargin=2em,itemsep=0.15em]
+  \item The \textbf{Born rule} $\mathcal{B}$: maps amplitudes to
+    probabilities $P(k) = |c_k|^2$.  Derived unconditionally and Lean-certified
+    with zero custom axioms: \lean{born\_rule\_unconditional}
+    ($\mathbf{A}_{\rm Lean}$)~\cite{SpivackPhiMDLField}.  An independent derivation
+    via the Page--Wootters (PW) mechanism has been established at CatAD (P45): the
+    $\tau_c$ clock, as a diagonal-Hamiltonian (Salecker--Wigner--Peres semiclassical)
+    clock, satisfies all PW prerequisites, and the timeless universe state
+    $(1/\sqrt{T})\sum_\tau|\tau\rangle_{\rm clock}\otimes U(\tau)|\psi_0\rangle_{\rm sys}$
+    yields $P(k|\tau) = |\langle k|U(\tau)|\psi_0\rangle|^2$ at every $\tau$,
+    independently of whether $\tau_c$ is in a classical or quantum superposition.
+    The two derivations are mutually consistent and reinforce each other.
+  \item \textbf{Transputation} $P^\top$: selects the physical state
+    $\rho^* = \mathrm{argmin}_\rho\, D(\rho\,|\,w)$ from record class~$w$ via the
+    $[D]$-functional ($\mathbf{A/D}$; Lean: \lean{TransputationStateSelector.lean})~\cite{SpivackSDS_PR0}.
+\end{enumerate}
+
+\paragraph{Objective reduction.}
+$[D]$-selection is objective (no conscious observer required), determinate (unique
+minimum from D4), and non-computable (D3 places it outside Turing-computable
+selection).  This resolves the measurement problem without many-worlds, pilot waves,
+or retrocausation.  EPR correlations are semantic: they exist in the $[D]$-observable
+layer as constraints from the shared record structure established at interaction time;
+the beable layer is always local and deterministic.  GTE escapes Bell's theorem
+because the transputation mechanism~D3 is non-computable, placing it outside Bell's
+local-computable-hidden-variable assumptions.  Delayed-choice and quantum eraser
+experiments are resolved by the same two-level structure: the CA beable trajectory is
+always definite at Level~1; whether an interference pattern or which-path statistics
+is observed depends only on which records~$w$ are retained in the $[D]$-description,
+with no retroactive modification of any beable-level
+trajectory~\cite{SpivackPhiMDLField}.
+
+\paragraph{Thermal state.}
+Prior to any $[D]$-selection event, the physical state is the Hamiltonian thermal
+ensemble on PSC-admissible kink sectors $\{0,2,3,4,6\}$: vacuum-dominant at
+cosmological temperatures (Lean-certified: \lean{PhiMDLThermalState.lean},
+$\mathbf{A}_{\rm Lean}$ conditional).
+
+% ====================================================================
+\subsection{Special Relativity and the Three-Layer Chiral Minkowski CA}
+\label{subsec:overview-sr}
+
+Lorentz invariance is not postulated in the GTE framework.  It emerges at the
+observer level from a specific two-level structure~\cite{SpivackCMCA}.
+
+\paragraph{The CMCA.}
+The \textbf{Three-Layer Chiral Minkowski CA (CMCA)} is the MDL-minimal Level-1
+discrete construction realising all five required structural features: Turing
+universality, $\mathbb{Z}_7$ orbit, $V{-}A$ weak-current chirality, observer-level
+Lorentz invariance, and dynamics-level special relativity.  It consists of an outer
+chiral CA pair (Rule~110 + Rule~124) plus an inner $\tau_c$ Rule-110 clock per cell.
+The MDL bit-count $K_{\rm CA} = 19$ bits saturates the construction-class lower bound
+(Lean: \lean{CMCAMDLMinimality.lean}, $\mathbf{A}_{\rm Lean}$ conditional).
+
+\paragraph{Emergence of Lorentz symmetry.}
+At the CA beable level, the Rule~110 lattice carries a preferred rest frame; Lorentz
+symmetry is broken by $\varepsilon_0(M) = \pi^2/(3M^2)$ at the lattice scale.
+PSC Presentation Invariance (PI) forces the $[D]$-selection mechanism to be
+Lorentz-equivariant (Lean: \lean{PSCPILorentzMain.lean}, $\mathbf{A}_{\rm Lean}$):
+no $[D]$-selected observable can distinguish inertial frames.  Lorentz symmetry is a
+property of the selection mechanism, not of the underlying beables.  At Planck-scale
+lattice spacing $a = \ell_P$, the lattice correction $\varepsilon_0 \approx 10^{-62}$
+is observationally indistinguishable from zero.
+
+\paragraph{Continuum limit.}
+The continuum limit of the CMCA is identified with $\Phi_{\rm MDL}$
+($\mathbf{A}_{\rm Lean}$ conditional): \lean{CMCAContinuumLimit.lean}.  The
+$\Phi_{\rm MDL}$ field satisfies exact Lorentz invariance $\omega^2 = k^2 + m^2$,
+machine-certified in Lean~4 (\lean{poincare\_invariance\_of\_kg},
+$\mathbf{A}_{\rm Lean}$)~\cite{SpivackCMCA,SpivackPhiMDLField}.
+
+% ====================================================================
+\subsection{Gravity from the $\Phi_{\rm MDL}$ Field}
+\label{subsec:overview-gravity}
+
+Gravity emerges from the $\Phi_{\rm MDL}$ field structure in three interconnected
+results~\cite{SpivackPhiMDLGravity,SpivackCompleteness}:
+
+\paragraph{Two routes to emergent gravity.}
+Gravity emerges from the GTE framework via two complementary routes.
+The \textbf{P36 route} (CMCA/discrete level) derives geodesic structure from the
+deviation-based Ollivier--Ricci curvature of the Rule~110 causal graph:
+the discrete vacuum Einstein equation $G_{\mu\nu}=0$ is machine-certified
+(\lean{gte\_spacetime\_dimension}, $\mathbf{A}_{\rm Lean}$); the spectral
+dimension $d_s = 4$ is separately machine-certified
+(\lean{causal\_graph\_spectral\_dim\_thermodynamic\_limit}, $\mathbf{A}_{\rm Lean}$).
+An MDL--Lovelock structural correspondence ($\mathbf{A/D}$) establishes that
+Einsteinian gravity emerges as the unique diffeomorphism-invariant effective
+theory compatible with the GTE substrate~\cite{SpivackEmergentGravity}.
+This constitutes the \emph{structural/geometric certificate}: gravity is
+forced by the information structure.
+The 1D discrete gravity simulation (P36) yields a negative or null result for the inter-kink
+force in 1+1D, as expected: a 1+1D CMCA tape does not have three independent spatial directions
+and therefore cannot produce an inverse-square-law in the familiar sense; this is not a failure
+but a structural feature of the 1+1D algebraic certificate level.
+The \textbf{P45 three-tape route} (3+1D continuum level) closes this gap.
+With three independent CMCA tapes sharing a common clock $\tau_c^{\rm out}$ (DPP),
+the PMDL Poisson equation $\nabla^2\Phi = G_{\rm eff}\,p(w_x,w_y,w_z)$ yields
+$F\propto b^{-2}$ in the far-field limit, machine-certified and confirmed analytically
+($\mathbf{A/D}$, CatAD; see \S\ref{subsec:overview-substrate}).
+The two routes are not competing: P36 shows \emph{why} gravity is forced (structural/geometric);
+P38/P45 show \emph{how} it manifests quantitatively in the continuum EFT.
+
+\paragraph{Stress-energy tensor and Einstein equations.}
+The stress-energy tensor
+$T_{\mu\nu} = \partial_\mu\Phi\,\partial_\nu\Phi - \eta_{\mu\nu}\mathcal{L}$ is
+derived analytically from the $\Phi_{\rm MDL}$ Lagrangian and Lean-certified
+($\mathbf{A/D}$): symmetry, vacuum-vanishing, and BPS pressure-free condition
+$T_{11} = 0$ are all proved in \lean{StressEnergyTensor.lean}.  The kink mass
+$\int T_{00} = 290.10$~MeV is verified numerically to $0.01\%$; energy-momentum
+conservation holds to $6 \times 10^{-12}$.
+
+The Einstein equations $G_{\mu\nu} = 8\pi G\,T_{\mu\nu}[\Phi_{\rm MDL}]$ are derived
+via MDL-Lovelock (the unique dimensionally correct generally covariant action in
+$d{=}4$), minimal coupling, and variational calculus ($\mathbf{A/D}$).  The
+classical cosmological constant vanishes exactly: the $\mathbb{Z}_7$-symmetric
+potential $V(\phi) = m^2(1-\cos 7\phi)/49$ has $\langle V \rangle = 0$ in the PSC
+vacuum by exact cancellation, Lean-certified.  The $\mathbb{Z}_7$ global shift
+symmetry $\phi\to\phi+2\pi/7$ is furthermore \emph{anomaly-free}: the scalar
+path-integral measure $\prod_x d\phi(x)$ is trivially translation-invariant (no
+Jacobian anomaly, unlike fermionic determinants), so all 7 vacuum sectors
+remain quantum-degenerate to all loop orders.  Four zero-sorry Lean theorems
+certify this: \lean{z7\_shift\_measure\_preserving}, \lean{z7\_jacobian\_eq\_one},
+\lean{lebesgue\_shift\_invariant}, and \lean{z7\_vacuum\_sectors\_equiprobable}
+($\mathbf{A}_{\rm Lean}$; P47/P43).  Quantum vacuum degeneracy is therefore
+a structural theorem, not an assumption.
+
+\paragraph{The gravitational $D^2$ theorem.}
+The factor $D^2 = (N_{\rm gen}+1)^2 = 4^2 = 16$ unifies the gravitational and
+cosmological sector of GTE.  With $D = N_{\rm gen}+1 = 4$ derived from the DPP
+($\mathbf{A}_{\rm Lean}$, \lean{cmca\_tensor\_product\_gives\_31d\_minkowski}), every
+area-type gravitational normalization carries exactly one factor of $D^2$:
+\begin{itemize}[noitemsep,topsep=2pt]
+  \item CC epoch count: $D^2 N_{\rm fam}^{N_{\rm gen}}/N_{\rm gen} = 2000/3$ (CatAD)
+  \item CC magnitude: $\rho_\Lambda = N_{\rm spatial}^2/(D^2|\mathbb{Z}_7|)\,M_{\rm Pl}^2 H_0^2$ (CatAD)
+  \item Gorard coefficient: $C_{\rm Gorard} = N_{\rm spatial}/(2D^2) = 3/32$
+    ($\mathbf{A}_{\rm Lean}$, \lean{c\_gorard\_eq\_n\_spatial\_over\_two\_dsq})
+  \item Einstein--Hilbert normalization: $1/(D^2\pi G_N)$ (standard GR; $D=4$ from DPP)
+\end{itemize}
+$D^2$ counts ordered pairs of orbit discriminants in $D$-dimensional spacetime.
+It does \emph{not} appear in the holographic sector ($\Omega_\Lambda^{\rm holo}$,
+$F_{21}$, $\sin^2\theta_W$).  In particular, the Gorard bridge coefficient
+$C_{\rm Gorard} = N_{\rm spatial}/(2D^2) = 3/32$ is an \emph{exact} algebraic
+identity proved in Lean~4 with zero sorry --- not an approximation.
+
+\paragraph{Newton's constant from the Planck/tau hierarchy.}
+Newton's constant is derived from the ratio:
+\[
+  \frac{M_{\rm Pl}}{m_\tau} \;=\; \frac{F_{21}^{10} \times |\mathbb{Z}_7|^7}{2},
+\]
+where $n = 10$ is the GTE orbit decomposition count on $\mathbb{Z}_7^3$
+(all-distinct orbits equal the PSC count $(N_{\rm gen}-1)\times N_{\rm cells} = 10$),
+$b_0 = |\mathbb{Z}_7| = 7$ is derived from $F_{21}$ group theory, and the factor
+$1/2 = |\mathbb{Z}_2|^{-1}$ reflects the chirality of the Rule-110/Rule-124 pair.
+The resulting prediction $M_{\rm Pl}^{\rm GTE} = 1.2204 \times 10^{22}$~MeV agrees
+with the PDG value to 0.040\% ($\mathbf{A/D}$, Lean-certified conditional:
+\lean{mpl\_mtau\_formula\_catal\_conditional}, \lean{b0\_eq\_z7\_order},
+\lean{FrobeniusPrimeIdentity.lean})~\cite{SpivackCompleteness}.
+
+\paragraph{Geodesic theorem and spectral dimension.}
+Free particles follow paths of minimum computational action through the
+$\tau_c$-metric curved by matter.  The geodesic theorem is Lean-certified to zero
+axioms in three forms: timelike worldlines
+(\lean{psc\_orbit\_is\_curvature\_geodesic}), flat spatial paths
+(\lean{geodesic\_theorem\_spatial\_general}), and the Ehrenfest reduction
+(\lean{dweight\_centroid\_tracks\_geodesic}), all $\mathbf{A}_{\rm Lean}$, zero
+sorry~\cite{SpivackCompleteness}.  The spectral dimension $d_s = 4$ in the
+thermodynamic limit is separately derived~\cite{SpivackEmergentGravity}.
+
+\paragraph{Quantum gravity and holography.}
+The curved-background Lagrangian $\mathcal{L}[\Phi_{\rm MDL};\,g_{\mu\nu}]$ is uniquely
+determined: MDL minimality forces $\xi = 0$
+(\lean{minimal\_coupling\_is\_mdl\_minimal}, $\mathbf{A}_{\rm Lean}$), yielding the
+minimal-coupling form
+$\mathcal{L} = \tfrac{1}{2}g^{\mu\nu}\partial_\mu\Phi\,\partial_\nu\Phi - V(\Phi)$
+with no additional curvature terms ($\mathbf{A/D}$).  The full quantum gravity sector
+derives the Graviton Fock space
+$\mathcal{H}_{\rm phys} = \mathcal{H}_{\Phi_{\rm MDL}} \otimes \mathcal{H}_{\rm grav}$
+and Bekenstein--Hawking entropy $S_{\rm BH} = A M_{\rm Pl}^2/4$ by two independent
+routes (Wald entropy, with $\xi = 0$; and domain wall).  The holographic entropy
+formula
+\[
+  S(A) = \frac{\mathrm{Area}[\Gamma_{\rm min}]}{4G}
+\]
+is established by both routes; the Reed--Solomon quantum error correction route is
+additionally Lean-certified
+(\lean{gte\_orbit\_vectors\_are\_rs\_codewords}, $\mathbf{A}_{\rm Lean}$, zero sorry).
+The Hawking temperature $T_H = M_{\rm Pl}^2/(8\pi M_{\rm BH})$ is confirmed unchanged
+by the field mass $m_\varphi = m_\tau$ (the potential vanishes at the horizon via the
+Schwarzschild redshift factor); the critical mass
+$M_{\rm crit} = M_{\rm Pl}^2/(8\pi m_\tau) = 3.34 \times 10^{39}$~MeV marks the
+onset of exponential emission suppression ($\mathbf{A/D}$).  BH evaporation is unitary:
+GKSL dynamics admit a Stinespring dilation confirming information
+preservation~\cite{SpivackBHUnitarity}.
+The Planck density state count $7^8 > e^{4\pi}$ is Lean-certified
+(\lean{planck\_density\_bound\_via\_lifting}, $\mathbf{A}_{\rm Lean}$, zero sorry),
+confirming that the CMCA lattice governs $E \geq M_{\rm Pl}$; singularities are
+resolved at $\rho_{\rm max} = M_{\rm Pl}^4$, and the partition function $Z_{\rm GTE}$
+is UV-finite by $\mathbb{Z}_7$-compactness ($\mathbf{A/D}$).
+The MDL-minimal cosmological initial state is flat ($k = 0$), spatially uniform, and
+kinetically dominated at $\dot\Phi_0 = M_{\rm Pl}$: flatness, uniformity, and the
+absence of domain walls all follow from MDL complexity minimisation, dissolving the
+need for inflation without introducing new fields ($\mathbf{A/D}$).  A GTE-specific
+Friedmann correction produces a non-singular bounce at $\rho = \rho_{\rm Pl}$
+(confirmed numerically, $\mathbf{A}$).  The quantum cosmological constant
+($\sim 10^{45}$ vacuum-energy hierarchy) remains open; the classical $\Lambda = 0$ is
+Lean-certified~\cite{SpivackCompleteness}.
+
+P44~\cite{SpivackQGR} completes the perturbative quantum gravity sector.
+UV finiteness on arbitrary smooth curved backgrounds is established via the
+DeWitt--Schwinger heat-kernel expansion: all curved-background UV contributions reduce
+to finite Planck-scale renormalizations ($C_i \sim 41.76$), leaving no residual UV
+problem.  The \textbf{GTE Holographic Encoding Theorem} proves that five descriptions
+--- Lagrangian, Reed--Solomon $[5,3,3]_7$ algebraic code, holographic/RT, MDL-information-theoretic,
+and quantum error correction --- are mutually equivalent, with all twenty directed
+implications closed.  The MDL cosmological initial state requires only $\log_2 3
+\approx 1.585$ bits of initial data.  At leading order the primordial spectral index
+satisfies $n_s = 1$ exactly; a seven-step conditional derivation chain yields
+\[
+  n_s \;=\; 1 - \frac{\ln 2}{2\pi^2} \;=\; 0.96488,
+\]
+matching Planck~2018 at $0.004\sigma$ when the EFE-bridge step is established
+(5 of 7 steps closed).  The tensor-to-scalar ratio satisfies
+\[
+  r \;=\; 0
+\]
+exactly, constituting the primary falsifiable prediction for the LiteBIRD satellite
+($\sigma_r \approx 0.001$).
+
+% ====================================================================
+\subsection{The Complete $\Phi_{\rm MDL}$ Framework}
+\label{subsec:overview-complete}
+
+Papers~P42 and~P43~\cite{SpivackPhiMDLField,SpivackCompleteness} constitute the
+capstone of the 1+1D programme.  P42 establishes four principal results for
+$\Phi_{\rm MDL}$ as a field theory: exact Poincar\'{e} invariance
+($\mathbf{A}_{\rm Lean}$), the Born rule from field amplitudes
+(\hspace{0pt}$\mathbf{A}_{\rm Lean}$), the uniqueness of $\Phi_{\rm MDL}$ among all
+$\mathbb{Z}_N \times \mathbb{Z}_M$ sine-Gordon fields satisfying PSC-axiom-selected
+constraints (MDL-proved), and the no-CA-replica theorem
+(\lean{no\_finite\_ca\_exact\_lorentz\_replica} + \lean{phimdl\_is\_unique\_exact\_lorentz\_model},
+$\mathbf{A}_{\rm Lean}$).
+
+P43 closes the framework with three capstone results:
+
+\begin{enumerate}[leftmargin=2em,itemsep=0.2em]
+  \item \textbf{Algebraic Necessity Theorem} ($\mathbf{A}_{\rm Lean}$,
+    \lean{AlgebraicNecessityTheorem.lean}): MDL minimality forces the unique
+    $\mathbb{Z}_7 \times \mathbb{Z}_3$ structure over all competitors.
+  \item \textbf{Complete Lagrangian derivation:} the $\Phi_{\rm MDL}$ Lagrangian
+    is fully derived from $F_{21}$ symmetry with zero free parameters.  The
+    coupling form $V_{\rm coupling} = \varepsilon|\phi|^2(D_\mu\chi)^2$ and coupling
+    constant $\varepsilon = N_7/N_3^2 = 7/9 \approx 0.778$ (in the BPS range
+    $[0.444, 0.800]$) are both Lean-certified ($\mathbf{A}_{\rm Lean}$).  The field
+    mass $m_\varphi = m_\tau = 1776.86$~MeV follows from the $F_{21}$ leptonic-sector
+    self-consistency condition.  The kink--Higgs coupling
+    $g_{hKK} = 4/7^4 = M_{\rm kink}/(v_H/\sqrt{2})$ and the tau-lepton Yukawa
+    $y_\tau = c_V/N_{\rm mod2} = 1/98$ are both algebraically exact consequences
+    of $c_V = 1/49$ (CatA).
+  \item \textbf{Newton's constant at high precision} ($\mathbf{A/D}$, 0.040\%,
+    upgraded in P43).
+\end{enumerate}
+
+The complete two-level algebraic structure is established by the interplay of two
+theorems: the \textbf{Algebraic Lifting Theorem} (Lean: \lean{algebraic\_lifting\_theorem},
+$\mathbf{A}_{\rm Lean}$) carries algebraic results from discrete to physical scale;
+the \textbf{Algebraic Descent Theorem} (Lean: \lean{AlgebraicDescentTheorem.lean},
+$\mathbf{A}_{\rm Lean}$) shows that all $F_{21}$-dependent properties hold at every
+lattice resolution.  Results proved for the continuous $\Phi_{\rm MDL}$ are
+simultaneously results about the discrete $f_{\rm MDL}$ CA --- and vice versa ---
+with no additional proof required.
+
+Papers P44--P47~\cite{SpivackQGR,SpivackThreeTapeCMCA,SpivackGTEPolynomialUFT,SpivackGTECosmology}
+constitute the 3+1D extension, quantum-gravity completion, and cosmological predictions.
+P44 (quantum gravity completeness) establishes UV finiteness on curved backgrounds
+and derives the primary cosmological falsifiable predictions.
+P45 (three-tape CMCA) proves the Dimensional Protocol Principle that identifies the
+minimal causal structure producing 3+1D spacetime from 1+1D building blocks, derives
+the SM particle spectrum from three-tape winding arithmetic, and establishes all
+structural features of 3+1D physics (SR, gravity, QM, confinement, Bell nonlocality).
+P46 (polynomial UFT) establishes MDL uniqueness of $p(L,C,R)$ and derives its
+five physical roles, unifying the algebraic and physical perspectives.
+P47 (cosmological predictions) derives the dark-energy fraction via two independent
+routes ($\Omega_\Lambda = 0.6899$ from PSC epoch count; $\Omega_\Lambda = 3\pi/14 =
+0.6732$ from three-tape holographic mode count):
+(1)~\textbf{PSC epoch-count route}: $\Omega_\Lambda = (\ln 2/N_{\rm gen}\,\pi)\log_2(2000/3) = 0.6899$
+from the PSC reflexive-closure orbit count, which admits a six-step first-principles
+derivation (CatAD): $|\mathcal{O}_{\rm GTE}| = D^2 N_{\rm fam}^{N_{\rm gen}}/N_{\rm gen}
+= (N_{\rm gen}+1)^2\cdot N_{\rm fam}^{N_{\rm gen}}/N_{\rm gen} = 4^2\cdot 5^3/3 = 2000/3$,
+with $D=4$ from DPP ($\mathbf{A}_{\rm Lean}$), $N_{\rm fam}=5$ from P01 ($\mathbf{A}_{\rm Lean}$),
+and $D^2=16$ as the gravitational orbit discriminant;
+(2)~\textbf{Three-tape holographic route}: $\Omega_\Lambda = 3\pi/14 = 0.6732$
+from the three-tape mode count $3L$ vs.\ volume $L^3$ (holographic mode
+density $3L/L^3 \to 0$ as $L \to \infty$; the vacuum mode fraction gives
+$\Omega_\Lambda = \tau \cdot \pi/2 = (3/7)(\pi/2) = 3\pi/14$).
+Both routes bracket the observed Planck~2018 value $0.6889 \pm 0.0056$ from above
+and below, with zero free parameters ($\mathbf{A/D}$, CatAD).
+
+\textbf{PSC-Adjudication Theorem} (CatAD, P47).  Given the PSC axioms (Two-Layer PSC Theorem,
+$\mathbf{A}_{\rm Lean}$), MFRR [T], \lean{op9\_catal\_unconditional} ($\mathbf{A}_{\rm Lean}$),
+DPP ($\mathbf{A}_{\rm Lean}$), and gauge spectrum ($\mathbf{A}_{\rm Lean}$), the
+cosmological-constant fraction satisfies
+$\Omega_\Lambda \in [3\pi/14,\; 0.6899]$ with no free parameters.
+The Planck~2018 value $0.6889\pm0.0056$ lies within this bracket ($+0.18\sigma$
+from the PSC route).  The EW scale $v_{\rm PSC}$ does not enter $\Omega_\Lambda$
+numerically; it enters only the energy density $\rho_\Lambda$ as a kink mass
+reference.  The SRRG role is \emph{logical}: $g^* = 1/\varphi$ certifies the
+MDL-optimal and PSC-adjudication attractor --- the same fixed point that
+selects the EW scale also certifies the CC bracket.  This is strictly
+stronger than anthropic fine-tuning: the constraint applies to any PSC-consistent
+self-referential physical system, not only observer-containing universes.
+
+$N_{\rm gen}=3$ is the \emph{unique} integer for which both structural
+$\Omega_\Lambda$ routes fall within $5\sigma$ of the Planck~2018 observed value
+(all other integers: at least one route deviates by $>35\sigma$; CatAD).
+Since PSC selects $N_{\rm gen}=3$ independently through the Two-Layer PSC Theorem,
+this constitutes a non-trivial structural consistency of the framework.
+
+The classical cosmological constant vanishes exactly ($\langle V \rangle = 0$ in
+the PSC vacuum, Lean-certified), quantum vacuum degeneracy is protected by
+$\mathbb{Z}_7$ anomaly-freedom ($\mathbf{A}_{\rm Lean}$; see \S\ref{subsec:overview-gravity}),
+and one-loop corrections are suppressed by the holographic mode count ($\sim 10^{-42}$).
+The paper also derives the CMB spectral index $n_s =
+1 - \ln 2/(2\pi^2) = 0.96488$ certified by fourteen zero-sorry Lean theorems,
+the CKM CP phase $\delta_{CP} = 68.51^\circ$ ($0.017\%$ from PDG) from an $S_3$
+subgroup chain, and the neutrino mass sum $\Sigma m_\nu = 59.4$~meV, all from
+zero free parameters with Lean~4 machine-verified steps.
+Together, P44--P47 close the programme's open questions on 3+1D emergence, quantum
+gravity perturbativity, the Single-Source Principle, and first-principles cosmological
+predictions.
+
+Paper~P48~\cite{SpivackGTECompleteFramework} is the synthesis capstone: a 280+ page
+monograph presenting the complete PSC-to-cosmology derivation chain in eleven chapters,
+integrating every result from P01--P47 with each step labeled by certification level.
+It traces substrate selection ($\mathbb{Z}_7 \times \mathbb{Z}_3$ MDL-minimal),
+the $\Phi_{\rm MDL}$ field and particle spectrum, all four SM interactions,
+three-tape spacetime and quantum gravity, Born-rule quantum mechanics, and
+zero-parameter cosmology, with explicit comparison to eight alternative frameworks
+and a complete falsification table.
+
+Paper~P49~\cite{SpivackGTEPolynomialWolfram} presents the first systematic study of
+$p(L,C,R) = C+R-CR-LCR$ over $\mathbb{Z}_7$ as a standalone dynamical system,
+provides the Wolfram framing of GTE's MDL selection result (the MDL uniqueness
+theorem T96-02 is the selection principle the Wolfram Physics Project has lacked),
+and proves five new algebraic theorems: Invariant Subset Uniqueness ($\CatAL$),
+QNR Binary Floor ($\CatAL$), Polynomial Uniqueness ($\CatA$), $f_{\rm MDL}$
+non-polynomial ($\CatA$, Schwartz--Zippel), and 40\% DPP cross-tape fraction ($\CatAD$).
+It also presents the first $k=7$ polynomial CA spacetime diagrams.
+
+% ====================================================================
+\subsection{Physical Predictions and Cross-Checks}
+\label{subsec:overview-predictions}
+
+Table~\ref{tab:overview-predictions} collects key quantitative predictions
+against PDG measurements.  Additional physical cross-checks include: neutrino mass
+structure and oscillation parameters~\cite{SpivackNeutrino};
+the mirror-branch Braid Atlas~\cite{SpivackMirrorBraidAtlas} (P29) derives a parameter-free
+dark sector from the $\mathbb{Z}_7$ orbit mirror branch: three dark-lepton generations and
+$\mathrm{SU}(3)_{\rm dark}$, with the lightest dark state at $211.9$~MeV, constituting
+a full set of falsifiable dark-sector predictions;
+nuclear binding
+energetics~\cite{SpivackSM}; and P33~\cite{SpivackDeeperConsequences} derives additional arithmetic consequences
+of the framework: the EW boson mass staircase, the photon-as-vacuum identification,
+prime-lock structure, and the arithmetic closure of SM parameters beyond those already
+derived in P01.
+
+\begin{table}[htbp]
+\centering
+\caption{Selected GTE/UGP predictions vs.\ PDG measurements.
+  \textbf{Derived}: analytically derived with zero free parameters.
+  $\mathbf{A}_{\rm Lean}$: machine-certified in Lean~4 with zero sorry.}
+\label{tab:overview-predictions}
+\smallskip
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lllll}
+\toprule
+Quantity & GTE/UGP value & PDG value & Accuracy & Status \\
+\midrule
+$\sin^2\theta_W$ (tree) & $3/13 = 0.23077$ & $0.23129(4)$ (PDG 2024) & $-13.0\sigma$ & $\mathbf{A}_{\rm Lean}$ \\
+$\sin^2\theta_W$ (threshold) & $384729/1664000$ & $0.23122(3)$ (PDG 2022) & $-0.42\sigma$ & $\mathbf{A}_{\rm Lean}$ \\
+$\sin^2\theta_W$ (2-loop) & $0.23129154$ & $0.23129(4)$ (PDG 2024) & $+0.038\sigma$ & $\mathbf{B}$ \\
+$M_Z$ & $91.914$~GeV & $91.188(2)$~GeV & $+0.80\%$ & $\mathbf{A/D}$ \\
+$M_W$ & $80.614$~GeV & $80.369(13)$~GeV & $+0.30\%$ & $\mathbf{A/D}$ \\
+$\lambda_{\rm CKM}$ & $9/40 = 0.225$ & $0.22500(67)$ & $0.0\sigma$ & $\mathbf{A}_{\rm Lean}$ \\
+$\alpha_s(M_Z)$ & $0.11822$ & $0.1180(9)$ & $+0.24\sigma$ & $\mathbf{A}_{\rm Lean}$ \\
+$\alpha_{\rm EM}^{-1}$ & $137$ & $137.036\ldots$ & derived & $\mathbf{A}_{\rm Lean}$ \\
+$b_0$ (QCD $\beta_0$) & $7 = |\mathbb{Z}_7|$ & $7$ (exact) & exact & $\mathbf{A}_{\rm Lean}$ \\
+$\theta_{\rm QCD}$ & $0$ (exact) & $< 10^{-10}$ & exact & $\mathbf{A}_{\rm Lean}$ \\
+$M_{\rm Pl}/m_\tau$ & $F_{21}^{10} \cdot 7^7 / 2$ & PDG ratio & $0.040\%$ & $\mathbf{A/D}$ \\
+$\theta_P$ ($\eta$--$\eta'$ mixing) & $-13.08^\circ \pm 3.74^\circ$ & $[-14.3^\circ,\,-10.7^\circ]$ & in range & $\mathbf{A/D}$ \\
+$N_{\rm gen}$ & $3$ (derived) & $3$ & exact & $\mathbf{A}_{\rm Lean}$ \\
+$\Lambda_{\rm classical}$ & $0$ (exact) & $\approx 10^{-52}$~m$^{-2}$ (quantum) & classical exact & $\mathbf{A/D}$ \\
+$n_s$ (CMB tilt) & $1 - \ln(2)/(2\pi^2) = 0.96488$ & $0.9649 \pm 0.0042$ (Planck~2018) & $0.004\sigma$ & $\mathbf{A/D}$ (cond.) \\
+$r$ (tensor-to-scalar) & $0$ (exact) & unmeasured ($\sigma_r \approx 0.001$ at LiteBIRD) & primary falsifiable & $\mathbf{A}$ \\
+$y_\tau$ (tau Yukawa) & $1/98 = 1/(2{\times}7^2)$ & SM value & exact structural & CatA \\
+$m_\tau$ (from $v_H$, no mass input) & $1776.57$~MeV & $1776.86$~MeV & $0.016\%$ & CatA \\
+$m_\mu$ (Koide from $y_\tau$) & $105.6$~MeV & $105.658$~MeV & $0.022\%$ & CatA \\
+$m_e$ (Koide from $y_\tau$) & $0.511$~MeV & $0.51100$~MeV & $0.023\%$ & CatA \\
+$g_{hKK}$ (kink--Higgs coupling) & $4/7^4 = M_{\rm kink}/(v_H/\sqrt{2})$ & --- & structural & CatA \\
+$\Omega_\Lambda$ (PSC route, P47) & $(\ln 2/3\pi)\log_2(2000/3) = 0.6899$ & $0.6889 \pm 0.0056$ (Planck~2018) & $+0.18\sigma$ & CatAD \\
+$\Omega_\Lambda$ (holographic, P47) & $3\pi/14 = 0.6732$ & $0.6889$ (Planck~2018) & bracket & CatAD \\
+$\Omega_\Lambda$ PSC bracket & $[3\pi/14,\; 0.6899]$; $N_{\rm gen}{=}3$ unique & $0.6889$ (Planck~2018) & within bracket & CatAD \\
+$C_{\rm Gorard}$ & $N_{\rm spatial}/(2D^2) = 3/32$ exact & --- & exact & $\mathbf{A}_{\rm Lean}$ (\lean{c\_gorard\_eq\_n\_spatial\_over\_two\_dsq}) \\
+$\delta_{CP}$ (CKM $S_3$ chain, P47) & $\pi/2 - 3/8 = 68.51^\circ$ & $68.517^\circ$ (PDG) & $0.017\%$ & CatAD \\
+$\Sigma m_\nu$ (P47) & $59.4$~meV & $< 120$~meV (Planck) & within bound & CatAD \\
+\midrule
+\multicolumn{5}{l}{\textit{New machine-certified results (2026)}} \\
+\midrule
+PMNS $\sin^2\theta_{12}$ (P21) & $4/13 = 0.3077$ & $0.308\pm0.011$ (NuFIT~6.0 IC24 NH) & $+0.01\sigma$ & $\mathbf{A}_{\rm Lean}$ \\
+PMNS $\sin^2\theta_{23}$ (P21) & $19/42 = 0.4524$ & $0.470\pm0.013$ (NuFIT~6.0 IC24 NH; $43.3^\circ$) & $-1.35\sigma$; within $3\sigma$ & $\mathbf{A}_{\rm Lean}$ \\
+PMNS $\sin\theta_{13}$ (P21) & $11/73 = 0.1507$ & $0.1489\pm0.0007$ (NuFIT~6.0 IC24 NH) & $+1.0\sigma$ & $\mathbf{A}_{\rm Lean}$ \\
+Jarlskog $J_{\rm GTE}$ (P21) & $-1.468{\times}10^{-2}$ (from orbit ratios) & $1.78{\times}10^{-2}$ (NuFIT~6.0 IC24 NH) & see P21 & $\mathbf{A}_{\rm Lean}$ \\
+Higgs mass $m_H$ (P27, P35) & $125.2499$~GeV (SRRG-corrected $\lambda$) & $125.20\pm0.11$~GeV & $-0.0003\sigma$ & $\mathbf{A}_{\rm Lean}$ \\
+$\eta_B$ (P47, P42; FKTT) & $6.109\times10^{-10}$ & $(6.10\pm0.06)\times10^{-10}$ & $+0.15\sigma$ & $\mathbf{A}_{\rm Lean}$ \\
+$H_0$ (P47) & $67.95$~km/s/Mpc ($T_{\rm CMB}$ sole input; epoch-dependent) & $67.66\pm0.42$~km/s/Mpc & $+0.7\sigma$ & CatB \\
+Quantum kink mass $M^Q$ (P38, P42) & $321.32 \pm 15.6$~MeV (MS-bar dim-reg) & --- & see P42 & CatA \\
+FGCI (P01) & $b_{L_1}=73$ doubly determined; unique at $N_c=3$ & --- & exact & $\mathbf{A}_{\rm Lean}$ \\
+$\Omega_{\rm DM} h^2$ (P29) & $0.11994$ (via $D_{\rm top} = e^{-1/N_c}$, machine-certified \CatAL) & $0.1200\pm0.0012$ & $-0.044\%$ & CatAD \\
+\bottomrule
+\end{tabular}
+}% end resizebox
+\end{table}
+
+% ====================================================================
+\subsection{Experimental Programme}
+\label{subsec:overview-experimental}
+
+The framework makes six sharp falsifiable predictions testable by currently
+running or near-term precision experiments, collected in
+Table~\ref{tab:overview-experimental}.  Proton stability provides the sharpest
+topological test: the Lean~4 theorem \lean{proton\_decay\_dim4\_forbidden}
+($\mathbf{A}_{\rm Lean}$, zero sorry) proves that all
+\emph{dimension-4} baryon-number-violating vertices are forbidden by
+$\mathbb{Z}_7$ winding conservation --- a direct test of the interaction
+skeleton theorem.  Any confirmed dimension-4 proton decay would falsify the
+$\mathbb{Z}_7$ winding conservation law; the programme's other derivations
+(mass spectrum, cosmological predictions, three-generation proof) would be
+unaffected.  Notably, standard GUT dimension-6 proton decay
+(e.g.\ $p \to e^+\pi^0$, the primary mode searched at Hyper-Kamiokande and DUNE)
+is \emph{not} forbidden by the framework and, if observed, would be
+completely consistent with the programme's predictions.
+
+\begin{table}[htbp]
+\centering
+\caption{Six falsifiable predictions of the GTE/UGP programme with active or
+  near-term experimental tests.  The ``Falsifying Condition'' column specifies
+  the observation that, if confirmed at the stated significance, would require
+  structural revision of the framework.}
+\label{tab:overview-experimental}
+\smallskip
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}p{3.0cm}p{5.2cm}p{3.4cm}p{1.8cm}p{4.6cm}@{}}
+\toprule
+Observable & GTE Prediction & Experiment(s) & Timeline & Falsifying Condition \\
+\midrule
+Proton stability (dim-4) &
+  No \emph{dimension-4} baryon-number-violating decay; $\mathbb{Z}_7$ winding
+  conservation forbids all dim-4 SU(5) vertices
+  (\lean{proton\_decay\_dim4\_forbidden}, $\mathbf{A}_{\rm Lean}$; P22, P33).
+  \emph{Note:} standard GUT dim-6 modes ($p\!\to\!e^+\pi^0$,
+  $p\!\to\!\bar\nu K^+$) are \textbf{not} forbidden and would be consistent
+  with this framework if observed. &
+  Hyper-Kamiokande, DUNE &
+  2027$^+$ &
+  Any confirmed \emph{dimension-4} baryon-violating event (not dim-6 GUT
+  modes such as $p\!\to\!e^+\pi^0$, which are not forbidden) \\[3pt]
+GTE-P7 dark particle &
+  Neutral pseudoscalar at $211.9$~MeV, $Q = 0$;
+  mirror-branch $\mathbb{Z}_7$ prediction, machine-certified in Lean~4 (P02, P29) &
+  Belle~II (mono-photon / missing energy) &
+  Running &
+  Non-observation at $50\,\mathrm{ab}^{-1}$ \\[3pt]
+PMNS Dirac CP phase &
+  $\delta_{CP}^{\rm PMNS} = 205.71^\circ = \tfrac{4}{7}\times360^\circ$;
+  from $\mathbb{Z}_7$ winding arithmetic (P45) &
+  DUNE, Hyper-Kamiokande &
+  2027$^+$ &
+  Measurement outside $205^\circ \pm 15^\circ$ \\[3pt]
+Tensor-to-scalar ratio &
+  $r = 0$ exactly; no primordial gravitational waves in the
+  GTE inflation-free cosmology (P44, P45; $\mathbf{A}_{\rm Lean}$) &
+  LiteBIRD &
+  ${\sim}2028$ &
+  $r > 0.01$ at $> 3\sigma$ \\[3pt]
+Neutrino mass sum &
+  $\Sigma m_\nu = 59.4$~meV; normal mass ordering;
+  individual spectrum $\{0.68,\, 8.6,\, 50.1\}$~meV (P21, P47; analytically derived) &
+  EUCLID, CMB-S4 &
+  2026$^+$ &
+  $\Sigma m_\nu < 40$~meV or $> 80$~meV \\[3pt]
+Dark-energy EOS &
+  $w = -1$ exactly; cosmological-constant behavior forced by
+  PSC boundary condition, Weinberg no-go evaded (P47; analytically derived;
+  note: DESI~2024 data favour $w \approx -0.95$) &
+  DESI, EUCLID &
+  Ongoing &
+  $w \neq -1$ at $> 3\sigma$ \\
+\bottomrule
+\end{tabular}
+}% end resizebox
+\end{table}
+
+% ====================================================================
+\subsection{Open Questions}
+\label{subsec:overview-open}
+
+The programme is mature but not complete.  The following structural gaps remain open
+as of this writing.  A number of questions previously listed as open have been closed
+by P44--P47 and subsequent analytical work: 3+1D emergence has been derived (DPP, $\CatAL$);
+the quantum gravity sector is perturbatively complete (P44); the Single-Source Principle
+is established ($\CatAL$); $r = 0$ ($\mathbf{A}$) and $\delta_{CP} = 68.51^\circ$ (CatAD, P47) are derived as
+falsifiable predictions; the Newtonian gravity force law $F\propto r^{-2}$ has been
+established at CatAD (three equivalent derivations); the Born rule is
+independently confirmed at CatAD via the Page--Wootters $\tau_c$ mechanism;
+the $\Omega_\Lambda$ bracket $[3\pi/14,\;0.6899]$ is CatAD with no free parameters (PSC-Adjudication Theorem, P47);
+the SRRG--MDL equivalence OP9 is CatAL at the fixed point and CatAD for the full biconditional;
+the $\mathbb{Z}_7$ anomaly-freedom is $\mathbf{A}_{\rm Lean}$;
+the \textbf{unconditional MDL uniqueness of $\mathbb{Z}_7\times\mathbb{Z}_3$}
+is $\mathbf{A}_{\rm Lean}$ (\lean{mdl\_ca\_rule\_coding\_closed},
+\lean{z5\_fmdl\_no\_psc\_kink\_orbits}, \lean{mdl\_total\_z7z3\_strictly\_beats\_z5z3},
+all zero sorry; the GTE polynomial over $\mathrm{GF}(5)$ has zero PSC kink orbits,
+giving total MDL gap $3+0 < 5+6$ with no SM input at any step);
+and cosmological predictions for $\Omega_\Lambda$, $n_s$, and the CKM CP phase have
+been derived from first principles in P47.
+
+\begin{itemize}[leftmargin=1.5em,itemsep=0.25em]
+  \item \textbf{Explicit glider-to-fermion map.}
+    The existence of a canonical map from specific Rule~110 glider patterns to
+    specific SM fermions is confirmed via the Algebraic Lifting Theorem
+    ($\mathbf{A}_{\rm Lean}$).  The mesoscopic orbital form is machine-certified:
+    the $f_{\rm MDL}$ forward chain $\mathrm{gen}_1 \to \mathrm{gen}_2 \to
+    \mathrm{gen}_3 \to \mathrm{vacuum}$ assigns a unique orbital position to each
+    SM fermion generation (\lean{zgm\_mes\_orbital\_discriminant},
+    \lean{ZGMMesInvariant.lean}, $\mathbf{A}_{\rm Lean}$).  The hard form ---
+    explicit one-to-one identification of each spatial Rule~110 glider species
+    with a specific fermion --- remains the deepest open particle-ontology question.
+
+  \item \textbf{Gluon first-principles discrimination (colored $W_B{=}0$ sector).}
+    The colorless $W_B{=}0$ sector is fully discriminated: photon, neutrino, $Z$,
+    and Higgs are pairwise distinguished by a three-level first-principles labeling
+    (\lean{z7\_zero\_sector\_unified\_discriminant},
+    \lean{Z7ZeroSectorDiscriminant.lean}, $\mathbf{A}_{\rm Lean}$, zero sorry).
+    Gluons also carry $W_B = 0$ but are colored ($Q_\chi \neq 0$) and are excluded
+    from the colorless hierarchy; a complete CA-dynamics account of all eight gluon
+    species from the $F_{21}$ orbit structure remains open.
+
+  \item \textbf{Newton's constant in SI units.}
+    The ratio $G_N = m_\tau^2/M_{\rm Pl}^2$ is derived to 0.040\% ($\mathbf{A/D}$).
+    A purely first-principles derivation of $G_N$ in SI units from the $\tau_c$
+    dimensional mechanism --- without using $m_\tau$ as an input --- remains open.
+
+  \item \textbf{Quantum cosmological constant.}
+    Significant progress has been made.
+    The classical $\Lambda = 0$ is Lean-certified ($\mathbf{A/D}$).
+    Quantum vacuum degeneracy across all 7 $\mathbb{Z}_7$ sectors is an
+    $\mathbf{A}_{\rm Lean}$ theorem (\lean{z7\_vacuum\_sectors\_equiprobable}).
+    The PSC-adjudication bracket $\Omega_\Lambda \in [3\pi/14,\;0.6899]$ is
+    established at CatAD with no free parameters (P47), and one-loop corrections
+    are suppressed by $\sim 10^{-42}$ via holographic non-renormalization (CatAD).
+    What remains open is a complete non-renormalization proof showing loop corrections
+    to $\Lambda$ are \emph{exactly} zero (not merely suppressed) to all loop orders ---
+    i.e.\ a GTE analog of the cosmological non-renormalization theorem (CatD).
+
+\end{itemize}
+
+% ====================================================================
+\subsection{Summary and Significance}
+\label{subsec:overview-summary}
+
+The UGP Physics programme has established, through a combination of Lean~4 machine-checked
+proofs and precision numerical verification, that the $\mathbb{Z}_7$-symmetric
+Klein--Gordon field $\Phi_{\rm MDL}$ --- uniquely selected as the physical
+continuum substrate by MDL minimality and PSC self-consistency from first
+principles, formalised as the Möbius triple $(A,e,[D])$ in P34~\cite{SpivackGTEMobius},
+and algebraically certified by its discrete counterpart $f_{\rm MDL}$ and the CMCA
+(P41/P45) --- generates the quantitative structure of the Standard Model particle spectrum,
+all three gauge coupling constants, the electroweak mixing angle, the CKM matrix,
+the full QCD sector including colour confinement and asymptotic freedom, Turing
+universality, quantum mechanics with its Born rule, exact Lorentz invariance, the
+Einstein field equations with Newton's constant, the holographic entropy formula
+$S(A) = \mathrm{Area}[\Gamma_{\rm min}]/(4G)$, Hawking temperature unmodified by
+$m_\varphi = m_\tau$, the MDL-selected flat cosmological initial state that
+dissolves the need for inflation, and the first-principles cosmological predictions
+of P47: the dark-energy fraction ($\Omega_\Lambda = 0.6899$ and
+$3\pi/14 = 0.6732$, bracketing Planck~2018 within the PSC-adjudication band $[3\pi/14,\;0.6899]$ at CatAD), the CMB spectral index ($n_s = 0.96488$, $0.004\sigma$),
+the CKM CP phase ($\delta_{CP} = 68.51^\circ$, $0.017\%$ from PDG), and the neutrino
+mass sum ($\Sigma m_\nu = 59.4$~meV).
+Recent machine-certified results additionally establish, all with zero sorry:
+the three PMNS mixing angles ($\sin^2\theta_{12} = 4/13$, $\sin^2\theta_{23} = 19/42$,
+$\sin\theta_{13} = 11/73$; $\chi^2 = 0.564$, zero free parameters) and the
+Jarlskog invariant $J_{\rm GTE} = -(8184\sqrt{437}/5057221)\sin(\pi/7)$;
+the corrected Higgs mass $m_H = 125.2499$~GeV ($-0.0003\sigma$ PDG~2022) via the
+SRRG identity $2c_H+1=27=N_{\rm gen}^3$ (\CatAL);
+the baryon asymmetry $\eta_B = 6.109\times10^{-10}$ ($+0.15\sigma$) via the FKTT mechanism
+(\CatAL, zero sorry, zero axioms; \lean{kink\_top\_coupling\_eq\_eps\_FN}); and
+the Frobenius-Generation Coincidence Identity confirming that
+$b_{L_1} = 73$ is doubly determined, witnessing consistency of the algebraic and
+dynamical structures at $N_c = 3$ (\CatAL; \lean{FrobeniusChain.lean}).
+No free parameters are introduced at any stage; the only true external input is one
+energy scale ($G_F$, which fixes $v_H = (\sqrt{2}\,G_F)^{-1/2}$).  The tau-lepton
+Yukawa $y_\tau = 1/98$ and the structural Koide relation ($\theta = 2/9$ from $N_c = 3$)
+then derive all three charged-lepton masses from $v_H$ without any fermion mass anchor.
+
+The ugp-lean library currently comprises 304 Lean~4 modules.  Recent work contributed 19 additional zero-sorry theorems across new modules including
+\lean{FrobeniusChain.lean} (17 theorems; FGCI), \lean{MassRelations/NeutrinoSector.lean}
+(PMNS angles, Jarlskog, FN rank-1 theorem), \lean{MassRelations/HiggsQuartic.lean}
+($m_H = 125.2499$~GeV, $2c_H+1=N_{\rm gen}^3$),
+\lean{UCLMassOrdering.lean} (fermion mass ordering),
+and \lean{Gravity/\allowbreak{}YukawaOverlap\allowbreak{}Exponent.lean} ($\eta_B$ overlap exponent).
+Every Category-A physics theorem in the library has axiom closure exactly
+$\{\texttt{propext},\, \texttt{Classical.choice},\, \texttt{Quot.sound}\}$ ---
+the standard Mathlib signature.  No UGP-specific axioms appear in any
+Category-A physics theorem.
+
+The programme's distinguishing feature is not merely quantitative agreement but
+logical necessity: the constants are not fitted but \emph{forced}.  The number three
+is forced for the generation count; the fraction $3/13$ is forced for the Weinberg
+angle; the ratio $7$ is forced for the QCD $\beta$-function coefficient; the
+exponential hierarchy between $M_{\rm Pl}$ and $m_\tau$ is forced by $F_{21}$
+orbit combinatorics; $r = 0$ and $\delta_{CP} = 68.51^\circ$ follow from the three-tape clock architecture and CKM orbit arithmetic (P47);
+and the dark-energy fraction, CMB tilt, CKM CP phase, and neutrino masses all follow
+from the PSC holographic structure of P47.
+If a future precision measurement displaces any of these
+predictions, the framework's foundational principle --- PSC (Perfect Self-Containment), with MDL
+as its operational expression, and $F_{21}$ symmetry as the unique admissible
+internal structure --- provides unambiguous targets for revision.
+
+The 49 papers of the UGP Physics programme (P01--P49), the ugp-lean Lean~4 library, and the
+computational infrastructure are all archived on Zenodo and catalogued at
+\url{https://www.novaspivack.com/research}~\cite{SpivackResearchProgrammes}.
+
+\medskip
+\noindent\textbf{One field.  One foundational principle --- self-containment --- from
+which all of physics follows.}
+

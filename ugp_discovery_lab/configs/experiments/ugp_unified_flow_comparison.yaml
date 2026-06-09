@@ -1,0 +1,54 @@
+experiment:
+  name: ugp_unified_flow_comparison
+  description: "Unified comparison of single-law vs multi-law approaches for UGP mixing matrix derivation"
+
+# UGP Kernel Constants (Same for Both Approaches)
+residual_kraft_length: 9.382
+
+# Approaches to Test
+approaches:
+  - "single_law"    # UUF with statistics-dependent brackets
+  - "multi_law"     # Path-A with separate laws per sector
+
+# Comparison Mode
+comparison_mode: "side_by_side"  # Options: side_by_side, sequential, report_only
+
+# Output Options
+generate_report: true
+save_detailed_results: true
+include_theoretical_analysis: true
+
+# PDG Experimental Targets
+pdg_targets:
+  ckm:
+    Vus: 0.2245
+    Vcb: 0.041
+    Vub: 0.00365
+  pmns:
+    theta12: 33.44
+    theta13: 8.57
+    theta23: 49.0
+
+# Single-Law Configuration
+single_law:
+  neutrino_mode: "uuf"  # Use UUF approach for neutrinos
+  theoretical_upgrades:
+    bch_preconditioning: true
+    mu_tau_anchor: true
+    majorana_half_phase: true
+
+# Multi-Law Configuration  
+multi_law:
+  neutrino_model: "majorana"
+  tau0_scale: 1.5
+  epsilon_scale: 0.8
+  epsilon_prime_scale: 4.0
+  normalization_method: "frobenius"
+  
+# Report Configuration
+report:
+  format: "comprehensive"  # Options: summary, detailed, comprehensive
+  include_performance_tables: true
+  include_theoretical_comparison: true
+  include_implementation_guide: true
+  include_recommendations: true

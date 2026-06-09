@@ -1,0 +1,405 @@
+% Physical substrate extensions: F_21, lifting theorems, QCD predictions
+% Physical substrate: F_21 QCD structure, lifting theorems, hadron spectroscopy
+
+\section{Physical Substrate: \texorpdfstring{$F_{21}$}{F21}, Lifting, and QCD Structure}
+\label{sec:physical_substrate}
+
+Here $F_{21} = \mathbb{Z}_7 \rtimes \mathbb{Z}_3$ is the Frobenius group of order~21 (established in P35~\cite{SpivackGTEUnification}), and $\Phi_{\rm MDL}$ is the $\mathbb{Z}_7$-symmetric Klein--Gordon gauge field that is the continuum limit of $f_{\rm MDL}$ (P34~\cite{SpivackGTEMobius}, P35~\cite{SpivackGTEUnification}).
+The discrete $f_{\rm MDL}$ Rule~110 substrate and its continuous $\Phi_{\rm MDL}$ field-theory limit share a common internal symmetry. The identification sharpens from a product $\mathbb{Z}_3 \times \mathbb{Z}_7$ to the finite non-abelian group
+\begin{equation}
+F_{21} = \mathbb{Z}_7 \rtimes \mathbb{Z}_3 \subset \mathrm{SU}(3),
+\label{eq:f21_def}
+\end{equation}
+the Frobenius group of order~21 (denoted $\Sigma(21)$ in the finite-subgroup literature). The substrate field $\varphi$ remains a real scalar; what changes is the algebraic identity of the discrete internal symmetry. The abelianization $F_{21}^{\mathrm{ab}} = \mathbb{Z}_3$ is exactly the existing colour group $\{1,2,4\} \subset \mathbb{Z}_7^*$, so all prior anchor results on colour charge are preserved.
+
+\subsection{\texorpdfstring{$F_{21}$}{F21} substrate identification}
+\label{sec:f21_substrate}
+
+Machine certification establishes that $F_{21}$ is MDL-forced rather than postulated.
+The adjoint of $\mathrm{SU}(3)$ decomposes under $F_{21}$ as
+\begin{equation}
+\mathbf{8} = \mathbf{1}' \oplus \mathbf{1}'' \oplus \mathbf{3} \oplus \bar{\mathbf{3}},
+\label{eq:f21_branching}
+\end{equation}
+verified at machine precision from $F_{21}$ three-dimensional irrep averaging on the Gell-Mann basis. This branching maps to the existing six-gluon-mediated vertex catalog plus two Cartan fields.
+Including the LEP three-gluon constraint saves at least 38~bits of description length over a $\mathbb{Z}_7 \times \mathbb{Z}_3$ product with an external $\mathrm{SU}(3)$ postulate.
+Lean: \lean{frobenius\_f21\_order}, \lean{frobenius\_su3\_branching\_8}, \lean{FrobeniusCatALAnchorInvariance}
+(\lean{SylowIndexCouplingHierarchy.lean}, zero \texttt{sorry}).
+
+The colour sector is identified with the Sylow-3 subgroup $\{1,2,4\} \subset \mathbb{Z}_7^*$
+(\lean{color\_subgroup\_is\_sylow3}, \lean{z7\_color\_subgroup\_closed}).
+This identification holds at the effective-field-theory level for momenta below
+$\Lambda_{\mathrm{GTE}} \approx 2\,\mathrm{GeV}$ (the GTE kink--antikink creation threshold in physical units).
+The proposal that the GTE gauge field $A_\mu$ corresponds to the Cartan generator $\lambda_3$ of $\mathrm{SU}(3)$ Yang--Mills, and that $F_{21}$ flows to $\mathrm{SU}(3)$ Yang--Mills above $\Lambda_{\mathrm{GTE}}$, constitutes a UV-completion \emph{conjecture}; verification remains open work.
+
+\subsection{The two levels are one algebraic structure}
+\label{sec:two_levels}
+
+The UGP Physics programme operates at two resolutions: the discrete $f_{\rm MDL}$ Rule~110 automaton at finite lattice resolution~$M$, and the continuous $\Phi_{\rm MDL}$ $\mathbb{Z}_7$-Klein--Gordon gauge field in the continuum limit $M \to \infty$.
+Three Lean-certified theorems connect the levels.
+
+\paragraph{Algebraic Lifting (beable $\to$ physical).}
+A PSC-admissible beable $B : \mathrm{Fin}\,5 \to \mathrm{Fin}\,7$ with positive $[D]$-weight determines a physical observable at the Compton scale carrying the same $\mathbb{Z}_7$ winding, $\mathbb{Z}_3$ colour, and generation index as~$B$.
+Charge quantisation, colour structure, the three-generation hierarchy, and S-matrix quantum numbers proved at the beable level therefore hold at the physically observable scale.
+Without this theorem, the certified algebraic structure at Planck-cell scale would lack a formal connection to electrons and quarks; with it, every beable-level result is licensed as a physical prediction.
+
+\begin{theorem}[Algebraic Lifting, $\CatAL$]
+\label{thm:algebraic_lifting}
+Let $B : \mathrm{Fin}\,5 \to \mathrm{Fin}\,7$ be PSC-admissible with $\mathrm{DWeight}\,B > 0$.
+Then $B$ determines a physical observable at the Compton scale with the same $\mathbb{Z}_7$ winding, $\mathbb{Z}_3$ colour, and generation index as~$B$.
+\begin{proof}
+Machine-certified in \lean{LiftingTheorem.lean}: \lean{algebraic\_lifting\_theorem}, zero \texttt{sorry}.
+\end{proof}
+\end{theorem}
+
+\noindent\textbf{Physical meaning.}
+The Algebraic Lifting Theorem asserts existence, not construction.
+Any finite collection of SM particle types consistent with the PSC winding constraint must appear as a CA configuration in $f_{\rm MDL}$, even when the corresponding cellular configuration is unreachable by any finite computational process from simple initial conditions.
+The distinction is physically significant: using $\hbar c \approx 197\,\mathrm{MeV{\cdot}fm}$ and the GTE lattice calibration ($\mathrm{sim\_to\_fm} = 0.100\,\mathrm{fm/sim}$), the proton Compton wavelength $\lambda_C^p = \hbar c/(m_p c^2) \approx 197\,\mathrm{MeV{\cdot}fm}/938\,\mathrm{MeV} \approx 0.21\,\mathrm{fm}$ corresponds to roughly $2$ simulation cells at $M=7$, scaling to order $10^{13}$--$10^{15}$ cells per proton Compton wavelength at lattice resolutions fine enough for individual-cell dynamics to be physically meaningful---placing direct CA construction of a single hadron far beyond any realizable computation.
+The existence proof circumvents this barrier entirely: it proceeds from the winding algebra alone, without constructing any explicit CA configuration.
+The SM gauge sector is algebraically latent within the CA substrate; it is not imposed from outside.
+
+\paragraph{3D spatial lifting (composites).}
+In the one-dimensional ring model, an exhaustive search over 140{,}000 candidate quark--antiquark rings returns zero PSC-admissible meson configurations: adjacent opposite-colour cells cross an orbit-family boundary forbidden by the PSC table.
+In the three-dimensional $f_{\rm MDL}$ causal graph, a quark at node~$A$ and antiquark at node~$B$ connected by a vacuum path need never be adjacent; PSC-admissibility decomposes over individual nodes and vacuum cells (\lean{vacuum\_psc\_admissible}).
+
+\begin{theorem}[3D spatial composite lifting, $\CatAL$]
+\label{thm:spatial_lifting}
+Let $B_A$, $B_B$ be PSC-admissible beables at distinct positions with
+$\mathrm{color}(B_A) + \mathrm{color}(B_B) \equiv 0 \pmod{3}$ and an \lean{IsVacuumPath} between them.
+Then the composite is PSC-admissible, colour-neutral, and a physical bound state.
+\begin{proof}
+\lean{spatially\_extended\_composite\_lifting}, \lean{meson\_bound\_state\_exists},
+\lean{baryon\_bound\_state\_exists} in \lean{SpatiallyExtendedLifting.lean}, zero \texttt{sorry}.
+Path existence \lean{causal\_path\_exists} is proved as a theorem for forward-causal pairs
+($t_a \leq t_b$), with zero custom axioms (\lean{SpatiallyExtendedLifting.lean}).
+Meson and baryon existence are therefore unconditional for forward-causal quark--antiquark
+configurations.
+\end{proof}
+\end{theorem}
+
+The vacuum path between separated colour charges is the causal-graph structure corresponding to a gluon flux tube in QCD language.
+
+\paragraph{Algebraic descent (continuous $\to$ discrete).}
+Any algebraic or topological property of $\Phi_{\rm MDL}$ depending only on $F_{21} = \mathbb{Z}_7 \rtimes \mathbb{Z}_3$ holds for $f_{\rm MDL}$ at every resolution $M \geq 1$.
+Asymptotic freedom ($b_0 = 7$), strong-CP resolution ($\theta_{\rm QCD} = 0$), Casimir invariants ($C_F = 4/3$, $C_A = 3$), colour confinement, and three-generation structure are \emph{algebraic} and therefore $M$-independent.
+Geometric properties---Lorentz invariance, SR accuracy---require $M \to \infty$ and differ at finite~$M$ by the lattice correction $\varepsilon_0(M) = \pi^2/(3M^2)$ (at $M = 7$: $\varepsilon_0 \approx 6.71\%$).
+
+\begin{theorem}[Algebraic Descent, $\CatAL$]
+\label{thm:algebraic_descent}
+Let $P$ be an algebraic or topological property of $\Phi_{\rm MDL}$ depending only on $F_{21}$.
+Then $P$ holds for $f_{\rm MDL} = \Phi_{\rm MDL}|_{M,\,\mathrm{binary}}$ at every $M \geq 1$.
+\begin{proof}
+\lean{algebraic\_descent\_theorem} in \lean{AlgebraicDescentTheorem.lean}, zero \texttt{sorry}.
+\end{proof}
+\end{theorem}
+
+\noindent\textbf{Physical meaning.}
+The Algebraic Descent Theorem is the converse of the Lifting Theorem.
+Where lifting maps discrete CA configurations upward to physical observables at the Compton scale, descent maps continuum properties downward to every discrete resolution.
+Any conservation law, charge quantisation condition, or generation-structure result proved at the CA level in Lean---asymptotic freedom ($b_0 = 7$, $b_1 = 26$), colour confinement, $\theta_{\rm QCD} = 0$, exactly three generations---is not a discrete-model approximation but an exact statement about the continuum theory $\Phi_{\rm MDL}$, valid at every resolution $M \geq 1$.
+The Lean certifications in Sections~\ref{sec:color_confinement}--\ref{sec:asymptotic_freedom} are therefore exact continuum constraints, not lattice artefacts.
+
+\begin{remark}[Discrete--continuum algebraic correspondence, $\CatAL$]
+\label{rem:discrete_continuum_correspondence}
+Theorems~\ref{thm:algebraic_lifting} and~\ref{thm:algebraic_descent} together establish a two-directional algebraic correspondence between the discrete $f_{\rm MDL}$ CA and the continuous $\Phi_{\rm MDL}$ field theory in the $F_{21}$-winding sector.
+\begin{itemize}
+\item \emph{Upward (discrete $\to$ physical):} every PSC-admissible beable configuration lifts to a physical observable at the Compton scale with the same $\mathbb{Z}_7$ winding, colour, and generation index. The SM particle spectrum is algebraically contained in the CA substrate, independently of constructibility.
+\item \emph{Downward (continuous $\to$ discrete):} every algebraic property of the continuum theory depending only on $F_{21}$ descends to every discrete resolution $M \geq 1$. CA-level conservation laws and charge assignments are exact continuum constraints.
+\end{itemize}
+The two directions together establish that the SM winding sector and the Rule~110/$f_{\rm MDL}$ CA substrate are algebraically isomorphic in this sector: they are not competing descriptions but two resolutions of one algebraic structure.
+The SM is algebraically realised within Rule~110 in the sense that lifting places every PSC-admissible particle configuration there; Rule~110 is algebraically constrained by any continuum realisation of the same SM winding algebra in the sense that descent forces the CA conservation laws upon it.
+The structure is summarised in Figure~\ref{fig:discrete_continuum_correspondence}.
+Machine-certified: \lean{algebraic\_lifting\_theorem} and \lean{algebraic\_descent\_theorem}
+(\lean{LiftingTheorem.lean}, \lean{AlgebraicDescentTheorem.lean}, zero \texttt{sorry}).
+\end{remark}
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}[
+  every node/.style={font=\small},
+  box/.style={draw, rounded corners=4pt, minimum height=3.0cm, text width=2.6cm,
+              align=center, inner sep=6pt},
+  leftbox/.style={box, fill=blue!8, draw=blue!50!black, text width=3.1cm},
+  centerbox/.style={box, fill=gray!10, draw=gray!55},
+  rightbox/.style={box, fill=orange!8, draw=orange!55!black},
+  arr/.style={-{Stealth[length=6pt,width=5pt]}, thick, shorten >=4pt, shorten <=4pt},
+]
+% Boxes — wider spacing (7 cm between centres) leaves ~3.7 cm for arrows
+\node[leftbox]  (cont) at (0,0) {
+  \textbf{Continuum SM}\\[3pt]
+  $\mathrm{SU}(3){\times}\mathrm{SU}(2){\times}\mathrm{U}(1)$\\[1pt]
+  gauge structure\\[4pt]
+  particle content,\\charges, Lagrangian\\[4pt]
+  conservation laws
+};
+\node[centerbox] (core) at (7.0,0) {
+  \textbf{Algebraic Core}\\
+  \small($\mathbb{Z}_7$ winding algebra)\\[3pt]
+  SM generation orbit\\[3pt]
+  PSC uniqueness\\constraint\\[3pt]
+  $f_{\rm MDL}$ orbit structure
+};
+\node[rightbox]  (ca)   at (14.0,0) {
+  \textbf{Discrete CA}\\
+  \small(Rule~110\,/\,$f_{\rm MDL}$)\\[3pt]
+  $\mathbb{Z}_7$ winding lattice\\[3pt]
+  CUP-4 orbit forcing\\[3pt]
+  CA conservation laws\\(Lean-certified)
+};
+% Descent arrow: algebraic core -> continuum
+\draw[arr] (core.west) --
+  node[midway, above, align=center, font=\small\bfseries] {Algebraic Descent}
+  node[midway, below, align=center, font=\scriptsize\itshape] {CA theorems\\exact continuum $\Leftarrow$\\constraints}
+  (cont.east);
+% Lifting arrow: algebraic core -> discrete CA
+\draw[arr] (core.east) --
+  node[midway, above, align=center, font=\small\bfseries] {Algebraic Lifting}
+  node[midway, below, align=center, font=\scriptsize\itshape] {SM configurations\\$\Rightarrow$ CA\\realisations}
+  (ca.west);
+% Overall correspondence label
+\node[font=\small\itshape, below=0.85cm of core]
+      {Discrete--Continuum Structural Correspondence};
+\end{tikzpicture}
+\caption{The discrete--continuum structural correspondence. \emph{Algebraic Lifting} (rightward
+arrow) proves that every PSC-admissible SM particle configuration is algebraically realised
+in the CA substrate; \emph{Algebraic Descent} (leftward arrow) proves that every CA-level
+conservation law holds in any continuum realisation of the same $F_{21}$ algebra.
+Together they establish that the discrete and continuum descriptions of the SM winding sector
+are algebraically isomorphic (Remark~\ref{rem:discrete_continuum_correspondence}).}
+\label{fig:discrete_continuum_correspondence}
+\end{figure}
+
+\subsection{Physical consequences at the Compton scale}
+\label{sec:physical_consequences}
+
+The Lifting Theorem (\ref{thm:algebraic_lifting}) packages three structural SM predictions as machine-verified theorems rather than separate postulates.
+
+\begin{itemize}
+\item \textbf{Charge quantisation} in units of $1/3$
+(\lean{charge\_quantization\_physical}, machine-certified in Lean~4).
+\item \textbf{Exactly three generations} from the period-3 $\mathbb{Z}_7$ orbit
+(\lean{three\_generations\_physical}, machine-certified in Lean~4).
+\item \textbf{No fourth generation}: \lean{no\_fourth\_generation\_physical} exhausts all PSC-admissible orbit classes and shows no fourth-generation class exists; \lean{no\_exotic\_physical\_generation} rules out any observable generation outside $\{\mathrm{gen}_1,\mathrm{gen}_2,\mathrm{gen}_3\}$.
+\item \textbf{S-matrix framework}: \lean{smatrix\_framework\_exists} bundles scattering existence, charge quantisation, S-matrix consistency, the absence theorem, and the three-generation proof as a coherent five-conjunct certificate.
+\end{itemize}
+
+The Absence Theorem (\lean{algebraic\_absence\_theorem}) rules out forbidden processes at the beable level; combined with \lean{scattering\_existence} (\lean{LiftingTheorem.lean}~\S11), every algebraically allowed SM scattering process from the vertex catalog exists at physical scale. Quantitative cross-sections require three-dimensional $f_{\rm MDL}$ Hamiltonian dynamics and remain beyond the present certification scope.
+
+These results compose into the three-generation uniqueness capstone
+(\lean{gte\_uniquely\_predicts\_three\_generations}, \lean{ThreeGenerationCapstone.lean},
+$\CatAL$, zero \texttt{sorry}): every PSC-consistent substrate is record-equivalent to
+$f_{\rm MDL}$, which admits exactly three distinct non-vacuum generation states and no
+fourth generation at physical scale.
+
+\subsection{Why \texorpdfstring{$\mathbb{Z}_7$}{Z7}?}
+\label{sec:why_z7}
+
+Two independent arguments force $\mathbb{Z}_7$ as the minimal arithmetic field.
+
+\paragraph{Sylow-3 colour.}
+$\mathbb{Z}_7^* \cong \mathbb{Z}_6$; its unique order-3 subgroup is $\{1,2,4\}$, simultaneously the Sylow-3 subgroup and the cubic roots of unity in GF(7) (\lean{color\_subgroup\_is\_sylow3}).
+
+\paragraph{GF(7) minimality.}
+$\mathbb{Z}_7$ is the smallest prime field containing both a subgroup of order~2 ($\mathbb{Z}_2$, parity) and a subgroup of order~3 ($\mathbb{Z}_3$, colour):
+\lean{gf7\_minimal\_for\_z2\_z3} (zero \texttt{sorry}).
+The three-generation orbit structure and colour triplet are forced by field minimality, not by independent postulates.
+
+\begin{remark}[The $f_{\rm MDL}$ orbit is not a GF(7) group code]
+\label{rem:not_gf7_group_code}
+Although $\{1,2,4\} \subset \mathbb{Z}_7^*$ forms a group code (the unique order-3 subgroup, cubic roots of unity in $\mathrm{GF}(7)$), the full $f_{\rm MDL}$ generation orbit
+$\{\mathrm{gen}_1, \mathrm{gen}_2, \mathrm{gen}_3, \mathrm{vacuum}\} \subset \mathbb{Z}_7^5$
+is \emph{not} a GF(7) group code: additive closure fails modulo~7 (e.g.\ $\mathrm{gen}_1 + \mathrm{gen}_1 \notin \{\mathrm{gen}_1, \mathrm{gen}_2, \mathrm{gen}_3, \mathrm{vacuum}\}$
+componentwise mod~7), and the orbit is not closed under the field operations.
+The colour subgroup $\{1,2,4\} \subset \mathbb{Z}_7^*$ carries genuine GF(7) group structure; the full generation orbit does not.
+Computationally verified across all pairwise sums and all standard code-structure tests (\texttt{gf7\_orbit\_code\_check.py}).
+\end{remark}
+
+\subsection{\texorpdfstring{$f_{\rm MDL}$}{fMDL} as a Wolfram Category~IV rule}
+\label{sec:fmdl_cat4}
+
+Three of four standard Category~IV diagnostic tests are positive for $f_{\rm MDL}$ with the actual lookup table (computationally verified).
+Among $\mathbb{Z}_7$ cellular automata, $f_{\rm MDL}$ is the unique MDL-minimal Category~IV rule---the $\mathbb{Z}_7$ analog of Rule~110.
+The mutual implication GTE $\leftrightarrow$ Rule~110 is the binary shadow (parity projection) of the deeper GTE $\leftrightarrow$ $f_{\rm MDL}$ relationship: observers mediated by $[D]$ see Rule~110; full $\mathbb{Z}_7$ observers see $f_{\rm MDL}$.
+
+\subsection{Colour confinement at the beable level}
+\label{sec:color_confinement}
+
+\begin{theorem}[No free quarks, $\CatAL$]
+\label{thm:no_free_quark}
+No PSC-admissible single-quark beable exists in the GTE framework.
+\begin{proof}
+Exhaustive over $7^5 = 16{,}807$ states: \lean{no\_psc\_admissible\_single\_quark}
+(\lean{ColorConfinement.lean}, zero \texttt{sorry}).
+\end{proof}
+\end{theorem}
+
+All PSC-admissible composite systems are colour-neutral:
+\lean{psc\_rc\_requires\_system\_color\_neutral} (machine-certified in Lean~4).
+Isolated coloured generation states cascade to vacuum in exactly $N_{\rm gen} = 3$ steps in the $F_{21}$-extended CA (computationally verified, \texttt{z3\_z7\_color\_extension.py}).
+
+At the QFT level, in the $\mathbb{Z}_3$-gauged $\Phi_{\rm MDL}$ theory, the lightest colour-singlet excitation has positive mass $\Delta_{\rm gauge} > 0$.
+The analytical lower bound $\Delta_{\rm gauge} \geq 2 M_{\rm kink,lat} = 0.300$ in lattice units ($\approx 592\,\mathrm{MeV}$ at the Compton-scale calibration $\mathrm{sim\_to\_fm} = 0.100\,\mathrm{fm/sim}$) is certified unconditionally:
+\lean{qft\_gauged\_mass\_gap\_unconditional}, \lean{qft\_gauged\_mass\_gap\_pos\_unconditional}
+(\lean{QFT/GaugedMassGap.lean}, zero \texttt{sorry}).
+The beable-level mass gap \lean{gte\_mass\_gap} ($\exists\,\Delta > 0$, machine-certified in Lean~4) and the QFT-level result compose in \lean{confined\_massive\_color\_singlet} and the capstone \lean{unified\_physical\_exclusion}: any $[D]$-weighted physical state is PSC-admissible, colour-confined, massive, and anomaly-free.
+The mass gap has a physical lower bound: the lightest standard-model generation has mass
+$\Delta \geq 1.8\,\mathrm{MeV}$ (conservative PDG lower bound on $m_u$), certified in Lean~4
+(\lean{gte\_mass\_formula\_physical}, zero axioms, \lean{MassGap.lean}) \cite{SpivackEmergentGravity}.
+
+\paragraph{Yang--Mills continuum programme.}
+The objection that a $\mathbb{Z}_3$ product cannot support non-abelian $\mathrm{SU}(3)$ gauge structure is removed by $F_{21} \subset \mathrm{SU}(3)$: $F_{21}$ is a finite non-abelian subgroup of $\mathrm{SU}(3)$.
+A rigorous mass-gap proof would proceed via (i)~pure-gauge $F_{21}$ mass gap (beable and QFT levels, machine-certified in Lean~4), (ii)~rigorous $F_{21} \to \mathrm{SU}(3)$ continuum limit (\emph{conjectural}), and (iii)~Osterwalder--Schrader / Wightman axiom verification (\emph{open}).
+This is a multi-year programme; it does not block the EFT-level predictions below.
+
+\subsection{Two distinct \texorpdfstring{$\mathbb{Z}_7$}{Z7} winding quantities}
+\label{sec:wa_wb}
+
+Two distinct $\mathbb{Z}_7$ quantities appear in the framework and must not be conflated.
+
+\begin{itemize}
+\item $W_A$ (\textbf{Level~A, orbit-sum beable charge}): the sum of $\mathbb{Z}_7$ labels in a five-cell orbit configuration.
+\item $W_B$ (\textbf{Level~B, SM interaction winding}): the P22 CUP-4/11 winding label $v$ assigned to each particle for vertex conservation.
+\end{itemize}
+
+For gen$_1$ and gen$_2$ (sum-4 conserving class), $W_A = W_B$ coincidentally.
+For gen$_3$, $W_A = 24 \equiv 3 \pmod{7}$ while $W_B(\tau) = 4$: this reflects orbit position versus interaction charge, not an internal inconsistency.
+The $\tau$ lepton with $Q = (4,1)$ is confirmed at Level~B.
+
+\subsection{Composite states: baryons and mesons}
+\label{sec:composite_states}
+
+Composite configurations with total winding $0 \bmod 7$ form the algebraic candidate space.
+
+\paragraph{One-dimensional ring model.}
+\textbf{Baryons confirmed:} 135 non-trivial PSC-admissible colour-neutral $k=3$ composites exist.
+\textbf{Mesons null:} three independent methods---strict scan, gluon-bridge exhaustive search (0 true mesons in 140{,}000 rings), and de~Bruijn graph analysis---all return zero true mesons as static 1D rings.
+A one-dimensional $f_{\rm MDL}$ collision test finds GEN1+GEN1 interactions are causal glider collisions, not vacuum-mediated binding; no bound state forms on an open tape.
+
+\paragraph{Three-dimensional causal graph.}
+Theorem~\ref{thm:spatial_lifting} resolves the apparent contradiction: mesons exist as spatially separated quark--antiquark pairs connected by vacuum paths, not as adjacent 1D rings.
+Baryons exist both as 1D orbit composites (Rank~18 ring enumeration) and as 3D vacuum-path composites (\lean{PhysicalBaryonState}, \lean{baryon\_bound\_state\_exists}); the two results are complementary models of the same physical states.
+In the $\mathbb{Z}_7$-KG continuum picture, mesons additionally exist as kink--antikink breathers with Yukawa (not linear) inter-kink force; the algebraic-only treatment captures the candidate space, while dynamics supplies the binding mechanism.
+
+\subsection{Asymptotic freedom and the running coupling}
+\label{sec:asymptotic_freedom}
+
+From $F_{21}$ with $N_c = 3$ (three-dimensional irrep dimension) and $N_f = 6$ (GTE species formula $W_B = 4k \bmod 7$, $k \in \{4,5\}$ quarks, three colours each), the one-loop $\beta$-function coefficient is
+\begin{equation}
+b_0 = 7, \qquad \beta = -\frac{7 g^3}{16\pi^2},
+\label{eq:beta_one_loop}
+\end{equation}
+matching QCD exactly.
+Lean: \lean{f21\_substrate\_beta\_coefficient}, \lean{f21\_substrate\_asymptotic\_freedom} (machine-certified in Lean~4).
+Leptons ($k=1$, colour singlets) do not contribute to the running; their $F_{21}$ representation is trivial.
+
+At two loops,
+\begin{equation}
+b_1 = \frac{11}{3} N_c^2 - \frac{2}{3} N_f N_c - \frac{1}{6} N_f = 26,
+\label{eq:beta_two_loop}
+\end{equation}
+again matching QCD; \lean{f21\_two\_loop\_beta\_coefficient} (machine-certified in Lean~4).
+Predicted values: $\alpha_s(M_Z) = 0.1318$ at one loop (11.67\% above PDG) and $\alpha_s(M_Z) \approx 0.1201$ at two loops (+1.75\% vs PDG).
+Full Dyson resummation of the running coupling remains \emph{conjectural}.
+Both $\beta$ coefficients are conditional on the $F_{21} \subset \mathrm{SU}(3)$ substrate identification.
+
+\subsection{Hadron spectroscopy from GTE kink composites}
+\label{sec:hadron_spectroscopy}
+
+Kink--antikink and multi-kink composites in the $\Phi_{\rm MDL}$ substrate reproduce hadron multiplet structure with zero PDG inputs in the derivation chain.
+Confidence levels are indicated explicitly.
+
+\begin{table}[ht]
+\centering
+\caption{Hadron spectroscopy predictions from GTE kink composites.
+Values marked ``Lean-certified'' are zero sorry; ``comp.'' are computational; PROVISIONAL entries require continuum-limit confirmation.}
+\label{tab:hadron_predictions}
+\small
+\begin{tabular}{@{}llcc@{}}
+\toprule
+Observable & GTE prediction & PDG / lattice & Status \\
+\midrule
+Meson nonet ($J^P=0^-$) & 9 states, correct $J^P$ & 9 PDG states & PROVISIONAL \\
+Baryon octet ($J^P=\tfrac{1}{2}^+$) & 8 states & 8 PDG states & Lean-certified \\
+Baryon decuplet ($J^P=\tfrac{3}{2}^+$) & 10 states & 10 PDG states & Lean-certified \\
+Vector meson nonet ($J^P=1^-$) & RMS $\approx 3.2\%$ & $\rho,K^*,\omega,\phi$ & PROVISIONAL \\
+Quark masses (6) & within 7\% & PDG current & computational \\
+$r_s/d$ & 20.00 & 19.80 & computational \\
+$f_\pi$ & 91.35 MeV & 92.07 MeV & computational \\
+$m_\pi^\pm$ (GOR+condensate) & 139.57 MeV & 139.57 MeV & $\CatAL$ (\lean{pion\_mass\_from\_gor}; P39) \\
+$\theta_P$ ($\eta$--$\eta'$ mixing) & $-13.08^\circ \pm 3.74^\circ$ & $[-14.3^\circ,-10.7^\circ]$ & computational \\
+$\chi_{\rm top}^{1/4}$ & 166.5 MeV & 178 MeV (lattice) & PROVISIONAL \\
+Strong CP & $\theta_{\rm QCD} = 0$ & consistent & Lean-certified \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The $\eta$--$\eta'$ mixing angle $\theta_P = -13.08^\circ \pm 3.74^\circ$ lies in the PDG range $[-14.3^\circ, -10.7^\circ]$.
+The chain runs: GTE quark masses $\to$ $f_\pi = m_{\rm kink}/\pi$ (DHN/BPS, $-0.81\%$ vs PDG) $\to$ four-dimensional string tension $\sigma_{4\mathrm{D}}$ $\to$ topological susceptibility $\chi_{\rm top}^{1/4} = 166.5\,\mathrm{MeV}$ ($-6.4\%$ vs lattice QCD 178 MeV) $\to$ one-loop $B_0$ condensate $\to$ NLO quark self-energy correction $\to$ $\theta_P$.
+Topological susceptibility uses the corrected formula with $\sigma_{4\mathrm{D}} = (N_3/N_7)\sigma_{2\mathrm{D}}$; an earlier 190.2 MeV estimate used incorrect density units and is superseded.
+
+Second baryon octet states are suppressed by $\delta K = \log_2(3) = 1.585$ bits from QR(7) $\mathbb{Z}_3$ symmetry (\lean{gte\_physical\_baryon\_octet\_is\_ms}, machine-certified in Lean~4).
+Spin-$1/2$ baryon assignment is MDL-forced (\lean{jpspin\_kinks\_are\_spin\_half}, machine-certified in Lean~4).
+Strong CP $\theta_{\rm QCD} = 0$ follows from $F_{21}$ discrete holonomy (\lean{f21\_theta\_term\_vanishes}, machine-certified in Lean~4).
+
+\subsection{Renormalizability, vertices, and decay rates}
+\label{sec:renorm_vertices_decays}
+
+\paragraph{Renormalizability is PSC-forced.}
+Non-renormalizable operators (dimension $> 4$) require Zone~L2 beables (\lean{NonRenormalizable} $\equiv$ $\neg\,\mathrm{PSCAdmissible}$).
+The SM Lagrangian is renormalizable as a PSC consequence:
+\lean{renormalizability\_psc\_forced}, \lean{physical\_renormalizability}, \lean{sm\_lagrangian\_renormalizable}
+(\lean{AnomalyRenormalizability.lean}, zero \texttt{sorry}).
+Anomaly cancellation and per-generation charge neutrality bundle in \lean{all\_generation\_charge\_neutrality\_bundle}.
+
+\paragraph{Vertex catalog.}
+Under strict $\mathbb{Z}_3$ gauge invariance, all 7/7 GTE vertices are recovered with zero spurious vertices (three-tier proof: topological, algebraic, numerical; computationally verified, \texttt{scripts/gauged\_vertex\_catalog.py}).
+
+\paragraph{Kink collision identification.}
+Each entry in the 7/7 GTE vertex catalog corresponds to a topologically allowed kink-antikink scattering event in the $\Phi_{\rm MDL}$ field theory.
+A kink-antikink pair in the $(\varphi, \chi)$ plane is uniquely labelled by the joint topological charge $(Q_\varphi, Q_\chi)$, where $Q_\varphi \in \mathbb{Z}_7$ is the $\mathbb{Z}_7$ winding number and $Q_\chi \in \mathbb{Z}_3$ is the colour charge; the four orbit states carry
+$\mathrm{gen}_1 \leftrightarrow (4,1)$, $\mathrm{gen}_2 \leftrightarrow (4,2)$, $\mathrm{gen}_3 \leftrightarrow (3,1)$, $\mathrm{vacuum} \leftrightarrow (0,0)$.
+A kink-antikink collision conserving both $Q_\varphi$ and $Q_\chi$ maps precisely to an entry in the GTE vertex catalog; enforcing joint conservation strictly refines the set of allowed transitions relative to $\mathbb{Z}_7$-winding conservation alone, eliminating no physical SM vertex (computationally verified, \texttt{scripts/gauged\_vertex\_catalog.py}).
+The charged-current analog in the leptoquark sector is derived in Paper~P33~\cite{SpivackDeeperConsequences}.
+
+\paragraph{Tree-level decay rates.}
+GTE masses reproduce PDG to 0.4\%; tree-level partial widths give $\Gamma_\mu$ at $+12.2\%$ and $\Gamma_\tau$ at $+12.5\%$ relative to PDG, with $\tau_\tau/\tau_\mu$ ratio error 0.3\%.
+Rate positivity and ordering are machine-certified via the Lifting Theorem (computationally verified; companion script \texttt{decay\_rates\_from\_gte.py} in Paper~33).
+Radiative corrections are open.
+
+\paragraph{GoE stability at physical scale.}
+The Garden-of-Eden stability result lifts to the Compton scale via the Lifting Theorem, certifying first-generation stability as a physical observable property.
+
+\subsection{Domain of validity and the GTE effective field theory}
+\label{sec:eft_domain}
+
+The GTE framework is an effective field theory below a matching scale
+\begin{equation}
+\Lambda_{\mathrm{GTE}} = N_7 \cdot m_{\rm kink}^{\rm phys} \approx 2.01^{+0.24}_{-0.44}\,\mathrm{GeV}
+\qquad \text{(PROVISIONAL)},
+\label{eq:lambda_gte}
+\end{equation}
+calibrated from the BPS kink mass in physical units.
+Above $\Lambda_{\mathrm{GTE}}$, the $F_{21} \to \mathrm{SU}(3)$ Yang--Mills UV-completion conjecture applies; below it, GTE plays the role that chiral perturbation theory ($\chi$PT) plays for pion physics below $\Lambda_{\chi\mathrm{SB}}$.
+
+\begin{table}[ht]
+\centering
+\caption{Prediction classification by energy scale relative to $\Lambda_{\mathrm{GTE}} \approx 2\,\mathrm{GeV}$.}
+\label{tab:eft_classification}
+\small
+\begin{tabular}{@{}p{0.38\linewidth}p{0.22\linewidth}p{0.28\linewidth}@{}}
+\toprule
+Prediction class & Energy regime & Confidence \\
+\midrule
+Charge quantisation, three generations, colour confinement (beable) & All scales (algebraic) & Lean-certified \\
+$\beta$-function coefficients $b_0=7$, $b_1=26$ & UV (conditional on $F_{21}$) & Lean-certified \\
+Hadron multiplets, $\theta_P$, $\chi_{\rm top}$ & IR, $E < \Lambda_{\mathrm{GTE}}$ & computational/PROVISIONAL \\
+$\alpha_s(M_Z)$ two-loop & Intermediate & Lean-certified/PROVISIONAL \\
+Cartan gluon $A_\mu \leftrightarrow \lambda_3$ & UV, $E > \Lambda_{\mathrm{GTE}}$ & Conjectural \\
+Wightman/OS axiom bridge & Continuum limit & Open \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The formal matching condition at $\Lambda_{\mathrm{GTE}}$ equates GTE kink-composite observables below the threshold with $\chi$PT and QCD sum-rule observables above it; the UV-completion conjecture asserts that integrating out the discrete $F_{21}$ substrate yields $\mathrm{SU}(3)$ Yang--Mills with the certified $\beta$-function coefficients.
+Neither conjecture is required for the IR hadronic predictions in Table~\ref{tab:hadron_predictions}, which are evaluated entirely within the GTE EFT.
