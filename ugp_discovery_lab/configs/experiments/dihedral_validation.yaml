@@ -1,0 +1,39 @@
+experiment:
+  name: dihedral_consistency
+  description: "High-precision PSLQ validation of Dihedral-Lock planes on real UGP data."
+  
+  inputs:
+    runs:
+      - "UGP_discovery_lab_runs/**/rg_sweep_summary.json"
+      - "UGP_discovery_lab_runs/**/dihedral_lock_*_summary.json"
+      
+  fit:
+    min_points: 200
+    min_r2: 0.997
+    precision_bits: 200
+    pslq_max_coeff: 64
+    pslq_tolerance: 1.0e-10
+    bootstrap_samples: 1000
+    algebraic_basis:
+      - "1"
+      - "cos(pi/n)"
+      - "sin(pi/n)"
+      - "1/(2*cos(pi/n))"
+      - "sqrt(2)"
+      - "sqrt(3)"
+      - "sqrt(5)"  # Corresponds to phi
+      
+  hypotheses:
+    - { name: "pslq_algebraic", form: "alpha = algebraic_combination", tol_abs: 1.0e-10 }
+    - { name: "cos_formula", form: "alpha = 1/(2*cos(pi/n))", tol_abs: 1.0e-6 }
+    - { name: "rational", form: "alpha = rational", tol_abs: 1.0e-8 }
+    
+  run:
+    steps: 1000
+    window: 64
+    seeds: [42, 173, 823, 1597, 2203]
+    
+  report:
+    export_md: true
+    export_json: true
+    plots: true

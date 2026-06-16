@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L03: The GTE Polynomial — UGP Physics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="../../common/style.css">
+  <style>
+    /* ── Sliding window animation ───────────────────────────── */
+    .tape-row {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+      margin: 1rem 0;
+    }
+
+    .tape-cell {
+      width: 52px;
+      height: 52px;
+      border-radius: 8px;
+      border: 1.5px solid var(--stroke-primary);
+      background: var(--bg-elevated);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 1.1rem;
+      position: relative;
+      transition: background 0.25s, border-color 0.25s;
+    }
+
+    .tape-cell .cell-idx {
+      position: absolute;
+      bottom: -18px;
+      font-size: 0.68rem;
+      color: var(--text-tertiary);
+      font-weight: 400;
+    }
+
+    .tape-cell.active {
+      background: rgba(59,130,246,0.18);
+      border-color: var(--accent);
+    }
+
+    .tape-cell.window-L { border-color: #8B5CF6; background: rgba(139,92,246,0.12); }
+    .tape-cell.window-C { border-color: var(--accent); background: rgba(59,130,246,0.2); }
+    .tape-cell.window-R { border-color: #10B981; background: rgba(16,185,129,0.12); }
+
+    .window-label {
+      position: absolute;
+      top: -22px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .wl-L { color: #8B5CF6; }
+    .wl-C { color: var(--accent); }
+    .wl-R { color: #10B981; }
+
+    .tape-wrap { margin: 2rem 0; }
+
+    /* formula annotation */
+    .formula-term {
+      display: inline-block;
+      padding: 0 4px;
+      border-radius: 3px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .ft-C { background: rgba(59,130,246,0.15); color: #7BAFE9; }
+    .ft-R { background: rgba(16,185,129,0.15); color: #10B981; }
+    .ft-CR { background: rgba(245,158,11,0.15); color: #F59E0B; }
+    .ft-LCR { background: rgba(239,68,68,0.15); color: #EF4444; }
+
+    /* truth table striping */
+    #truth-table-body tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+  </style>
+</head>
+<body style="--path-current: var(--path-1)">
+
+  <header class="site-header">
+    <a href="../../index.html" class="site-logo">UGP Physics</a>
+    <nav class="breadcrumb">
+      <a href="../../index.html">Tutorial Series</a>
+      <span class="bc-sep">›</span>
+      <a href="../index.html">Path 1: Foundations</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">L03: The Polynomial</span>
+    </nav>
+  </header>
+
+  <main class="page-wrapper">
+
+    <!-- ═══ Lesson Header ═══ -->
+    <div class="lesson-header">
+      <div class="path-label">Path 1 — Foundations · Lesson 3 of 7</div>
+      <h1>The GTE Polynomial Step by Step</h1>
+      <p class="lesson-subtitle">
+        One formula replaces an entire lookup table — and on binary inputs, 
+        it is Rule 110. That is a theorem, not a design choice.
+      </p>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:43%"></div>
+      </div>
+    </div>
+
+    <!-- ═══ Section 1: The Question ═══ -->
+    <section class="lesson-section" id="the-question">
+      <h2>The Question</h2>
+      <p>
+        A cellular automaton (CA) updates each cell by looking at its neighbors and 
+        consulting a lookup table. Rule 110, for example, has 8 entries — one for each possible 
+        combination of three binary neighbors. To compute the next state of any cell, you find 
+        the matching row and read off the output.
+      </p>
+      <p>
+        The UGP framework does something different. Instead of a table, it uses a single 
+        arithmetic formula — the same formula for every cell, every step, every state. 
+        The question is: <strong>how can one formula replace a table?</strong> And why does 
+        it turn out to give exactly Rule 110 when the inputs happen to be binary?
+      </p>
+    </section>
+
+    <!-- ═══ Section 2: The Idea ═══ -->
+    <section class="lesson-section" id="the-idea">
+      <h2>The Idea: A Window That Slides</h2>
+
+      <p>
+        Start with a tape of cells. Each cell holds a value. 
+        To compute the next state of cell <code>i</code>, look at three cells: the one to the left 
+        (<strong>L</strong>), the center cell itself (<strong>C</strong>), and the one to the right 
+        (<strong>R</strong>). This triplet is the <strong>neighborhood</strong>.
+      </p>
+
+      <!-- Tape with labeled window -->
+      <div class="tape-wrap">
+        <p class="small" style="text-align:center;margin-bottom:0.5rem">Current tape — computing the next state of position 2:</p>
+        <div class="tape-row" id="demo-tape">
+          <div class="tape-cell">0<span class="cell-idx">0</span></div>
+          <div class="tape-cell window-L"><span class="window-label wl-L">L</span>1<span class="cell-idx">1</span></div>
+          <div class="tape-cell window-C"><span class="window-label wl-C">C</span>3<span class="cell-idx">2</span></div>
+          <div class="tape-cell window-R"><span class="window-label wl-R">R</span>2<span class="cell-idx">3</span></div>
+          <div class="tape-cell">0<span class="cell-idx">4</span></div>
+        </div>
+        <p class="small" style="text-align:center;margin-top:1.5rem;color:var(--text-tertiary)">
+          L = 1 (left neighbor) · C = 3 (center) · R = 2 (right neighbor)
+        </p>
+      </div>
+
+      <h3>The formula</h3>
+      <p>For any neighborhood (L, C, R), the next state of the center cell is:</p>
+
+      <div class="card" style="text-align:center;margin:1rem 0">
+        <div class="card-body">
+          <div style="font-size:1.5rem;font-weight:700;font-family:'JetBrains Mono',monospace;letter-spacing:-0.01em;padding:0.5rem 0">
+            <span class="formula-term ft-C">C</span>
+            + <span class="formula-term ft-R">R</span>
+            − <span class="formula-term ft-CR">CR</span>
+            − <span class="formula-term ft-LCR">LCR</span>
+          </div>
+          <p class="small" style="margin-top:0.5rem">
+            computed mod 7 (the result wraps around when it reaches 7)
+          </p>
+        </div>
+      </div>
+
+      <!-- Formula annotation -->
+      <div class="split" style="margin:1.5rem 0">
+        <div>
+          <h3>What each term means</h3>
+          <table class="data-table">
+            <thead><tr><th>Term</th><th>Meaning</th></tr></thead>
+            <tbody>
+              <tr><td><span class="formula-term ft-C">C</span></td><td>The center cell's current value — always contributes</td></tr>
+              <tr><td><span class="formula-term ft-R">R</span></td><td>The right neighbor — also contributes directly</td></tr>
+              <tr><td><span class="formula-term ft-CR">−CR</span></td><td>Subtract their product — cancels when both are 1</td></tr>
+              <tr><td><span class="formula-term ft-LCR">−LCR</span></td><td>Subtract all three — additional cancellation when all are 1</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <h3>A quick check</h3>
+          <p>For the demo tape above (L=1, C=3, R=2):</p>
+          <div class="example-box">
+            <div class="example-header">Single cell computation</div>
+            <p style="font-family:'JetBrains Mono',monospace;font-size:0.9rem;margin:0">
+              p(1, 3, 2)<br>
+              = 3 + 2 − (3×2) − (1×3×2)<br>
+              = 3 + 2 − 6 − 6<br>
+              = −7<br>
+              = <strong>0</strong> (mod 7)
+            </p>
+          </div>
+          <p class="small">The center cell (value 3) updates to <strong>0</strong> in the next generation.</p>
+        </div>
+      </div>
+
+      <!-- Disambiguation: 7 states vs 8 rows -->
+      <h3>Wait — 7 states or 8?</h3>
+      <div class="tabs" id="seven-vs-eight">
+        <div class="tab-bar">
+          <button class="tab-btn">The 7 states</button>
+          <button class="tab-btn">The 8 input triples</button>
+        </div>
+        <div class="tab-panel">
+          <p>
+            Each cell holds one value from the 7-element field GF(7): 
+            {0, 1, 2, 3, 4, 5, 6}. That is 7 possible states per cell, 
+            not 8. The polynomial operates over this 7-element set.
+          </p>
+          <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:1rem 0">
+            <div class="tape-cell" style="width:42px;height:42px;font-size:1rem">0</div>
+            <div class="tape-cell" style="width:42px;height:42px;font-size:1rem">1</div>
+            <div class="tape-cell" style="width:42px;height:42px;font-size:1rem">2</div>
+            <div class="tape-cell" style="width:42px;height:42px;font-size:1rem">3</div>
+            <div class="tape-cell" style="width:42px;height:42px;font-size:1rem">4</div>
+            <div class="tape-cell" style="width:42px;height:42px;font-size:1rem">5</div>
+            <div class="tape-cell" style="width:42px;height:42px;font-size:1rem">6</div>
+          </div>
+          <p class="small" style="text-align:center">All 7 possible cell states in GF(7).</p>
+        </div>
+        <div class="tab-panel">
+          <p>
+            When cells are restricted to binary values {0, 1}, there are 
+            2³ = <strong>8</strong> possible (L, C, R) input triples — 
+            that is where the Rule 110 truth table's 8 rows come from. 
+            The number 8 counts <em>input triples</em>, not cell states.
+          </p>
+          <div style="display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:0.82rem">
+            <code>(0,0,0)</code><code>(0,0,1)</code><code>(0,1,0)</code><code>(0,1,1)</code>
+            <code>(1,0,0)</code><code>(1,0,1)</code><code>(1,1,0)</code><code>(1,1,1)</code>
+          </div>
+          <p class="small" style="text-align:center">
+            All 8 binary input triples — the 8 rows in the Rule 110 table.
+          </p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══ Section 3: Binary Worked Example ═══ -->
+    <section class="lesson-section" id="example-binary">
+      <h2>Worked Example A — Binary Tape</h2>
+      <p>
+        Start with a tape of five cells. All states are 0 or 1. 
+        Cells outside the tape are treated as 0 (fixed-zero boundary).
+        Step through the computation one cell at a time.
+      </p>
+
+      <div class="steps" id="steps-binary">
+        <div class="steps-nav">
+          <button class="step-pill">Tape</button>
+          <button class="step-pill">Cell 0</button>
+          <button class="step-pill">Cell 1</button>
+          <button class="step-pill">Cell 2</button>
+          <button class="step-pill">Cell 3</button>
+          <button class="step-pill">Cell 4</button>
+          <button class="step-pill">Result</button>
+        </div>
+
+        <!-- Step 0: Initial tape -->
+        <div class="step-panel">
+          <p><strong>Initial tape:</strong></p>
+          <div class="tape-row">
+            <div class="tape-cell">0<span class="cell-idx">0</span></div>
+            <div class="tape-cell">1<span class="cell-idx">1</span></div>
+            <div class="tape-cell">1<span class="cell-idx">2</span></div>
+            <div class="tape-cell">0<span class="cell-idx">3</span></div>
+            <div class="tape-cell">1<span class="cell-idx">4</span></div>
+          </div>
+          <p style="margin-top:1.5rem">We will compute p(L, C, R) for each of the five cells. Cells outside the tape count as 0.</p>
+        </div>
+
+        <!-- Step 1: Cell 0 -->
+        <div class="step-panel">
+          <p><strong>Cell 0:</strong> The left neighbor is outside the tape, so L = 0.</p>
+          <div class="tape-row">
+            <div class="tape-cell window-L"><span class="window-label wl-L">L=0</span>0<span class="cell-idx">0</span></div>
+            <div class="tape-cell window-C"><span class="window-label wl-C">C=0</span>0<span class="cell-idx">←</span></div>
+            <div class="tape-cell window-R"><span class="window-label wl-R">R=1</span>1</div>
+            <div class="tape-cell">1</div><div class="tape-cell">0</div><div class="tape-cell">1</div>
+          </div>
+          <div class="example-box" style="margin-top:1.5rem">
+            <div class="example-header">p(0, 0, 1)</div>
+            <p style="font-family:'JetBrains Mono',monospace;margin:0">
+              = 0 + 1 − (0×1) − (0×0×1)<br>
+              = 0 + 1 − 0 − 0<br>
+              = <strong>1</strong>
+            </p>
+          </div>
+          <p>Cell 0 becomes <strong>1</strong>.</p>
+        </div>
+
+        <!-- Step 2: Cell 1 -->
+        <div class="step-panel">
+          <p><strong>Cell 1:</strong></p>
+          <div class="tape-row">
+            <div class="tape-cell">0</div>
+            <div class="tape-cell window-L"><span class="window-label wl-L">L=0</span>0<span class="cell-idx">0</span></div>
+            <div class="tape-cell window-C"><span class="window-label wl-C">C=1</span>1<span class="cell-idx">←</span></div>
+            <div class="tape-cell window-R"><span class="window-label wl-R">R=1</span>1</div>
+            <div class="tape-cell">0</div><div class="tape-cell">1</div>
+          </div>
+          <div class="example-box" style="margin-top:1.5rem">
+            <div class="example-header">p(0, 1, 1)</div>
+            <p style="font-family:'JetBrains Mono',monospace;margin:0">
+              = 1 + 1 − (1×1) − (0×1×1)<br>
+              = 1 + 1 − 1 − 0<br>
+              = <strong>1</strong>
+            </p>
+          </div>
+          <p>Cell 1 becomes <strong>1</strong>.</p>
+        </div>
+
+        <!-- Step 3: Cell 2 -->
+        <div class="step-panel">
+          <p><strong>Cell 2:</strong></p>
+          <div class="tape-row">
+            <div class="tape-cell">0</div><div class="tape-cell">1</div>
+            <div class="tape-cell window-L"><span class="window-label wl-L">L=1</span>1</div>
+            <div class="tape-cell window-C"><span class="window-label wl-C">C=1</span>1<span class="cell-idx">←</span></div>
+            <div class="tape-cell window-R"><span class="window-label wl-R">R=0</span>0</div>
+            <div class="tape-cell">1</div>
+          </div>
+          <div class="example-box" style="margin-top:1.5rem">
+            <div class="example-header">p(1, 1, 0)</div>
+            <p style="font-family:'JetBrains Mono',monospace;margin:0">
+              = 1 + 0 − (1×0) − (1×1×0)<br>
+              = 1 + 0 − 0 − 0<br>
+              = <strong>1</strong>
+            </p>
+          </div>
+          <p>Cell 2 becomes <strong>1</strong>.</p>
+        </div>
+
+        <!-- Step 4: Cell 3 -->
+        <div class="step-panel">
+          <p><strong>Cell 3:</strong></p>
+          <div class="tape-row">
+            <div class="tape-cell">0</div><div class="tape-cell">1</div><div class="tape-cell">1</div>
+            <div class="tape-cell window-L"><span class="window-label wl-L">L=1</span>1</div>
+            <div class="tape-cell window-C"><span class="window-label wl-C">C=0</span>0<span class="cell-idx">←</span></div>
+            <div class="tape-cell window-R"><span class="window-label wl-R">R=1</span>1</div>
+          </div>
+          <div class="example-box" style="margin-top:1.5rem">
+            <div class="example-header">p(1, 0, 1)</div>
+            <p style="font-family:'JetBrains Mono',monospace;margin:0">
+              = 0 + 1 − (0×1) − (1×0×1)<br>
+              = 0 + 1 − 0 − 0<br>
+              = <strong>1</strong>
+            </p>
+          </div>
+          <p>Cell 3 becomes <strong>1</strong>.</p>
+        </div>
+
+        <!-- Step 5: Cell 4 -->
+        <div class="step-panel">
+          <p><strong>Cell 4:</strong> The right neighbor is outside the tape, so R = 0.</p>
+          <div class="tape-row">
+            <div class="tape-cell">0</div><div class="tape-cell">1</div><div class="tape-cell">1</div><div class="tape-cell">0</div>
+            <div class="tape-cell window-L"><span class="window-label wl-L">L=0</span>0</div>
+            <div class="tape-cell window-C"><span class="window-label wl-C">C=1</span>1<span class="cell-idx">←</span></div>
+            <div class="tape-cell window-R"><span class="window-label wl-R">R=0</span>0<span class="cell-idx">boundary</span></div>
+          </div>
+          <div class="example-box" style="margin-top:1.5rem">
+            <div class="example-header">p(0, 1, 0)</div>
+            <p style="font-family:'JetBrains Mono',monospace;margin:0">
+              = 1 + 0 − (1×0) − (0×1×0)<br>
+              = 1 + 0 − 0 − 0<br>
+              = <strong>1</strong>
+            </p>
+          </div>
+          <p>Cell 4 becomes <strong>1</strong>.</p>
+        </div>
+
+        <!-- Step 6: Result -->
+        <div class="step-panel">
+          <p><strong>Before and after:</strong></p>
+          <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:0.5rem">Generation t:</p>
+          <div class="tape-row">
+            <div class="tape-cell">0</div>
+            <div class="tape-cell">1</div>
+            <div class="tape-cell">1</div>
+            <div class="tape-cell">0</div>
+            <div class="tape-cell">1</div>
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);margin:1rem 0 0.5rem">Generation t+1:</p>
+          <div class="tape-row">
+            <div class="tape-cell active">1</div>
+            <div class="tape-cell active">1</div>
+            <div class="tape-cell active">1</div>
+            <div class="tape-cell active">1</div>
+            <div class="tape-cell active">1</div>
+          </div>
+          <p style="margin-top:1.5rem">
+            All five cells computed to 1. You can verify each against the Rule 110 truth table — 
+            (0,0,1)→1, (0,1,1)→1, (1,1,0)→1, (1,0,1)→1, (0,1,0)→1. All match.
+          </p>
+        </div>
+
+        <div class="steps-footer">
+          <button class="btn btn--secondary" data-action="prev">← Previous</button>
+          <button class="btn btn--primary"   data-action="next">Next →</button>
+          <span class="steps-counter">Step 1 of 7</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 4: 7-State Worked Example ═══ -->
+    <section class="lesson-section" id="example-7state">
+      <h2>Worked Example B — 7-State Tape</h2>
+      <p>
+        Now use states from the full GF(7) alphabet: {0, 1, 2, 3, 4, 5, 6}. 
+        The polynomial is identical — the only difference is that the result 
+        is taken mod 7, so it wraps around when it reaches 7 or goes negative.
+      </p>
+
+      <p><strong>Initial tape:</strong> [0, 3, 5, 2, 0] — fixed-zero boundary.</p>
+
+      <div class="steps" id="steps-7state">
+        <div class="steps-nav">
+          <button class="step-pill">Overview</button>
+          <button class="step-pill">Cell 0</button>
+          <button class="step-pill">Cell 1</button>
+          <button class="step-pill">Cell 2 ★</button>
+          <button class="step-pill">Cells 3–4</button>
+          <button class="step-pill">Result</button>
+        </div>
+
+        <div class="step-panel">
+          <div class="tape-row">
+            <div class="tape-cell">0<span class="cell-idx">0</span></div>
+            <div class="tape-cell">3<span class="cell-idx">1</span></div>
+            <div class="tape-cell">5<span class="cell-idx">2</span></div>
+            <div class="tape-cell">2<span class="cell-idx">3</span></div>
+            <div class="tape-cell">0<span class="cell-idx">4</span></div>
+          </div>
+          <p style="margin-top:1.5rem">
+            Same formula. Same procedure. The only new step: when the raw sum is outside 
+            {0,…,6}, reduce it modulo 7. A negative number like −7 reduces to 0 
+            (because −7 + 7 = 0). A number like −33 reduces to 2 (because −33 + 35 = 2, 
+            and 35 = 7 × 5).
+          </p>
+        </div>
+
+        <div class="step-panel">
+          <p><strong>Cell 0:</strong> L = 0 (boundary), C = 0, R = 3.</p>
+          <div class="example-box">
+            <div class="example-header">p(0, 0, 3)</div>
+            <p style="font-family:'JetBrains Mono',monospace;margin:0">
+              = 0 + 3 − (0×3) − (0×0×3)<br>
+              = 0 + 3 − 0 − 0<br>
+              = 3 &nbsp;(no mod needed)<br>
+              → <strong>3</strong>
+            </p>
+          </div>
+        </div>
+
+        <div class="step-panel">
+          <p><strong>Cell 1:</strong> L = 0, C = 3, R = 5.</p>
+          <div class="example-box">
+            <div class="example-header">p(0, 3, 5)</div>
+            <p style="font-family:'JetBrains Mono',monospace;margin:0">
+              = 3 + 5 − (3×5) − (0×3×5)<br>
+              = 3 + 5 − 15 − 0<br>
+              = −7<br>
+              mod 7: −7 + 7 = 0 &nbsp; → <strong>0</strong>
+            </p>
+          </div>
+        </div>
+
+        <div class="step-panel">
+          <p><strong>Cell 2 — the interesting one:</strong> L = 3, C = 5, R = 2.</p>
+          <div class="example-box">
+            <div class="example-header">p(3, 5, 2)</div>
+            <p style="font-family:'JetBrains Mono',monospace;margin:0">
+              = 5 + 2 − (5×2) − (3×5×2)<br>
+              = 5 + 2 − 10 − 30<br>
+              = −33<br><br>
+              mod 7: need a multiple of 7 that brings −33 into {0…6}<br>
+              7 × 5 = 35, and −33 + 35 = <strong>2</strong><br>
+              → <strong>2</strong>
+            </p>
+          </div>
+          <p>The raw sum is −33. Add enough multiples of 7 to reach a positive value in {0,…,6}. 
+          Since 7×5 = 35, we get −33 + 35 = 2.</p>
+        </div>
+
+        <div class="step-panel">
+          <p><strong>Cell 3:</strong> L = 5, C = 2, R = 0.</p>
+          <div class="example-box">
+            <div class="example-header">p(5, 2, 0)</div>
+            <p style="font-family:'JetBrains Mono',monospace;margin:0">
+              = 2 + 0 − (2×0) − (5×2×0)<br>
+              = 2 &nbsp; → <strong>2</strong>
+            </p>
+          </div>
+          <p><strong>Cell 4:</strong> L = 2, C = 0, R = 0 (boundary).</p>
+          <div class="example-box">
+            <div class="example-header">p(2, 0, 0)</div>
+            <p style="font-family:'JetBrains Mono',monospace;margin:0">
+              = 0 + 0 − 0 − 0 = 0 &nbsp; → <strong>0</strong>
+            </p>
+          </div>
+        </div>
+
+        <div class="step-panel">
+          <p style="color:var(--text-secondary);font-size:0.85rem;margin-bottom:0.5rem">Generation t:</p>
+          <div class="tape-row">
+            <div class="tape-cell">0</div><div class="tape-cell">3</div><div class="tape-cell">5</div>
+            <div class="tape-cell">2</div><div class="tape-cell">0</div>
+          </div>
+          <p style="color:var(--text-secondary);font-size:0.85rem;margin:1rem 0 0.5rem">Generation t+1:</p>
+          <div class="tape-row">
+            <div class="tape-cell active">3</div>
+            <div class="tape-cell active">0</div>
+            <div class="tape-cell active">2</div>
+            <div class="tape-cell active">2</div>
+            <div class="tape-cell active">0</div>
+          </div>
+          <p style="margin-top:1.5rem">
+            The 7-state polynomial evolves freely through all of {0,…,6}. 
+            Non-binary values appear after just one step, even from a tape 
+            that started with only a few non-zero cells.
+          </p>
+        </div>
+
+        <div class="steps-footer">
+          <button class="btn btn--secondary" data-action="prev">← Previous</button>
+          <button class="btn btn--primary"   data-action="next">Next →</button>
+          <span class="steps-counter">Step 1 of 6</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 5: Rule 110 Connection ═══ -->
+    <section class="lesson-section" id="rule110">
+      <h2>The Rule 110 Connection</h2>
+      <p>
+        When every cell holds only 0 or 1, the polynomial 
+        <code>p(L,C,R) = C + R − CR − LCR</code> stays in {0, 1} — no mod-7 wrapping 
+        ever happens. Check all 8 binary input triples and compare to Rule 110:
+      </p>
+
+      <div class="example-box" style="overflow-x:auto">
+        <div class="example-header">p(L,C,R) vs Rule 110 — all 8 binary inputs</div>
+        <table class="calc-table" style="width:100%">
+          <thead>
+            <tr>
+              <th>L</th><th>C</th><th>R</th>
+              <th>p(L,C,R)</th><th>Rule 110</th><th>Match</th>
+            </tr>
+          </thead>
+          <tbody id="truth-table-body">
+            <!-- filled by renderPolynomialTruthTable() -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout--success" style="margin-top:1.5rem">
+        <div class="callout-title">All 8 rows match — this is a theorem</div>
+        <p>
+          The polynomial was not designed to reproduce Rule 110. It was selected by 
+          minimum description length from all 7-state, radius-1 rules consistent with 
+          the UGP invariants. The fact that its binary restriction equals Rule 110 
+          is a consequence — proved by exhaustive case analysis and machine-certified in Lean 4.
+        </p>
+        <p>
+          <span data-lean="uwca_sweep_implements_rule110"></span>
+          &nbsp;
+          <span data-lean="uwca_simulates_rule110_real"></span>
+        </p>
+      </div>
+
+      <h3>Why does this matter?</h3>
+      <p>
+        Rule 110 is <strong>computationally universal</strong> — it can simulate any Turing machine 
+        (proved by Matthew Cook, 2004). Since the GTE polynomial equals Rule 110 on binary inputs, 
+        the UGP substrate is also computationally universal. The arithmetic itself can compute anything.
+        This is the content of <a href="../L05_uwca/index.html">Lesson 5</a>.
+      </p>
+    </section>
+
+    <!-- ═══ Key Takeaways ═══ -->
+    <section class="lesson-section" id="takeaways">
+      <h2>Key Takeaways</h2>
+      <ul class="takeaway-list">
+        <li>
+          The formula <code>p(L,C,R) = C + R − CR − LCR</code> computes the next state of any cell 
+          from its neighborhood (L, C, R), using arithmetic instead of a lookup table.
+          The result is taken mod 7 — it wraps when it reaches 7 or goes negative.
+        </li>
+        <li>
+          The polynomial operates over GF(7), a 7-element field: states {0, 1, 2, 3, 4, 5, 6}. 
+          That is <strong>7 states per cell</strong>. The number 8 is the count of 
+          binary input <em>triples</em> (L,C,R) — not the state count.
+        </li>
+        <li>
+          On binary inputs {0, 1}, the polynomial gives exactly the Rule 110 truth table 
+          on all 8 binary cases. This is a theorem — not a design choice — 
+          machine-certified in Lean 4 with zero sorry.
+          <span data-lean="uwca_sweep_implements_rule110"></span>
+        </li>
+        <li>
+          Non-binary states (2–6) are also valid inputs. The same formula handles the 
+          full GTE dynamics. The binary case is the restriction to a 2-symbol sub-sector 
+          of the 7-state system.
+        </li>
+        <li>
+          Cells outside the tape are treated as 0 (fixed-zero boundary convention).
+        </li>
+        <li>
+          The polynomial operates over GF(7), but what exactly is a "cell state" — 
+          why seven values, and why this arithmetic? That question is the subject of L04.
+        </li>
+      </ul>
+    </section>
+
+    <!-- ═══ See Also ═══ -->
+    <div class="see-also">
+      <h2>See Also</h2>
+      <div class="see-also-group">
+        <div class="see-also-label">Lean 4 proofs (ugp-lean)</div>
+        <ul class="source-list">
+          <li><code>uwca_sweep_implements_rule110</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/UWCASimulation.lean" target="_blank" rel="noopener">view on GitHub ↗</a></li>
+          <li><code>uwca_simulates_rule110_real</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/UWCASimulation.lean" target="_blank" rel="noopener">view on GitHub ↗</a></li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Source papers</div>
+        <ul class="source-list">
+          <li><a href="https://doi.org/10.5281/zenodo.20560550" target="_blank" rel="noopener">P48 — The Complete GTE Framework ↗</a></li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Full tutorial (PDF)</div>
+        <ul class="source-list">
+          <li><a href="https://novaspivack.com/research" target="_blank" rel="noopener">The GTE Polynomial: A Step-by-Step Cheat Sheet — UGP Tutorial Series ↗</a></li>
+        </ul>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ═══ Lesson Footer Navigation ═══ -->
+  <div class="page-wrapper">
+    <footer class="lesson-footer">
+      <a href="../L02_principle_psc_mdl/index.html" class="nav-btn nav-btn--prev">← L02: The Principle</a>
+      <a href="../L04_ugp_state_space/index.html"    class="nav-btn nav-btn--next">L04: The State Space →</a>
+    </footer>
+  </div>
+
+  <!-- Math -->
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})">
+  </script>
+
+  <script src="../../common/interactive.js"></script>
+  <script src="../../common/nav.js"></script>
+  <script>
+    // Lean ref registry for this lesson
+    const LEAN_REFS = {
+      "uwca_sweep_implements_rule110": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/UWCASimulation.lean"
+      },
+      "uwca_simulates_rule110_real": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/UWCASimulation.lean"
+      }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initSteps('steps-binary');
+      initSteps('steps-7state');
+      tabSwitch('seven-vs-eight');
+      autoRenderLeanBadges(LEAN_REFS);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,120 @@
+# Configuration for UGP Yukawa/CKM/PMNS Flow - Geometry Fixed Implementation
+# Research Question 1.2: Fit-Free, Kernel-Locked Flow with Proper Mixing Plane Geometry
+
+experiment:
+  name: ugp_yukawa_ckm_pmns_flow_geometry_fixed
+  description: "Geometry-fixed flow with proper mixing plane confinement and Strang splitting"
+  inputs:
+    runs:
+      - "canonical_gte_triples.json"
+
+  options:
+    # Discrete choices only (no continuous tuning)
+    e_basis_orientations: ["e1", "e2", "e1_plus_e2", "e1_minus_e2"]
+    kappa_angles: [0, 1, 2]  # m ∈ {0,1,2} for S3-aligned angles
+    phi_bias_choices: ["none", "phi", "invphi"]
+    
+    # PDG targets for error calculation
+    pdg_targets_ckm: [0.2245, 0.041, 0.00365]
+    pdg_targets_pmns: [33.44, 8.57, 49.2]  # degrees
+
+geometry_fixed_framework:
+  a1_axis_projection: true
+  mixing_plane_confinement: true
+  strang_splitting: true
+  traceless_e_generators: true
+  per_sector_normalization: true
+  kernel_locked_parameters: true
+
+theoretical_constraints:
+  fit_free: true
+  discrete_choices_only: true
+  kernel_locked: true
+  ugp_consistency: true
+  
+  parameter_justification:
+    a1_projection: "Confines flow to mixing plane, eliminates A1 axis leakage"
+    strang_splitting: "Structure-preserving composition, prevents over-rotation"
+    traceless_e: "Removes diagonal growth, locks heavy axis"
+    phi_bias: "Discrete golden ratio correction for wedge-ranked factors"
+
+discrete_parameter_space:
+  total_combinations: 864  # 4² × 3 × 3 × 6 (S3)
+  e_basis_orientations:
+    description: "Discrete E irrep basis choices"
+    choices: ["e1", "e2", "e1_plus_e2", "e1_minus_e2"]
+    rationale: "Natural 0°, 90°, ±45° orientations in E plane"
+  
+  kappa_angles:
+    description: "S3-aligned kappa directions"
+    choices: [0, 1, 2]
+    rationale: "(k_gen + k_gen2) + m*(2π/3), m ∈ {0,1,2}"
+  
+  phi_bias_choices:
+    description: "Discrete golden ratio corrections"
+    choices: ["none", "phi", "invphi"]
+    rationale: "Wedge-ranked golden factor as rank-2 correction"
+
+flow_geometry:
+  a1_axis_construction:
+    method: "s_i = phi^(g-2) for generation g"
+    projection: "P = (s s^T) / (s^T s), Q = I - P"
+    purpose: "Eliminate mixing power leakage into A1 subspace"
+  
+  generator_modification:
+    e_generator: "E_tilde = Q @ (E_op - Tr(E_op)/3 * I) @ Q"
+    a_generator: "A_tilde = Q @ A_op @ Q"
+    normalization: "E_hat = E_tilde / ρ(E_tilde), A_hat = A_tilde / ρ(A_tilde)"
+  
+  strang_splitting:
+    composition: "Symmetric: E/2 → A → E/2"
+    purpose: "Structure-preserving, prevents systematic over-rotation"
+    implementation: "expm(eps*tauE/2 * E_hat) @ M @ expm(eps*tauE/2 * E_hat^T)"
+
+time_normalization:
+  global_tau0: "ln(2) * L_residual (nats)"
+  per_sector_scaling: "tauE = tau0 / ρ(E_tilde), tauA = tau0 / ρ(A_tilde)"
+  kernel_parameters: "eps = sqrt(k_L2), epsp = eps / phi"
+  
+  discrete_bias:
+    phi_correction: "tauE *= phi or tauE /= phi for one sector"
+    rationale: "Wedge-ranked golden factor as discrete correction"
+
+success_criteria:
+  ckm_targets:
+    vus_error: "< 5%"
+    vcb_error: "< 20%"
+    vub_error: "< 50%"
+    jarlskog: "~3×10^-5"
+  
+  pmns_targets:
+    theta12_error: "< 10%"
+    theta13_error: "< 20%"
+    theta23_error: "< 15%"
+    non_zero_j: true
+  
+  overall_performance:
+    rms_error: "< 2% (target: sub-percent accuracy)"
+    improvement_factor: "> 2.5x vs previous 4.94%"
+
+validation:
+  geometry_checks:
+    a1_projection_test: "||Q·s|| << ||s||"
+    traceless_verification: "Tr(E_hat) ≈ 0"
+    strang_balance: "Symmetric composition preserves structure"
+  
+  claims_gate:
+    independent_encoders: "Linear-E vs HM-face-E give same results"
+    null_tests: "Δ→0 or E→const collapse mixing and CP"
+    reproducibility: "Discrete choices give consistent results"
+
+output:
+  save_geometry_analysis: true
+  save_parameter_sensitivity: true
+  save_best_configuration: true
+  save_flow_visualization: true
+  save_claims_gate_results: true
+  
+  detailed_reporting: true
+  comparison_with_previous: true
+  improvement_quantification: true

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L17: The GTE–Wolfram Bridge — UGP Physics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="../../common/style.css">
+  <style>
+    /* ── Comparison table ────────────────────────────────────────── */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2px;
+      margin: 1.25rem 0;
+      border-radius: var(--r-md);
+      overflow: hidden;
+    }
+    .cg-cell {
+      padding: 0.55rem 0.75rem;
+      font-size: 0.84rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--stroke-secondary);
+    }
+    .cg-header {
+      background: var(--bg-card);
+      font-weight: 700;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-secondary);
+    }
+    .cg-topic { font-weight: 700; color: var(--text-primary); background: var(--bg-card); }
+    .cg-gte   { background: rgba(16,185,129,0.06); }
+    .cg-wolf  { background: rgba(245,158,11,0.06); }
+    .cg-agree { background: rgba(34,197,94,0.05); border-color: rgba(34,197,94,0.2); }
+
+    /* ── The Triangle diagram ────────────────────────────────────── */
+    .triangle-box {
+      background: var(--bg-elevated);
+      border: 1.5px solid var(--stroke-primary);
+      border-radius: var(--r-lg);
+      padding: 1.5rem;
+      margin: 1.25rem 0;
+      text-align: center;
+    }
+    .tri-nodes {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.5rem;
+      margin: 0.75rem 0;
+    }
+    .tri-node {
+      flex: 1;
+      background: var(--bg-card);
+      border: 2px solid var(--stroke-primary);
+      border-radius: var(--r-md);
+      padding: 0.75rem 0.5rem;
+      text-align: center;
+    }
+    .tri-node.tn-gte  { border-color: rgba(16,185,129,0.5); background: rgba(16,185,129,0.07); }
+    .tri-node.tn-rule { border-color: rgba(139,92,246,0.5); background: rgba(139,92,246,0.07); }
+    .tri-node.tn-wolf { border-color: rgba(245,158,11,0.5); background: rgba(245,158,11,0.07); }
+    .tri-node .tn-name { font-weight: 700; font-size: 0.88rem; margin-bottom: 0.25rem; }
+    .tri-node .tn-desc { font-size: 0.75rem; color: var(--text-secondary); }
+    .tn-gte  .tn-name { color: #10B981; }
+    .tn-rule .tn-name { color: #8B5CF6; }
+    .tn-wolf .tn-name { color: #F59E0B; }
+    .tri-arrows {
+      display: flex;
+      justify-content: space-around;
+      padding: 0 2rem;
+      color: var(--text-tertiary);
+      font-size: 0.8rem;
+      margin: 0.5rem 0;
+    }
+
+    /* ── Distinction cards ───────────────────────────────────────── */
+    .distinction-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+    .dist-item {
+      display: grid;
+      grid-template-columns: 24px 1fr 1fr;
+      gap: 0.75rem;
+      align-items: start;
+    }
+    .dist-num {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.8rem;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+    .dist-wolf {
+      background: var(--bg-elevated);
+      border: 1px solid rgba(245,158,11,0.25);
+      border-radius: var(--r-md);
+      padding: 0.6rem 0.75rem;
+      font-size: 0.83rem;
+    }
+    .dist-gte {
+      background: var(--bg-elevated);
+      border: 1px solid rgba(16,185,129,0.25);
+      border-radius: var(--r-md);
+      padding: 0.6rem 0.75rem;
+      font-size: 0.83rem;
+    }
+    .dist-wolf strong { color: #F59E0B; }
+    .dist-gte  strong { color: #10B981; }
+
+    /* ── Rule 110 connection ─────────────────────────────────────── */
+    .rule110-vis {
+      display: flex;
+      gap: 3px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 0.75rem 0;
+    }
+    .r110-cell {
+      width: 20px; height: 20px;
+      border-radius: 2px;
+    }
+    .r110-on  { background: #10B981; }
+    .r110-off { background: var(--bg-elevated); border: 1px solid var(--stroke-secondary); }
+  </style>
+</head>
+<body style="--path-current: var(--path-3)" data-path="3" data-lesson="6" data-total="6">
+
+  <header class="site-header">
+    <a href="../../index.html" class="site-logo">UGP Physics</a>
+    <nav class="breadcrumb">
+      <a href="../../index.html">Tutorial Series</a>
+      <span class="bc-sep">›</span>
+      <a href="../index.html">Path 3: Particles</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">L17: The GTE–Wolfram Bridge</span>
+    </nav>
+  </header>
+
+  <main class="page-wrapper">
+
+    <div class="lesson-header">
+      <div class="path-label">Path 3 — Particles · Lesson 17 of 17</div>
+      <h1>The GTE–Wolfram Bridge</h1>
+      <p class="lesson-subtitle">
+        Both GTE and the Wolfram Physics Project start from discrete computational rules 
+        and arrive at universal computation. Where they agree, and where GTE adds what 
+        Wolfram lacks: a selection principle.
+      </p>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:100%"></div>
+      </div>
+    </div>
+
+    <!-- ═══ Section 1: The Wolfram Physics Programme ═══ -->
+    <section class="lesson-section" id="wolfram">
+      <h2>The Wolfram Physics Programme</h2>
+      <p>
+        The <strong>Wolfram Physics Project</strong> (Stephen Wolfram and Jonathan Gorard, 2020) 
+        is the most recent systematic attempt to derive physics from a discrete computational rule. 
+        It has three key components:
+      </p>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin:1rem 0">
+        <div class="card">
+          <div class="card-header">Hypergraph rules</div>
+          <div class="card-body" style="font-size:0.85rem">
+            The universe modeled as a hypergraph — points with multi-way connections — 
+            evolving by a local rewriting rule. Each application creates new connections 
+            and deletes old ones.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">Causal graphs</div>
+          <div class="card-body" style="font-size:0.85rem">
+            The causal graph records which rule applications causally depend on which others. 
+            In the continuum limit, the causal graph encodes a Lorentzian metric on spacetime — 
+            Einstein's equations appear.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">Multiway systems</div>
+          <div class="card-body" style="font-size:0.85rem">
+            When multiple rule applications are possible, the multiway system tracks all 
+            simultaneously. Quantum mechanics is proposed to emerge from the structure 
+            of paths through the multiway graph.
+          </div>
+        </div>
+      </div>
+
+      <p>
+        The programme is maximally inclusive: it defines the <strong>Ruliad</strong> as the 
+        union of all possible computations. The physical universe is somewhere in the Ruliad — 
+        but <em>which</em> specific rule describes it?
+      </p>
+      <div class="callout callout--neutral">
+        <div class="callout-title">The central gap</div>
+        <p>
+          The Wolfram Physics programme has no selection principle. The Ruliad contains 
+          every possible computational rule. There is no mechanism for identifying which 
+          rule is the one that generates our universe. This is the question that GTE answers.
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══ Section 2: What GTE Adds ═══ -->
+    <section class="lesson-section" id="gte-adds">
+      <h2>What GTE Adds: The Selection Principle</h2>
+      <p>
+        GTE provides what Wolfram Physics lacks: a <strong>selection principle</strong> 
+        that identifies the unique computational rule from first principles, and 
+        machine-certifies it.
+      </p>
+
+      <div class="card">
+        <div class="card-header">GTE's answer to "which rule?"</div>
+        <div class="card-body">
+          <p>
+            <strong>Minimum Description Length (MDL)</strong> selects the rule. Among all 
+            rules consistent with the derivability constraints (chirality, color, 
+            three-generation spectrum, and Lorentz invariance), the shortest description 
+            is <code>p(L,C,R) = C+R−CR−LCR mod 7</code> — 19 bits. 
+            This is the unique MDL-minimal rule.
+          </p>
+          <p style="margin-top:0.5rem;font-size:0.85rem;color:var(--text-secondary)">
+            MDL selection is not a metaphysical claim about "what the universe prefers." 
+            It is a mathematical theorem: given the derivability constraints, only one rule 
+            survives the five-step elimination funnel explained in 
+            <a href="../../path_2_selection/L08_mdl_selection/index.html" class="xref">L08</a>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 3: The Triangle ═══ -->
+    <section class="lesson-section" id="triangle">
+      <h2>The Triangle: Two Paths to Rule 110</h2>
+      <p>
+        One of the most striking connections between GTE and Wolfram Physics is that 
+        both arrive at <strong>Rule 110</strong> — the specific 1D cellular automaton 
+        rule that Wolfram has shown to be computationally universal — but via completely 
+        different paths.
+      </p>
+
+      <div class="triangle-box">
+        <div class="tri-nodes">
+          <div class="tri-node tn-gte">
+            <div class="tn-name">GTE/MDL Selection</div>
+            <div class="tn-desc">The polynomial p over GF(7) is MDL-selected. Its binary restriction is Rule 110.</div>
+          </div>
+          <div class="tri-node tn-rule">
+            <div class="tn-name">Rule 110</div>
+            <div class="tn-desc">Computationally universal. Both paths arrive here independently.</div>
+          </div>
+          <div class="tri-node tn-wolf">
+            <div class="tn-name">Wolfram Physics</div>
+            <div class="tn-desc">Explores the Ruliad. Rule 110 is identified as physically significant by computational universality.</div>
+          </div>
+        </div>
+        <div class="tri-arrows">
+          <span>Path A: MDL → GF(7) polynomial → binary restriction = Rule 110</span>
+          <span>Path B: Computational universality identifies Rule 110 as special</span>
+        </div>
+      </div>
+
+      <h3>Path A: Direct-Interpolation Lift</h3>
+      <p>
+        The GTE polynomial p over GF(7) operates on 7-state cells. When restricted to 
+        the binary subfield {0, 1} ⊂ GF(7), the polynomial evaluates to the Rule 110 
+        look-up table exactly. This is not a coincidence — the MDL selection that picks 
+        p is the same principle that forces the binary restriction to be the simplest 
+        universally-computing 1D rule.
+      </p>
+
+      <h3>Path B: Wolfram's Computational Universality Argument</h3>
+      <p>
+        Wolfram and collaborators have shown that Rule 110 is computationally universal — 
+        it can simulate any Turing machine. This means Rule 110 is not just complex; 
+        it is capable of representing any computable physics. 
+        A universe that can be described by a computationally universal rule is one where 
+        no further selection is needed: the rule can produce any pattern in the Ruliad.
+      </p>
+
+      <p>
+        <strong>Convergence:</strong> MDL selection (Path A) and computational universality 
+        (Path B) both single out Rule 110 as the fundamental rule. This convergence is 
+        not trivial — it provides independent confirmation that Rule 110 is the correct 
+        underlying structure.
+      </p>
+    </section>
+
+    <!-- ═══ Section 4: Three Key Distinctions ═══ -->
+    <section class="lesson-section" id="distinctions">
+      <h2>Three Key Distinctions</h2>
+      <p>
+        For readers familiar with Wolfram Physics, here are the three most important 
+        points of difference:
+      </p>
+
+      <div class="compare-grid">
+        <div class="cg-cell cg-header">Question</div>
+        <div class="cg-cell cg-header" style="color:#10B981">GTE</div>
+        <div class="cg-cell cg-header" style="color:#F59E0B">Wolfram Physics</div>
+
+        <div class="cg-cell cg-topic">Which rule?</div>
+        <div class="cg-cell cg-gte">MDL uniquely forces p over GF(7). There is one answer.</div>
+        <div class="cg-cell cg-wolf">The Ruliad contains all rules. The question is left open.</div>
+
+        <div class="cg-cell cg-topic">Particle masses</div>
+        <div class="cg-cell cg-gte">Derived from the GTE orbit: 9 fermion masses at 0.295% RMS, zero free parameters.</div>
+        <div class="cg-cell cg-wolf">Not derived; masses are external inputs to any specific model.</div>
+
+        <div class="cg-cell cg-topic">Machine certification</div>
+        <div class="cg-cell cg-gte">Over 300 theorems machine-certified in Lean 4 with zero sorry.</div>
+        <div class="cg-cell cg-wolf">Results are analytical/computational but not machine-certified in a proof assistant.</div>
+
+        <div class="cg-cell cg-topic cg-agree">Agreement: Rule 110</div>
+        <div class="cg-cell cg-agree" style="grid-column: span 2">Both approaches identify Rule 110 / the GTE polynomial as the fundamental computational rule. This agreement provides independent validation.</div>
+
+        <div class="cg-cell cg-topic cg-agree">Agreement: Causal graphs</div>
+        <div class="cg-cell cg-agree" style="grid-column: span 2">Both use causal-graph structures to derive spacetime geometry. The CMCA causal diamond (GTE) and Wolfram's causal graph are structurally analogous.</div>
+
+        <div class="cg-cell cg-topic cg-agree">Agreement: Emergence</div>
+        <div class="cg-cell cg-agree" style="grid-column: span 2">Both hold that spacetime, particles, and forces emerge from discrete local computational rules, rather than being fundamental inputs.</div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 5: The Chirality Census ═══ -->
+    <section class="lesson-section" id="chirality">
+      <h2>The Chirality Census: {Rule 110, Rule 124}</h2>
+      <p>
+        One specific connection between GTE and Wolfram Physics is the 
+        <strong>chirality census</strong>. The GTE polynomial's CMCA uses 
+        both Rule 110 (right-chiral) and Rule 124 (left-chiral) as its two outer layers. 
+        Together they form a chiral pair.
+      </p>
+      <p>
+        Wolfram Physics uses a single rule operating on an undirected hypergraph. 
+        GTE's insight is that chirality — the asymmetry between left-handed and 
+        right-handed particles observed in the weak force — requires a fundamentally 
+        <em>directed</em> computational rule. The CMCA pair {Rule 110, Rule 124} 
+        is the minimal directed-rule structure that is:
+      </p>
+      <ul style="margin:0.5rem 0 0.75rem 1.25rem;display:flex;flex-direction:column;gap:0.3rem;font-size:0.88rem">
+        <li>Computationally universal (via Rule 110)</li>
+        <li>Chirally asymmetric (Rule 110 ≠ Rule 124)</li>
+        <li>MDL-minimal (two rules that are mirror images of each other)</li>
+      </ul>
+      <p>
+        This explains the observed parity violation in the weak force: it is a 
+        direct consequence of the chiral asymmetry of the underlying CA pair.
+      </p>
+    </section>
+
+    <!-- ═══ Section 6: Path 3 Complete ═══ -->
+    <section class="lesson-section" id="path-complete">
+      <h2>Path 3 Complete</h2>
+      <p>
+        You have now covered all six lessons of Path 3 — Particles:
+      </p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin:1rem 0">
+        <a href="../L12_phimdl_field/index.html" style="display:flex;align-items:center;gap:0.5rem;background:var(--bg-elevated);border:1px solid var(--stroke-primary);border-radius:var(--r-md);padding:0.6rem 0.75rem;text-decoration:none;color:var(--text-secondary);font-size:0.85rem">
+          <span style="font-weight:700;color:var(--accent)">L12</span> The Φ_MDL Field
+        </a>
+        <a href="../L13_three_tape_cmca/index.html" style="display:flex;align-items:center;gap:0.5rem;background:var(--bg-elevated);border:1px solid var(--stroke-primary);border-radius:var(--r-md);padding:0.6rem 0.75rem;text-decoration:none;color:var(--text-secondary);font-size:0.85rem">
+          <span style="font-weight:700;color:var(--accent)">L13</span> The Three-Tape CMCA
+        </a>
+        <a href="../L14_particles_as_kinks/index.html" style="display:flex;align-items:center;gap:0.5rem;background:var(--bg-elevated);border:1px solid var(--stroke-primary);border-radius:var(--r-md);padding:0.6rem 0.75rem;text-decoration:none;color:var(--text-secondary);font-size:0.85rem">
+          <span style="font-weight:700;color:var(--accent)">L14</span> Particles as Kinks
+        </a>
+        <a href="../L15_quantum_numbers/index.html" style="display:flex;align-items:center;gap:0.5rem;background:var(--bg-elevated);border:1px solid var(--stroke-primary);border-radius:var(--r-md);padding:0.6rem 0.75rem;text-decoration:none;color:var(--text-secondary);font-size:0.85rem">
+          <span style="font-weight:700;color:var(--accent)">L15</span> SM Quantum Numbers
+        </a>
+        <a href="../L16_masses_from_arithmetic/index.html" style="display:flex;align-items:center;gap:0.5rem;background:var(--bg-elevated);border:1px solid var(--stroke-primary);border-radius:var(--r-md);padding:0.6rem 0.75rem;text-decoration:none;color:var(--text-secondary);font-size:0.85rem">
+          <span style="font-weight:700;color:var(--accent)">L16</span> Masses from Arithmetic
+        </a>
+        <a href="./index.html" style="display:flex;align-items:center;gap:0.5rem;background:rgba(16,185,129,0.08);border:2px solid rgba(16,185,129,0.4);border-radius:var(--r-md);padding:0.6rem 0.75rem;text-decoration:none;color:#10B981;font-size:0.85rem;font-weight:600">
+          <span style="font-weight:700;">L17</span> The GTE–Wolfram Bridge ✓
+        </a>
+      </div>
+
+      <div style="text-align:center;padding:1.5rem 0 2rem">
+        <a href="../../index.html" class="hero-cta">Return to Tutorial Series Home →</a>
+      </div>
+    </section>
+
+    <!-- Nav -->
+    <nav class="lesson-nav">
+      <a href="../L16_masses_from_arithmetic/index.html" class="lesson-nav-btn lesson-nav-prev">← L16: Masses from Arithmetic</a>
+      <a href="../../index.html" class="lesson-nav-btn lesson-nav-next">Tutorial Series Home →</a>
+    </nav>
+
+  </main>
+
+  <footer class="site-footer">
+    UGP Physics Tutorial Series · Nova Spivack · 
+    <a href="https://novaspivack.com/research">novaspivack.com/research</a>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script src="../../common/interactive.js"></script>
+  <script src="../../common/nav.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left:'$$',right:'$$',display:true},
+          {left:'$',right:'$',display:false}
+        ]
+      });
+    });
+  </script>
+</body>
+</html>

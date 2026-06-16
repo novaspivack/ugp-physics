@@ -1,0 +1,397 @@
+# Lean Theorem Registry — public repo registry (authoritative)
+# Policy: PUBLIC GitHub repos only (novaspivack/*, isPrivate == false, *lean* name)
+# Inventory doc: 000_INF_REPO_INVENTORY.md
+# Last synced: 2026-05-31
+
+version: 1
+policy: public_only
+
+defaults:
+  github_org: novaspivack
+  extract_timeout_seconds: 3600
+  probe_output_dir: data/ltr/probes
+  clone_root: ${LTR_CLONE_ROOT:-/Users/nova}
+
+stub_namespaces:
+  - prefix: Mathlib
+    stub_id: stub:Mathlib
+  - prefix: Std
+    stub_id: stub:Std
+  - prefix: Init
+    stub_id: stub:Init
+  - prefix: Lean
+    stub_id: stub:Lean
+  - prefix: Batteries
+    stub_id: stub:Batteries
+
+excluded_private:
+  - ugp-lean-exp
+  - unified-rigidity-lean
+  - domain-semantic-internalization-lean
+
+# ---------------------------------------------------------------------------
+# UGP / Physics core
+# ---------------------------------------------------------------------------
+repos:
+  ugp-lean:
+    tier: 1
+    family: ugp_physics
+    github: https://github.com/novaspivack/ugp-lean
+    path: ${LTR_CLONE_ROOT:-/Users/nova}/ugp-lean
+    package: UgpLean
+    namespaces: [UgpLean]
+    default_library: UgpLean
+    lean_files_approx: 311
+    metadata:
+      theorems_md: docs/THEOREMS.md  # STALE — ingest only until registry export replaces
+      modules_md: docs/MODULES.md
+    lake_requires:
+      - nems-lean
+      - transputation-lean
+      - aps-rice-lean
+      - rule110-lean
+      - ugp-physics-lean
+      - mathlib
+
+  ugp-physics-lean:
+    tier: 1
+    family: ugp_physics
+    github: https://github.com/novaspivack/ugp-physics-lean
+    path: ${LTR_CLONE_ROOT:-/Users/nova}/ugp-physics-lean
+    package: UgpPhysicsLean
+    namespaces: [UgpPhysicsLean]
+    default_library: UgpPhysicsLean
+    lean_files_approx: 32
+    notes: "Cyclic Lake dep with ugp-lean"
+    lake_requires:
+      - ugp-lean
+      - mathlib
+
+  srrg-lean:
+    tier: 1
+    family: ugp_physics
+    github: https://github.com/novaspivack/srrg-lean
+    path: ${LTR_CLONE_ROOT:-/Users/nova}/srrg-lean
+    package: SrrgLean
+    namespaces: [SrrgLean]
+    default_library: SrrgLean
+    lean_files_approx: 43
+    lake_requires:
+      - nems-lean
+      - ugp-physics-lean
+      - reflexive-closure-lean
+      - viable-continuation-lean
+      - mathlib
+
+  rule110-lean:
+    tier: 1
+    family: ugp_physics
+    github: https://github.com/novaspivack/rule110-lean
+    path: ${LTR_CLONE_ROOT:-/Users/nova}/rule110-lean
+    package: Rule110
+    namespaces: [Rule110]
+    default_library: Rule110
+    lean_files_approx: 72
+    lake_requires:
+      - mathlib
+
+  # ---------------------------------------------------------------------------
+  # NEMS foundation
+  # ---------------------------------------------------------------------------
+  nems-lean:
+    tier: 2
+    family: nems
+    github: https://github.com/novaspivack/nems-lean
+    path: ${LTR_CLONE_ROOT:-/Users/nova}/nems-lean
+    package: NemS
+    namespaces:
+      - NemS
+      - SelfReference
+      - Closure
+      - GPTClosure
+      - Reflection
+    default_library: NemS
+    lean_files_approx: 307
+    lake_requires:
+      - mathlib
+
+  transputation-lean:
+    tier: 2
+    family: nems
+    github: https://github.com/novaspivack/transputation-lean
+    path: ${LTR_CLONE_ROOT:-/Users/nova}/transputation-lean
+    package: Transputation
+    namespaces: [Transputation]
+    default_library: Transputation
+    lean_files_approx: 16
+    lake_requires:
+      - nems-lean
+      - mathlib
+
+  # ---------------------------------------------------------------------------
+  # APS recursion stack
+  # ---------------------------------------------------------------------------
+  aps-rice-lean:
+    tier: 2
+    family: aps
+    github: https://github.com/novaspivack/aps-rice-lean
+    path: ${LTR_CLONE_ROOT:-/Users/nova}/aps-rice-lean
+    package: APS
+    namespaces: [APS]
+    default_library: APS
+    lean_files_approx: 6
+    lake_requires:
+      - mathlib
+
+  aps-undecidability-interfaces-lean:
+    tier: 2
+    family: aps
+    github: https://github.com/novaspivack/aps-undecidability-interfaces-lean
+    path: ${LTR_CLONE_ROOT:-/Users/nova}/aps-undecidability-interfaces-lean
+    package: APSMinimalInterface
+    namespaces: [APSMinimalInterface]
+    default_library: APSMinimalInterface
+    lean_files_approx: 30
+    lake_requires:
+      - mathlib
+
+  aps-recursion-composition-uniformity-lean:
+    tier: 2
+    family: aps
+    github: https://github.com/novaspivack/aps-recursion-composition-uniformity-lean
+    path: ${LTR_CLONE_ROOT:-/Users/nova}/aps-recursion-composition-uniformity-lean
+    package: APSRecComp
+    namespaces: [APSRecComp]
+    default_library: APSRecComp
+    lean_files_approx: 30
+    lake_requires:
+      - aps-undecidability-interfaces-lean
+      - mathlib
+
+  aps-recursion-uniformization-lean:
+    tier: 2
+    family: aps
+    github: https://github.com/novaspivack/aps-recursion-uniformization-lean
+    path: ${LTR_CLONE_ROOT:-/Users/nova}/aps-recursion-uniformization-lean
+    package: APSUniformization
+    namespaces: [APSUniformization]
+    default_library: APSUniformization
+    lean_files_approx: 29
+    lake_requires:
+      - aps-undecidability-interfaces-lean
+      - aps-recursion-composition-uniformity-lean
+      - mathlib
+
+  # ---------------------------------------------------------------------------
+  # Reflexive / NEMS program libraries
+  # ---------------------------------------------------------------------------
+  reflexive-closure-lean:
+    tier: 2
+    family: reflexive
+    github: https://github.com/novaspivack/reflexive-closure-lean
+    path: ${LTR_CLONE_ROOT:-/Users/nova}/reflexive-closure-lean
+    package: ReflexiveClosure
+    namespaces:
+      - ReflexiveClosure
+      - SemanticSelfReference
+      - ReflexiveUnfolding
+      - Alpha
+    default_library: ReflexiveClosure
+    lean_files_approx: 146
+    lake_requires:
+      - nems-lean
+      - mathlib
+
+  viable-continuation-lean:
+    tier: 2
+    family: reflexive
+    github: https://github.com/novaspivack/viable-continuation-lean
+    path: ${LTR_CLONE_ROOT:-/Users/nova}/viable-continuation-lean
+    package: ViableContinuation
+    namespaces: [ViableContinuation]
+    default_library: ViableContinuation
+    lean_files_approx: 40
+    lake_requires:
+      - mathlib
+
+  representational-incompleteness-lean:
+    tier: 2
+    family: reflexive
+    github: https://github.com/novaspivack/representational-incompleteness-lean
+    path: ${LTR_CLONE_ROOT:-/Users/nova}/representational-incompleteness-lean
+    package: RepresentationalIncompleteness
+    namespaces: [RepresentationalIncompleteness]
+    default_library: RepresentationalIncompleteness
+    lean_files_approx: 32
+    lake_requires:
+      - mathlib
+
+  reflective-fold-obstruction-lean:
+    tier: 2
+    family: reflexive
+    github: https://github.com/novaspivack/reflective-fold-obstruction-lean
+    path: ${LTR_CLONE_ROOT:-/Users/nova}/reflective-fold-obstruction-lean
+    package: ReflectiveFoldObstruction
+    namespaces: [ReflectiveFoldObstruction]
+    default_library: ReflectiveFoldObstruction
+    lean_files_approx: 55
+    lake_requires:
+      - representational-incompleteness-lean
+      - mathlib
+
+  infinity-compression-lean:
+    tier: 2
+    family: reflexive
+    github: https://github.com/novaspivack/infinity-compression-lean
+    path: ${LTR_CLONE_ROOT:-/Users/nova}/infinity-compression-lean
+    package: InfinityCompression
+    namespaces: [InfinityCompression]
+    default_library: InfinityCompression
+    lean_files_approx: 133
+    lake_requires:
+      - mathlib
+
+  reflexive-architecture-lean:
+    tier: 2
+    family: reflexive
+    github: https://github.com/novaspivack/reflexive-architecture-lean
+    path: ${LTR_CLONE_ROOT:-/Users/nova}/reflexive-architecture-lean
+    package: ReflexiveArchitecture
+    namespaces: [ReflexiveArchitecture]
+    default_library: ReflexiveArchitecture
+    lean_files_approx: 80
+    lake_requires:
+      - nems-lean
+      - infinity-compression-lean
+      - mathlib
+
+  reflexive-architecture-non-exhaustibility-lean:
+    tier: 2
+    family: reflexive
+    github: https://github.com/novaspivack/reflexive-architecture-non-exhaustibility-lean
+    path: ${LTR_CLONE_ROOT:-/Users/nova}/reflexive-architecture-non-exhaustibility-lean
+    package: ReflexiveArchitectureNonexhaustibilityLean
+    namespaces: [ReflexiveArchitectureNonexhaustibilityLean]
+    default_library: ReflexiveArchitectureNonexhaustibilityLean
+    lean_files_approx: 43
+    lake_requires:
+      - nems-lean
+      - infinity-compression-lean
+      - mathlib
+
+  adequacy-architecture-lean:
+    tier: 2
+    family: reflexive
+    github: https://github.com/novaspivack/adequacy-architecture-lean
+    path: ${LTR_CLONE_ROOT:-/Users/nova}/adequacy-architecture-lean
+    package: AdequacyArchitecture
+    namespaces: [AdequacyArchitecture]
+    default_library: AdequacyArchitecture
+    lean_files_approx: 172
+    lake_requires:
+      - reflexive-architecture-lean
+      - aps-recursion-uniformization-lean
+      - mathlib
+
+  observer-non-exhaustability-lean:
+    tier: 2
+    family: reflexive
+    github: https://github.com/novaspivack/observer-non-exhaustability-lean
+    path: ${LTR_CLONE_ROOT:-/Users/nova}/observer-non-exhaustability-lean
+    package: Observer.Nonexhaustability
+    namespaces: [Observer.Nonexhaustability]
+    default_library: Observer.Nonexhaustability
+    lean_files_approx: 9
+    lake_requires:
+      - representational-incompleteness-lean
+      - reflective-fold-obstruction-lean
+      - nems-lean
+      - reflexive-closure-lean
+      - mathlib
+
+  sentience-lean:
+    tier: 2
+    family: reflexive
+    github: https://github.com/novaspivack/sentience-lean
+    path: ${LTR_CLONE_ROOT:-/Users/nova}/sentience-lean
+    package: Sentience
+    namespaces: [Sentience]
+    default_library: Sentience
+    lean_files_approx: 46
+    lake_requires:
+      - nems-lean
+      - reflexive-closure-lean
+      - viable-continuation-lean
+      - mathlib
+
+  phenomenology-lean:
+    tier: 2
+    family: reflexive
+    github: https://github.com/novaspivack/phenomenology-lean
+    path: ${LTR_CLONE_ROOT:-/Users/nova}/phenomenology-lean
+    package: Phenomenology
+    namespaces: [Phenomenology]
+    default_library: Phenomenology
+    lean_files_approx: 38
+    lake_requires:
+      - sentience-lean
+      - reflexive-closure-lean
+      - mathlib
+
+  novelty-theory-lean:
+    tier: 2
+    family: reflexive
+    github: https://github.com/novaspivack/novelty-theory-lean
+    path: ${LTR_CLONE_ROOT:-/Users/nova}/novelty-theory-lean
+    package: NoveltyTheory
+    namespaces: [NoveltyTheory]
+    default_library: NoveltyTheory
+    lean_files_approx: 120
+    lake_requires:
+      - mathlib
+
+  # ---------------------------------------------------------------------------
+  # Meta / umbrella
+  # ---------------------------------------------------------------------------
+  reflexive-reality-lean:
+    tier: 3
+    family: meta
+    github: https://github.com/novaspivack/reflexive-reality-lean
+    path: ${LTR_CLONE_ROOT:-/Users/nova}/reflexive-reality-lean
+    package: ReflexiveReality
+    namespaces:
+      - ReflexiveReality
+      - Philosophy
+      - FormalTheory
+      - Physics
+      - AIAgents
+      - ConsciousnessMind
+    default_library: ReflexiveReality
+    lean_files_approx: 7
+    notes: "Aggregator repo; extract last"
+    lake_requires:
+      - aps-undecidability-interfaces-lean
+      - aps-recursion-composition-uniformity-lean
+      - aps-recursion-uniformization-lean
+      - aps-rice-lean
+      - nems-lean
+      - transputation-lean
+      - ugp-lean
+      - reflexive-closure-lean
+      - viable-continuation-lean
+      - sentience-lean
+      - phenomenology-lean
+      - infinity-compression-lean
+      - representational-incompleteness-lean
+      - reflective-fold-obstruction-lean
+      - reflexive-architecture-lean
+      - adequacy-architecture-lean
+      - observer-non-exhaustability-lean
+      - reflexive-architecture-non-exhaustibility-lean
+      - mathlib
+
+papers:
+  scan_dir: papers
+  id_pattern: '^(\d+)_'
+  provenance_file: PROVENANCE.md
+  tex_glob: '*.tex'

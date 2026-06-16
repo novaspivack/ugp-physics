@@ -1,0 +1,918 @@
+% Companion Paper 3 (CP3) of the MFRR Companion Papers Programme
+% Black Hole Unitarity via Reflexive Unitarity and Stinespring Dilation
+\documentclass[11pt,twocolumn]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=0.75in]{geometry}
+\usepackage{microtype}
+\emergencystretch=25pt
+\usepackage{authblk}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{cite}
+\usepackage{enumitem}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!60!black,
+  citecolor=green!60!black,
+  urlcolor=blue!50!black,
+  pdftitle={Black Hole Unitarity via Reflexive Unitarity and Stinespring Dilation},
+  pdfauthor={Nova Spivack}
+}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\title{\bfseries Black Hole Unitarity via Reflexive Unitarity\\
+\large\itshape and Stinespring Dilation:\\
+\normalsize A GKSL Model in a JT-like PSC Universe}
+
+\author{Nova Spivack}
+\date{2026}
+
+\input{nova_zenodo_doi_placeholder}
+\begin{document}
+\maketitle
+\NovaZenodoAfterTitle
+
+%-----------------------------------------------------------------------
+\begin{abstract}
+We examine black hole information unitarity within the Mathematical Foundations
+of Reflexive Reality (MFRR) framework~\cite{SpivackNEMSMFRRBridge}.
+The MFRR Transputation operator $\mathrm{PT}^{-1}$ provides a physical mechanism
+for unitary information recovery consistent with the Perfect Self-Containment
+condition. Since every CPTP map admits a Stinespring dilation (a mathematical
+theorem independent of gravitational modelling), Hawking evaporation is
+unitarily equivalent to a reversible evolution on a system-plus-environment space.
+
+We construct the evaporation channel $\Phi_{\Delta t} = e^{\Delta t\mathcal{L}}$
+as a GKSL master equation for a JT-like system of $n=3$ bosonic modes
+($d_{\mathcal{H}} = 8$) at $T_H \approx 0.004$.
+Stinespring dilation achieves fidelity $F \geq 1 - 10^{-8}$; detailed balance
+holds to 0.00\%; the entropy curve reaches $97.2\%$ of the ideal thermal value.
+In two complementary closed unitary models --- a pure initial BH state and a
+purified thermal initial state with reference system $R$ --- the full Page curve
+with turnover is reproduced and $\mathrm{PT}^{-1}$ recovery achieves $F = 1.000000$.
+
+Open fronts are stated explicitly: extension to $3+1$ quantum gravity, the firewall
+tension, and a first-principles derivation of $\mathrm{PT}^{-1}$.
+\end{abstract}
+
+\tableofcontents
+
+%-----------------------------------------------------------------------
+\section{Introduction}
+\label{sec:intro}
+
+The black hole information paradox \cite{Hawking1974,Hawking1976}
+stands as one of the deepest unresolved tensions in theoretical physics.
+Hawking's semiclassical calculation \cite{Hawking1975} predicts that an
+evaporating black hole emits thermal radiation, apparently destroying
+all correlations with the infalling matter. If correct, this would
+violate unitarity---the cornerstone of quantum mechanics. Page argued
+\cite{Page1993} that if information is ultimately preserved, the
+entanglement entropy of Hawking radiation must rise and then fall along
+what is now called the Page curve.
+
+Modern approaches to this tension include:
+the island formula and quantum extremal surfaces
+\cite{Penington2020,AlmheiriEngelhartsMarolfMaxfield2019}
+(which reproduce the Page curve in holographic settings);
+the ER=EPR proposal \cite{MaldacenaSusskind2013}, connecting horizon
+entanglement to non-traversable wormholes; and the firewall paradox
+\cite{AlmheiriMarolfPolchinskiSully2013}, sharpening the tension
+between unitarity and the equivalence principle. Despite significant
+progress, a fully non-perturbative, background-independent resolution
+remains elusive.
+
+In this paper we examine the information paradox from the perspective
+of the Mathematical Foundations of Reflexive Reality (MFRR)
+\cite{SpivackNEMSMFRRBridge,SpivackPhysicsPortal}. The MFRR framework
+introduces a Perfect Self-Containment (PSC) condition and an
+internal adjudication operator $\mathrm{PT}$ governing the coherence
+of self-referential structures. The canonical inverse $\mathrm{PT}^{-1}$
+provides a physical mechanism by which information encoded in a PSC
+universe is not merely mathematically recoverable but is structurally
+required to be recovered---we call this property \emph{reflexive
+unitarity}.
+
+Our central observation is that reflexive unitarity, combined with the
+Stinespring dilation theorem \cite{Stinespring1955}, yields a concrete
+programme: model Hawking evaporation as a GKSL (Gorini-Kossakowski-
+Sudarshan-Lindblad) master equation \cite{Gorini1976,Lindblad1976},
+note that the resulting channel is CPTP and therefore admits a
+Stinespring dilation by theorem, and then use $\mathrm{PT}^{-1}$ to
+interpret which unitary extension is physically realised. We implement
+this programme explicitly in a JT-like \cite{JackiwTeitelboim1985,Teitelboim1983}
+PSC toy universe and report the computational results of experiment TE2.4
+\cite{SpivackBHUnitarity}.
+
+We emphasise from the outset what this work does and does not claim.
+The Stinespring theorem guarantees a unitary dilation for \emph{any}
+CPTP map; this is not new. The novelties are: (i) the MFRR
+interpretation of $\mathrm{PT}^{-1}$ as the physical recovery operator,
+and (ii) the explicit construction and numerical verification of the
+Stinespring unitary for the JT-like model. Extension to realistic
+$3{+}1$ quantum gravity is an open problem.
+
+The paper is organised as follows. Section~\ref{sec:mfrr} introduces
+the PSC framework and the $\mathrm{PT}/\mathrm{PT}^{-1}$ mechanism.
+Section~\ref{sec:gksl} reviews GKSL dynamics and Stinespring dilation
+and describes the JT-like model. Section~\ref{sec:te24} presents the
+TE2.4 results. Section~\ref{sec:comparison} situates the MFRR approach
+relative to existing approaches. Section~\ref{sec:scope} discusses scope
+limitations and open fronts. Section~\ref{sec:conclusion} concludes.
+Appendices collect model parameters, construction details, and
+reproducibility information.
+
+%-----------------------------------------------------------------------
+\section{The PSC Framework and Reflexive Unitarity}
+\label{sec:mfrr}
+
+\subsection{The Perfect Self-Containment Condition}
+
+The MFRR framework \cite{SpivackNEMSMFRRBridge} posits that a
+physically realised universe must satisfy a Perfect Self-Containment
+(PSC) condition: the universe's global state $\Omega$ must remain
+coherent under its own adjudication at every moment. Formally, the PSC
+condition requires that the informational structure of $\Omega$ be
+self-sustaining---no external selector is permitted; the universe must
+select its own internal laws \cite{SpivackNEMSMFRRBridge}.
+
+Within this framework, Transputation ($\mathrm{PT}$) is an internal adjudication
+operator that evaluates whether a proposed state transition is
+self-consistent. It acts as a kind of internal filter: only transitions
+that preserve PSC are realised. The operator $\mathrm{PT}$ is not a
+Hamiltonian or a density matrix; it is a higher-level structural
+constraint that acts on the space of possible universe histories.
+
+\subsection{The Canonical Reverse \texorpdfstring{$\mathrm{PT}^{-1}$}{PT-inverse}}
+
+A key feature of the MFRR construction is that $\mathrm{PT}$ admits a
+canonical inverse $\mathrm{PT}^{-1}$. This inverse is not merely a
+formal algebraic object; it represents the physical process by which a
+PSC universe \emph{undoes} the apparent information loss introduced by
+open-system dynamics. Concretely, $\mathrm{PT}^{-1}$ implements the
+recovery channel that restores the full quantum information of the
+infalling matter from the Hawking radiation, \emph{given access to the
+complete environment}.
+
+The critical interpretive point is this: $\mathrm{PT}^{-1}$ does not
+violate the second law or the semiclassical approximation. Rather, it
+operates at the level of the full PSC universe (system plus
+environment), where unitary evolution is restored by the Stinespring
+construction. The apparent non-unitarity of the Hawking channel is, in
+this picture, a consequence of tracing out the environment; the
+underlying evolution on $\mathcal{H}_{\mathrm{sys}} \otimes
+\mathcal{H}_E$ remains unitary.
+
+\subsection{Reflexive Unitarity}
+
+We define \emph{reflexive unitarity} as the property that a PSC
+universe, evolving under GKSL dynamics on its system Hilbert space,
+admits a unitary dilation on the enlarged space
+$\mathcal{H}_{\mathrm{sys}} \otimes \mathcal{H}_E$ such that the
+$\mathrm{PT}^{-1}$ operator coincides with the environment-tracing
+adjoint of this dilation. This is not an additional postulate: it
+follows from the Stinespring theorem (the dilation exists for any
+CPTP channel) together with the PSC requirement (which selects a
+specific physical interpretation for the environment degrees of
+freedom).
+
+\begin{definition}[Reflexive Unitarity]
+A quantum channel $\Phi: \mathcal{B}(\mathcal{H}_{\mathrm{sys}}) \to
+\mathcal{B}(\mathcal{H}_{\mathrm{sys}})$ satisfies \emph{reflexive
+unitarity} with respect to a PSC adjudication pair
+$(\mathrm{PT},\mathrm{PT}^{-1})$ if there exists a Hilbert space
+$\mathcal{H}_E$ and a unitary $U \in \mathcal{B}(\mathcal{H}_{\mathrm{sys}}
+\otimes \mathcal{H}_E)$ such that
+\[
+  \Phi(\rho) = \mathrm{Tr}_E\!\left[U\!\left(\rho \otimes
+  |0\rangle\langle 0|_E\right)U^\dagger\right]
+\]
+and $\mathrm{PT}^{-1}$ is identified with the adjoint recovery map
+$\rho_E \mapsto \mathrm{Tr}_{\mathrm{sys}}[U^\dagger(\cdot)U]$
+restricted to the environment.
+\end{definition}
+
+\begin{remark}
+The existence of $U$ is guaranteed by the Stinespring theorem for any
+CPTP channel $\Phi$ \cite{Stinespring1955,Nielsen2000}. The content of
+reflexive unitarity is not the existence of $U$ but the physical
+identification of $U$ with the $\mathrm{PT}^{-1}$ recovery process
+within the PSC framework. This identification is \emph{interpretive
+rather than structural}: the Stinespring theorem guarantees the
+existence of some $U$ for any CPTP map; PSC provides the physical
+rationale for which $U$ is physically realized, without imposing
+additional mathematical constraints on $U$ beyond those of the
+Stinespring construction. The novel content is the identification, not
+the existence of the dilation.
+\end{remark}
+
+%-----------------------------------------------------------------------
+\section{GKSL Dynamics and Stinespring Dilation}
+\label{sec:gksl}
+
+\subsection{The Stinespring Dilation Theorem}
+
+We recall the relevant mathematical fact.
+
+\begin{theorem}[Stinespring 1955 \cite{Stinespring1955}]
+Let $\Phi: \mathcal{B}(\mathcal{H}) \to \mathcal{B}(\mathcal{H})$ be a
+completely positive trace-preserving map. Then there exists a Hilbert
+space $\mathcal{H}_E$ and an isometry $V: \mathcal{H} \to \mathcal{H}
+\otimes \mathcal{H}_E$ such that
+\[
+  \Phi(\rho) = \mathrm{Tr}_E\!\left[V\rho V^\dagger\right].
+\]
+The isometry $V$ extends to a unitary $U$ on $\mathcal{H}\otimes
+\mathcal{H}_E$ by choosing any completion of $V$ to a square unitary,
+giving $\Phi(\rho) = \mathrm{Tr}_E[U(\rho\otimes|0\rangle\langle
+0|_E)U^\dagger]$.
+\end{theorem}
+
+A consequence familiar from quantum information theory
+\cite{Nielsen2000} is the Kraus representation: for any CPTP map
+there exist Kraus operators $\{K_k\}$ with $\sum_k K_k^\dagger K_k = I$
+such that $\Phi(\rho) = \sum_k K_k \rho K_k^\dagger$. The isometry
+is then $V|\psi\rangle = \sum_k K_k|\psi\rangle \otimes |k\rangle_E$,
+and $\dim\mathcal{H}_E$ equals the number of Kraus operators.
+
+\subsection{GKSL Master Equation}
+
+The GKSL (Lindblad) master equation \cite{Gorini1976,Lindblad1976}
+describes the most general Markovian, completely positive, trace-preserving
+evolution of an open quantum system:
+\begin{align}
+  \frac{d\rho}{dt} &= \mathcal{L}[\rho], \nonumber \\
+  \mathcal{L}[\rho] &:= -i[H,\rho] + \sum_k \gamma_k\!\left(
+    L_k \rho L_k^\dagger \right. \nonumber \\
+  &\qquad \left. - \tfrac{1}{2} L_k^\dagger L_k \rho
+    - \tfrac{1}{2} \rho L_k^\dagger L_k
+  \right),
+  \label{eq:gksl}
+\end{align}
+where $H$ is the system Hamiltonian, $L_k$ are Lindblad jump operators,
+and $\gamma_k \geq 0$ are rates. The propagator $\Phi_t = e^{t\mathcal{L}}$
+is a one-parameter semigroup of CPTP maps for all $t \geq 0$.
+
+Because $\Phi_t$ is CPTP, the Stinespring theorem guarantees a unitary
+dilation for each $t$. For a small time step $\Delta t$, the Kraus
+operators take the explicit form
+\begin{align}
+  K_0 &= I - \left(iH + \tfrac{1}{2}\sum_k \gamma_k L_k^\dagger L_k\right)\Delta t,
+  \label{eq:kraus0}\\
+  K_k &= \sqrt{\gamma_k \Delta t}\; L_k, \quad k = 1,\ldots,m.
+  \label{eq:krausl}
+\end{align}
+The environment dimension for this step is $\dim\mathcal{H}_E = 1 + m$,
+where $m$ is the number of distinct Lindblad operators.
+
+\begin{remark}[Approximation order]
+The Kraus operators in \eqref{eq:kraus0}--\eqref{eq:krausl} are the
+first-order ($O(\Delta t)$) approximation of the exact GKSL propagator
+$\Phi_{\Delta t} = e^{\Delta t \mathcal{L}}$. The truncated channel
+differs from the exact channel by $O(\Delta t^2) \approx 10^{-4}$ (for
+$\Delta t = 0.01$). The Stinespring dilation constructed in TE2.4 is exact
+for this truncated channel; it agrees with the dilation of the full GKSL
+channel to $O(\Delta t^2)$ precision.
+\end{remark}
+
+\subsection{The JT-like PSC Model}
+\label{sec:model}
+
+\looseness=-1
+Jackiw-Teitelboim (JT) gravity \cite{JackiwTeitelboim1985,Teitelboim1983}
+is a $1{+}1$-dimensional dilaton gravity model that captures key features
+of near-extremal black holes and has served as a theoretical laboratory
+for the information paradox \cite{Penington2020}. We use a JT-like PSC
+toy universe that retains the qualitative structure---a system Hilbert
+space $\mathcal{H}_{\mathrm{sys}}$ representing degrees of freedom near
+the black hole horizon, a Hawking temperature $T_H$, and thermal emission
+and absorption Lindblad operators---while operating in a tractable
+finite-dimensional setting.
+
+The system consists of $n = 3$ bosonic modes, each truncated to
+$d = 2$ Fock levels (vacuum $|0\rangle$ and single-excitation $|1\rangle$),
+giving total Hilbert space dimension $d_{\mathcal{H}} = d^n = 8$.
+The Hamiltonian is a sum of harmonic oscillators at frequencies
+$\omega_j = (j + \tfrac{1}{2})\pi T_H$, $j = 0,1,2$, with $T_H =
+0.003979$ in natural units where the fundamental frequency is $1$ (so
+that mode frequencies are $\omega_j = (j+\tfrac{1}{2})\pi T_H$). The
+lowest mode frequency is $\omega_0 = \tfrac{1}{2}\pi T_H \approx 0.00625$,
+giving $T_H/\omega_0 \approx 0.64$. The thermal occupation of the lowest
+mode is $\bar{n}_0 = 1/(e^{\omega_0/T_H}-1) \approx 0.26$, placing the
+system in a moderate-temperature regime.
+
+For each mode $j$, two Lindblad operators model the Hawking process:
+\begin{align}
+  L^{(j)}_{\mathrm{emit}} &= \sqrt{\gamma_{\mathrm{emit},j}}\; a_j,
+  \label{eq:lemit}\\
+  L^{(j)}_{\mathrm{abs}} &= \sqrt{\gamma_{\mathrm{abs},j}}\; a_j^\dagger,
+  \label{eq:labs}
+\end{align}
+where $a_j$, $a_j^\dagger$ are the lowering and raising operators for
+mode $j$, and the rates satisfy the detailed balance condition
+$\gamma_{\mathrm{emit},j}/\gamma_{\mathrm{abs},j} = e^{-\omega_j/T_H}$,
+with coupling strength $\gamma_0 = 0.01$. The total number of Lindblad
+operators is $m = 2n = 6$, giving
+\begin{equation}
+  \dim\mathcal{H}_E = 1 + m = 7.
+  \label{eq:dimE}
+\end{equation}
+
+The detailed balance condition ensures the GKSL dynamics drives the
+system toward the Gibbs thermal state $\rho_{\mathrm{th}} \propto
+e^{-H/T_H}$, analogous to a black hole relaxing to a thermal
+Hawking state.
+
+%-----------------------------------------------------------------------
+\section{TE2.4 Computational Results}
+\label{sec:te24}
+
+Experiment TE2.4 \cite{SpivackBHUnitarity} implements the programme described
+above. All code is archived in the ugp-physics repository
+\cite{ugp-physics-repo}; the canonical result file is
+\texttt{results/phase2\_3\_final/final\_results.json};
+the SHA-256 hash is listed in Appendix~\ref{app:repro}.
+
+\subsection{Validation of CPTP Property}
+
+The GKSL channel $\Phi_{\Delta t}$ with $\Delta t = 0.01$ was verified
+to be CPTP by checking that, for all test states (vacuum, thermal, Fock
+$|1,0,0\rangle$), the evolved state satisfies: (i) trace preservation
+to error $< 10^{-10}$; (ii) all eigenvalues $\geq -10^{-10}$ (positive
+semidefiniteness); and (iii) Hermiticity error $< 10^{-10}$. Detailed
+balance was verified to $0.00\%$ relative error.
+
+\subsection{Stinespring Construction and Fidelity}
+
+The Stinespring dilation was constructed explicitly as follows. For
+time step $\Delta t = 0.01$, the Kraus operators $K_0$ and $K_1,\ldots,K_6$
+were computed using equations \eqref{eq:kraus0}--\eqref{eq:krausl}.
+The isometry $V: \mathcal{H}_{\mathrm{sys}} \to \mathcal{H}_{\mathrm{sys}}
+\otimes \mathcal{H}_E$ was assembled as the block-column matrix
+\begin{equation}
+  V = \begin{pmatrix} K_0 \\ K_1 \\ \vdots \\ K_6 \end{pmatrix},
+  \label{eq:isometry}
+\end{equation}
+a $56 \times 8$ complex matrix ($8 \times 7$ block rows of width 8).
+The unitary dilation $U$ was obtained by completing $V$ to a square
+unitary on $\mathcal{H}_{\mathrm{sys}} \otimes \mathcal{H}_E$ via
+QR-based Gram-Schmidt extension.
+
+To verify the dilation, the evolved state was computed via both the GKSL
+propagator and the Stinespring construction (partial trace of
+$U(\rho\otimes|0\rangle\langle 0|_E)U^\dagger$), and the fidelity
+\begin{equation}
+  F(\rho,\sigma) = \left(\mathrm{Tr}\sqrt{\sqrt{\rho}\,\sigma\sqrt{\rho}}\right)^2
+  \label{eq:fidelity}
+\end{equation}
+was computed between the two results for three representative states:
+the vacuum state $|0,0,0\rangle\langle 0,0,0|$, the Gibbs thermal state
+at $T_H$, and the Fock state $|1,0,0\rangle\langle 1,0,0|$.
+
+The results, as recorded in \texttt{final\_results.json}, are:
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+Test State & $F$ & Status \\
+\midrule
+Vacuum $|0,0,0\rangle$ & $\approx 1.0$ & PASS \\
+Fock $|1,0,0\rangle$   & $1.0$ & PASS \\
+Thermal $\rho_{\mathrm{th}}$ & $1.0$ & PASS \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+All three fidelities meet and exceed the threshold $F \geq 1 - 10^{-8}$
+(the reported numerical values are $\geq 1.0$ to double-precision floating
+point). The slight super-unity value for the vacuum state
+($F = 1.0000000000000002$) is a rounding artefact of floating-point
+arithmetic and lies within double-precision machine epsilon
+($\epsilon_{\mathrm{mach}} \approx 2.2\times 10^{-16}$).
+
+\begin{remark}
+The fidelity $F \geq 1-10^{-8}$ is the verification threshold used in
+the experiment; the actual numerical results saturate this threshold at
+the level of double-precision arithmetic. This reflects the exactness
+of the Kraus construction at the algebraic level, not merely an
+approximate numerical agreement.
+\end{remark}
+
+\subsection{Thermalization Entropy Curve}
+
+Starting from the vacuum state, the GKSL dynamics was run for $t \in
+[0,200]$ with time step $\delta t = 0.05$. The steady-state fidelity
+with the Gibbs thermal state $\rho_{\mathrm{th}}$ is
+\begin{equation}
+  F_{\mathrm{th}} = 0.9999192951,
+  \label{eq:Fth}
+\end{equation}
+confirming near-perfect thermalization. The steady-state purity is
+$0.7142$ and the von Neumann entropy is $0.4945$ nats.
+
+The entanglement entropy was tracked along the evolution. Key values:
+\begin{align*}
+  S(0) &= 0 \quad (\text{vacuum}), \\
+  S_{\mathrm{peak}} &= 0.4462 \text{ nats} \quad \text{at } t = 200, \\
+  S_{\mathrm{thermal}} &= 0.4592 \text{ nats}, \\
+  S_{\mathrm{peak}}/S_{\mathrm{thermal}} &= 0.9717.
+\end{align*}
+The entropy rises monotonically from zero toward the thermal value,
+reaching $97.2\%$ of $S_{\mathrm{thermal}}$ at $t=200$. This is
+qualitatively consistent with the early-time portion of a Page curve
+\cite{Page1993}: entropy rises as Hawking radiation entangles with the
+system. In this toy model the entropy does not decrease back to zero
+because the finite-dimensional GKSL dynamics relaxes to a mixed thermal
+fixed point, not a pure state---the Page curve turnover is expected only
+in models where the black hole completely evaporates.
+
+\begin{remark}[Fidelity Distinction]
+We distinguish two fidelity quantities throughout. The Stinespring
+fidelity $F$ (Table above) measures agreement between the GKSL channel
+and its unitary dilation; this is $\geq 1-10^{-8}$. The thermalization
+fidelity $F_{\mathrm{th}} = 0.9999192951$ (equation \eqref{eq:Fth})
+measures how closely the steady state matches the ideal Gibbs state.
+These are different quantities addressing different aspects of the model.
+\end{remark}
+
+\subsection{What TE2.4 Establishes}
+
+To summarise precisely what the experiment proves:
+
+\begin{enumerate}[label=\arabic*.]
+\item \textit{Mathematical fact (known):} Every CPTP channel admits a
+Stinespring dilation \cite{Stinespring1955}. The GKSL evaporation
+channel $\Phi_{\Delta t}$ is CPTP (verified numerically), so a unitary
+dilation $U$ exists.
+
+\item \textit{Explicit construction (new):} An explicit Kraus-based
+Stinespring construction is given for the JT-like PSC model with
+$\dim\mathcal{H}_E = 7$, verified to fidelity $F\geq 1-10^{-8}$ on
+three representative states.
+
+\item \textit{Physical interpretation (new, within MFRR):} The operator
+$\mathrm{PT}^{-1}$ is identified as the physical realisation of the
+recovery channel corresponding to this unitary dilation, within the PSC
+framework.
+
+\item \textit{Thermalization and entropy curve (new):} The JT-like PSC
+model thermalises to within $0.008\%$ of the Gibbs state. The open
+Markovian GKSL model, which models early-time Hawking evaporation into
+an infinite bath, exhibits a monotonically rising entropy consistent with
+the early-time Page behaviour; entropy does not turn over because the
+radiation register is unbounded (see \S\,\ref{sec:scope}).
+
+\item \textit{Operational $\mathrm{PT}^{-1}$ circuit---open-system
+model (new):} The operator $\mathrm{PT}^{-1}$ is constructed explicitly
+as the $56$-dimensional quantum circuit $U^\dagger$ (the Stinespring
+adjoint). Applying $U^\dagger$ to the system+environment pair recovers
+the initial vacuum state to fidelity $F = 0.9967$; the recovered state
+has purity $0.993$ (SHA-256 \texttt{882cd67a\ldots},
+\texttt{results/pt\_inverse\_circuit/}).
+
+\item \textit{Full Page curve and exact $\mathrm{PT}^{-1}$ recovery---unitary
+closed-system model, pure initial BH (new):} In the physically correct closed model---BH
+as $n$~qubits in pure state $|{+}\rangle^{\otimes n}$, radiation as $n$~fresh
+qubits in $|0\rangle^{\otimes n}$, evaporation via unitary partial-SWAP
+operators $U_{\rm evap}$---we obtain the following for $n=4$ modes
+(SHA-256 \texttt{7f132bb1\ldots}, \texttt{results/page\_curve\_unitary/}):
+\begin{itemize}[nosep]
+  \item $S_{\rm BH}$ rises to $0.2458$~nats at the Page time, then falls to
+    $0.000000$~nats: the \emph{full Page curve with turnover}.
+  \item $S_{\rm BH} = S_{\rm rad}$ throughout, with total purity $= 1.000000$,
+    confirming the evolution is exactly unitary.
+  \item Applying $\mathrm{PT}^{-1} \equiv U_{\rm evap}^\dagger$ recovers the
+    initial state to fidelity $F = 1.000000$ (exact by unitarity).
+\end{itemize}
+The finite radiation register is essential: once $\dim\mathcal{H}_{\rm rad\,filled}
+> \dim\mathcal{H}_{\rm BH}$, complementarity of the pure total state forces
+$S_{\rm BH}$ to decrease. This is the standard Page~\cite{Page1993} argument
+realised explicitly within the MFRR framework.
+
+\item \textit{Purified thermal BH---Page curve and exact $\mathrm{PT}^{-1}$
+recovery (new):} To make the closed model directly comparable to the initial
+thermal state studied in the GKSL model, we introduce a reference system
+$\mathcal{H}_R \cong \mathcal{H}_{\rm BH}$ that purifies the thermal BH
+density matrix. The total initial state is $|\Phi^+\rangle_{{\rm BH},R}\otimes
+|0\rangle^{\otimes n}_{\rm rad}$, where $|\Phi^+\rangle$ is the maximally
+entangled state (i.e.\ the thermal BH is purified by its interior degrees of
+freedom $R$); $R$ remains untouched during evaporation. This is precisely the
+setup underlying the island formula. For $n=3$ modes (SHA-256
+\texttt{e9ac80b0\ldots}, \texttt{results/page\_curve\_thermal/}; confirmed
+independently for $n=4$, SHA-256 \texttt{3cbd71f2\ldots}):
+\begin{itemize}[nosep]
+  \item $S_{\rm BH}$ starts at $\ln 8 = 2.079$~nats (thermal entropy), decreases
+    monotonically as radiation absorbs BH entropy, and reaches $0$ after full
+    evaporation: the \emph{Page curve for a thermal BH}.
+  \item The Page crossing occurs when $S_{\rm rad} = S_{\rm BH}$ after $n/2$~modes
+    have been emitted, in exact agreement with Page~\cite{Page1993}.
+    For even $n$ this is an integer mode count (e.g.\ $n=4$: crossing at exactly
+    2~modes); for odd $n$ (here $n=3$), $n/2 = 1.5$ is non-integer and the crossing
+    occurs continuously between the $\lfloor n/2\rfloor$-th and $\lceil n/2\rceil$-th
+    discrete mode emissions (confirmed numerically at $t = 30$ of $60$ simulation
+    steps, i.e.\ $1.5$ modes).
+  \item $S_R = \ln 8$ throughout; $S_{\rm rad}$ rises to $\ln 8$ at the end,
+    encoding all the original BH thermal entropy. Total purity $= 1.000000$.
+  \item $\mathrm{PT}^{-1} \equiv U_{\rm evap}^\dagger$ restores the BH--$R$
+    maximally entangled state to fidelity $F = 1.000000$, recovering
+    $S_{\rm BH} = \ln 8$: the thermal entropy is exactly returned.
+\end{itemize}
+\end{enumerate}
+
+Items 1--2 are established within the toy model. Item~3 is a physical
+interpretation within MFRR. Items~4--5 describe the Markovian (open) regime;
+item~6 provides the full closed-system result for a pure BH; item~7 extends
+it to the physically relevant thermal BH in the purified setup underlying the
+island formula. None constitutes a proof that information is preserved in real
+astrophysical black holes.
+
+\begin{center}
+\fbox{\begin{minipage}{0.92\columnwidth}
+\textbf{TE2.4 does not:} (1)~prove information preservation in real
+astrophysical black holes; (2)~provide a first-principles derivation of
+$\mathrm{PT}^{-1}$ independent of the Stinespring construction;
+(3)~engage with the firewall paradox at the level of local field theory.
+Item~5 uses the first-order Kraus approximation ($O(\Delta t^2)$ precision);
+items~6--7 use exact unitary circuits on finite qubit models.
+\end{minipage}}
+\end{center}
+
+\begin{remark}[Open, closed-pure, and closed-thermal models]
+The open GKSL model (items 1--5) is a Markovian approximation to early-time
+Hawking evaporation; its infinite bath prevents Page-curve turnover. The
+closed pure-state model (item~6) establishes the full Page curve for a BH
+with initially zero entropy. The closed thermal model (item~7) is the
+physically representative case: the BH starts fully thermalized, the initial
+entropy is carried by entanglement with a reference $R$ (representing the BH
+interior), and full evaporation transfers all entropy to radiation while
+$\mathrm{PT}^{-1}$ restores the original BH--$R$ entanglement exactly. All
+three models are consistent with the Stinespring/MFRR framework and address
+complementary physical regimes.
+\end{remark}
+
+%-----------------------------------------------------------------------
+\section{Relationship to Existing Approaches}
+\label{sec:comparison}
+
+\subsection{Island Formula and Quantum Extremal Surfaces}
+
+The island formula \cite{Penington2020,AlmheiriEngelhartsMarolfMaxfield2019}
+derives the Page curve in JT gravity coupled to a CFT bath by identifying
+``island'' regions whose entropy is included in the fine-grained entropy
+of Hawking radiation via the quantum extremal surface prescription. This
+reproduces the Page curve turnover without requiring direct knowledge of
+the microscopic recovery channel.
+
+The MFRR approach differs in emphasis. The island calculation works in
+the semiclassical path integral and requires a replica trick; the MFRR
+approach works in the operator-algebraic language of CPTP maps and
+makes the recovery channel explicit via $\mathrm{PT}^{-1}$. The two
+frameworks are complementary contributions to the information paradox:
+the island formula delivers the thermodynamic entropy curve establishing
+that information is not lost; the MFRR approach provides the explicit
+operator-algebraic recovery mechanism at the Hilbert-space level.
+A complete resolution of the information paradox would benefit from
+both: the entropy curve (from island/QES calculations) and the recovery
+operator (from MFRR/Stinespring). The present work contributes the
+latter, for a toy model.
+
+A notable limitation of our current model, by comparison with the island
+formula, is that the JT-like PSC model is fully finite-dimensional and
+does not contain the gravitational path integral structure that gives
+rise to replica wormholes. Extension to that regime is an open problem.
+
+\subsection{ER=EPR}
+
+Maldacena and Susskind \cite{MaldacenaSusskind2013} proposed that
+maximally entangled pairs of particles are connected by Einstein-Rosen
+bridges, suggesting that entanglement and wormholes are dual descriptions
+of the same phenomenon. The MFRR approach does not contradict ER=EPR;
+both posit that information is geometrically or structurally encoded in
+the environment degrees of freedom rather than destroyed. The $\mathrm{PT}^{-1}$
+mechanism can be seen as providing a dynamical account of the recovery
+process whose existence ER=EPR motivates.
+
+\subsection{Firewall Paradox}
+
+The AMPS firewall argument \cite{AlmheiriMarolfPolchinskiSully2013} shows
+that maintaining unitarity, the equivalence principle, and the no-drama
+condition for infalling observers is inconsistent within standard
+semiclassical assumptions. The MFRR framework does not resolve the
+firewall paradox: we do not provide a model for the experience of an
+infalling observer, nor do we address the equivalence principle at the
+level of local field theory. The present work operates entirely at the
+level of the system Hilbert space and its environment dilation; it does
+not engage with the local vs.\ global description tension that underlies
+the firewall.
+
+\subsection{Page Curve}
+
+The open GKSL model (items 1--4, \S\,\ref{sec:te24}) exhibits an
+entropy curve rising from zero toward the thermal value, consistent
+with early-time Hawking evaporation. The turnover is absent because
+the infinite Markovian bath has a fixed-point attractor at
+$\rho_{\mathrm{th}}$; it is not a counter-evidence to information
+preservation but a feature of open-system dynamics.
+
+The full Page curve --- both the rise and the fall to zero --- is
+exhibited in two complementary closed unitary models. Item~6
+(pure initial BH, $n=4$ qubits) demonstrates entropy turnover and
+exact $\mathrm{PT}^{-1}$ recovery ($F=1.000000$). Item~7 (purified
+thermal initial BH, $n=3$ and $n=4$ qubits, the island formula setup)
+demonstrates the full thermal Page curve: $S_{\rm BH}$ starts at
+$\log d_{\rm BH}$, transfers monotonically to radiation with the Page
+crossing at $n/2$ emitted modes (exactly as predicted by
+Page~\cite{Page1993}), and reaches zero at full evaporation.
+$\mathrm{PT}^{-1} = U_{\rm evap}^\dagger$ then restores the BH--interior
+entanglement exactly ($F=1.000000$).
+
+The recovery is exact because the closed model is by construction
+unitary: $U_{\rm evap}^\dagger U_{\rm evap} = I$. This is not a
+proof that information is preserved in real astrophysical black holes,
+but it demonstrates that within a finite-dimensional unitary framework
+consistent with MFRR/PSC, the complete Page curve and exact information
+recovery are achieved in the physically representative thermal BH setup.
+
+%-----------------------------------------------------------------------
+\section{Scope, Limitations, and Open Fronts}
+\label{sec:scope}
+
+\subsection{Toy Model Limitations}
+
+The JT-like PSC model is a finite-dimensional, Markovian, non-relativistic
+toy model. It captures the qualitative structure of Hawking radiation
+(thermal emission and absorption, detailed balance, CPTP dynamics) but
+omits:
+\begin{itemize}
+\item The gravitational path integral and its non-perturbative saddles
+  (replica wormholes, gravitational instantons).
+\item The continuous spectrum of a genuine quantum field theory.
+\item Back-reaction of radiation on the black hole geometry.
+\item Relativistic and causal structure of the horizon.
+\end{itemize}
+Claims made in this paper are restricted to the toy model and its
+mathematical properties.
+
+\subsection{The \texorpdfstring{$\mathrm{PT}^{-1}$}{PT-inverse} Physical Realization}
+
+The $\mathrm{PT}^{-1}$ operator is defined at the level of the MFRR
+framework as a structural constraint on PSC-consistent histories. We have
+not provided a Hilbert-space operator realisation of $\mathrm{PT}^{-1}$
+independent of the Stinespring construction. Establishing whether
+$\mathrm{PT}^{-1}$ can be identified with a specific quantum circuit or
+gravitational operation in a more realistic model is an open problem.
+
+\subsection{Extension to 3+1 Gravity}
+
+The most important open front is the extension to $3{+}1$-dimensional
+quantum gravity. In a realistic black hole, the system Hilbert space is
+infinite-dimensional, the dynamics is not Markovian at all timescales,
+and the notion of a preferred Hilbert space decomposition
+$\mathcal{H}_{\mathrm{sys}} \otimes \mathcal{H}_E$ is itself ambiguous
+(the factorisation problem). Addressing these issues requires tools
+beyond those employed here.
+
+\subsection{Non-Markovian Effects and Long-Time Unitarity}
+
+The Stinespring dilation is constructed here for a single time step
+$\Delta t = 0.01$. Over long timescales, GKSL dynamics with a fixed
+Lindbladian is Markovian by assumption; genuine black hole evaporation
+may exhibit non-Markovian memory effects that are not captured by the
+GKSL model. The relationship between the step-wise Stinespring construction
+and a global unitary for the full evaporation history is an open
+technical question.
+
+\subsection{Falsifiability}
+
+The MFRR framework is falsifiable in the following senses. (i) If the
+PSC condition were shown to be inconsistent with Standard Model physics
+at low energies, the framework would be refuted (this has been examined
+in other papers in the programme \cite{SpivackPhysicsPortal}). (ii) If
+a no-go theorem were established showing that no Hilbert-space operator
+can implement $\mathrm{PT}^{-1}$ in a relativistic setting consistent
+with causality, the interpretive claim would be undermined. (iii) The
+specific numerical predictions of the toy model (thermalization fidelity,
+entropy curve, Stinespring dimension) are falsifiable within the model
+and have been verified in TE2.4.
+
+The abstract PSC record-consistency theorem provides machine-checked
+formal backing for this framework: NEMS Paper~38
+\cite{SpivackNEMS38} proves \texttt{BlackHoles.record\_consistency\_abstract}
+in nems-lean (Zenodo 10.5281/zenodo.19429792, zero \texttt{sorry}) ---
+if two worlds disagree on an observation, the semantics is non-categorical
+and a selector is required, ruling out genuine information destruction in a
+PSC universe. The no-hypercomputing-from-black-holes theorem
+(NEMS 35+38~\cite{SpivackNEMS35,SpivackNEMS38},
+\texttt{BlackHoles.no\_hypercomputing\_from\_bh}, zero \texttt{sorry})
+further establishes that no total-effective black-hole decoder can decide a
+diagonal-capable predicate on the outcome space.
+
+%-----------------------------------------------------------------------
+\section{Conclusion}
+\label{sec:conclusion}
+
+We have examined the black hole information paradox through the lens of
+the MFRR framework, proposing that \emph{reflexive unitarity}---the
+structural requirement imposed by the PSC condition together with the
+canonical operator $\mathrm{PT}^{-1}$---provides a physical interpretation
+of the unitary dilation guaranteed by the Stinespring theorem for any
+CPTP Hawking evaporation channel.
+
+The key mathematical fact is established: GKSL evaporation channels are
+CPTP and therefore admit Stinespring dilations. The novel contributions
+are:
+\begin{enumerate}
+\item The MFRR interpretation of $\mathrm{PT}^{-1}$ as the explicit
+  recovery operator identified with the Stinespring adjoint $U^\dagger$.
+\item The explicit Stinespring construction for a JT-like PSC universe
+  with $\dim\mathcal{H}_E = 7$, verified to fidelity $F\geq 1-10^{-8}$
+  and thermalization fidelity $F_{\mathrm{th}} = 0.9999193$ (TE2.4).
+\item An explicit PT$^{-1}$ quantum circuit recovering the vacuum
+  from a partially-thermalized state to $F=0.9967$ in the open model.
+\item The full Page curve with turnover and exact $\mathrm{PT}^{-1}$
+  recovery ($F=1.000000$) in a closed finite-qubit model (pure initial BH).
+\item The complete Page curve for the \emph{thermal} initial BH in
+  the island-formula setup (BH purified by reference $R$ representing
+  the BH interior): entropy transfers monotonically from BH to radiation
+  with the Page crossing at $n/2$ modes (exactly as Page~\cite{Page1993}
+  predicted), and $\mathrm{PT}^{-1} = U_{\rm evap}^\dagger$ restores
+  the BH--interior entanglement to $F=1.000000$.
+\end{enumerate}
+
+We have been explicit about what this work does not establish: it does
+not prove that information is preserved in real astrophysical black holes,
+does not resolve the firewall paradox, and does not provide a
+first-principles derivation of $\mathrm{PT}^{-1}$ beyond identification
+with the Stinespring adjoint. These remain open problems requiring
+extension to $3{+}1$ quantum gravity and non-Markovian dynamics.
+
+The MFRR programme provides a structural framework in which the question
+``which unitary implements information recovery?'' has a principled
+and constructive answer: it is $U_{\rm evap}^\dagger$, the adjoint of
+the evaporation unitary, identified physically as $\mathrm{PT}^{-1}$.
+Within the toy model this answer is exact and reproducible.
+Translating this principle into a concrete prediction for astrophysical
+black holes is the primary open front of this programme.
+
+%-----------------------------------------------------------------------
+\appendix
+
+\section{JT-like PSC Model: Technical Parameters}
+\label{app:model}
+
+The model parameters, as used in TE2.4 \cite{SpivackBHUnitarity}, are:
+
+{\small
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Parameter & Symbol & Value \\
+\midrule
+Number of modes & $n$ & $3$ \\
+Fock levels per mode & $d$ & $2$ \\
+System dimension & $d_{\mathcal{H}}$ & $8 = 2^3$ \\
+Hawking temperature & $T_H$ & $0.003979$ \\
+Coupling strength & $\gamma_0$ & $0.01$ \\
+Mode frequencies & $\omega_j$ & $(j+\tfrac{1}{2})\pi T_H$ \\
+Lindblad operators & $m$ & $6$ (2 per mode) \\
+Env.\ dimension & $\dim\mathcal{H}_E$ & $7 = 1 + m$ \\
+Time step & $\Delta t$ & $0.01$ \\
+Evolution duration & $t_{\max}$ & $200$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+}
+
+The Lindblad operators for mode $j$ are
+\begin{align*}
+  L^{(j)}_{\mathrm{emit}} &= \sqrt{\gamma_{\mathrm{emit},j}}\,
+    I^{\otimes j} \otimes a \otimes I^{\otimes(n-j-1)},\\
+  L^{(j)}_{\mathrm{abs}} &= \sqrt{\gamma_{\mathrm{abs},j}}\,
+    I^{\otimes j} \otimes a^\dagger \otimes I^{\otimes(n-j-1)},
+\end{align*}
+where $a = \begin{pmatrix}0&1\\0&0\end{pmatrix}$ in the two-level basis
+$\{|0\rangle,|1\rangle\}$, and the rates satisfy
+$\gamma_{\mathrm{emit},j}/\gamma_{\mathrm{abs},j} = e^{-\omega_j/T_H}$.
+All computations use double-precision floating-point arithmetic
+(IEEE~754, $\epsilon_{\mathrm{mach}} \approx 2.2\times 10^{-16}$).
+
+\section{Stinespring Construction: Algorithmic Details}
+\label{app:stinespring}
+
+Given the GKSL master equation with Hamiltonian $H$ and Lindblad
+operators $\{L_k\}_{k=1}^m$ at coupling strengths $\{\gamma_k\}$,
+the Stinespring construction for time step $\Delta t$ proceeds as
+follows:
+
+\begin{enumerate}[label=\arabic*.]
+\item Compute $K_0 = I - (iH + \frac{1}{2}\sum_k \gamma_k L_k^\dagger L_k)\Delta t$.
+\item Compute $K_k = \sqrt{\gamma_k \Delta t}\,L_k$ for $k=1,\ldots,m$.
+\item Verify completeness: $\sum_{k=0}^m K_k^\dagger K_k \approx I$
+  (error of order $\Delta t^2$; for $\Delta t = 0.01$ this is $\sim
+  10^{-4}$, consistent with first-order Kraus approximation).
+\item Assemble the isometry $V$ as in equation~\eqref{eq:isometry}:
+  a $(d_\mathcal{H}(m+1))\times d_\mathcal{H}$ matrix where the
+  $k$-th block of $d_\mathcal{H}$ rows is $K_k$.
+\item Extend $V$ to a unitary $U$ on the full space $\mathcal{H}_{\mathrm{sys}}
+  \otimes \mathcal{H}_E$ (dimension $d_\mathcal{H}\times(m+1) = 56$)
+  via QR decomposition and Gram-Schmidt completion of the orthogonal
+  complement.
+\item Verify: for each test state $\rho$, compute $\rho' = \mathrm{Tr}_E[U
+  (\rho\otimes|0\rangle\langle 0|)U^\dagger]$ and compare with
+  $\Phi_{\Delta t}(\rho) = \sum_k K_k \rho K_k^\dagger$ by computing
+  the fidelity $F(\rho', \Phi_{\Delta t}(\rho))$.
+\end{enumerate}
+
+The first-order Kraus approximation (steps 1--2) is valid for small
+$\Delta t$; for the exact propagator $\Phi_t = e^{t\mathcal{L}}$ the
+Kraus operators are obtained from the matrix exponential of the
+superoperator representation of $\mathcal{L}$.
+
+\section{Reproducibility}
+\label{app:repro}
+
+All computational results reported in this paper are produced by the
+TE2.4 experiment in the ugp-physics repository \cite{ugp-physics-repo}.
+The canonical results are:
+
+{\footnotesize
+\begin{center}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{p{2.3cm}p{3.5cm}p{2.0cm}}
+\toprule
+Result & Script & SHA-256 \\
+\midrule
+GKSL (items 1--4)        & \path{te2_4_final_production.py}    & \texttt{bf2b079c\ldots} \\
+PT$^{-1}$ circ.\ (5)    & \path{te2_4_pt_inverse_circuit.py} & \texttt{882cd67a\ldots} \\
+Page curve pure (6)      & \path{te2_4_page_curve_unitary.py} & \texttt{7f132bb1\ldots} \\
+Page curve therm.\ (7)  & \path{te2_4_page_curve_thermal.py} & \texttt{e9ac80b0\ldots} \\
+\quad ($n=4$ ext.)       &                                          & \texttt{3cbd71f2\ldots} \\
+\bottomrule
+\end{tabular}
+\end{center}
+}
+
+All scripts reside in \path{MFRR/TE_2_Advanced_Explorations/TE_2_4_BH_Unitarity/src/}; results in the corresponding
+\texttt{results/} subdirectories. Language: Python~3, NumPy, SciPy.
+Full SHA-256 values and run parameters are recorded in
+\path{papers/16_bh_unitarity/PROVENANCE.md}.
+
+%-----------------------------------------------------------------------
+\section{Lean Formalization of PSC Constraints on Black Hole Information}
+\label{app:lean}
+
+Two results in the nems-lean library (Zenodo 10.5281/zenodo.19429710,
+GitHub \url{https://github.com/novaspivack/nems-lean}) provide
+machine-checked formal backing for the claims of this paper.
+Both are proved with zero \texttt{sorry} and zero custom axioms in these proof chains; the
+build command is \texttt{lake update \&\& lake build} from the nems-lean
+root.
+
+\paragraph{\texttt{BlackHoles.record\_consistency\_abstract} (NEMS Paper~38,
+Zenodo 10.5281/zenodo.19429792).}
+\textit{Statement:} Given a semantic structure where world $w$ satisfies
+observation $o$ but world $w'$ does not (an ``information-erasing
+appearance''), the observation semantics is non-categorical: at least
+two world-types are distinguishable, and a selector is required.
+Under PSC (which forbids external selectors), this rules out genuine
+information destruction in a PSC universe.
+\textit{Key proof step:} The proof formalises that a categorical
+semantics would make $w$ and $w'$ observationally equivalent, contradicting
+the erasing appearance. The conclusion that an internal selector must
+exist then follows from the NEMS trichotomy.
+
+\paragraph{\texttt{BlackHoles.no\_hypercomput\allowbreak ing\_from\_bh} (NEMS Papers~35+38,
+Zenodo 10.5281/zenodo.19429786).}
+\textit{Statement:} Under the SelectorStrength barrier premises
+(extensional nontrivial predicate, anti-decider closure, fixed-point
+hypothesis), no total-effective black-hole decoder can decide a
+diagonal-capable predicate on the BH outcome space.
+\textit{Key proof step:} Instantiates the general
+\path{SelectorStrength.no_total_decider_at_strength_nontrivial}
+barrier theorem (proved by diagonalisation) to the black-hole decoding
+predicate class.
+
+%-----------------------------------------------------------------------
+\bibliographystyle{plain}
+\bibliography{../bib/Spivack_Papers_Bibliography}
+
+
+\section*{Acknowledgments}
+
+AI coding assistants were used for LaTeX formatting, coding assistance, and adversarial review during manuscript preparation. All mathematical derivations, numerical computations, and Lean~4 certifications were independently verified by deterministic scripts and the Lean~4 kernel.
+
+\end{document}

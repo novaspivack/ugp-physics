@@ -1,0 +1,16 @@
+repos:
+  - repo: local
+    hooks:
+      - id: lean-python-consistency
+        name: "Lean ↔ Python consistency (UGP canonical values)"
+        entry: python3 -m pytest tests/lean_python_consistency/ -q
+        language: system
+        pass_filenames: false
+        always_run: false
+        # Only trigger when Python source touching Lean-certified quantities changes
+        files: >
+          (?x)^(
+            ugp_lean_canon/.*\.py |
+            papers/24_deeper_theory/ugp_core\.py |
+            papers/01_SM/canonical_run/comp_p25_.+\.py
+          )$

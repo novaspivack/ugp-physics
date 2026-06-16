@@ -1,0 +1,20 @@
+experiment:
+  name: equivalence_test_alpha
+  description: "TOST equivalence tests (with FDR) of alpha* vs candidate expressions"
+  inputs:
+    runs:
+      - "UGP_discovery_lab_runs/exp_20250917_165836/**/*.json"
+      - "UGP_discovery_lab_runs/exp_20250917_165903/**/*.json"
+      - "UGP_discovery_lab_runs/exp_20250917_151205/**/*.json"
+  equivalence:
+    delta: 1.0e-4
+    candidates:
+      - { name: "sin_pi_37", expr: "sin(pi/37)" }
+      - { name: "cos_pi_n_minus_1", expr: "cos(pi/n)-1", n_vals: [6,8,10,12,37,42] }
+      - { name: "halfsec_pi_n", expr: "1/(2*cos(pi/n))", n_vals: [6,8,10,12,37,42] }
+  integrity:
+    fail_on_warning: true
+    require_real_data: true
+  report:
+    export_md: true
+    export_json: true

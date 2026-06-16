@@ -1,0 +1,71 @@
+experiment:
+  name: lambda_formal_proof_validation
+  description: "Formal Λ derivation proof and validation with four rigorous steps"
+  inputs:
+    runs:
+      - "lambda_derivation_data.json"  # Uses Λ derivation data
+
+physics:
+  hubble_constant: 67.4  # km/s/Mpc
+  omega_lambda: 0.689
+  speed_of_light: 2.998e8  # m/s
+  gravitational_constant: 6.674e-11  # m^3/kg/s^2
+
+ugp_law:
+  raw_law: |
+    AXIOMS:
+    - UGP: Universal Generative Principle
+    - ML-3: MDL selection among admissible laws
+    - ML-5: Gauge = redundancy, equal-information presentations identified
+    - ML-6: GR from entanglement/thermo, S = ηA, G = 1/(4η)
+    - Holography: boundary encodes bulk
+    - Quarter-lock: fixed constants tied by identity
+    
+    STRUCTURE:
+    - Boundary scalar: Λ = (4 ln 2) L / A_H
+    - Residual length: L (bits)
+    - Horizon area: A_H
+    - Kraft codeword: prefix-free universal code
+    
+    DERIVATION:
+    - Gauge invariance forces computation on quotient [Sh(E)/G]
+    - Holography restricts inputs to boundary functionals
+    - ML-3 eliminates superfluous slack in representation
+    - Unique mapping: Λ = (4 ln 2) L / A_H
+    
+    DE SITTER LIMIT:
+    - Λ = 3/R² in pure de Sitter
+    - A_H = 4πR²
+    - L_* = 3π/ln 2 ≈ 13.597 bits (pure de Sitter)
+    
+    FRW EPOCH:
+    - A_H = 4π(c/H)²
+    - Ω_Λ = (ln 2/3π) L
+    - Same L controls Λ, de Sitter temperature, entropy fraction
+
+validation:
+  calibration_tolerance: 0.05  # 5% tolerance for encoder agreement
+  cv_tolerance: 1.0  # CV dispersion tolerance for persistence
+  null_p_threshold: 0.01  # p-value threshold for null surrogates
+
+proof_steps:
+  residual_formalization: true
+  de_sitter_proof: true
+  claims_gate: true
+  observable_crosschecks: true
+
+report:
+  export_md: true
+  export_json: true
+  export_csv: true
+  plots: true
+  
+artifacts:
+  - "lambda_formal_proof_results.json"
+  - "residual_tokens_analysis.csv"
+  - "encoder_comparison_analysis.csv"
+  - "claims_gate_validation_results.csv"
+  - "lambda_derivation_calculations.csv"
+  - "plot_encoder_agreement.png"
+  - "plot_null_surrogate_histogram.png"
+  - "plot_lambda_derivation_accuracy.png"

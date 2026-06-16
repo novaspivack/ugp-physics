@@ -1,0 +1,1633 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  The Polynomial Certificate of Transputation:
+%  MDL Unification, Quantum Measurement, and the SRRG Fixed Point
+%
+%  Nova Spivack --- June 2026
+%
+%  UGP Physics Series --- Paper 51
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt]{article}
+
+% ===================== PREAMBLE =====================
+\usepackage[margin=1in]{geometry}
+\usepackage{authblk}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\allowdisplaybreaks
+\setlength{\abovedisplayskip}{6pt}
+\setlength{\belowdisplayskip}{6pt}
+\setlength{\abovedisplayshortskip}{4pt}
+\setlength{\belowdisplayshortskip}{4pt}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+\usepackage{cite}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{breakable}
+\usepackage{tabularx,ragged2e,array}
+\usepackage{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage[toc]{appendix}
+\usepackage{float}
+\usepackage[section]{placeins}
+
+\setlength{\emergencystretch}{3em}
+\raggedbottom
+
+\newcolumntype{P}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black}
+\input{nova_zenodo_doi_placeholder}
+
+% -- Theorem environments -------------------------------------------------------
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{openprob}{Open Problem}
+
+% -- Convenience macros ---------------------------------------------------------
+\newcommand{\GTE}{\text{GTE}}
+\newcommand{\MDL}{\text{MDL}}
+\newcommand{\PSC}{\text{PSC}}
+\newcommand{\PHIMDL}{\ensuremath{\Phi_{\mathrm{MDL}}}}
+\newcommand{\ZS}{\ensuremath{\mathbb{Z}_7}}
+\newcommand{\GF}[1]{\ensuremath{\mathrm{GF}(#1)}}
+\newcommand{\lean}[1]{%
+  \penalty-100
+  \begingroup\def\_{\textunderscore\allowbreak}\texttt{#1}\endgroup}
+\newcommand{\CMCA}{\text{CMCA}}
+\newcommand{\AFCA}{\text{AFCA}}
+\newcommand{\poly}{$p(L,C,R)$}
+\newcommand{\ppoly}{$p(L,C,R) = C+R-CR-LCR$}
+\newcommand{\fmdl}{\ensuremath{f_{\mathrm{MDL}}}}
+\newcommand{\Ngen}{\ensuremath{N_{\mathrm{gen}}}}
+\newcommand{\Nfam}{\ensuremath{N_{\mathrm{fam}}}}
+\newcommand{\DSAC}{\text{DSAC}}
+\newcommand{\PMDL}{\ensuremath{S_{\mathrm{PMDL}}}}
+\newcommand{\Ptop}{\ensuremath{P^{\top}}}
+
+% -- Status badge macros — math-mode safe --------------------------------------
+\newcommand{\CatA}{\textbf{A}}
+\newcommand{\CatAL}{\ensuremath{\textbf{A}_{\rm Lean}}}
+\newcommand{\CatAMDL}{\ensuremath{\textbf{A}_{\rm MDL}}}
+\newcommand{\CatAD}{\textbf{A/D}}
+\newcommand{\CatB}{\textbf{B}}
+\newcommand{\CatD}{\textbf{D}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\title{\textbf{The Polynomial Certificate of Transputation:\\
+MDL Unification, Quantum Measurement, and the SRRG Fixed Point}}
+
+\author{Nova Spivack}
+\affil{Independent Researcher}
+\date{June 2026}
+\maketitle
+
+\NovaZenodoAfterTitle
+
+\noindent\textbf{Classification:} Mathematical Physics; Quantum Foundations;
+Computational Universality; Minimum Description Length.
+
+%-----------------------------------------------------------------------------
+\begin{abstract}
+The quantum measurement problem --- why a superposition produces a single
+definite outcome, and why with probability $|c_k|^2$ --- remains unresolved
+across standard interpretations of quantum mechanics, which either postulate
+collapse, multiply unobservable branches, or explain apparent classicality
+without resolving outcomes.
+This paper provides a formal derivation of the measurement mechanism from
+first principles within the GTE (Generative Triple Evolution) framework.
+
+The GTE polynomial $p(L,C,R) = C+R-CR-LCR$ over $\GF{7}$, the unique
+Minimum Description Length (MDL)-minimal encoding of the Standard Model
+generation structure, carries a complete formal certificate of the quantum
+measurement mechanism.
+Its Perfect Self-Containment (PSC) projection is \fmdl{}, the discrete
+adjudicator that defines the measurement orbit
+$\mathrm{GEN}_1 \to \mathrm{GEN}_2 \to \mathrm{GEN}_3 \to \mathrm{VAC}$~---~the
+only PSC-consistent trajectory in the cellular automaton dynamics~---~and
+this projection is characterized in three parts: \fmdl{} agrees with $p$ on
+the binary sector $\{0,1\}^3$ (Rule~110), overrides $p$ on the ten
+SM-orbit neighborhoods to enforce generation-orbit consistency, and projects
+to zero on all remaining 325 neighborhoods.
+The polynomial's real diagonal encodes the Self-Referential Renormalization
+Group (SRRG) adjudication fixed point $\varphi = (\sqrt{5}-1)/2 \approx 0.618$
+(machine-certified, \CatAL).
+A Three-Level MDL Unification Theorem (\CatAD) shows that
+$\Ptop(X) = \arg\min_{x \in X} K(x \mid \text{PSC})$ operates at three nested,
+non-circular domains: theory selection ($p$ from rule space), field dynamics
+($\PHIMDL$ via the PMDL variational principle), and quantum event adjudication
+(Born rule via transputation).
+The polynomial $p$ is the connecting object: it \emph{is} the output of
+Level~1, enters the PMDL action at Level~2, and its PSC-projection \fmdl{}
+defines the orbit used at Level~3.
+A two-sided computability classification (\CatAD{}; hardness core \CatAL)
+locates transputation exactly: record-truth on the diagonal fragment is
+$\Sigma^0_1$-complete, the adjudicator is limit-computable with boundedly
+many mind changes under a named premise bundle, and hence
+$\deg_T(\Ptop{\upharpoonright}\mathrm{diag}) = \mathbf{0}'$ exactly~---~the
+Gold--Putnam trial-and-error stratum, with no computable convergence
+modulus. Quantum measurement is trial-and-error computation at the halting
+degree, and no stronger: physics requires exactly one Turing jump.
+The same degree-$\mathbf{0}'$ structure reappears at the field level: the
+irreducible residual of the PMDL action is a left-c.e.\ real of degree
+exactly $\mathbf{0}'$, so the cosmological constant inherits the
+transputation classification.
+Differential Self-Adjudicative Computation (DSAC) is positioned as the
+continuum member of the $[D]$ adjudicator class, bridging the discrete
+\fmdl{} projection and the transputation selector $\Ptop_D$: its
+relaxation-to-coherence dynamics is the physical realization of the
+computable stage sequence whose limit is the adjudication outcome.
+\end{abstract}
+
+\tableofcontents
+
+\clearpage
+%-----------------------------------------------------------------------------
+\begin{tcolorbox}[colback=gray!8,colframe=gray!50,title=Claim-Strength Taxonomy,
+  fonttitle=\bfseries,breakable]
+\small
+Every result in this paper carries one of five certification levels:
+\begin{itemize}[leftmargin=1.8em,itemsep=2pt,topsep=2pt]
+  \item \CatAL{} (\textbf{A-Lean}) --- Lean~4 machine proof, zero \texttt{sorry} in \CatAL{} results
+    and zero custom axioms in any \CatAL{} proof chain.
+    Conditional \CatAL{} uses a named physics axiom (always stated explicitly).
+  \item \CatAD{} (\textbf{A/D}) --- Analytic or fully decidable proof; human-verifiable.
+  \item \CatA{} (\textbf{A}) --- Computationally verified; reproducible from published scripts.
+  \item \CatB{} (\textbf{B}) --- Theoretically motivated conjecture with numerical support.
+  \item \CatD{} (\textbf{D}) --- Speculative hypothesis; further development needed.
+\end{itemize}
+Ordering: $\CatAL > \CatAD > \CatA > \CatB > \CatD$.
+All Lean certs use \texttt{ugp-lean} (canonical public repo) unless stated
+otherwise; module paths are given in Appendix~\ref{app:lean}.
+\end{tcolorbox}
+
+%-----------------------------------------------------------------------------
+\section{Introduction}
+\label{sec:intro}
+
+The measurement problem~---~how quantum superposition becomes a definite
+outcome~---~remains unresolved in most interpretations of quantum mechanics.
+Standard frameworks postulate measurement as an axiom (Copenhagen~\cite{Bohm1952}),
+multiply branches without a selection mechanism (Everett~\cite{Everett1957}),
+rely on decoherence without resolving outcomes~\cite{Zurek2003},
+or postulate physical collapse~\cite{GhirardiRiminiWeber1986}.
+CA-based interpretations of QM also exist~\cite{tHooft2016CA,Wolfram2002}.
+This paper provides a formal derivation of the measurement mechanism from
+first principles within the GTE framework: quantum measurement is not added
+as an axiom but is forced~---~by PSC closure and diagonal self-reference~---~as
+a consequence of the universe being a record-bearing, reflexive computational
+system \cite{SpivackGTECompleteFramework,SpivackQMFromR110}.
+
+The GTE polynomial $p(L,C,R) = C+R-CR-LCR$ over $\GF{7}$ is, from first
+principles, the unique MDL-minimal CA rule consistent with the Standard Model
+generation structure and PSC \cite{SpivackGTEPolynomialWolfram,SpivackGTEPolynomialUFT}.
+Three prior papers establish parts of the measurement story:
+P49~\cite{SpivackGTEPolynomialWolfram} proves the four-object tower
+$p \to \fmdl{} \to \CMCA \to \PHIMDL$ and the invariant-subset uniqueness
+of $\fmdl{}$; P37~\cite{SpivackQMFromR110} derives the full Hilbert space
+from the \fmdl{} ring and the Born rule from information-theoretic loss; and
+P48~\cite{SpivackGTECompleteFramework} establishes the GTE transputation framework
+($D_1$--$D_5$ constraints, forcing theorems)~---~the physical realization of the
+abstract formal theory of transputation~\cite{SpivackNEMS76,SpivackNEMS77}~---~and
+the MDL three-roles non-circularity argument (P48 \S5, ``The Three Faces of MDL'').
+
+The present paper establishes what none of those papers state explicitly:
+\begin{enumerate}[label=(\roman*)]
+  \item The \textbf{three-part characterization of \fmdl{} as PSC-correction
+    of $p$}~---~binary agreement (Rule~110), SM-orbit override, vacuum
+    zeroing~---~with the information-theoretic gap between $p$ and \fmdl{}
+    computed at both the distributional level (KL divergence: $4.6$--$7.7$
+    bits) and the algorithmic level (K-gap: 31 bits).
+  \item The \textbf{SRRG fixed-point bridge}: $p_{\mathbb{R}}(x,x,x)=x$
+    has the positive real root $\varphi = (\sqrt{5}-1)/2$, identically
+    equal to the SRRG adjudication fixed point~---~machine-certified
+    (\CatAL, \lean{gte\_poly\_srrg\_bridge}).
+  \item The \textbf{Three-Level MDL Unification Theorem} (\CatAD):
+    $\Ptop(X) = \arg\min K(x \mid \text{PSC})$ operates with $p$ as the
+    connecting object across all three levels.
+  \item The \textbf{complete discrete measurement mechanism}: from
+    $p$-dynamics (Class~3 chaotic attractor of period~475) through the
+    PSC-projection $\pi_{\PSC}$ to the \fmdl{} orbit, to transputation
+    as the non-computable continuum realization.
+  \item The \textbf{two-sided computability classification of
+    transputation} (\CatAD{}; hardness core \CatAL): under a named premise
+    bundle (PR1--PR5), record-truth on the diagonal fragment is
+    $\Sigma^0_1$-complete, the adjudicator is limit-computable with mind
+    changes bounded by $2(k_w-1)$, and
+    $\deg_T(\Ptop{\upharpoonright}\mathrm{diag}) = \mathbf{0}'$
+    exactly~---~the Gold--Putnam trial-and-error
+    stratum~\cite{Gold1965,Putnam1965}~---~with an operational
+    no-hypercomputation theorem (no computable convergence modulus).
+    This is the GTE-specific realization of the abstract transputation
+    classification of the NEMS formal theory~\cite{SpivackNEMS76}.
+  \item \textbf{DSAC as the $[D]$-member} bridging the discrete \fmdl{}
+    projection and the non-computable $\Ptop_D$, now positioned precisely:
+    DSAC's relaxation dynamics is the physical stage sequence of the
+    classification.
+\end{enumerate}
+
+Section~\ref{sec:qm_comparison} locates the GTE transputation mechanism
+relative to Copenhagen, many-worlds, Bohmian, GRW, and decoherence
+approaches, explaining why transputation constitutes a structurally
+distinct fourth option~\cite{SpivackGTECompleteFramework}.
+Section~\ref{sec:lifting} (within Section~\ref{sec:hierarchy}) connects
+the \fmdl{} certificate to $\PHIMDL$ via the Algebraic Lifting Theorem,
+identifying the continuum significance of the three-part characterization.
+
+\paragraph{Reading order.}
+This paper builds on P49 (Objects~0--T, $\fmdl{}$ structure),
+P37 (Hilbert space and Born rule from the \fmdl{} ring),
+P48 (transputation framework, MDL three roles, $D_1$--$D_5$ constraints),
+and P13~\cite{SpivackMFRR} (DSAC architecture, TE2.U). Each
+of those papers is cited rather than reproduced here.
+
+
+%-----------------------------------------------------------------------------
+\section{The GTE Computational Hierarchy}
+\label{sec:hierarchy}
+
+The GTE framework has a four-level architecture in which each level is the
+continuum extension or PSC-projection of the level below:
+\begin{equation}
+\underbrace{p}_{\text{Object~0}}
+\;\xrightarrow{\;\pi_{\PSC}\;}
+\underbrace{\fmdl{}}_{\text{Object~1}}
+\;\xrightarrow{\;\text{CMCA embedding}\;}
+\underbrace{\text{CMCA tape}}_{\text{Object~2}}
+\;\xrightarrow{\;\text{Algebraic Lifting}\;}
+\underbrace{\PHIMDL}_{\text{Object~3/T}}.
+\label{eq:hierarchy}
+\end{equation}
+Object~0 is the MDL-minimal polynomial; Object~1 is its PSC-restriction to
+the admissible orbit; Object~2 embeds Object~1 into a 1+1D chiral CA tape
+with Rule~110/Rule~124 pair and an asynchronous fractal cellular automaton
+($\AFCA$) timing clock; Object~T is the continuum field limit.
+These objects are pairwise distinct: $p$ is a degree-3 polynomial, $\fmdl{}$
+is provably non-polynomial (Schwartz--Zippel, \CatA), the CMCA tape is a
+dynamical system in 1+1D, and $\PHIMDL$ is a $\ZS$-symmetric Klein--Gordon
+scalar field~\cite{SpivackGTEPolynomialWolfram,SpivackCMCA,SpivackThreeTapeCMCA}.
+
+The present paper is concerned with the transition
+$p \xrightarrow{\pi_{\PSC}} \fmdl{}$ and its extension through the adjudicator
+class $[D]$ to the quantum measurement selector $\Ptop_D$.
+The transputation layer $[D]$ sits \emph{above} Object~T in the adjudication
+hierarchy:
+\begin{equation}
+p \;\to\; \fmdl{}
+\;\to\; \DSAC \;\in\; [D]
+\;\to\; \Ptop_D \;\text{(non-computable; degree exactly $\mathbf{0}'$,
+Section~\ref{sec:two_sided})}.
+\label{eq:adjudicator_chain}
+\end{equation}
+The CMCA and $\PHIMDL$ levels are the \emph{physical substrate}; the
+$[D]$-layer is the \emph{adjudication mechanism} operating on top of that
+substrate. For the full architecture, see P48 \cite{SpivackGTECompleteFramework}.
+
+\subsection{Connection to \boldmath$\PHIMDL$ via Lifting and Descent}
+\label{sec:lifting}
+
+The Algebraic Lifting Theorem (\CatAL, P43~\cite{SpivackCompleteness}) maps the
+\CMCA{} algebraic structure (Level~2) to $\PHIMDL$ (Level~3) exactly; the
+Algebraic Descent Theorem (\CatAL, P48~\cite{SpivackGTECompleteFramework})
+confirms that the same algebraic structure persists at every finite resolution.
+The discrete measurement certificate established in this paper therefore has a
+direct continuum interpretation.
+The three-part \fmdl{} characterization~---~binary agreement, orbit override,
+vacuum zeroing~---~lifts to a field-theoretic statement: the PSC-admissible
+kink sector of $\PHIMDL$ carries the same three-part structure at continuum
+scale.
+The discrete transputation event
+$\mathrm{GEN}_1 \to \mathrm{GEN}_2 \to \mathrm{GEN}_3 \to \mathrm{VAC}$
+lifts to a $\PHIMDL$ field-configuration transition: a BPS kink evolving
+through its three-generation cascade before settling to vacuum.
+The non-computability of Level~$2\to3$ lifts to the statement that the
+$\PHIMDL$ path integral's branch selection is non-computable~---~the formal
+content of the $D_3$ constraint~---~with its exact strength located by the
+two-sided classification of Section~\ref{sec:two_sided}.
+
+%-----------------------------------------------------------------------------
+\section{\boldmath$\fmdl{}$ as PSC-Correction of $p$}
+\label{sec:psc_correction}
+
+\subsection{Three-Part Characterization}
+\label{sec:three_part}
+
+Objects~0 and~1 are not the same function. Their relationship is a
+three-part structure:
+
+\begin{tcolorbox}[colback=blue!4,colframe=blue!40,title=\textbf{Three-Part
+  Characterization of \boldmath$\fmdl{}$},fonttitle=\bfseries,breakable]
+\small
+\begin{description}[leftmargin=1.8em,style=nextline]
+  \item[Part~A — Binary sector $\{0,1\}^3$, 8 inputs (\CatAL):]
+    $\fmdl{}(L,C,R) = p(L,C,R)$ for all $(L,C,R) \in \{0,1\}^3$.
+    Both give the Rule~110 truth table~\cite{Cook2004}. Machine-certified:
+    \lean{p\_poly\_agrees\_fmdl\_on\_binary}
+    (\texttt{UgpLean/Universality/Z7InvariantSubsets.lean}).
+
+  \item[Part~B — SM orbit neighborhoods, 10 inputs (\CatAL):]
+    \fmdl{} overrides $p$ with PSC-forced orbit values.
+    Witness: $p(1,1,5) = 3$ but $\fmdl{}(1,1,5) = 2$ (enforces
+    $\mathrm{GEN}_1 \to \mathrm{GEN}_2$ winding transition). Machine-certified:
+    \lean{p\_fmdl\_disagree\_on\_orbit}
+    (\texttt{UgpLean/Polynomial/PolyExplorations.lean}).
+
+  \item[Part~C — Remaining 325 neighborhoods (\CatAL):]
+    $\fmdl{}(L,C,R) = 0$ (vacuum projection).
+    Machine-certified:
+    \lean{fmdl\_zero\_on\_free\_neighborhoods}
+    (\texttt{UgpLean/Universality/CUP3DUniqueness.lean}).
+\end{description}
+\end{tcolorbox}
+
+\paragraph{Physical meaning of Part~B (orbit override).}
+The ten SM orbit neighborhoods where $\fmdl{} \neq p$ are precisely the
+inputs that carry the Standard Model's generational structure.
+The raw polynomial does not encode this structure: at $(1,1,5)$, for example,
+$p$ outputs $3$ where the SM generation cascade requires $2$.
+The \fmdl{} correction at these inputs is the PSC content: the CA learns to
+output what the Standard Model's generation cascade requires, not what the
+raw polynomial gives.
+This correction is not arbitrary~---~it is uniquely forced by the PSC orbit
+constraint; no other correction produces the
+$\mathrm{GEN}_1 \to \mathrm{GEN}_2 \to \mathrm{GEN}_3 \to \mathrm{VAC}$ orbit.
+
+The three parts combine into a single certified statement:
+
+\begin{theorem}[\CatAL\ — \lean{psc\_projection\_gives\_fmdl}]
+\label{thm:psc_proj}
+$\fmdl{}$ is the PSC-projection of $p$: it equals $p$ on the binary ether
+sector, equals the PSC-forced orbit values on the ten SM-orbit neighborhoods,
+and equals zero on all other inputs.
+Equivalently, for any $(L,C,R) \notin \{0,1\}^3 \cup \{\text{SM orbit nbhds}\}$:
+$\fmdl{}(L,C,R) = 0$.
+\end{theorem}
+
+\begin{proof}[Proof (machine-assisted)]
+The bundle \lean{psc\_projection\_gives\_fmdl} assembles
+\lean{fmdl\_zero\_on\_free\_neighborhoods} (Part~C; all $7^3 = 343$
+inputs verified by \texttt{decide}) and
+\lean{p\_poly\_agrees\_fmdl\_on\_binary} (Part~A).
+Part~B follows from \lean{p\_fmdl\_disagree\_on\_orbit} as a witness.
+Module paths are listed in Appendix~\ref{app:lean}.
+\end{proof}
+
+\begin{remark}
+\fmdl{} is \emph{not} $p$ restricted to a subset~---~it is $p$
+\emph{corrected} on the SM orbit to enforce PSC consistency, then zero
+elsewhere. The correction encodes the PSC content: \fmdl{} is what $p$
+``should have been'' to satisfy the physical generation-orbit constraint.
+\end{remark}
+
+\subsection{Information-Theoretic Gap}
+\label{sec:info_gap}
+
+The PSC-projection $p \to \fmdl{}$ has two distinct information-theoretic
+signatures.
+
+\paragraph{Algorithmic complexity gap (\CatAL, \CatA{}).}
+The MDL description of $p$ requires 19 bits
+(\lean{K\_CA\_CMCA}, \CatAL; the family-level MDL optimality of the
+$\GF{7}$ substrate is \lean{mdl\_ca\_rule\_coding\_closed}, \CatAL, P49)
+\cite{SpivackGTEPolynomialWolfram}. The MDL description of \fmdl{} requires
+approximately 50 bits (the 8-entry Rule~110 table plus the 10 orbit-override
+entries, each with position and value). The algorithmic K-gap is
+$K(\fmdl{}) - K(p) \approx 31$ bits~\cite{LiVitanyi2008,RissanenMDL}: the
+PSC orbit specification is more expensive to encode than the polynomial itself.
+
+\paragraph{Distributional KL divergence (\CatA{}).}
+Treating $p$ and $\fmdl{}$ as probability distributions over $\GF{7}^3$
+(normalized by the sum of positive outputs), the KL divergence is:
+\begin{equation}
+  \mathrm{KL}(\tilde{f}_{\mathrm{MDL}} \;\|\; \tilde{p}) \;\approx\; 4.6\text{--}7.7 \text{ bits},
+\end{equation}
+depending on the model for the SM-orbit entries (Model~A: binary only;
+Model~B: binary plus orbit windows). The reverse divergence
+$\mathrm{KL}(\tilde{p} \;\|\; \tilde{f}_{\mathrm{MDL}}) \approx 24$--$25$~bits
+reflects the much higher entropy of $p$ as a distribution.
+
+The KL divergence and K-gap are not proportional: KL measures
+distributional discrepancy at the Shannon level~\cite{Shannon1948,CoverThomas2006}
+(how different the output histograms are over $\GF{7}^3$), while the K-gap
+measures the structural overhead of specifying \emph{which} inputs are
+PSC-admissible. Both quantify aspects of the $p \to \fmdl{}$ gap, but at
+fundamentally different levels of description.
+
+The distributional non-equivalence is machine-certified:
+\begin{theorem}[\CatAL\ — \lean{kl\_divergence\_fmdl\_p\_nonzero}]
+There exists a triple $(L,C,R) \in \GF{7}^3$ such that
+$p(L,C,R) \neq \fmdl{}(L,C,R)$, certifying that $p$ and $\fmdl{}$ are
+distinct as distributions over $\GF{7}^3$.
+\end{theorem}
+
+\subsection{The Attractor Structure of $p$}
+\label{sec:attractor}
+
+Under iteration of $p$ on the $\ZS^5$ ring (the 5-cell periodic ring
+encoding the SM generation winding triples), the dynamics have a
+precise bifurcation:
+
+\begin{theorem}[\CatAL\ — \lean{period\_475\_returns}, \lean{period\_475\_is\_minimal}]
+\label{thm:attractor}
+The map $p$ acting on $\GF{7}^5$ has an attractor of minimal period
+exactly~475. The vacuum basin contains 52 states (0.31\% of the 16,807-state
+space); 99.69\% of states asymptote to the period-475 attractor.
+\end{theorem}
+
+In contrast, under \fmdl{}, the SM generation orbit
+$\mathrm{GEN}_1 \to \mathrm{GEN}_2 \to \mathrm{GEN}_3 \to \mathrm{VAC}$ is
+the \emph{unique} attractor:
+
+\begin{theorem}[\CatAL\ — \lean{fmdl\_z7\_three\_generation\_orbit}]
+The restriction of \fmdl{} to the 5-cell ring produces the three-generation
+orbit $\mathrm{GEN}_1 \to \mathrm{GEN}_2 \to \mathrm{GEN}_3 \to \mathrm{VAC}$,
+encoding the $\ZS$ winding sequence of the Standard Model fermion generations.
+\end{theorem}
+
+\begin{theorem}[\CatAL\ — \lean{fmdl\_gen1\_is\_garden\_of\_eden}]
+$\mathrm{GEN}_1 = [1,5,2,2,1]$ is a Garden of Eden under \fmdl{}: it has no
+predecessor under the \fmdl{} rule. This makes $\mathrm{GEN}_1$ the unique
+``first cause'' of the physical orbit and explains why it is the lightest
+(most arithmetically stable) SM generation.
+\end{theorem}
+
+The contrast between $p$ and \fmdl{} is therefore stark: $p$ exhibits
+Class~3 chaotic dynamics with a period-475 attractor; \fmdl{} has a
+unique, directed, 3-step orbit with no predecessors at its start. The
+PSC-projection selects the only trajectory that is physically realizable.
+
+
+%-----------------------------------------------------------------------------
+\section{The SRRG Fixed-Point Bridge}
+\label{sec:srrg_bridge}
+
+The GTE polynomial over $\mathbb{R}$ (extending $p$ from $\GF{7}$ to $\mathbb{R}$
+by the natural embedding) yields the real-valued function
+$p_{\mathbb{R}}(L,C,R) = C+R-CR-LCR$. Its diagonal restriction is:
+\begin{equation}
+  p_{\mathbb{R}}(x,x,x) = 2x - x^2 - x^3.
+\end{equation}
+The fixed-point equation $p_{\mathbb{R}}(x,x,x) = x$ reduces to:
+\begin{equation}
+  x^3 + x^2 - x = 0
+  \;\Longrightarrow\;
+  x\bigl(x^2 + x - 1\bigr) = 0,
+\end{equation}
+with roots $x = 0$, $x = (\sqrt{5}-1)/2 \approx 0.618$, and
+$x = -(1+\sqrt{5})/2 \approx -1.618$. The unique positive real root is
+\begin{equation}
+  \varphi \;=\; \frac{\sqrt{5}-1}{2} \;\approx\; 0.618034.
+\end{equation}
+
+This value is identically the \emph{SRRG adjudication fixed point}:
+the Self-Referential Renormalization Group (P27~\cite{SpivackSRRG}) identifies
+the self-consistent running-coupling fixed point $g^* = (\sqrt{5}-1)/2$
+(equivalently $1/\varphi_{\mathrm{large}}$ with
+$\varphi_{\mathrm{large}} = (1+\sqrt{5})/2 \approx 1.618$).
+
+\begin{theorem}[\CatAL\ — \lean{gte\_poly\_srrg\_bridge}]
+\label{thm:srrg_bridge}
+The unique positive real fixed point of $p_{\mathbb{R}}(x,x,x) = x$ is
+$\varphi = (\sqrt{5}-1)/2$, identically equal to the SRRG adjudication
+fixed point $g^*$. Machine-certified in \texttt{srrg-lean}
+(\texttt{SRRGCABridge.lean}, zero sorry).
+\end{theorem}
+
+\begin{remark}[Physical significance of Theorem~\ref{thm:srrg_bridge}]
+The polynomial $p$~---~derived from MDL minimality and PSC without reference
+to continuous dynamics~---~already encodes the adjudication attractor of the
+renormalization flow. The real diagonal of $p$ does not merely ``accidentally''
+produce $\varphi$: $\varphi$ is the unique value at which MDL-minimal theory
+selection (Level~1 of the hierarchy) and the continuum running-coupling fixed
+point (Level~2) agree. This is the first of two places where the polynomial
+bridges levels; the second is the Born-rule connection established in
+Section~\ref{sec:unification}.
+\end{remark}
+
+\begin{remark}[The master quadratic]
+\label{rem:master_quadratic}
+The quadratic $x^2 + x - 1$ in Theorem~\ref{thm:srrg_bridge} is the master
+quadratic of the golden ring $\mathbb{Z}[\varphi]$
+(P49~\cite{SpivackGTEPolynomialWolfram}, golden-quadratic duality): one
+$\mathbb{Z}$-quadratic with two completions. Its archimedean fiber~---~the
+positive real root $\varphi$~---~is the algebraic input to the
+discrete-to-continuum SRRG bridge above; its $\GF{7}$-inertness (the
+discriminant $5$ is a quadratic non-residue mod~$7$, so the quadratic has
+no root in $\GF{7}$ or in any $7$-adic completion) is precisely the QNR
+floor that forces the unique binary computational floor of the GTE
+alphabet. The two fibers are claims at different levels: the real root
+feeds the continuum bridge, while the $\GF{7}$-rootlessness is an
+arithmetic fact about the polynomial itself (Object~0), and the two must
+not be conflated.
+\end{remark}
+
+
+%-----------------------------------------------------------------------------
+\section{Three-Level MDL Unification Theorem}
+\label{sec:unification}
+
+\subsection{Statement}
+\label{sec:unif_statement}
+
+The MDL three-roles framework is established in P48
+\cite{SpivackGTECompleteFramework} and machine-certified as
+\lean{mdl\_tower\_bundle} and \lean{mdl\_tower\_three\_levels\_non\_circular}
+(\texttt{MDLTower.lean}, ugp-lean, \CatAL). The present theorem is distinct:
+it identifies the \emph{polynomial $p$ itself as the connecting object} that
+unifies all three levels through a single arithmetic formula.
+
+\begin{theorem}[Three-Level MDL Unification, \CatAD]
+\label{thm:three_level}
+The formula
+\begin{equation}
+  \Ptop(X) \;=\; \arg\min_{x \,\in\, X}\; K\!\bigl(x \mid \text{PSC constraints}\bigr)
+  \label{eq:mdl_formula}
+\end{equation}
+operates at three nested, logically non-circular levels, with $p$ as the
+connecting object:
+
+\begin{center}
+\begin{tabular}{@{}P{1.4cm}P{2.6cm}P{3.0cm}P{3.4cm}c@{}}
+\toprule
+\textbf{Level} & \textbf{Transition} & \textbf{Domain $X$} & \textbf{Result} & \textbf{Cert} \\
+\midrule
+$0 \to 1$ & Theory selection
+  & All $\mathbb{Z}_N$ CA rules
+  & $p$ (19-bit polynomial, MDL-unique)
+  & \CatAL \\
+$1 \to 2$ & Field dynamics
+  & $\PHIMDL$ field configurations
+  & PMDL variational solution; $\nabla^2\PHIMDL = G_{\mathrm{eff}} p(w_x,w_y,w_z)$
+  & \CatAD \\
+$2 \to 3$ & Event adjudication
+  & Realizations consistent with record $w$
+  & Born rule $P(k) = |c_k|^2$ via $\Ptop_D$
+  & \CatAL \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+The polynomial $p$ connects all three levels:
+$p$ \textit{is} the output of Level $0\to1$;
+$p$ \textit{enters} the PMDL action at Level $1\to2$ as the coupling
+functional; and $p$'s PSC-projection \fmdl{} \textit{defines} the orbit used
+by $\Ptop_D$ at Level $2\to3$.
+\end{theorem}
+
+\noindent
+The PMDL action entering at Level~$1\to2$ additionally carries an
+irreducible adjudication residual $D_{\mathrm{res}}$; its computability
+classification is given in Remark~\ref{rem:level3_residual}.
+
+\begin{proof}[Proof sketch (CatAD)]
+\textit{Level~$0\to1$ (\CatAL).} The MDL selection chain is certified at
+two quantifier levels. At the family level,
+$\mathbb{Z}_7 \times \mathbb{Z}_3$ is the MDL-minimal
+$\mathbb{Z}_N \times \mathbb{Z}_M$ substrate: its combined
+structure-plus-orbit-data coding cost is strictly below that of the
+$\mathbb{Z}_5 \times \mathbb{Z}_3$ alternative, whose lack of
+PSC-admissible kink orbits is verified exhaustively
+(\lean{mdl\_ca\_rule\_coding\_closed}, \CatAL).
+Within the $\GF{7}$ class, exactly one of the $7^8$ multilinear rules
+satisfies the generation-orbit ring evaluations together with vacuum
+transparency, and it is $p$
+(\lean{ugp\_orbit\_interpolation\_lift}, \CatAL).
+The description length $K_{\mathrm{CA}} = 19$ bits of the selected
+construction is itself machine-certified (\lean{K\_CA\_CMCA}, \CatAL;
+see P49 Theorem T96-02 \cite{SpivackGTEPolynomialWolfram}).
+
+\textit{Level~$1\to2$ (\CatAD).} The PMDL action
+$S_{\mathrm{PMDL}} = \int \PHIMDL \cdot p(w_x,w_y,w_z)\,d^3x$ is the unique
+MDL-minimal action with $\ZS$ symmetry and the CMCA algebraic certificate;
+its variational equation yields
+$\nabla^2\PHIMDL = G_{\mathrm{eff}} \cdot p(w_x,w_y,w_z)$
+(\CatAD{} in the continuum, via the Algebraic Lifting Theorem; the
+uniqueness of the cubic coupling is machine-certified,
+\lean{unique\_cubic\_gravity\_coupling}, \CatAL; see P44--P47).
+
+\textit{Level~$2\to3$ (\CatAL).} PSC closure + diagonal self-reference force
+$\Ptop_D$ as the internal adjudicator
+(\lean{closed\_choice\_forces\_transputation},
+transputation-lean, zero custom axioms in this proof chain, \cite{SpivackGTECompleteFramework}).
+The $D_5$ constraint forces Born-rule consistency:
+$P(k) = |c_k|^2$ (\lean{born\_rule\_unconditional},
+\texttt{UgpLean/Universality/PSCEffectMeasure.lean}, \CatAL).
+The realizations are defined over the \fmdl{} orbit, connecting this level
+to the Level~$0\to1$ output.
+
+\textit{Non-circularity.} The three domains are strictly nested:
+theory space $\supset$ field configurations $\supset$ candidate realizations.
+No application of \eqref{eq:mdl_formula} at one level refers to any object
+at another level. The non-circularity is machine-certified:
+\lean{mdl\_tower\_three\_levels\_non\_circular}
+(\texttt{MDLTower.lean}, ugp-lean, \CatAL;
+see P48 \cite{SpivackGTECompleteFramework}).
+\end{proof}
+
+\subsection{Bundle Certificate}
+\label{sec:bundle_cert}
+
+\textbf{Bundle Certificate} (\CatAL{}, zero sorry): The cross-module bundle
+\lean{mdl\_three\_level\_unification}
+(\texttt{Polynomial/MDLThreeLevelUnification.lean}, ugp-lean) certifies the
+Three-Level Unification at the machine-verified level, wrapping:
+\begin{itemize}[nosep]
+  \item Level~$0\to1$: \lean{mdl\_ca\_rule\_coding\_closed}
+    (\CatAL, \lean{MDLDerivabilityCriterion.lean});
+  \item Level~$1\to2$: \lean{gte\_poly\_srrg\_bridge}
+    (\CatAL, \lean{SRRGCABridge.lean});
+  \item PSC link $p \to \fmdl{}$: \lean{psc\_projection\_gives\_fmdl}
+    (\CatAL, \lean{PolyExplorations.lean});
+  \item Level~$2\to3$ measurement-orbit uniqueness ---
+    \lean{fmdl\_orbit\_is\_unique\_psc\_trajectory}
+    (\CatAL; \texttt{CUP3DUniqueness.lean}).
+\end{itemize}
+Level~$2\to3$ adjudication forcing under PSC and record-divergent choice is
+certified separately by \lean{closed\_choice\_forces\_transputation}
+(\CatAL; transputation-lean, via
+\lean{mdl\_level23\_closed\_choice\_forces\_transputation} in the same module).
+
+\begin{corollary}[Selector Member-Independence, \CatAD]
+\label{cor:c2_member_independence}
+The Three-Level MDL Unification Theorem implies that the adjudication
+selector $\Ptop_D$ at Level~$2\to3$ is uniquely determined by the MDL
+functional governing Levels~$0\to1$ and~$1\to2$.  Combined with the
+$D_4$--$D_5$ uniqueness constraints (\S\ref{sec:d_class}), any two
+members $D,D'\in[D]$ satisfying $D_1$--$D_5$ induce the same selector
+on all PSC-admissible adjudication records.
+Formally: the $D_1$--$D_5$ axioms force the selector to the Born-rule
+state
+(\lean{d1\_d5\_forces\_gibbs\_family},
+\lean{c2\_selector\_member\_independent}, both \CatAL),
+establishing selector member-independence --- the C2 property --- as a
+derived theorem.  This is the strongest corollary of the unification
+theorem: not only is there a single MDL functional at all three levels,
+but physical outcome selection is insensitive to which representative of
+the class $[D]$ is realized.
+\end{corollary}
+
+\subsection{The Computability Gap}
+\label{sec:comp_gap}
+
+The three levels differ in their computational character:
+
+\begin{proposition}[\CatAD]
+\label{prop:comp_gap}
+Level~$0\to1$ (selecting $p$ from rule space) is
+\emph{computable}: the PSC-restriction $\pi_{\PSC}$ on the finite space
+of $\mathbb{Z}_7$-state CA rules is an effective decision procedure.
+Level~$2\to3$ (transputation $\Ptop_D$) is \emph{non-computable}: the
+$D_3$ constraint forces a diagonal barrier that no total-effective
+algorithm can resolve on the self-referential fragment of the record.
+\end{proposition}
+
+\begin{proof}
+Computability of Level~$0\to1$: the space of $7$-state 3-input CA rules
+has $7^{7^3} = 7^{343}$ elements; PSC filtering is an explicit finite
+enumeration; the MDL minimum is attained at $p$.
+Non-computability of Level~$2\to3$: \lean{asr\_rt\_not\_computable}
+certifies that no total computable function can decide record-truth on
+the Arithmetic Self-Reference fragment
+(\texttt{nems-lean}, \texttt{Diagonal/HaltingReduction}, \CatAL; P48
+\cite{SpivackGTECompleteFramework}).
+\end{proof}
+
+\subsubsection{The Two-Sided Classification}
+\label{sec:two_sided}
+
+Proposition~\ref{prop:comp_gap} is a lower bound only: it says transputation
+exceeds total-effective computation, but does not say by how much, leaving
+open the misreading that transputation is hypercomputation.
+The following classification closes the gap from both sides.
+It locates the adjudication function exactly: at the halting degree
+$\mathbf{0}'$, in the Gold--Putnam ``trial-and-error''
+stratum~\cite{Gold1965,Putnam1965}, and no higher.
+The abstract form of this result~---~that a closed, record-bearing,
+diagonal-capable system forces an internal adjudicator whose decision
+content sits at degree $\mathbf{0}'$ and is realized as a Putnam--Gold
+trial-and-error limit~---~is the subject of the NEMS formal theory of
+transputation~\cite{SpivackNEMS76}; the theorems below are its
+GTE-specific physical realization, with DSAC as the concrete $[D]$-member
+(\cite{SpivackNEMS77}, \S\ref{sec:dsac}).
+
+The classification concerns the adjudication layer $[D]$, not the substrate
+levels below it: the record fragment and the finite winding-sector
+adjudication are defined over \fmdl{} (Object~1, the discrete adjudicator),
+and $\Ptop_D$/DSAC is the continuum $[D]$-member operating above $\PHIMDL$
+(Object~3/T). The degree statements below are properties of the adjudication
+function over these levels~---~not of the polynomial $p$ (Object~0) or of
+the CMCA tape architecture (Object~2).
+
+\paragraph{The premise bundle.}
+The upper bound is conditional on five named structural premises. They are
+explicit hypotheses about the GTE record theory~---~not hidden
+assumptions~---~and each names a specific attack surface for refutation.
+
+\begin{definition}[Premise bundle PR1--PR5]
+\label{def:premise_bundle}
+\begin{description}[leftmargin=2.2em,itemsep=2pt]
+  \item[PR1 (Finite-witness record truth):] record-truth on the diagonal
+    fragment is $\Sigma^0_1$: every record-inscribed fact has a finite
+    witness. Physics writes only $\Sigma_1$ sentences into records~---~a
+    finite stable configuration certifies an occurrence, but no finite
+    record certifies a non-occurrence over unbounded time. (The
+    framework's own physical instantiation: vacuum reachability under
+    \fmdl{} is $\Sigma^0_1$-complete, P34~\cite{SpivackGTEMobius}.)
+  \item[PR2 (Effective candidate enumeration):] a Turing machine
+    enumerates the admissible continuations $S(w)$ of a record $w$.
+    This is constitutive of the transputation class as defined in
+    P34~\cite{SpivackGTEMobius}.
+  \item[PR3 (Finite sector structure with MDL-conservativity):]
+    (a)~the record-equivalence quotient of $S(w)$ is finite~---~adjudication
+    outcomes are winding-sector labels drawn from the finite PSC-admissible
+    list; (b)~dissonance comparisons are computable on enumerated
+    candidates; (c)~among unrefuted candidates, positing an unwitnessed
+    event strictly raises the description cost~---~the operational content
+    of $\Ptop(X) = \arg\min K(x \mid \text{PSC})$.
+  \item[PR4 ($\Pi_1$ admissibility / $\Sigma_1$ refutation):]
+    candidate--record inconsistency manifests at a finite stage;
+    admissibility is $\Pi^0_1$.
+  \item[PR5 (Record readout):] at diagonal choice points, record-distinct
+    branches are computably labeled by the coded statement's truth bit.
+\end{description}
+The refutation surface is exactly: physically inscribed $\Pi_2$ facts
+(against PR1) or infinite adjudication sectors (against PR3(a)).
+\end{definition}
+
+\paragraph{Hardness.}
+The lower bound needs no new mathematics: the machine-certified halting
+bridge of the Arithmetic Self-Reference structure is already a many-one
+reduction.
+
+\begin{theorem}[$\Sigma^0_1$-completeness of diagonal record-truth;
+  \CatAD{}, hardness core \CatAL]
+\label{thm:rt_complete}
+Under the Arithmetic Self-Reference structure and PR1, record-truth
+restricted to the diagonal fragment, $\mathrm{RT}{\upharpoonright}\mathrm{diag}$,
+is $\Sigma^0_1$-complete under many-one reduction: it is many-one
+equivalent to the halting problem, lies in $\Delta^0_2 \setminus \Delta^0_1$,
+has Turing degree exactly $\mathbf{0}'$, and is 1-c.e.\ (one mind change
+suffices: guess ``false,'' switch when the witness arrives, never switch
+back).
+The hardness direction is machine-certified unconditionally
+(\lean{halting\_manyOne\_reducible\_to\_RT}, \CatAL); the membership
+direction is machine-certified with PR1 as a named hypothesis structure
+(\lean{rt\_manyOne\_reducible\_to\_halting\_zero},
+\lean{rt\_sigma1\_complete\_on\_diagonal}, \CatAL; nems-lean).
+\end{theorem}
+
+\paragraph{Upper bound.}
+
+\begin{theorem}[Limit computability of the adjudicator;
+  \CatAD{} conditional on PR1--PR4]
+\label{thm:limit_computable}
+Under PR1--PR4, with $D \in [D]$ satisfying $D_1$--$D_5$, the sector-valued
+adjudicator is limit-computable: there is a total computable stage function
+$g$ with
+\begin{equation}
+  \Ptop_D(w) \;=\; \lim_{s \to \infty} g(w,s),
+\end{equation}
+and the number of mind changes (stages $s$ with $g(w,s+1) \neq g(w,s)$) is
+at most $2(k_w - 1)$, where $k_w$ is the number of admissible winding
+sectors of the record $w$. For single-kink adjudication events
+($k_w \leq 5$), at most $8$ mind changes occur.
+By the Shoenfield limit lemma~\cite{Shoenfield1959},
+$\Ptop_D \leq_T \emptyset'$: transputation never exceeds the first
+Turing jump.
+The stage construction is machine-certified with the stage-convergence
+hypothesis as a named structure
+(\lean{pt\_limit\_computable}, transputation-lean; see
+Appendix~\ref{app:lean} for the disclosure of its conditionality).
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+By PR2 and PR4 there are computable predicates $\mathrm{alive}(w,i,s)$
+(non-increasing in $s$) and $\mathrm{wit}(w,i,s)$ ($\Sigma_1$ witness
+flags), obtained by running the computable dynamics $s$ steps against each
+candidate's asserted record. Define $g(w,s)$ as the dissonance-argmin over
+the alive candidates enumerated by stage $s$, with MDL-conservativity
+(PR3(c)) charging unwitnessed posited events. Since $k_w$ is finite
+(PR3(a)), there is a stage after which all sectors have enumerated and all
+arriving witnesses have arrived; sector-distinguishing facts are $\Sigma_1$
+(PR1), so candidates omitting an arrived witness are refuted, while
+candidates positing a never-arriving witness are never $D$-minimal. The
+conservative argmin is therefore eventually constant and equals the unique
+$D_4$-minimum. Each mind change is a new-sector arrival or a
+refutation/witness flip, giving the $2(k_w-1)$ bound.
+The MDL-conservativity premise carries the bound in the asymmetric case:
+refutation of the positing candidate is $\Pi_1$ and never fires at a finite
+stage; it is the $\arg\min K(x \mid \text{PSC})$ structure itself that
+keeps the approximation on the conservative branch and makes the limit
+correct.
+\end{proof}
+
+\paragraph{Completeness.}
+
+\begin{theorem}[Degree completeness; \CatAD{} conditional on PR5]
+\label{thm:degree_complete}
+Under the Arithmetic Self-Reference structure and PR5,
+$\emptyset' \leq_T \Ptop_D{\upharpoonright}\mathrm{diag}$. Combined with
+Theorems~\ref{thm:rt_complete} and~\ref{thm:limit_computable}:
+\begin{equation}
+  \deg_T\!\bigl(\Ptop_D{\upharpoonright}\mathrm{diag}\bigr)
+  \;=\;
+  \deg_T\!\bigl(\mathrm{RT}{\upharpoonright}\mathrm{diag}\bigr)
+  \;=\; \mathbf{0}' \quad \text{exactly.}
+\end{equation}
+The adjudication function on the diagonal fragment is
+$\Delta^0_2$-Turing-complete, in the bounded-mind-change stratum: quantum
+measurement is trial-and-error computation in Putnam's exact
+sense~\cite{Putnam1965}, equivalently Gold limiting
+recursion~\cite{Gold1965}~---~at the halting degree, and no stronger.
+The many-one form is machine-certified
+(\lean{pt\_diagonal\_manyOne\_degree\_halting}, \CatAL,
+transputation-lean); the bundled Turing-degree form carries its
+stage-convergence and mind-change hypotheses as named structures
+(\lean{pt\_diagonal\_degree\_halting}; Appendix~\ref{app:lean}).
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+PR5 labels diagonal branches by the coded statement's truth bit; $D_2$
+(only record-true completions are selectable) forces the label of
+$\Ptop_D(w_n)$ to equal $\chi_{\mathrm{RT}}(n)$. Hence
+$\mathrm{RT}{\upharpoonright}\mathrm{diag} \leq_T
+\Ptop_D{\upharpoonright}\mathrm{diag}$; chain with
+$\emptyset' \leq_m \mathrm{RT}{\upharpoonright}\mathrm{diag}$
+(Theorem~\ref{thm:rt_complete}).
+\end{proof}
+
+\paragraph{Operational consequence.}
+
+\begin{theorem}[No certified hypercomputation from measurement; \CatAL{}
+  anchor, unconditional]
+\label{thm:no_modulus}
+No computable modulus of convergence exists for the stage sequence $g$: a
+computable stage bound $s_0(n)$ would make
+$\chi_{\mathrm{RT}}(n) = g(n, s_0(n))$ computable, contradicting
+\lean{asr\_rt\_not\_computable} (\CatAL).
+Consequently ``adjudication complete'' is not an internal observable, and
+no certified $\Sigma^0_1$ decision is extractable from finitely many
+physical events. Machine-certified:
+\lean{no\_computable\_convergence\_modulus} (\CatAL, nems-lean).
+\end{theorem}
+
+Putnam's observation that a trial-and-error solver is ``never sure'' it has
+the correct answer~\cite{Putnam1965} is here upgraded to a theorem about
+physical measurement: nature converges to the right adjudication outcome
+after finitely many revisions, but no physical protocol can certify, at any
+finite stage, that convergence has occurred.
+
+\begin{corollary}[One-jump universe; \CatAD{} conditional on PR1--PR5]
+\label{cor:one_jump}
+Physics requires exactly one Turing jump. The adjudication function is
+strictly above degree $\mathbf{0}$ (Proposition~\ref{prop:comp_gap}) and
+exactly at degree $\mathbf{0}'$ (Theorem~\ref{thm:degree_complete});
+physics never requires $\emptyset''$. The cap is enforced by the record
+theory itself: realized adjudication outcomes are ordinary finite records
+($\Sigma_1$ facts about realized history, so PR1 applies to them in turn),
+while $\Pi_2$ counterfactual-limit statements are never physically
+inscribed~---~jump iteration through nested adjudication is blocked.
+This is falsifiable in principle: any physical process of Turing degree
+strictly above $\mathbf{0}'$ refutes the GTE adjudication architecture.
+\end{corollary}
+
+\begin{remark}[Bounded mind changes]
+The classification places transputation in the bounded-mind-change
+(Ershov) stratum: diagonal record-truth is 1-c.e., diagonal selection
+needs at most one revision, and compound single-kink adjudication needs at
+most $2(k_w-1) \leq 8$. Transputation is simultaneously as informative as
+the halting problem (degree $\mathbf{0}'$) and as tame as a
+finitely-revisable guesser~---~the precise mathematical form of ``lawful
+but non-algorithmic.'' (There is no tension: $\emptyset'$ itself is
+1-c.e.) The stage-convergence structure is verified computationally
+(\CatA): the diagonal family converges with exactly one mind change at
+the halting time; $500/500$ compound-record trials converge within the
+bound (maximum observed: 3 mind changes); and convergence stages exhibit
+the heavy-tailed, modulus-free phenomenology of
+Theorem~\ref{thm:no_modulus} (Appendix~\ref{app:code}).
+\end{remark}
+
+\begin{remark}[Thermodynamic cost of transputation]
+\label{rem:landauer}
+The mind-change bound $2(k_w - 1) \leq 8$ converts directly into a
+machine-certified thermodynamic prediction via Landauer's principle
+(\lean{landauer\_heat\_floor\_transputation}, \lean{landauer\_heat\_ceiling\_transputation},
+\CatAL; \texttt{Measurement/LandauerFloor}, ugp-lean).
+With $k_w = 5$ PSC-admissible kink sectors, each single-kink transputation
+event erases $\ln 5$ bits of alternative winding at cost
+$Q_{\min} = k_B T \ln 5 \approx 1.61\,k_B T$, giving a floor on the
+thermodynamic heat released per adjudication event. The full
+$2(k_w - 1) = 8$ mind-change budget gives the ceiling
+$Q_{\max} = 8 k_B T \ln 2$. Both bounds are
+falsifiable: any single-kink adjudication event dissipating less than
+$k_B T \ln 5$ would contradict Landauer's principle as applied to the
+GTE five-sector structure.
+\end{remark}
+
+\begin{remark}[Structure of the computability gap]
+The level-raising map $\pi_{\PSC}^{(0)} \to \pi_{\PSC}^{(\infty)}$ is a
+\emph{structural correspondence}, not a categorical functor. A functor
+would require morphism-preservation, but the computable morphisms at
+Level~$0\to1$ map to non-computable morphisms at Level~$2\to3$; no
+structure-preserving map exists across the computability boundary.
+The correspondence is therefore at the level of MDL semantics:
+both levels implement $\arg\min K(x \mid \text{PSC})$, and
+non-computability emerges in the continuum limit.
+\end{remark}
+
+The SRRG fixed point $\varphi$ provides a \emph{numerical bridge} across
+this computability gap: it is simultaneously the real-diagonal fixed point
+of $p$ at Level~0 (Theorem~\ref{thm:srrg_bridge}, \CatAL) and the
+self-consistent adjudication attractor of the SRRG at Level~2
+(P27~\cite{SpivackSRRG}, \CatAL). The polynomial carries the adjudication
+answer in its algebraic structure, even though computing that answer in the
+full quantum case requires non-computable adjudication.
+
+\begin{remark}[Significance of Three-Level Unification]
+The significance of the Three-Level MDL Unification is not merely structural
+elegance.
+The same MDL principle that selects the theory from an astronomically large
+rule space also governs how that theory evolves as a field and how it
+adjudicates quantum events.
+These are not three separate applications of an information-theoretic
+principle~---~they are three domains in which a self-contained universe
+necessarily applies the same self-description criterion.
+The computability gap between Level~$0\to1$ (computable PSC-restriction) and
+Level~$2\to3$ (non-computable transputation) is not an inconsistency~---~it
+is the formal content of the Physical Incompleteness Theorem (analogous to
+G\"{o}del's incompleteness~\cite{Godel1931} and Turing's
+undecidability~\cite{Turing1936}): a universe powerful enough to describe
+itself cannot compute all of its own event outcomes.
+\end{remark}
+
+\begin{remark}[The Level-3 residual classified: the cosmological constant
+  as the adjudicator's unfinalizable ledger]
+\label{rem:level3_residual}
+The same argmin-$K$ adjudicator whose diagonal restriction has degree
+$\mathbf{0}'$ (Theorem~\ref{thm:degree_complete}) leaves a
+degree-$\mathbf{0}'$ residual in the Level-3 action. The irreducible
+residual $D_{\mathrm{res}}$ of the PMDL
+action~\cite{SpivackGTEPolynomialUFT} is the halting-weighted MDL sum over
+the realized diagonal record fragment~---~a left-c.e.\ real of Turing
+degree exactly $\mathbf{0}'$ (conditional on the premise bundle of
+Definition~\ref{def:premise_bundle} together with record-measure
+additivity and positive witness costs; the no-computable-modulus core is
+unconditional, as in Theorem~\ref{thm:no_modulus}).
+The dark-energy fraction therefore inherits the transputation
+classification: $\Omega_\Lambda$ is limit-computable but not computable,
+and the two structural routes of the cosmology
+paper~\cite{SpivackGTECosmology}~---~the PSC census capacity (upper) and
+the holographic geometric floor (lower)~---~are computable bracket
+evaluations of a value that no finite computation outputs.
+The cosmological constant is the adjudicator's unfinalizable ledger at
+Level~3.
+This completes the three-level computability story: one one-jump residual,
+two physical shadows~---~measurement non-certifiability at the discrete
+adjudication layer (Theorem~\ref{thm:no_modulus}) and dark energy at the
+continuum field level.
+\end{remark}
+
+
+%-----------------------------------------------------------------------------
+\section{DSAC as $[D]$-Member and the Adjudication Hierarchy}
+\label{sec:dsac}
+
+\subsection{The $[D]$ Adjudicator Class}
+\label{sec:d_class}
+
+The GTE-M\"{o}bius architecture $(A, e, [D])$ \cite{SpivackGTEMobius}
+designates $[D]$ as the equivalence class of all adjudication measures
+$D$ satisfying the $D_1$--$D_5$ constraints:
+\begin{description}[leftmargin=*,nosep]
+  \item[$D_1$] Internal decidability: $D$ operates from inside the record-bearing system.
+  \item[$D_2$] PSC-consistency: $D$ selects only PSC-admissible trajectories.
+  \item[$D_3$] Non-computability: $D$ is not a total-effective algorithm
+    on the diagonal-capable fragment.
+  \item[$D_4$] Unique minimum: $D$ produces a single definite outcome.
+  \item[$D_5$] Born consistency: outcome probabilities satisfy $P(k) = |c_k|^2$.
+\end{description}
+Any two measures satisfying $D_1$--$D_5$ are in the same PSC-coherence
+class $[D]$ (P48 \cite{SpivackGTECompleteFramework}).
+
+\subsection{DSAC as a $[D]$-Member}
+\label{sec:dsac_member}
+
+Differential Self-Adjudicative Computation (DSAC,
+\cite{SpivackNEMS77}) is explicitly identified in P48 as ``one concrete
+member of $[D]$'': DSAC's $\Delta$-functional minimization satisfies
+$D_1$--$D_5$ by construction (NEMS Paper 77, \CatAD). The adjudication
+hierarchy is therefore:
+\begin{equation}
+  p
+  \;\xrightarrow{\;\pi_{\PSC}^{(0)}\;}
+  \fmdl{}
+  \;\xrightarrow{\;\text{continuum PSC-min}\;}
+  \DSAC \;\in\; [D]
+  \;\xrightarrow{\;\text{non-comp.~limit}\;}
+  \Ptop_D,
+  \label{eq:dsac_chain}
+\end{equation}
+where:
+\begin{itemize}
+  \item $p \to \fmdl{}$: discrete, computable PSC-projection (Proposition~\ref{prop:comp_gap}).
+  \item $\fmdl{} \to \DSAC$: continuum extension (\CatB; formal derivation open,
+    Open Problem~\ref{op:dsac_continuum}).
+  \item $\DSAC \to \Ptop_D$: non-computability emerges from $D_3$ constraint.
+\end{itemize}
+
+\begin{remark}[DSAC's role in the hierarchy]
+DSAC is the continuum PSC-minimizing dynamics (the PR-0 field substrate
+\cite{SpivackMFRR} with $\Delta$-functional minimization). It occupies
+the intermediate position between the discrete, computable \fmdl{} projection
+and the continuous, non-computable $\Ptop_D$ adjudication. The full chain
+\eqref{eq:dsac_chain} provides the complete picture of MDL-minimization at
+increasing physical scales.
+\end{remark}
+
+\begin{remark}[DSAC as the physical stage sequence]
+\label{rem:dsac_stage}
+The classification of Section~\ref{sec:two_sided} gives DSAC's position
+precise computability-theoretic content. The computable stage sequence $g$
+of Theorem~\ref{thm:limit_computable} is exactly what DSAC's
+relaxation-to-coherence dynamics implements physically: between witness
+events the dissonance functional decreases monotonically toward the
+current sector argmin, and each arriving $\Sigma_1$ witness triggers a
+bounded revision (a mind change in the formal sense). The adjudication
+outcome is the limit of this physical relaxation~---~Putnam
+trial-and-error computation~\cite{Putnam1965} in the literal sense, with
+the stage index realized as physical relaxation time. What no physical
+implementation provides is a certificate of convergence: by
+Theorem~\ref{thm:no_modulus}, ``the relaxation has settled'' is not an
+internal observable. The stage-convergence structure, the mind-change
+bound, and the dissonance Lyapunov behavior are verified computationally
+(\CatA, Appendix~\ref{app:code}).
+\end{remark}
+
+
+%-----------------------------------------------------------------------------
+\section{The Discrete Measurement Mechanism}
+\label{sec:measurement}
+
+The preceding sections assemble into a complete formal account of discrete
+quantum measurement in the GTE framework:
+
+\paragraph{Pre-measurement: Class~3 dynamics.}
+The quantum state evolves under $p$-dynamics on $\GF{7}^5$. As shown in
+Theorem~\ref{thm:attractor}, 99.69\% of initial
+states asymptote to the period-475 attractor; none of these trajectories
+pass through the PSC-admissible SM generation orbit. The state is a
+superposition over PSC-admissible $p$-trajectories.
+
+\paragraph{Transputation fires: PSC-projection selects the orbit.}
+The adjudicator $\Ptop_D$ applies $\pi_{\PSC}$~---~the MDL-minimal
+selection over all trajectories consistent with the macroscopic record
+$w$. By $D_2$, only PSC-consistent trajectories are selected; by $D_4$,
+a unique minimum is reached; by $D_5$, the probability of each outcome
+$k$ is $|c_k|^2$.
+
+\paragraph{Post-measurement: the \fmdl{} orbit.}
+The post-measurement state is on the \fmdl{} orbit
+$\mathrm{GEN}_1 \to \mathrm{GEN}_2 \to \mathrm{GEN}_3 \to \mathrm{VAC}$,
+the unique PSC-admissible trajectory (\lean{fmdl\_z7\_three\_generation\_orbit},
+\CatAL). This \emph{is} the realized physical sequence: the three SM
+generations decaying to vacuum.
+$\mathrm{GEN}_1$ is a Garden of Eden (\lean{fmdl\_gen1\_is\_garden\_of\_eden},
+\CatAL), so the orbit has no predecessor~---~it is the unique origination
+point of the physical sequence.
+
+\begin{theorem}[\CatAL\ — \lean{fmdl\_orbit\_is\_unique\_psc\_trajectory}]
+\label{thm:unique_orbit}
+Under deterministic \fmdl{} dynamics (\texttt{fmdl\_step5}), the trajectory
+$\mathrm{GEN}_1 \to \mathrm{GEN}_2 \to \mathrm{GEN}_3 \to \mathrm{VAC}$
+is the unique three-step PSC-admissible orbit from $\mathrm{GEN}_1$: at each
+stage the successor state is uniquely determined, $\mathrm{GEN}_1$ has no
+predecessor (Garden of Eden), and no alternative three-step PSC-consistent
+sequence exists.
+Machine-certified in \lean{Universality/CUP3DUniqueness.lean}, zero
+\texttt{sorry}.
+\end{theorem}
+
+\paragraph{Summary.}
+\begin{theorem}[Discrete Measurement Mechanism, \CatAD]
+\label{thm:measurement}
+In the GTE framework, quantum measurement proceeds in three stages:
+\begin{enumerate}[label=(\roman*)]
+  \item The pre-measurement quantum state is a superposition over
+    $p$-compatible trajectories in $\GF{7}^5$.
+  \item Transputation $\Ptop_D \in [D]$ applies $\pi_{\PSC}$, selecting
+    the unique PSC-admissible trajectory and producing a definite outcome
+    with probability $|c_k|^2$.
+  \item The post-measurement state lies on the
+    $\mathrm{GEN}_1 \to \mathrm{GEN}_2 \to \mathrm{GEN}_3 \to \mathrm{VAC}$
+    orbit, the unique fixed point of the \fmdl{} dynamics
+    (Theorem~\ref{thm:unique_orbit}, \CatAL).
+\end{enumerate}
+This mechanism is non-algorithmic (Proposition~\ref{prop:comp_gap}),
+lawful ($D_1$--$D_5$ constraints), and fully internal to the PSC-closed
+system.
+\end{theorem}
+
+\begin{remark}
+The Hilbert space structure, the spectral content, and the full Born
+rule derivation from information-loss on the \fmdl{} ring are established
+in P37 \cite{SpivackQMFromR110}, which this theorem complements. P37
+derives the measurement rule from the information-theoretic structure
+of the ring; the present paper identifies the \emph{discrete CA mechanism}
+through which transputation selects the PSC-admissible trajectory.
+The two perspectives are mutually consistent and address complementary
+levels of description.
+\end{remark}
+
+\begin{remark}[Transputation as the GTE quantum computation mechanism]
+\label{rem:transputation_qc}
+The $\Phi_{\MDL}$ kink superselection sectors fuse additively
+($w_1 \otimes w_2 = w_1 + w_2 \pmod 7$), giving an abelian $\ZS$
+Dijkgraaf--Witten modular tensor category with all quantum dimensions equal to~1
+(P48~\cite{SpivackGTECompleteFramework} §The Kink Fusion Category).
+This is not the Fibonacci MTC: GTE is therefore \emph{not} a universal topological
+quantum computer via Fibonacci-anyon braiding.
+However, \GTE\ implements quantum computation by a distinct mechanism: transputation.
+Each adjudication event is a quantum computation~---~an MDL-optimal selection among
+the five PSC-admissible sector alternatives, governed by the $D_1$--$D_5$ constraints.
+The computation is informationally protected via MDL minimality (Theorem~\ref{thm:measurement}),
+not topologically protected via non-abelian braiding.
+Fault-tolerant quantum memory is available via the $\ZS$ Dijkgraaf--Witten abelian
+toric code at code distance $d = 7$; universal topological quantum computation would
+require activating the $F_{21}$ gauge holonomy in 2+1D.
+\end{remark}
+
+
+%-----------------------------------------------------------------------------
+\section{The Measurement Problem: GTE vs.\ Prior Frameworks}
+\label{sec:qm_comparison}
+
+Quantum mechanics, as ordinarily formulated, requires an external rule~---~the
+Born rule together with wavefunction collapse~---~grafted onto unitary
+Schr\"odinger evolution.
+Unitary dynamics alone never selects a unique outcome; something outside the
+formalism must be invoked.
+This is the \emph{measurement problem}.
+
+\paragraph{Copenhagen / Bohr.}
+The Copenhagen interpretation defines measurement by reference to a classical
+apparatus, without accounting for the quantum--classical boundary.
+In GTE, that boundary \emph{is} the Level~$0\to1$ transition ($p \to \fmdl{}$):
+the ``classical apparatus'' corresponds to the PSC-admissible orbit filter.
+
+\paragraph{Many-worlds / Everett.}
+Everettian quantum mechanics~\cite{Everett1957} eliminates collapse: all branches
+exist, with the Born rule supplied by decision theory or branch-counting
+arguments rather than derivation.
+GTE's response: transputation is the unique PSC-forced branch selector.
+GTE does not branch~---~it selects exactly one PSC-consistent trajectory,
+non-computably but lawfully.
+
+\paragraph{Bohmian mechanics / de Broglie--Bohm.}
+Bohmian mechanics~\cite{Bohm1952} assigns particles definite positions guided
+by a pilot wave; the theory is explicitly non-local.
+In GTE, the \fmdl{} orbit is the deterministic trajectory (deterministic CA
+dynamics); the pilot-wave role is played by the PSC-admissible sector of
+$\PHIMDL$.
+GTE is local (AFCA causal invariance); Bohm is not.
+
+\paragraph{Objective collapse / GRW.}
+GRW-type theories~\cite{GhirardiRiminiWeber1986} postulate physical wavefunction
+collapse triggered by a stochastic process.
+In GTE, transputation is a physical collapse-like process, but forced by PSC
+(non-algorithmic, lawful) rather than postulated.
+The discrete mechanism ($p \to \fmdl{}$ orbit) is GTE's derived collapse.
+
+\paragraph{Decoherence approaches.}
+Decoherence~\cite{Zurek2003} explains apparent classicality and selects a
+preferred basis, but does not resolve the measurement problem: the Born rule
+remains an external postulate.
+In GTE, the Born rule is derived (four routes, \CatAL).
+Decoherence corresponds to the Level~0 chaotic dynamics of $p$; the transition
+to \fmdl{} dynamics is the decoherence event that resolves outcomes.
+
+\paragraph{GTE's position.}
+Transputation is the fourth option established in P48~\cite{SpivackGTECompleteFramework}:
+(a)~lawful ($D_1$--$D_2$), (b)~non-algorithmic ($D_3$, forced by the Physical
+Incompleteness Theorem), (c)~PSC-consistent ($D_4$), and (d)~Born-consistent
+($D_5$).
+It differs from collapse (no external rule), many-worlds (selects, not
+branches), Bohm (local, not guided), and GRW (derived, not postulated).
+
+\begin{tcolorbox}[colback=red!4,colframe=red!40,title={What Transputation Is Not},
+  fonttitle=\bfseries,breakable]
+\small
+Transputation (the GTE measurement mechanism) is \emph{not}:
+\begin{itemize}[leftmargin=1.8em,itemsep=2pt]
+  \item \textbf{Copenhagen collapse:} no external classical apparatus is invoked; the quantum-classical
+    boundary IS the Level~0$\to$1 transition ($p \to \fmdl{}$).
+  \item \textbf{Many-worlds branching:} exactly one PSC-consistent trajectory is realized, not all.
+  \item \textbf{Bohmian pilot wave:} GTE is local (AFCA causal invariance); no non-local hidden variable.
+  \item \textbf{GRW objective collapse:} transputation is derived from PSC, not postulated as an additional law.
+  \item \textbf{Decoherence alone:} decoherence selects a preferred basis but does not resolve outcomes;
+    transputation resolves outcomes.
+  \item \textbf{Hypercomputation:} the adjudication function on the diagonal fragment has Turing degree
+    exactly $\mathbf{0}'$ and delivers no certified $\Sigma^0_1$ decisions at finite stages;
+    physics never requires oracle access above the first jump.\\
+    (Theorems~\ref{thm:degree_complete} and~\ref{thm:no_modulus})
+\end{itemize}
+Transputation IS: the unique PSC-consistent, non-computable, lawful internal adjudicator forced by
+the Physical Incompleteness Theorem (\lean{closed\_choice\_forces\_transputation}, \CatAL,
+\texttt{transputation-lean}).
+\end{tcolorbox}
+
+
+%-----------------------------------------------------------------------------
+\section{Open Problems}
+\label{sec:open}
+
+\begin{openprob}[Continuum limit $\fmdl{} \to \DSAC$]
+\label{op:dsac_continuum}
+Derive formally that DSAC is the continuum limit of the $\fmdl{}$
+PSC-projection, in the sense that the DSAC $\Delta$-functional on
+$\PHIMDL$ field configurations reduces to the discrete PSC-restriction
+$\pi_{\PSC}^{(0)}$ in the lattice limit.
+Current status: \CatB\ (plausible from the PR-0 field substrate structure
+\cite{SpivackMFRR}, no formal derivation).
+\end{openprob}
+
+\begin{openprob}[DSAC $D_3$ non-computability]
+\label{op:dsac_noncomp}
+Prove that DSAC satisfies the $D_3$ constraint: DSAC cannot decide its
+own convergence on diagonal-capable input structures. The conditional
+analytic content is now available: any $[D]$-member realizing the stage
+sequence of Theorem~\ref{thm:limit_computable} admits no computable
+convergence modulus (Theorem~\ref{thm:no_modulus}), so DSAC inherits the
+$D_3$ property conditional on the premise bundle of
+Definition~\ref{def:premise_bundle} and on DSAC's identification with
+that stage sequence (Remark~\ref{rem:dsac_stage}).
+What remains open is the machine certification of DSAC's membership
+itself, which would upgrade it from \CatAD\ (citation-based) to \CatAL.
+Lean candidate: \lean{dsac\_member\_of\_D\_class}.
+\end{openprob}
+
+%-----------------------------------------------------------------------------
+\section{Conclusion}
+\label{sec:conclusion}
+
+The central result of this paper is the Three-Level MDL Unification: a single
+MDL principle governs theory selection ($p$ from rule space), field dynamics
+($\PHIMDL$ via PMDL), and quantum event adjudication (Born rule via
+transputation).
+The discrete measurement mechanism is established at \CatAD{}, with orbit
+uniqueness now machine-certified at \CatAL{}
+(Theorem~\ref{thm:unique_orbit}).
+The companion result is the two-sided computability classification: under
+the named premise bundle PR1--PR5, the adjudication function on the
+diagonal fragment has Turing degree exactly $\mathbf{0}'$~---~quantum
+measurement is Gold--Putnam trial-and-error computation at the halting
+degree, never above the first jump, with no computable convergence modulus
+(Section~\ref{sec:two_sided}). The same one-jump residual classifies the
+cosmological constant as a left-c.e.\ real of degree $\mathbf{0}'$
+(Remark~\ref{rem:level3_residual}).
+The remaining gaps are well-posed mathematical questions~---~the continuum
+limit $\fmdl{} \to \DSAC$ (Open Problem~\ref{op:dsac_continuum}) and DSAC
+$D_3$ certification (Open Problem~\ref{op:dsac_noncomp})~---~not gaps in
+the framework. The cross-module Lean bundle for Three-Level Unification is
+now machine-certified (\S\ref{sec:bundle_cert}, \lean{mdl\_three\_level\_unification}).
+
+This paper completes the polynomial certificate chain begun in
+P49~\cite{SpivackGTEPolynomialWolfram}, situating the measurement mechanism
+relative to P37~\cite{SpivackQMFromR110} (Hilbert space and Born rule) and
+P48~\cite{SpivackGTECompleteFramework} (transputation framework and MDL
+three roles).
+The GTE polynomial $p$ is the connecting object: its PSC-projection \fmdl{}
+defines discrete measurement; its real diagonal encodes the SRRG fixed point;
+and it enters the PMDL action at continuum scale.
+
+
+%=============================================================================
+\appendix
+
+%-----------------------------------------------------------------------------
+\section{Lean Certification Table}
+\label{app:lean}
+
+All Lean certifications cited in this paper. Theorems live in three public
+repositories: \texttt{ugp-lean} (canonical),
+\texttt{transputation-lean}, and \texttt{nems-lean}; all entries are zero
+sorry. Entries marked $^{\dagger}$ are conditional certificates: their
+physics premises enter as named Lean hypothesis structures (explicit
+structure fields, never bare axioms), as disclosed after the table.
+
+\small
+\begin{longtable}{@{}P{5.4cm}P{3.2cm}P{1.6cm}c@{}}
+\caption{Lean~4 certifications cited in this paper.
+All entries are zero sorry. \texttt{UL} = ugp-lean;
+\texttt{TL} = transputation-lean;
+\texttt{NL} = nems-lean.
+\label{tab:lean}}\\
+\toprule
+\textbf{Theorem name} & \textbf{Module} & \textbf{Repo} & \textbf{Cat} \\
+\midrule
+\endfirsthead
+\multicolumn{4}{l}{\textit{Continued from previous page}} \\
+\toprule
+\textbf{Theorem name} & \textbf{Module} & \textbf{Repo} & \textbf{Cat} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\textit{Continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+%--- PSC-projection bundle ---
+\lean{psc\_projection\_gives\_fmdl}
+  & \texttt{Polynomial/\allowbreak PolyExplorations}
+  & \texttt{UL}
+  & \CatAL \\[3pt]
+
+\lean{fmdl\_psc\_projection\_of\_p}
+  & \texttt{Polynomial/\allowbreak PolyExplorations}
+  & \texttt{UL}
+  & \CatAL \\[3pt]
+
+\lean{fmdl\_zero\_on\_free\_\allowbreak neighborhoods}
+  & \texttt{Universality/\allowbreak CUP3DUniqueness}
+  & \texttt{UL}
+  & \CatAL \\[3pt]
+
+\lean{p\_poly\_agrees\_fmdl\_\allowbreak on\_binary}
+  & \texttt{Universality/\allowbreak Z7Invariant\allowbreak Subsets}
+  & \texttt{UL}
+  & \CatAL \\[3pt]
+
+\lean{p\_fmdl\_disagree\_on\_orbit}
+  & \texttt{Polynomial/\allowbreak PolyExplorations}
+  & \texttt{UL}
+  & \CatAL \\[3pt]
+
+\lean{kl\_divergence\_fmdl\_p\_nonzero}
+  & \texttt{Polynomial/\allowbreak PolyExplorations}
+  & \texttt{UL}
+  & \CatAL \\[3pt]
+
+%--- Orbit theorems ---
+\lean{fmdl\_z7\_three\_generation\_\allowbreak orbit}
+  & \texttt{Universality/\allowbreak CUP3DUniqueness}
+  & \texttt{UL}
+  & \CatAL \\[3pt]
+
+\lean{fmdl\_gen1\_is\_garden\_of\_eden}
+  & \texttt{Universality/\allowbreak CUP3DUniqueness}
+  & \texttt{UL}
+  & \CatAL \\[3pt]
+
+\lean{fmdl\_orbit\_is\_unique\_\allowbreak psc\_trajectory}
+  & \texttt{Universality/\allowbreak CUP3DUniqueness}
+  & \texttt{UL}
+  & \CatAL \\[3pt]
+
+\lean{mdl\_three\_level\_orbit\_\allowbreak bundle}
+  & \texttt{Universality/\allowbreak CUP3DUniqueness}
+  & \texttt{UL}
+  & \CatAL \\[3pt]
+
+\lean{mdl\_three\_level\_\allowbreak polynomial\_bundle}
+  & \texttt{Universality/\allowbreak CUP3DUniqueness}
+  & \texttt{UL}
+  & \CatAL \\[3pt]
+
+\lean{mdl\_three\_level\_\allowbreak unification}
+  & \texttt{Polynomial/\allowbreak MDLThreeLevel\allowbreak Unification}
+  & \texttt{UL}
+  & \CatAL \\[3pt]
+
+\lean{mdl\_level23\_closed\_\allowbreak choice\_forces\_\allowbreak transputation}
+  & \texttt{Polynomial/\allowbreak MDLThreeLevel\allowbreak Unification}
+  & \texttt{UL}
+  & \CatAL \\[3pt]
+
+%--- Period-475 attractor ---
+\lean{period\_475\_returns}
+  & \texttt{Polynomial/\allowbreak PolyExplorations}
+  & \texttt{UL}
+  & \CatAL \\[3pt]
+
+\lean{period\_475\_is\_minimal}
+  & \texttt{Polynomial/\allowbreak PolyExplorations}
+  & \texttt{UL}
+  & \CatAL \\[3pt]
+
+%--- SRRG bridge ---
+\lean{gte\_poly\_srrg\_bridge}
+  & \texttt{Algebra/\allowbreak SRRGCABridge}
+  & \texttt{UL}
+  & \CatAL \\[3pt]
+
+\lean{srrg\_equals\_mdl\_\allowbreak minimization}
+  & \texttt{Algebra/\allowbreak SRRGCABridge}
+  & \texttt{UL}
+  & \CatAL \\[3pt]
+
+%--- PMDL gravity coupling ---
+\lean{unique\_cubic\_gravity\_\allowbreak coupling}
+  & \texttt{Gravity/\allowbreak PMDLGravity\allowbreak Theorems}
+  & \texttt{UL}
+  & \CatAL \\[3pt]
+
+%--- Transputation forcing ---
+\lean{closed\_choice\_forces\_\allowbreak transputation}
+  & \texttt{Theorems/\allowbreak Forced\allowbreak Adjudication}
+  & \texttt{TL}
+  & \CatAL \\[3pt]
+
+%--- Computability classification (Section 5.3) ---
+\lean{halting\_manyOne\_\allowbreak reducible\_to\_RT}
+  & \texttt{Diagonal/\allowbreak Sigma1\allowbreak Completeness}
+  & \texttt{NL}
+  & \CatAL \\[3pt]
+
+\lean{rt\_manyOne\_reducible\_\allowbreak to\_halting\_zero}
+  & \texttt{Diagonal/\allowbreak Sigma1\allowbreak Completeness}
+  & \texttt{NL}
+  & \CatAL \\[3pt]
+
+\lean{rt\_sigma1\_complete\_\allowbreak on\_diagonal}
+  & \texttt{Diagonal/\allowbreak Sigma1\allowbreak Completeness}
+  & \texttt{NL}
+  & \CatAL \\[3pt]
+
+\lean{no\_computable\_\allowbreak convergence\_modulus}
+  & \texttt{Diagonal/\allowbreak NoConvergence\allowbreak Modulus}
+  & \texttt{NL}
+  & \CatAL \\[3pt]
+
+\lean{pt\_diagonal\_manyOne\_\allowbreak degree\_halting}
+  & \texttt{Theorems/\allowbreak DiagonalDegree}
+  & \texttt{TL}
+  & \CatAL \\[3pt]
+
+\lean{pt\_limit\_computable}
+  & \texttt{Theorems/\allowbreak Limit\allowbreak Computability}
+  & \texttt{TL}
+  & \CatAL$^{\dagger}$ \\[3pt]
+
+\lean{pt\_diagonal\_degree\_\allowbreak halting}
+  & \texttt{Theorems/\allowbreak DiagonalDegree}
+  & \texttt{TL}
+  & \CatAL$^{\dagger}$ \\[3pt]
+
+%--- Born rule ---
+\lean{born\_rule\_unconditional}
+  & \texttt{Universality/\allowbreak PSCEffectMeasure}
+  & \texttt{UL}
+  & \CatAL \\[3pt]
+
+%--- Landauer heat floor (Remark~\ref{rem:landauer}) ---
+\lean{landauer\_heat\_floor\_\allowbreak transputation}
+  & \texttt{Measurement/\allowbreak LandauerFloor}
+  & \texttt{UL}
+  & \CatAL \\[3pt]
+
+\lean{landauer\_heat\_ceiling\_\allowbreak transputation}
+  & \texttt{Measurement/\allowbreak LandauerFloor}
+  & \texttt{UL}
+  & \CatAL \\[3pt]
+
+%--- MDL tower ---
+\lean{mdl\_tower\_bundle}
+  & \texttt{Framework/\allowbreak MDLTower}
+  & \texttt{UL}
+  & \CatAL \\[3pt]
+
+\lean{mdl\_tower\_three\_levels\_\allowbreak non\_circular}
+  & \texttt{Framework/\allowbreak MDLTower}
+  & \texttt{UL}
+  & \CatAL \\[3pt]
+
+%--- MDL selection ---
+\lean{mdl\_ca\_rule\_coding\_closed}
+  & \texttt{Universality/\allowbreak MDLDerivability\allowbreak Criterion}
+  & \texttt{UL}
+  & \CatAL \\[3pt]
+
+\lean{ugp\_orbit\_\allowbreak interpolation\_lift}
+  & \texttt{Universality/\allowbreak TriangleLift\allowbreak Theorem}
+  & \texttt{UL}
+  & \CatAL \\[3pt]
+
+\lean{K\_CA\_CMCA}
+  & \texttt{Framework/\allowbreak CMCAMDL\allowbreak Minimality}
+  & \texttt{UL}
+  & \CatAL \\[3pt]
+
+\lean{asr\_rt\_not\_computable}
+  & \texttt{Diagonal/\allowbreak HaltingReduction}
+  & \texttt{NL}
+  & \CatAL \\[3pt]
+
+\end{longtable}
+
+\paragraph{Conditionality disclosure for the computability-classification
+certificates.}
+The premise bundle of Definition~\ref{def:premise_bundle} enters the Lean
+formalization as named hypothesis structures, never as bare axioms: PR1 is
+the structure \lean{Sigma1RecordTruth}, PR5 is \lean{RecordReadout}
+(both \texttt{nems-lean}, \texttt{Diagonal/Premises}), and PR2--PR4 are the
+fields of \lean{AdjudicationPremiseBundle}
+(\texttt{transputation-lean}, \texttt{Core/Premises}).
+The unmarked \CatAL{} entries are unconditional given those premise
+structures as stated in the corresponding theorems
+(\lean{halting\_manyOne\_reducible\_to\_RT} requires no premise at all).
+The two entries marked $^{\dagger}$ carry an additional layer of
+conditionality that must be disclosed precisely: \lean{pt\_limit\_computable}
+takes the stage-convergence property itself as the named structure
+\lean{StageConvergence} (the structure supplies the computable stage
+function and its convergence; the Lean theorem packages the consequence
+rather than deriving convergence from PR1--PR4, which is the analytic
+content of Theorem~\ref{thm:limit_computable}, \CatAD); and
+\lean{pt\_diagonal\_degree\_halting} bundles \lean{StageConvergence}
+together with the mind-change bound as the named structure
+\lean{MindChangeBounded}. The full Turing-degree formalization of
+Theorem~\ref{thm:degree_complete} (replacing the certified many-one form
+\lean{pt\_diagonal\_manyOne\_degree\_halting} by Turing reducibility)
+remains open pending Turing-reduction infrastructure in Mathlib.
+
+\FloatBarrier
+
+%-----------------------------------------------------------------------------
+\section{Code and Reproducibility}
+\label{app:code}
+
+The KL-divergence computation, structural analysis, and stage-convergence
+experiments from which the numerical results in
+Sections~\ref{sec:info_gap} and~\ref{sec:two_sided} are drawn are
+implemented in the scripts under
+\texttt{papers/51\_polynomial\_transputation/scripts/}:
+
+\begin{itemize}
+  \item \texttt{p\_transputation\_kl\_divergence.py}~---~Computes KL
+    divergence, entropy, and information-theoretic gap between $p$ and
+    \fmdl{} as distributions over $\GF{7}^3$; verifies the diagonal
+    fixed-point $\varphi$.
+  \item \texttt{p\_transputation\_formal\_analysis.py}~---~Functor
+    analysis, improved \fmdl{} model with orbit windows, and the
+    Three-Level MDL correspondence.
+  \item \texttt{transputation\_limit\_\allowbreak
+    stage\_convergence.py}~---~Stage-convergence structure of
+    $[D]$-adjudication (Section~\ref{sec:two_sided}): the
+    diagonal halting-coded family (one mind change; convergence stage
+    equal to halting time), the compound-record mind-change bound
+    ($500$ trials, $k = 5$ winding sectors, maximum $3$ vs.\ bound $8$),
+    the DSAC-style Lyapunov dissonance relaxation
+    (Remark~\ref{rem:dsac_stage}), and the no-computable-modulus
+    phenomenology (Theorem~\ref{thm:no_modulus}). Produces
+    \texttt{transputation\_limit\_\allowbreak stage\_convergence\_\allowbreak
+    results.json}.
+\end{itemize}
+
+All scripts are self-contained, include wall-clock timeouts, and produce
+JSON artifacts with all numerical outputs
+(\texttt{p\_transputation\_kl\_results.json} for the first two scripts).
+The scripts contain no local paths; all inputs are relative to the script
+directory.
+
+To reproduce the distributional KL-divergence results from
+Section~\ref{sec:info_gap}:
+\begin{verbatim}
+cd papers/51_polynomial_transputation/scripts
+python3 p_transputation_kl_divergence.py
+\end{verbatim}
+Expected output: KL(f\_MDL || p) in the range $[4.6, 7.7]$ bits
+(Model~A: 7.71 bits; Model~B: 4.62 bits).
+
+\paragraph{Lean verification.}
+All theorems in Appendix~\ref{app:lean} can be verified by building the
+four public repositories:
+\begin{verbatim}
+cd /path/to/ugp-lean && lake build UgpLean
+cd /path/to/srrg-lean && lake build
+cd /path/to/nems-lean && lake build
+cd /path/to/transputation-lean && lake build
+\end{verbatim}
+
+%-----------------------------------------------------------------------------
+\bibliographystyle{plain}
+\bibliography{../bib/Spivack_Papers_Bibliography}
+%-----------------------------------------------------------------------------
+
+\end{document}

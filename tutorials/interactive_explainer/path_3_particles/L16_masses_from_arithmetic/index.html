@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L16: Masses from Arithmetic — UGP Physics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="../../common/style.css">
+  <style>
+    /* ── Pipeline overview ───────────────────────────────────────── */
+    .pipeline {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      margin: 1.5rem 0;
+      overflow-x: auto;
+    }
+    .pipe-stage {
+      flex: 1;
+      min-width: 120px;
+      background: var(--bg-elevated);
+      border: 1.5px solid var(--stroke-primary);
+      padding: 0.9rem 0.75rem;
+      text-align: center;
+      position: relative;
+    }
+    .pipe-stage:not(:last-child)::after {
+      content: '→';
+      position: absolute;
+      right: -12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-tertiary);
+      font-size: 1.1rem;
+      z-index: 1;
+    }
+    .pipe-stage:first-child { border-radius: var(--r-md) 0 0 var(--r-md); }
+    .pipe-stage:last-child  { border-radius: 0 var(--r-md) var(--r-md) 0; }
+    .pipe-stage .ps-num { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 1.3rem; color: var(--accent); }
+    .pipe-stage .ps-name { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); margin-top: 0.25rem; }
+
+    /* ── Triple display ──────────────────────────────────────────── */
+    .triple-box-row {
+      display: flex; gap: 4px; justify-content: center; align-items: stretch;
+      margin: 1rem 0;
+    }
+    .triple-part {
+      flex: 1; background: var(--bg-elevated);
+      border: 1.5px solid var(--stroke-primary);
+      border-radius: var(--r-md); padding: 0.75rem 0.5rem;
+      text-align: center;
+    }
+    .triple-part .tp-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.4rem; font-weight: 700;
+      color: var(--text-primary);
+    }
+    .triple-part .tp-letter { font-size: 1rem; font-weight: 700; color: var(--text-tertiary); }
+    .triple-part .tp-name  { font-size: 0.68rem; color: var(--text-tertiary); margin-top: 2px; }
+    .triple-part.tb-n { border-color: var(--accent); background: rgba(16,185,129,0.08); }
+    .triple-part.tb-n .tp-val { color: var(--accent); }
+    .triple-part.tb-n .tp-letter { color: var(--accent); }
+
+    /* ── Three-lepton result table ───────────────────────────────── */
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.88rem;
+    }
+    .result-table th {
+      background: var(--bg-card);
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+      font-weight: 700;
+      border-bottom: 1px solid var(--stroke-primary);
+      color: var(--text-secondary);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .result-table td {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--stroke-secondary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .result-table tr:last-child td { border-bottom: none; }
+    .result-table tr.rt-sep td { border-top: 1px solid var(--stroke-primary); font-weight: 700; }
+    .rt-good { color: #10B981; font-weight: 700; }
+    .rt-marg { color: #F59E0B; }
+    .rt-name { font-family: inherit; font-weight: 600; }
+
+    /* ── Null test display ───────────────────────────────────────── */
+    .null-bar-wrap {
+      margin: 0.75rem 0;
+    }
+    .null-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 0.35rem 0;
+    }
+    .nb-label { min-width: 120px; font-size: 0.8rem; font-family: 'JetBrains Mono', monospace; }
+    .nb-track {
+      flex: 1; height: 18px;
+      background: var(--bg-elevated);
+      border-radius: var(--r-full);
+      overflow: hidden;
+      border: 1px solid var(--stroke-secondary);
+    }
+    .nb-fill {
+      height: 100%;
+      border-radius: var(--r-full);
+    }
+    .nb-val { font-size: 0.78rem; font-family: 'JetBrains Mono', monospace; min-width: 90px; text-align: right; }
+
+    /* ── UCL coefficient vector ──────────────────────────────────── */
+    .ucl-vec {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin: 0.75rem 0;
+    }
+    .ucl-k {
+      background: var(--bg-elevated);
+      border: 1px solid var(--stroke-secondary);
+      border-radius: var(--r-sm);
+      padding: 3px 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+    }
+    .ucl-k .uk-label { color: var(--text-tertiary); font-size: 0.68rem; display: block; }
+    .ucl-k .uk-val   { font-weight: 700; }
+  </style>
+</head>
+<body style="--path-current: var(--path-3)" data-path="3" data-lesson="5" data-total="6">
+
+  <header class="site-header">
+    <a href="../../index.html" class="site-logo">UGP Physics</a>
+    <nav class="breadcrumb">
+      <a href="../../index.html">Tutorial Series</a>
+      <span class="bc-sep">›</span>
+      <a href="../index.html">Path 3: Particles</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">L16: Masses from Arithmetic</span>
+    </nav>
+  </header>
+
+  <main class="page-wrapper">
+
+    <div class="lesson-header">
+      <div class="path-label">Path 3 — Particles · Lesson 16 of 17</div>
+      <h1>Masses from Arithmetic</h1>
+      <p class="lesson-subtitle">
+        The GTE orbit produces three integers: {73, 42, 275}. Run them through the 
+        InformationMassTransformer. Out come the electron, muon, and tau masses — 
+        at 0.0018%, 0.0085%, and 0.0925% relative error. Zero free parameters.
+      </p>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:83%"></div>
+      </div>
+    </div>
+
+    <!-- ═══ Section 1: The Pipeline ═══ -->
+    <section class="lesson-section" id="pipeline">
+      <h2>The Mass Pipeline</h2>
+      <p>
+        The mass derivation is a deterministic pipeline with no free parameters 
+        adjusted at prediction time. Every number is locked before any comparison 
+        to experimental data.
+      </p>
+
+      <div class="pipeline">
+        <div class="pipe-stage">
+          <div class="ps-num">p</div>
+          <div class="ps-name">GTE polynomial</div>
+        </div>
+        <div class="pipe-stage" style="margin-left:16px">
+          <div class="ps-num">73, 42, 275</div>
+          <div class="ps-name">N-values from cascade</div>
+        </div>
+        <div class="pipe-stage" style="margin-left:16px">
+          <div class="ps-num">E<sub>base</sub></div>
+          <div class="ps-name">Base energy (information-theoretic)</div>
+        </div>
+        <div class="pipe-stage" style="margin-left:16px">
+          <div class="ps-num">𝒞<sub>f</sub></div>
+          <div class="ps-name">UCL calibration factor</div>
+        </div>
+        <div class="pipe-stage" style="margin-left:16px">
+          <div class="ps-num">m<sub>f</sub></div>
+          <div class="ps-name">Physical mass (MeV)</div>
+        </div>
+      </div>
+
+      <p>
+        The key equation:
+        $$m_f = \mathcal{C}_f(a, b, c;\, g) \;\times\; E_{\rm base}(N_{\rm eff},\, g)$$
+        Two factors. Each is a deterministic function of the triple's arithmetic content.
+      </p>
+
+      <p>
+        The three N-values come from the GTE cascade at ridge n = 10, as derived in 
+        <a href="../../path_1_foundations/L06_gte_orbits/index.html" class="xref">L06</a>. 
+        They are machine-proved to be the unique outputs of the cascade at generations 1, 2, 3:
+      </p>
+
+      <div class="triple-box-row">
+        <div class="triple-part">
+          <div class="tp-letter">g = 1 (electron)</div>
+          <div style="font-size:0.7rem;color:var(--text-tertiary);margin:2px 0">triple (a, b, c)</div>
+          <div style="display:flex;gap:6px;justify-content:center;margin-top:0.4rem">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.9rem">1</span>
+            <span style="color:var(--text-tertiary)">,</span>
+            <span class="tp-val" style="font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--accent)">73</span>
+            <span style="color:var(--text-tertiary)">,</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.9rem">823</span>
+          </div>
+        </div>
+        <div class="triple-part">
+          <div class="tp-letter">g = 2 (muon)</div>
+          <div style="font-size:0.7rem;color:var(--text-tertiary);margin:2px 0">triple (a, b, c)</div>
+          <div style="display:flex;gap:6px;justify-content:center;margin-top:0.4rem">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.9rem">9</span>
+            <span style="color:var(--text-tertiary)">,</span>
+            <span class="tp-val" style="font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--accent)">42</span>
+            <span style="color:var(--text-tertiary)">,</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.9rem">1023</span>
+          </div>
+        </div>
+        <div class="triple-part">
+          <div class="tp-letter">g = 3 (tau)</div>
+          <div style="font-size:0.7rem;color:var(--text-tertiary);margin:2px 0">triple (a, b, c)</div>
+          <div style="display:flex;gap:6px;justify-content:center;margin-top:0.4rem">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.9rem">5</span>
+            <span style="color:var(--text-tertiary)">,</span>
+            <span class="tp-val" style="font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--accent)">275</span>
+            <span style="color:var(--text-tertiary)">,</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.9rem">65535</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 2: The UCL ═══ -->
+    <section class="lesson-section" id="ucl">
+      <h2>The Universal Calibration Law (UCL)</h2>
+      <p>
+        The calibration factor 𝒞<sub>f</sub> encodes how the triple's number-theoretic 
+        signature modifies the base energy. It is computed via the 
+        <strong>Universal Calibration Law</strong>:
+      </p>
+
+      <div class="card">
+        <div class="card-header">
+          The UCL equation
+          <span data-lean="quarterLockLaw" class="lean-badge">CatAL</span>
+        </div>
+        <div class="card-body">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.9rem;margin-bottom:0.5rem">
+            ln 𝒞_f = <strong>k</strong> · <strong>φ</strong>
+          </p>
+          <p style="font-size:0.85rem;color:var(--text-secondary)">
+            where <strong>k</strong> is a single, fixed 9-component coefficient vector 
+            (the same for every fermion), and <strong>φ</strong> is a feature vector 
+            assembled from the triple's arithmetic content: logarithmic ratio, 
+            generation index, and Möbius function values.
+          </p>
+        </div>
+      </div>
+
+      <h3>The locked coefficient vector</h3>
+      <p>
+        The vector <strong>k</strong> is determined once, before any prediction, 
+        from the tau mass self-consistency condition. It is never re-adjusted:
+      </p>
+
+      <div class="ucl-vec">
+        <div class="ucl-k"><span class="uk-label">k₀</span><span class="uk-val">−0.15487</span></div>
+        <div class="ucl-k"><span class="uk-label">k_L</span><span class="uk-val">+0.01970</span></div>
+        <div class="ucl-k"><span class="uk-label">k_L²</span><span class="uk-val">+0.01357</span></div>
+        <div class="ucl-k"><span class="uk-label">k_g</span><span class="uk-val">+1.54480</span></div>
+        <div class="ucl-k"><span class="uk-label">k_g²</span><span class="uk-val">−0.80925</span></div>
+        <div class="ucl-k"><span class="uk-label">k_M</span><span class="uk-val">−0.80587</span></div>
+        <div class="ucl-k"><span class="uk-label">k_a</span><span class="uk-val">+0.12373</span></div>
+        <div class="ucl-k"><span class="uk-label">k_b</span><span class="uk-val">−1.50453</span></div>
+        <div class="ucl-k"><span class="uk-label">k_c</span><span class="uk-val">+1.32657</span></div>
+      </div>
+
+      <p style="font-size:0.85rem;color:var(--text-secondary)">
+        This vector has algebraic structure known as the <strong>Elegant Kernel</strong>: 
+        most components are expressible in terms of the golden ratio φ = (1+√5)/2, 
+        the prime modulus 7, and π. For instance, k_g ≈ φ·cos(π/10), k_g² ≈ −φ/2. 
+        The Quarter-Lock identity k_M = k_g² + ¼·k_L² is machine-certified in Lean 4 
+        <span data-lean="quarterLockLaw" class="lean-badge">CatAL</span>.
+      </p>
+
+      <h3>The electron triple is arithmetically unique</h3>
+      <p>
+        The Möbius product M classifies each generation-orbit triple by its number-theoretic
+        texture. For the electron triple (1, 73, 823), every component is 1 or prime — all
+        squarefree — giving M = (+1)(−1)(−1) = +1. For the muon and tau triples, at least
+        one component has a repeated prime factor (9 = 3² in the muon; 275 = 5²·11 in the tau),
+        so M = 0 for both. The electron triple is the unique charged-lepton triple with M = +1,
+        a distinct arithmetic signature that enters the calibration factor directly through the
+        k<sub>M</sub> coefficient.
+      </p>
+    </section>
+
+    <!-- ═══ Section 3: Worked Example ═══ -->
+    <section class="lesson-section" id="worked-example">
+      <h2>Worked Example: Three Lepton Masses</h2>
+
+      <div class="steps" id="steps-mass">
+        <div class="steps-nav">
+          <button class="step-pill">Electron N=73</button>
+          <button class="step-pill">Muon N=42</button>
+          <button class="step-pill">Tau N=275</button>
+          <button class="step-pill">Full result</button>
+        </div>
+
+        <div class="steps-body">
+          <div class="step-panel">
+            <div class="step-panel-content">
+              <h4>Electron: triple (1, 73, 823; g=1)</h4>
+              <p><strong>Möbius values:</strong> μ(1) = 1, μ(73) = −1 (73 is prime), μ(823) = −1 (823 is prime)</p>
+              <p style="margin-top:0.4rem"><strong>Logarithmic ratio:</strong> L = ln(73/823) = ln(0.08871) = −2.4221</p>
+              <p style="margin-top:0.4rem"><strong>Möbius product:</strong> M = μ(1)·μ(73)·μ(823) = 1·(−1)·(−1) = +1</p>
+              <div style="background:var(--bg-elevated);border-radius:var(--r-md);padding:0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.85rem;margin-top:0.75rem">
+                E_base(73, 1) = 0.4585 MeV<br>
+                𝒞_f(1, 73, 823; 1) = 1.1146<br>
+                <strong>m_electron = 0.4585 × 1.1146 = 0.510990 MeV</strong>
+              </div>
+              <p style="font-size:0.82rem;color:var(--text-secondary);margin-top:0.5rem">
+                PDG: 0.510999 MeV. Relative error: <strong style="color:#10B981">−0.0018%</strong>
+              </p>
+            </div>
+          </div>
+          <div class="step-panel">
+            <div class="step-panel-content">
+              <h4>Muon: triple (9, 42, 1023; g=2)</h4>
+              <p><strong>Möbius values:</strong> μ(9) = 0 (9 = 3², squared prime), μ(42) = −1·(−1)·(−1) = −1 (42 = 2·3·7), μ(1023) = μ(3·341) = μ(3·11·31) = (−1)³ = −1</p>
+              <p style="margin-top:0.4rem"><strong>Logarithmic ratio:</strong> L = ln(42/1023) = ln(0.04106) = −3.1908</p>
+              <div style="background:var(--bg-elevated);border-radius:var(--r-md);padding:0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.85rem;margin-top:0.75rem">
+                E_base(42, 2) = 110.952 MeV<br>
+                𝒞_f(9, 42, 1023; 2) = 0.9523<br>
+                <strong>m_muon = 110.952 × 0.9523 = 105.667 MeV</strong>
+              </div>
+              <p style="font-size:0.82rem;color:var(--text-secondary);margin-top:0.5rem">
+                PDG: 105.658 MeV. Relative error: <strong style="color:#10B981">+0.0085%</strong>
+              </p>
+            </div>
+          </div>
+          <div class="step-panel">
+            <div class="step-panel-content">
+              <h4>Tau: triple (5, 275, 65535; g=3)</h4>
+              <p><strong>Möbius values:</strong> μ(5) = −1 (prime), μ(275) = 0 (275 = 5²·11, has squared factor), μ(65535) = 0 (65535 = 3·5·17·257·..., has squared factors)</p>
+              <p style="margin-top:0.4rem"><strong>Logarithmic ratio:</strong> L = ln(275/65535) = ln(0.00420) = −5.4727</p>
+              <div style="background:var(--bg-elevated);border-radius:var(--r-md);padding:0.75rem;font-family:'JetBrains Mono',monospace;font-size:0.85rem;margin-top:0.75rem">
+                E_base(275, 3) = 6534.094 MeV<br>
+                𝒞_f(5, 275, 65535; 3) = 0.27161<br>
+                <strong>m_tau = 6534.094 × 0.27161 = 1775.22 MeV</strong>
+              </div>
+              <p style="font-size:0.82rem;color:var(--text-secondary);margin-top:0.5rem">
+                PDG: 1776.86 MeV. Relative error: <strong style="color:#10B981">−0.0925%</strong>
+              </p>
+              <p style="font-size:0.82rem;color:var(--text-secondary);margin-top:0.4rem">
+                The tau is the self-consistency anchor: m_tau is the unique value at which 
+                the cascade's output, fed back as the potential parameter, reproduces itself 
+                <span data-lean="mphi_equals_tau_mass_scc" class="lean-badge">CatAL</span>.
+              </p>
+            </div>
+          </div>
+          <div class="step-panel">
+            <div class="step-panel-content">
+              <h4>Three lepton masses — summary</h4>
+              <table class="result-table">
+                <thead>
+                  <tr><th>Particle</th><th>N-value</th><th>GTE (MeV)</th><th>PDG (MeV)</th><th>Error</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td class="rt-name">Electron</td><td>73</td><td>0.510990</td><td>0.510999</td><td class="rt-good">−0.0018%</td></tr>
+                  <tr><td class="rt-name">Muon</td><td>42</td><td>105.667</td><td>105.658</td><td class="rt-good">+0.0085%</td></tr>
+                  <tr><td class="rt-name">Tau</td><td>275</td><td>1775.22</td><td>1776.86</td><td class="rt-good">−0.0925%</td></tr>
+                </tbody>
+              </table>
+              <p style="font-size:0.85rem">
+                Three generations, one fixed coefficient vector, zero fitted parameters.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="steps-footer">
+          <button class="step-nav-btn" data-action="prev" disabled>← Prev</button>
+          <span class="steps-counter">Step 1 of 4</span>
+          <button class="step-nav-btn" data-action="next">Next →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 4: Nine Fermions ═══ -->
+    <section class="lesson-section" id="nine-fermions">
+      <h2>The Full Nine-Fermion Result</h2>
+      <p>
+        The same pipeline — identical UCL coefficient vector, identical map structure — 
+        extends to the six quarks. Each quark family has its own GTE triple from the 
+        cascade at n = 10, but the <em>map</em> is unchanged.
+      </p>
+
+      <table class="result-table">
+        <thead>
+          <tr><th>Particle</th><th>GTE predicted (MeV)</th><th>PDG (MeV)</th><th>Rel. error</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="rt-name">Electron</td><td>0.510990</td><td>0.510999</td><td class="rt-good">−0.0018%</td></tr>
+          <tr><td class="rt-name">Muon</td><td>105.667</td><td>105.658</td><td class="rt-good">+0.0085%</td></tr>
+          <tr><td class="rt-name">Tau</td><td>1,775.22</td><td>1,776.86</td><td class="rt-good">−0.0925%</td></tr>
+          <tr><td class="rt-name">Up quark</td><td>2.16097</td><td>2.16000</td><td class="rt-good">+0.0450%</td></tr>
+          <tr><td class="rt-name">Down quark</td><td>4.67129</td><td>4.67000</td><td class="rt-good">+0.0277%</td></tr>
+          <tr><td class="rt-name">Strange</td><td>93.4154</td><td>93.4000</td><td class="rt-good">+0.0165%</td></tr>
+          <tr><td class="rt-name">Charm</td><td>1,275.53</td><td>1,275.00</td><td class="rt-good">+0.0414%</td></tr>
+          <tr><td class="rt-name">Bottom</td><td>4,179.49</td><td>4,180.00</td><td class="rt-good">−0.0122%</td></tr>
+          <tr><td class="rt-name">Top</td><td>171,159</td><td>172,760</td><td class="rt-marg">−0.9265%</td></tr>
+          <tr class="rt-sep">
+            <td colspan="3">RMS (nine fermions, PDG 2022)</td>
+            <td class="rt-good">0.295%</td>
+          </tr>
+          <tr>
+            <td colspan="3">RMS (nine fermions, PDG 2024)</td>
+            <td class="rt-good">0.261%</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style="font-size:0.85rem;color:var(--text-secondary)">
+        Eight of nine errors are below 0.10%. The top quark dominates the RMS; its 
+        PDG value has been revised downward (toward the GTE prediction) in the 2024 data. 
+        Each quark mass is additionally machine-certified to lie within its PDG uncertainty 
+        band: <span data-lean="m_u_pdg_interval" class="lean-badge">CatAL</span> through 
+        <span data-lean="m_t_pdg_interval" class="lean-badge">CatAL</span>.
+      </p>
+    </section>
+
+    <!-- ═══ Section 5: Null Test ═══ -->
+    <section class="lesson-section" id="null-test">
+      <h2>The 1000-Permutation Null Test</h2>
+      <p>
+        Could the 0.295% RMS be a coincidence of the functional form? 
+        The canonical pipeline's null suite provides a direct answer.
+      </p>
+
+      <div class="card">
+        <div class="card-header">Null test protocol</div>
+        <div class="card-body">
+          <p>
+            Apply the same locked UCL functional form to 1000 random permutations of 
+            the triple arithmetic — randomly reassigning N-values among particle slots — 
+            and re-score each permutation. If the formula is too flexible, many permutations 
+            should also score well.
+          </p>
+        </div>
+      </div>
+
+      <div class="null-bar-wrap">
+        <div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:0.5rem">
+          Primary σ (lower = better match). Canonical result vs. worst permutation:
+        </div>
+        <div class="null-bar-row">
+          <div class="nb-label">Canonical</div>
+          <div class="nb-track">
+            <div class="nb-fill" style="width:0.3%;background:#10B981"></div>
+          </div>
+          <div class="nb-val" style="color:#10B981">σ = 2.95×10⁻⁵</div>
+        </div>
+        <div class="null-bar-row">
+          <div class="nb-label">Best permutation</div>
+          <div class="nb-track">
+            <div class="nb-fill" style="width:56%;background:#F59E0B"></div>
+          </div>
+          <div class="nb-val" style="color:#F59E0B">σ = 5.6×10⁻²</div>
+        </div>
+        <div class="null-bar-row">
+          <div class="nb-label">Typical permutation</div>
+          <div class="nb-track">
+            <div class="nb-fill" style="width:100%;background:#EF4444"></div>
+          </div>
+          <div class="nb-val" style="color:#EF4444">σ ≫ 10⁻¹</div>
+        </div>
+      </div>
+
+      <p>
+        The canonical result's σ = 2.95×10⁻⁵ falls <em>outside the entire shuffled-null 
+        distribution</em>. The minimum permutation σ exceeds 5.6×10⁻², more than three 
+        orders of magnitude above the canonical baseline.
+      </p>
+      <p>
+        <strong>The agreement is not a forgiving ansatz; it is specific to the canonical triples.</strong> 
+        Scramble the orbit order and the masses are wrong by orders of magnitude.
+      </p>
+    </section>
+
+    <!-- Nav -->
+    <nav class="lesson-nav">
+      <a href="../L15_quantum_numbers/index.html" class="lesson-nav-btn lesson-nav-prev">← L15: Quantum Numbers</a>
+      <a href="../L17_wolfram_bridge/index.html" class="lesson-nav-btn lesson-nav-next">L17: The GTE–Wolfram Bridge →</a>
+    </nav>
+
+  </main>
+
+  <footer class="site-footer">
+    UGP Physics Tutorial Series · Nova Spivack · 
+    <a href="https://novaspivack.com/research">novaspivack.com/research</a>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script src="../../common/interactive.js"></script>
+  <script src="../../common/nav.js"></script>
+  <script>
+    const LEAN_REFS = {
+      "quarterLockLaw": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/QuarterLock.lean"
+      },
+      "mphi_equals_tau_mass_scc": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Spacetime/OrbitMassHierarchy.lean"
+      },
+      "m_u_pdg_interval": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/MassRelations/QuarkMassNumericalCerts.lean"
+      },
+      "m_t_pdg_interval": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/MassRelations/QuarkMassNumericalCerts.lean"
+      }
+    };
+    document.addEventListener('DOMContentLoaded', () => {
+      initSteps('steps-mass');
+      autoRenderLeanBadges(LEAN_REFS);
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left:'$$',right:'$$',display:true},
+          {left:'$',right:'$',display:false}
+        ]
+      });
+    });
+  </script>
+</body>
+</html>

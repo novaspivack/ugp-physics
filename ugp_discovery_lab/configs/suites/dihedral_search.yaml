@@ -1,0 +1,58 @@
+experiments:
+  - name: dihedral_lock
+    dihedral:
+      n_list: [5,6,8,10,12]
+      windows: [10,11]
+      samples_per_class: 24
+    fit:
+      max_denominator: 16
+      min_r2: 0.995
+    run:
+      steps: 64
+    diagnostics:
+      kernel_plane_fit: true
+
+  - name: kernel_fit
+    sources:
+      - { name: "LE_gte_d6", run_dir: "UGP_discovery_lab_runs/latest", glob: "LE_*_summary.json" }
+    fit:
+      models:
+        - { form: "kM = kG + alpha*kL", max_denominator: 16 }
+        - { form: "kM = a*kG + b*kL + c", max_denominator: 12 }
+      thresholds:
+        min_points: 50
+        min_r2: 0.996
+
+  - name: lawful_evolution
+    description: "D5 Dihedral Lock Search"
+    le_config:
+      c_policy: mersenne
+      b_policy: fib
+      a_policy: gte
+      mirror: d5
+      triggers: { ridge: true, mirror: true }
+    run:
+      steps: 256
+      windows: [10, 11]
+      seed: [1, 73, 823]
+    diagnostics:
+      kernel_plane_fit: true
+      index_lock: true
+      complexity: true
+
+  - name: lawful_evolution
+    description: "D6 Dihedral Lock Search"
+    le_config:
+      c_policy: mersenne
+      b_policy: fib
+      a_policy: gte
+      mirror: d6
+      triggers: { ridge: true, mirror: true }
+    run:
+      steps: 256
+      windows: [10, 11]
+      seed: [1, 73, 823]
+    diagnostics:
+      kernel_plane_fit: true
+      index_lock: true
+      complexity: true

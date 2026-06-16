@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L21: The Master Quadratic — UGP Physics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="../../common/style.css">
+  <style>
+    /* ── Crown Jewel cards ────────────────────────────────── */
+    .crown-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin: 1.5rem 0;
+    }
+    @media (max-width: 640px) { .crown-grid { grid-template-columns: 1fr; } }
+    .crown-card {
+      border-radius: var(--r-lg);
+      border: 2px solid var(--stroke-primary);
+      padding: 1.5rem;
+      position: relative;
+    }
+    .crown-card.cj1 {
+      background: linear-gradient(135deg, rgba(245,158,11,0.08) 0%, rgba(34,197,94,0.05) 100%);
+      border-color: var(--accent);
+    }
+    .crown-card.cj2 {
+      background: linear-gradient(135deg, rgba(99,102,241,0.08) 0%, rgba(139,92,246,0.05) 100%);
+      border-color: #6366F1;
+    }
+    .crown-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .cj1 .crown-label { color: var(--accent); }
+    .cj2 .crown-label { color: #6366F1; }
+    .crown-card h3 {
+      font-size: 1.1rem;
+      margin: 0 0 0.75rem;
+    }
+    .crown-card p { font-size: 0.875rem; color: var(--text-secondary); margin: 0 0 0.5rem; }
+    .crown-formula {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 1rem;
+      margin: 0.75rem 0;
+      color: var(--text-primary);
+    }
+
+    /* ── Number system toggle ──────────────────────────── */
+    .ns-toggle {
+      display: flex;
+      gap: 0;
+      border: 1.5px solid var(--stroke-primary);
+      border-radius: var(--r-full);
+      overflow: hidden;
+      width: fit-content;
+      margin: 1rem 0;
+    }
+    .ns-btn {
+      padding: 0.5rem 1.25rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      background: transparent;
+      color: var(--text-secondary);
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.14s;
+    }
+    .ns-btn.active { background: var(--accent); color: #fff; }
+    .ns-panel { display: none; }
+    .ns-panel.active { display: block; }
+
+    /* ── GF(7) squares table ─────────────────────────── */
+    .squares-row {
+      display: flex;
+      gap: 4px;
+      margin: 1rem 0;
+      flex-wrap: wrap;
+    }
+    .sq-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: var(--bg-elevated);
+      border: 1.5px solid var(--stroke-primary);
+      border-radius: var(--r-md);
+      padding: 0.5rem 0.75rem;
+      min-width: 56px;
+    }
+    .sq-k  { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--text-tertiary); }
+    .sq-k2 { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 1rem; color: var(--text-primary); }
+    .sq-cell.is-5 { background: rgba(239,68,68,0.12); border-color: #EF4444; }
+    .sq-cell.is-qr { background: rgba(34,197,94,0.08); border-color: var(--cert-lean); }
+
+    /* ── Path complete banner ─────────────────────────── */
+    .path-complete {
+      background: rgba(34,197,94,0.08);
+      border: 1.5px solid var(--cert-lean);
+      border-radius: var(--r-lg);
+      padding: 1.5rem;
+      text-align: center;
+      margin: 2rem 0;
+    }
+    .path-complete h3 { color: var(--cert-lean); margin: 0 0 0.5rem; font-size: 1.1rem; }
+    .path-complete p { margin: 0; color: var(--text-secondary); font-size: 0.9rem; }
+
+    /* ── Big formula display ──────────────────────────── */
+    .big-formula {
+      text-align: center;
+      background: var(--bg-elevated);
+      border: 2px solid var(--accent);
+      border-radius: var(--r-lg);
+      padding: 1.75rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .big-formula .bf-main {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.75rem;
+    }
+    .bf-annotation {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 0.75rem;
+    }
+    .bf-ann-item {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      text-align: center;
+    }
+    .bf-ann-item strong { color: var(--accent); }
+  </style>
+</head>
+<body style="--path-current: var(--path-4)">
+
+  <header class="site-header">
+    <a href="../../index.html" class="site-logo">UGP Physics</a>
+    <nav class="breadcrumb">
+      <a href="../../index.html">Tutorial Series</a>
+      <span class="bc-sep">›</span>
+      <a href="../index.html">Path 4: Forces</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">L21: The Master Quadratic</span>
+    </nav>
+  </header>
+
+  <main class="page-wrapper">
+
+    <!-- ═══ Lesson Header ═══ -->
+    <div class="lesson-header">
+      <div class="path-label">Path 4 — Forces · Lesson 4 of 4</div>
+      <h1>The Master Quadratic</h1>
+      <p class="lesson-subtitle">
+        The diagonal of the GTE polynomial — setting all three inputs equal — reveals
+        a hidden quadratic: x² + x − 1. Over the real numbers it gives the golden ratio
+        and the Higgs vacuum scale. Over GF(7) it has no root — and that rootlessness is
+        why Rule 110 is computationally universal.
+      </p>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:100%"></div>
+      </div>
+    </div>
+
+    <!-- ═══ Section 1: The Diagonal ═══ -->
+    <section class="lesson-section" id="diagonal">
+      <h2>Setting L = C = R = x: The Diagonal</h2>
+      <p>
+        The GTE polynomial normally takes three different inputs: a left neighbor L, a center
+        value C, and a right neighbor R. But we can ask a special question: what happens when
+        all three inputs are the same?
+      </p>
+      <p>
+        Setting $L = C = R = x$ is called <em>evaluating on the diagonal</em>. Substituting
+        into $p(L,C,R) = C + R - CR - LCR$:
+      </p>
+
+      <div class="card" style="margin:1rem 0;">
+        <div class="card-body">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.95rem;margin:0">
+            p(x,x,x) = x + x − x·x − x·x·x = 2x − x² − x³
+          </p>
+        </div>
+      </div>
+
+      <h3>The self-consistency question</h3>
+      <p>
+        A uniform configuration (every cell at value x) <em>stays</em> uniform when
+        $p(x,x,x) = x$. When does this hold?
+      </p>
+
+      <div class="card" style="margin:1rem 0;">
+        <div class="card-body">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.95rem">
+            p(x,x,x) − x = 2x − x² − x³ − x = x − x² − x³
+          </p>
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.95rem;margin:0">
+            = −x(x² + x − 1)
+          </p>
+        </div>
+      </div>
+
+      <div class="big-formula">
+        <div class="bf-main">p(x,x,x) − x = −x · (x² + x − 1)</div>
+        <p style="color:var(--text-secondary);font-size:0.875rem;margin:0.5rem 0">
+          This identity holds over any number system — ℝ, ℚ, GF(7), or any field.
+          Machine-certified as <code>gte_diagonal_quadratic_factorization</code> (CatAL, zero sorry).
+        </p>
+        <div class="bf-annotation">
+          <div class="bf-ann-item">
+            <strong>x = 0</strong><br>
+            The vacuum — always a fixed point
+          </div>
+          <div class="bf-ann-item">
+            <strong>x² + x − 1 = 0</strong><br>
+            The master quadratic — solutions exist only in some number systems
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 2: Discriminant ═══ -->
+    <section class="lesson-section" id="discriminant">
+      <h2>The Discriminant: Δ = 5 = N_fam</h2>
+
+      <p>
+        For a quadratic $ax^2 + bx + c$, the discriminant $\Delta = b^2 - 4ac$ determines
+        whether roots exist. For $x^2 + x - 1$ (where $a = 1$, $b = 1$, $c = -1$):
+      </p>
+
+      <div class="card" style="margin:1rem 0;text-align:center;">
+        <div class="card-body">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;margin:0">
+            Δ = 1² − 4·1·(−1) = 1 + 4 = <strong style="color:var(--accent)">5</strong>
+          </p>
+        </div>
+      </div>
+
+      <p>
+        In the GTE framework, $N_{\rm fam} = 5$ is the number of <em>fermion families</em>
+        — the five particle types in a single Standard Model generation: electron, up quark,
+        down quark, right-handed neutrino, left-handed neutrino. This number is derived
+        independently from the ℤ₅ orbit structure of the gauge sector.
+      </p>
+
+      <div class="card" style="margin:1rem 0;background:rgba(245,158,11,0.06);border-color:var(--accent)">
+        <div class="card-body">
+          <p style="margin:0"><strong>Structural identity:</strong> The discriminant of the master quadratic equals the fermion family count: Δ = N_fam = 5. Every result that flows from the master quadratic — the Higgs VEV, the binary computational floor, vacuum uniqueness — inherits a link to the number of particle families.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 3: Two Number Systems ═══ -->
+    <section class="lesson-section" id="two-faces">
+      <h2>One Equation, Two Faces</h2>
+      <p>
+        The roots of $x^2 + x - 1 = 0$ depend entirely on which number system you use.
+        The quadratic has two completely different faces:
+      </p>
+
+      <div class="crown-grid">
+        <div class="crown-card cj1">
+          <div class="crown-label">Crown Jewel 1</div>
+          <h3>Over ℝ — The Golden Ratio</h3>
+          <div class="crown-formula">x* = (√5 − 1) / 2 = 1/φ ≈ 0.6180</div>
+          <p>The positive root is the reciprocal of the golden ratio φ = (1+√5)/2.</p>
+          <p>This is the SRRG fixed point — the self-consistent electroweak coupling that seeds the Higgs vacuum expectation value v = 246.16 GeV.</p>
+        </div>
+        <div class="crown-card cj2">
+          <div class="crown-label">Crown Jewel 2</div>
+          <h3>Over GF(7) — No Root</h3>
+          <div class="crown-formula" style="color:#6366F1">No solution exists mod 7</div>
+          <p>5 is a quadratic non-residue mod 7 — it is not the square of any element in GF(7).</p>
+          <p>This rootlessness is why {0,1} is the unique binary sub-automaton of p — forcing Rule 110 computational universality.</p>
+        </div>
+      </div>
+
+      <div class="ns-toggle">
+        <button class="ns-btn active" id="nsb-real">Over ℝ — Crown Jewel 1</button>
+        <button class="ns-btn" id="nsb-gf7">Over GF(7) — Crown Jewel 2</button>
+      </div>
+
+      <!-- Real numbers panel -->
+      <div id="nsp-real" class="ns-panel active">
+        <h3>Crown Jewel 1: The Golden Ratio and the Higgs VEV</h3>
+        <p>
+          The quadratic formula applied to $x^2 + x - 1 = 0$ gives:
+          $x = \frac{-1 \pm \sqrt{5}}{2}$.
+        </p>
+        <p>
+          The positive root is $x^+ = \frac{\sqrt{5}-1}{2} = \frac{1}{\varphi} \approx 0.6180$,
+          where $\varphi = (1+\sqrt{5})/2 \approx 1.618$ is the golden ratio.
+        </p>
+
+        <h3>The SRRG fixed point</h3>
+        <p>
+          The <em>Self-Referential Renormalization Group</em> (SRRG) asks: is there an electroweak
+          coupling $g$ that is self-consistent with the universe's own dynamics? Formally, is there a
+          coupling where the dynamics applied to itself reproduces the same coupling?
+        </p>
+        <p>
+          This is a fixed-point question on the GTE polynomial:
+        </p>
+        <div class="card" style="margin:1rem 0;">
+          <div class="card-body">
+            <p style="font-family:'JetBrains Mono',monospace;font-size:0.95rem;margin:0">
+              Find g such that: p(g, g, g) = g<br>
+              <br>
+              Solution: g* = (√5 − 1)/2 = 1/φ
+            </p>
+          </div>
+        </div>
+        <p>
+          The golden ratio is not an assumption — it is the <em>output</em> of the self-consistency
+          equation of the master polynomial. It is the unique frequency at which the universe's own
+          algebra resonates.
+        </p>
+        <p>
+          Lean cert: <code>gte_poly_srrg_bridge</code> (zero sorry) — establishes that the SRRG
+          fixed-point equation and the golden root of the master quadratic are one and the same object.
+        </p>
+
+        <h3>From the fixed point to the Higgs VEV</h3>
+        <p>
+          The Higgs vacuum expectation value $v \approx 246$ GeV sets the electroweak symmetry
+          breaking scale — giving the W and Z bosons their masses. In the Standard Model, $v$ is
+          a free parameter fitted to data. In GTE, it is derived from the SRRG fixed point:
+        </p>
+
+        <div class="split" style="margin:1.5rem 0">
+          <div class="card">
+            <div class="card-header" style="color:var(--accent)">GTE prediction</div>
+            <div class="card-body">
+              <p style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;margin:0">v = 246.16 GeV</div>
+              <p style="font-size:0.85rem;color:var(--text-tertiary);margin:0.25rem 0 0">From SRRG fixed point × N_fam scale, machine-certified</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header" style="color:var(--cert-lean)">PDG value</div>
+            <div class="card-body">
+              <p style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;margin:0">v = 246.22 GeV</div>
+              <p style="font-size:0.85rem;color:var(--text-tertiary);margin:0.25rem 0 0">Derived from G_F measurement, PDG 2024</p>
+            </div>
+          </div>
+        </div>
+        <p>
+          The agreement is 246.16/246.22 ≈ 99.976%: a 0.024% discrepancy with zero free parameters.
+        </p>
+      </div>
+
+      <!-- GF(7) panel -->
+      <div id="nsp-gf7" class="ns-panel">
+        <h3>Crown Jewel 2: 5 Is a Quadratic Non-Residue mod 7</h3>
+        <p>
+          The quadratic formula requires computing $\sqrt{\Delta} = \sqrt{5}$. Over the reals,
+          this is straightforward. Over GF(7) — clock arithmetic mod 7 — it requires finding
+          $s$ such that $s^2 \equiv 5 \pmod 7$.
+        </p>
+        <p>
+          Let's check whether 5 appears as a perfect square mod 7. Compute $k^2 \bmod 7$ for
+          every $k$:
+        </p>
+
+        <div class="squares-row">
+          <div class="sq-cell is-qr">
+            <span class="sq-k">k=0</span>
+            <span class="sq-k2">0² = 0</span>
+          </div>
+          <div class="sq-cell is-qr">
+            <span class="sq-k">k=1</span>
+            <span class="sq-k2">1² = 1</span>
+          </div>
+          <div class="sq-cell is-qr">
+            <span class="sq-k">k=2</span>
+            <span class="sq-k2">2² = 4</span>
+          </div>
+          <div class="sq-cell is-qr">
+            <span class="sq-k">k=3</span>
+            <span class="sq-k2">9≡2</span>
+          </div>
+          <div class="sq-cell is-qr">
+            <span class="sq-k">k=4</span>
+            <span class="sq-k2">16≡2</span>
+          </div>
+          <div class="sq-cell is-qr">
+            <span class="sq-k">k=5</span>
+            <span class="sq-k2">25≡4</span>
+          </div>
+          <div class="sq-cell is-qr">
+            <span class="sq-k">k=6</span>
+            <span class="sq-k2">36≡1</span>
+          </div>
+        </div>
+
+        <p>
+          The squares mod 7 are: {0, 1, 2, 4}. The value <strong>5 never appears</strong>.
+          So $\sqrt{5}$ does not exist in GF(7) — the equation $x^2 + x - 1 = 0$ has no solution.
+        </p>
+
+        <p class="small" style="color:var(--text-secondary)">
+          Lean cert: <code>five_is_qnr_mod7</code> (CatAL, proved by <code>decide</code>) ·
+          <code>master_quadratic_no_root_gf7</code> (CatAL, zero sorry)
+        </p>
+
+        <h3>Why rootlessness forces Rule 110 universality</h3>
+        <p>
+          The binary set {0, 1} is a sub-automaton of the GTE polynomial — that is, on binary
+          inputs, the polynomial outputs a binary value. This was established in L03 (The Polynomial)
+          and L05 (The UWCA).
+        </p>
+        <p>
+          But why is {0, 1} the <em>unique</em> minimal invariant sub-automaton? The master
+          quadratic explains it:
+        </p>
+
+        <div class="card" style="margin:1rem 0;background:rgba(99,102,241,0.06);border-color:#6366F1">
+          <div class="card-body">
+            <ul style="padding-left:1.25rem;line-height:2;margin:0">
+              <li>Any invariant sub-automaton must be closed under p</li>
+              <li>The diagonal fixed-point equation forces: either x = 0 (the vacuum) or x² + x − 1 = 0</li>
+              <li>Over GF(7), x² + x − 1 = 0 has no solutions — so there are no non-trivial fixed points</li>
+              <li>Therefore {0, 1} is the only minimal invariant sub-automaton — forced by the rootlessness</li>
+              <li>The restriction of p to {0, 1} is Rule 110 — which is computationally universal</li>
+            </ul>
+          </div>
+        </div>
+        <p>
+          The computational universality of the GTE substrate (proved in L05) traces back directly to
+          the fact that 5 is a quadratic non-residue mod 7 — a pure arithmetic fact.
+          Lean cert: <code>binary_floor_unique_from_qnr</code> (CatAL, zero sorry).
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══ Section 4: One Equation, Two Crown Jewels ═══ -->
+    <section class="lesson-section" id="synthesis">
+      <h2>One Equation, Two Crown Jewels</h2>
+      <p>
+        The full picture: a single machine-certified algebraic identity,
+        with two completely different physical consequences:
+      </p>
+
+      <div class="card" style="margin:1.5rem 0;background:rgba(245,158,11,0.06);border-color:var(--accent)">
+        <div class="card-header">The master quadratic — two faces of one object</div>
+        <div class="card-body">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Number system</th>
+                <th>What happens</th>
+                <th>Physical consequence</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Over ℝ</strong></td>
+                <td>Root x* = 1/φ (golden ratio inverse)</td>
+                <td>SRRG fixed point → Higgs VEV = 246.16 GeV</td>
+              </tr>
+              <tr>
+                <td><strong>Over GF(7)</strong></td>
+                <td>No root: 5 is a QNR mod 7</td>
+                <td>{0,1} is unique minimal sub-automaton → Rule 110 universality</td>
+              </tr>
+            </tbody>
+          </table>
+          <p style="margin-top:1rem;font-size:0.875rem;color:var(--text-secondary)">
+            Both consequences follow from the same six characters: x² + x − 1.
+            Both are machine-certified in Lean 4 with zero sorry.
+          </p>
+        </div>
+      </div>
+
+      <p>
+        The same equation that gives the electroweak scale also gives the computational
+        architecture of the universe. This is not a coincidence — it is the signature of
+        a theory that is truly unified at the algebraic level.
+      </p>
+    </section>
+
+    <!-- ═══ Path Complete ═══ -->
+    <section class="lesson-section" id="path-complete">
+      <div class="path-complete">
+        <h3>🎓 Path 4 Complete</h3>
+        <p>
+          You have completed Path 4: Forces — Gauge Structure from Winding.
+          The four lessons cover the full force story: all interactions from one symmetry group,
+          coupling constants from orbit arithmetic, CP symmetry from group theory, and the
+          master quadratic connecting the electroweak scale to computational universality.
+        </p>
+        <p style="margin-top:0.75rem">
+          Continue to <a href="../../path_5_spacetime/index.html">Path 5: Spacetime and Gravity</a>
+          — or return to the <a href="../../index.html">Tutorial Series home</a>.
+        </p>
+      </div>
+    </section>
+
+    <!-- See also -->
+    <div class="see-also">
+      <h2>See Also</h2>
+      <div class="see-also-group">
+        <div class="see-also-label">Lean 4 proofs (ugp-lean)</div>
+        <ul class="source-list">
+          <li><code>gte_diagonal_quadratic_factorization</code> — p(x,x,x)−x = −x(x²+x−1) (CatAL)</li>
+          <li><code>gte_poly_srrg_bridge</code> — SRRG fixed point = golden root (CatAL)</li>
+          <li><code>five_is_qnr_mod7</code> — 5 is a QNR mod 7 (CatAL, proved by decide)</li>
+          <li><code>master_quadratic_no_root_gf7</code> — x²+x−1 rootless over GF(7) (CatAL)</li>
+          <li><code>binary_floor_unique_from_qnr</code> — {0,1} forced by QNR (CatAL)</li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Source tutorial (PDF)</div>
+        <ul class="source-list">
+          <li><a href="https://doi.org/10.5281/zenodo.20657868" target="_blank" rel="noopener">The Master Quadratic: One Equation, Two Crown Jewels ↗</a></li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Cross-path connection</div>
+        <ul class="source-list">
+          <li><a href="../../path_1_foundations/L03_polynomial/index.html">L03: The GTE Polynomial</a> — the polynomial whose diagonal gives the master quadratic</li>
+          <li><a href="../../path_1_foundations/L05_uwca/index.html">L05: The UWCA</a> — Rule 110 universality established</li>
+        </ul>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ═══ Lesson Footer Navigation ═══ -->
+  <div class="page-wrapper">
+    <footer class="lesson-footer">
+      <a href="../L20_strong_cp/index.html" class="nav-btn nav-btn--prev">← L20: Strong CP Problem</a>
+      <a href="../../path_5_spacetime/index.html" class="nav-btn nav-btn--next">Path 5: Spacetime and Gravity →</a>
+    </footer>
+  </div>
+
+  <!-- Math -->
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})">
+  </script>
+
+  <script src="../../common/interactive.js"></script>
+  <script src="../../common/nav.js"></script>
+  <script>
+    const LEAN_REFS = {
+      "gte_diagonal_quadratic_factorization": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Polynomial/GoldenQuadratic.lean"
+      },
+      "gte_poly_srrg_bridge": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Algebra/SRRGCABridge.lean"
+      },
+      "five_is_qnr_mod7": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/Z7InvariantSubsets.lean"
+      },
+      "master_quadratic_no_root_gf7": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Polynomial/GoldenQuadratic.lean"
+      },
+      "binary_floor_unique_from_qnr": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/Z7InvariantSubsets.lean"
+      }
+    };
+
+    function initNsTabs() {
+      const btns = document.querySelectorAll('.ns-btn');
+      const panels = document.querySelectorAll('.ns-panel');
+      btns.forEach((btn, i) => {
+        btn.addEventListener('click', () => {
+          btns.forEach(b => b.classList.remove('active'));
+          panels.forEach(p => p.classList.remove('active'));
+          btn.classList.add('active');
+          panels[i].classList.add('active');
+        });
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initNsTabs();
+      autoRenderLeanBadges(LEAN_REFS);
+    });
+  </script>
+</body>
+</html>

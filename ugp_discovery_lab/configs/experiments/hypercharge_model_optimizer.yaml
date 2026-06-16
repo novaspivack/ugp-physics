@@ -1,0 +1,32 @@
+experiment:
+  name: hypercharge_model_optimizer
+  description: "Refines hypercharge assignment model by optimizing parameters to minimize RG running error using additional GTE properties."
+
+inputs:
+  # Complete particle catalog from Discovery Engine
+  # Resolved relative to ugp_discovery_lab/ when running experiments from the lab root
+  particle_catalog_path: "data/particle_catalog/catalog.parquet"
+
+target:
+  # Experimental value of g₁² at Z-pole
+  experimental_g1_squared_at_z_pole: 0.1279
+
+optimization:
+  # Optimization parameters
+  method: "L-BFGS-B"
+  max_iterations: 100
+  tolerance: 1e-6
+  
+  # Parameter bounds
+  parameter_bounds:
+    g_factor: [0.1, 1.0]
+    c_state_latched_15_offset: [0.0, 0.5]
+    a_parity_factor: [-0.1, 0.1]
+    b_parity_factor: [-0.1, 0.1]
+    c_parity_factor: [-0.1, 0.1]
+    k_index_factor: [-0.1, 0.1]
+
+report:
+  export_md: true
+  export_json: true
+  plots: true

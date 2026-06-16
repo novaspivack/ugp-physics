@@ -1,0 +1,33 @@
+# AFCA canonical-glider clock-rate experiment.
+# Reproduces the canonical tau_c excess and ether-vs-matter comparison figures.
+
+model: afca
+params:
+  rule: 110
+  L: 500
+  inner_M: 7
+
+steps: 200
+sample_every: 1
+
+initial_condition:
+  kind: ether
+
+injections:
+  - kind: canonical_glider
+    position: 250
+
+measurements:
+  - tau_c_mean
+
+output:
+  data: afca_glider.json
+  figures:
+    - type: spacetime
+      file: afca_glider_spacetime.png
+      params:
+        title: "AFCA canonical glider — sync CA spacetime"
+    - type: tau_c_heatmap
+      file: afca_glider_tau.png
+      params:
+        title: "tau_c heatmap — canonical glider (bright = slow clock = matter)"

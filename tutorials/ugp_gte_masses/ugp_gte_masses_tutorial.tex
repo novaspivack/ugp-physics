@@ -1,0 +1,865 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\usepackage{hyperref}
+\usepackage[numbers,sort&compress]{natbib}
+\bibliographystyle{unsrtnat}
+\usepackage{enumitem}
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,urlcolor=blue!60!black}
+\setlength{\emergencystretch}{2em}
+
+\definecolor{boxblue}{RGB}{220,235,255}
+\definecolor{boxorange}{RGB}{255,240,210}
+\definecolor{boxgreen}{RGB}{220,245,220}
+\definecolor{boxyellow}{RGB}{255,252,220}
+\definecolor{boxred}{RGB}{255,230,225}
+
+\newcommand{\term}[1]{\textbf{#1}}
+\newcommand{\lean}[1]{\texttt{#1}}
+\newcommand{\Neff}{N_{\mathrm{eff}}}
+\newcommand{\Nc}{N_c}
+\newcommand{\CatAL}{\textsf{CatAL}}
+\newcommand{\CatA}{\textsf{CatA}}
+\newcommand{\CatAD}{\textsf{CatAD}}
+\newcommand{\PHI}{\varphi}
+
+\title{\textbf{From the Arithmetic Substrate to Particle Masses}\\[6pt]
+\large The GTE Cascade and the Nine Charged-Fermion Masses: A Step-by-Step Guide\\[4pt]\normalsize\textit{UGP Physics Tutorial Series}
+\\[2pt]\small\href{https://doi.org/\TutorialDOI}{doi.org/\TutorialDOI}}
+\author{Nova Spivack\\[4pt]
+\normalsize
+\href{https://novaspivack.com/research}{novaspivack.com/research}\\[2pt]
+\small Full monograph (P48):
+\href{https://doi.org/10.5281/zenodo.20560550}{doi.org/10.5281/zenodo.20560550}
+}
+\newcommand{\TutorialDOI}{10.5281/zenodo.20657913}
+\date{2026}
+
+\begin{document}
+\setcounter{tocdepth}{2}
+\maketitle
+\tableofcontents
+\newpage
+
+\begin{tcolorbox}[colback=blue!6,colframe=blue!40!black,
+  title=\textbf{UGP Physics Tutorial Series}]
+\textbf{Prerequisites (read first):} \href{https://doi.org/10.5281/zenodo.20657889}{\emph{The GTE Polynomial: A Step-by-Step Cheat Sheet}}\\[4pt]
+\textbf{See also:} \href{https://doi.org/10.5281/zenodo.20657898}{\emph{How the Standard Model Quantum Numbers Emerge from $\mathbb{Z}_7\times\mathbb{Z}_3$}} $\cdot$
+\href{https://doi.org/10.5281/zenodo.20657876}{\emph{How MDL Selects the 19-Bit Polynomial}}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=boxgreen,colframe=green!50!black,
+  title=\textbf{Claim-Strength Taxonomy}]
+Throughout this tutorial, results are labeled with a confidence grade:
+\begin{itemize}[itemsep=2pt]
+  \item \textbf{$\mathbf{A}_{\rm Lean}$ (CatAL)} --- Machine-certified in Lean~4 with zero \texttt{sorry} and zero custom axioms.  Independently verifiable by anyone with Lean installed.
+  \item \textbf{A/D (CatAD)} --- Analytically derived with full derivation, computationally confirmed.  Not yet machine-certified.
+  \item \textbf{A (CatA)} --- Analytically derived; derivation complete but not independently machine-certified.
+  \item \textbf{A/D (conditional)} --- Derived under a named, stated premise; the premise is itself an open problem or a CatB assumption.
+  \item \textbf{B (CatB)} --- A stated working hypothesis or structural premise; not yet derived.
+\end{itemize}
+\end{tcolorbox}
+
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{What Is the Universal Generative Principle?}
+\label{sec:ugp}
+%─────────────────────────────────────────────────────────────────────────────
+
+\begin{tcolorbox}[colback=boxblue,colframe=blue!40!black,title=The one-line answer]
+The \term{Universal Generative Principle} (UGP) is a number-theoretic sieve that,
+starting from a single integer ridge level $n$, severely restricts which starting
+triples are internally self-consistent --- and identifies our universe as the
+\emph{unique} minimum-description triple among all admissible universes.
+\end{tcolorbox}
+
+\subsection{The parameter problem}
+
+The Standard Model of particle physics requires approximately 25 numerical constants
+as external inputs: quark and lepton masses, gauge couplings, mixing angles, and
+cosmological parameters.  From the Standard Model's perspective, these numbers are
+independent: they span a 25-dimensional space of possible universes.  There is no
+known reason why they take their specific values.
+
+The UGP shows this picture is wrong.  A number-theoretic sieve applied across
+\emph{all} ridge levels $n$ constrains which parameter combinations are
+arithmetically self-consistent.  Most starting points fail the sieve.  The survivors
+do not fill the full 25-dimensional space; they form a lower-dimensional constraint
+manifold.  Our universe occupies the unique minimum-description point on that manifold.
+
+\subsection{Ridge structure and the $n = 10$ uniqueness}
+
+The sieve operates at each integer \term{ridge level} $n$.  At level $n$, the
+\term{ridge value} is
+\[
+  R_n \;=\; 2^n - 16.
+\]
+The constant 16 is not a free parameter: $16 = 2^{1+\mathrm{ord}_7(2)}$, where
+$\mathrm{ord}_7(2) = 3$ is the multiplicative order of 2 modulo 7 (the unique
+integer $k$ such that $2^k \equiv 1 \pmod 7$, here $k = 3$ since $2^3 = 8 \equiv 1$).
+This follows from the $\mathbb{Z}_7 \times \mathbb{Z}_3$ algebraic structure
+that MDL forces on the system and is machine-certified
+(\lean{gt001\_gt009\_ridge\_closed}, \CatAL, zero sorry).
+
+The sieve scans all interior divisor pairs $(b_2,\,q_2)$ of $R_n$ (pairs with both
+factors $> 15$) and filters them through two constraints:
+\begin{itemize}[itemsep=2pt]
+  \item \textbf{Prime-lock:} the quantity $c_1 = b_1 q_1 + 20$ must be prime, where
+    $b_1 = b_2 + q_2 + 7$ and $q_1 = b_2 - 13$.
+  \item \textbf{Mirror duality:} the swapped pair $(q_2, b_2)$ must also pass the
+    prime-lock test.
+\end{itemize}
+{\sloppy
+At \emph{most} ridge levels the sieve fails: no interior divisor pair satisfies both
+constraints simultaneously.  The level $n = 10$ is the lex-minimal level where both
+conditions can be satisfied, certified by four independent arithmetic proofs
+(\lean{n10\_is\_minimal\_admissible\_ridge},
+\lean{asymptotic\_sparsity\_universal}, \CatAL, zero sorry).
+\par}
+
+At $n = 10$: $R_{10} = 2^{10} - 16 = 1008$.  Running the sieve over all five
+interior divisor pairs:
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{@{}ccccc@{}}
+\toprule
+$(b_2,\;q_2)$ & $b_1$ & $q_1$ & $c_1 = b_1 q_1 + 20$ & Prime? \\
+\midrule
+$(16,\;63)$ & $86$          & $3$  & $278 = 2\times139$          & No  \\
+$(18,\;56)$ & $81$          & $5$  & $425 = 5^2\times17$         & No  \\
+$(21,\;48)$ & $76$          & $8$  & $628 = 4\times157$          & No  \\
+$(24,\;42)$ & $\mathbf{73}$ & $11$ & $\mathbf{823}$ (prime)      & \textbf{Yes} \\
+$(28,\;36)$ & $71$          & $15$ & $1085 = 5\times7\times31$  & No  \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Exactly one pair, $(24,\,42)$, passes the prime-lock test.  Its mirror swap
+$(42,\,24)$ also passes: $c_1' = 73\times 29 + 20 = 2137$, also prime.
+
+\subsection{The Lepton Seed and MDL selection}
+
+{\sloppy
+The prime-lock uniqueness produces two admissible starting triples:
+$(1,\,73,\,823;\,1)$ and $(1,\,73,\,2137;\,1)$.  Two candidates, not infinitely
+many.  The \term{Minimum Description Length (MDL)} principle selects the shorter
+description: among all admissible triples, the lexicographically minimal one is the
+physical universe.
+\par}
+
+\begin{tcolorbox}[colback=boxgreen,colframe=green!50!black,title=The Lepton Seed]
+The \term{Lepton Seed} is the unique MDL-minimal admissible triple at ridge level
+$n = 10$:
+\[
+  (1,\;\;73,\;\;823;\;\;1).
+\]
+Components:
+\begin{itemize}[itemsep=1pt]
+  \item $a = 1$: parity-phase index (encodes chirality via the M\"{o}bius function).
+  \item $b = 73$: ladder index (the electron's N-value; will become the mass address).
+  \item $c = 823$: branch capacity (the prime selected by the prime-lock test).
+  \item $g = 1$: generation index (this is the first generation).
+\end{itemize}
+Machine-certified: \lean{rsuc\_theorem}, \lean{mdl\_selects\_LeptonSeed}
+(\CatAL, zero sorry; P01~\cite{SpivackSM}).
+\end{tcolorbox}
+
+The number 73 is not arbitrary.  It equals $\Nc^4 - (\Nc^2+1)/2 - \Nc$ evaluated at
+the QCD color rank $\Nc = 3$:
+\[
+  b_1 = 3^4 - \tfrac{3^2+1}{2} - 3 = 81 - 5 - 3 = 73.
+\]
+This is the \emph{Frobenius-Generation Coincidence Identity}, machine-certified by
+17 zero-sorry Lean theorems: the electron's N-value is arithmetically forced by
+the number of quark colors, not fitted to data.
+
+\medskip
+\noindent\textbf{What ``MDL-optimal'' means in plain English.}\enspace
+MDL (Minimum Description Length) is the principle that the correct description of a
+system is the \emph{shortest complete description} --- the one that encodes the most
+structure in the fewest bits.  When two arithmetic constructions are both valid, the
+one requiring fewer bits to specify is the physically realized one.  In this context,
+$(1,\,73,\,823;\,1)$ beats $(1,\,73,\,2137;\,1)$ because 823 requires fewer bits to
+specify than 2137 --- and only the MDL-selected triple leads to the correct particle
+spectrum.  The selection is a theorem, not a heuristic
+(\lean{mdl\_selects\_LeptonSeed}, \CatAL).
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{What Is GTE?}
+\label{sec:gte}
+%─────────────────────────────────────────────────────────────────────────────
+
+\begin{tcolorbox}[colback=boxorange,colframe=orange!60!black,title=Key idea]
+\term{Generative Triple Evolution} (GTE)~\cite{SpivackGTECompleteFramework} is the two-step arithmetic map that
+advances an integer triple one generation at a time.  Starting from the Lepton
+Seed, two applications of the map $T$ produce the three lepton generations ---
+electron, muon, tau --- with no free parameters.
+\end{tcolorbox}
+
+\subsection{The map $T$: odd and even steps}
+
+The GTE map $T$ takes a triple $(a,\,b,\,c;\,g)$ and a step type
+($t = 1$ for odd, $t = 2$ for even) and produces a new triple.  The
+mechanism: divide the capacity $c$ by the ladder index $b$ to get
+quotient $q = \lfloor c/b \rfloor$ and remainder $m = c \bmod b$.
+These two numbers control the update of all three components.
+
+\begin{tcolorbox}[colback=boxblue,colframe=blue!40!black,
+  title={The GTE map $T$ (ridge $n$, color rank $N_c$)},breakable]
+\textbf{Step 1.} Divide: $c \div b \;\to\; q$ (quotient), $m$ (remainder).
+
+\medskip
+\textbf{Step 2a. Parity-phase update (both steps):}
+\[
+  a' = m - (n + 2 - t).
+\]
+
+\textbf{Step 2b. Ladder-index update:}
+\[
+  b' = \begin{cases}
+    b - (m + q) & \text{odd step } (t=1) \\[4pt]
+    b + F_{|q_2 - q_1|} & \text{even step } (t=2)
+  \end{cases}
+\]
+where $F_k$ is the $k$-th Fibonacci number and $q_1, q_2$ are the quotients from
+steps 1 and 2 respectively.
+
+\textbf{Step 2c. Capacity update (Mersenne saturation):}
+\[
+  c' = \begin{cases}
+    2^n - 1 & \text{odd step: saturate to ridge Mersenne ceiling} \\[4pt]
+    2^{n + 2\Nc} - 1 & \text{even step: extend by color-rank jump}
+  \end{cases}
+\]
+No free parameter appears anywhere.
+\end{tcolorbox}
+
+\medskip
+\noindent\textbf{Why ``Generative Triple Evolution''?}\enspace
+The name describes the mechanism precisely.  \emph{Generative}: the map produces a
+new triple at each step, generating the particle spectrum one generation at a time.
+\emph{Triple}: the objects are integer triples $(a,\,b,\,c)$.
+\emph{Evolution}: the two alternating steps advance the triple through a deterministic
+orbit --- like a crystal growth law where each step is forced by the geometry of the
+previous one.
+
+\medskip
+\noindent\textbf{The odd step contracts; the even step lifts.}\enspace
+In the odd step, the ladder index $b$ \emph{decreases}: it shrinks by the sum $m+q$.
+This contraction unwinds the sieve, arithmetically recovering the interior divisor
+$b_2 = 42$ from which the seed was constructed.
+
+In the even step, $b$ \emph{increases} by a Fibonacci number.  The Fibonacci lift
+is not a choice: once the quotient gap between the two steps is fixed (it is always
+exactly 13 at $n = 10$), the unique lift consistent with the arithmetic constraints
+is $F_{13} = 233$.  That the gap is exactly 13 is itself a theorem:
+$|q_2 - q_1| = 13 = F_7 = F_{\mathrm{ord}_7(2) + \Nc + 1}$, derived from
+the $\mathbb{Z}_7 \times \mathbb{Z}_3$ structure of the theory
+(\lean{gt012\_gap\_from\_z7\_z3}, \CatAL, zero sorry).  Fibonacci numbers enter
+because the underlying algebraic structure forces them — not by assumption.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{The Worked Cascade: Three Lepton Generations}
+\label{sec:cascade}
+%─────────────────────────────────────────────────────────────────────────────
+
+\begin{tcolorbox}[colback=boxblue,colframe=blue!40!black,title=Orientation]
+We now follow the Lepton Seed through two applications of $T$, producing the muon
+triple and the tau triple.  Every number below can be verified with pencil and paper.
+The key output is the set of \term{N-values} $\{73,\,42,\,275\}$, which will become
+the mass addresses for the three charged leptons.
+\end{tcolorbox}
+
+\subsection{Starting point: the Lepton Seed}
+
+\[
+  (a,\,b,\,c;\,g) \;=\; (1,\;\;73,\;\;823;\;\;1), \qquad n = 10, \quad \Nc = 3.
+\]
+
+\subsection{Step 1 (odd step, $t=1$): Electron $\to$ Muon generation}
+
+\textbf{Divide:} $823 \div 73 = 11$ remainder $20$.  So $q_1 = 11$, $m_1 = 20$.
+
+\textbf{Update each component:}
+\begin{align*}
+  b' &= b - (m_1 + q_1) = 73 - (20 + 11) = 73 - 31 = \mathbf{42}, \\[4pt]
+  c' &= 2^{10} - 1 = 1024 - 1 = \mathbf{1023}, \\[4pt]
+  a' &= m_1 - (n + 2 - t) = 20 - (10 + 2 - 1) = 20 - 11 = \mathbf{9}.
+\end{align*}
+
+\begin{tcolorbox}[colback=boxgreen,colframe=green!50!black,title=Result: Muon triple]
+\[
+  (9,\;\;42,\;\;1023;\;\;2)
+\]
+The new N-value is $b' = \mathbf{42}$ --- the muon's arithmetic address.
+\end{tcolorbox}
+
+\noindent\textbf{Why is each number forced?}
+\begin{itemize}[itemsep=2pt]
+  \item $b' = 42$ is the interior divisor $b_2 = 42$ from the original sieve: the
+    odd step arithmetically unwinds the sieve construction.
+  \item $c' = 1023 = 2^{10} - 1$ is the Mersenne number at ridge level $n = 10$:
+    forced by the axioms.
+  \item $a' = 9 = \Nc^2 = 3^2$: a machine-certified algebraic identity, not an
+    assignment.
+  \item $m_1 = 20$: forced by the prime-lock constraint
+    ($c_1 = b_1 q_1 + 20 = 73 \times 11 + 20 = 823$).
+\end{itemize}
+
+\subsection{Step 2 (even step, $t=2$): Muon $\to$ Tau generation}
+
+Start from $(9,\,42,\,1023;\,2)$.
+
+\textbf{Divide:} $1023 \div 42 = 24$ remainder $15$.  So $q_2 = 24$, $m_2 = 15$.
+
+\medskip
+\noindent\textit{Why is $m_2 = 15$ forced?}  The \emph{ridge remainder lock theorem}
+proves: for any divisor $b$ of $R_n = 2^n - 16$,
+$(2^n - 1) \bmod b = 15$ whenever $n \geq 5$.  Since $b_2 = 42$ divides
+$R_{10} = 1008$, the remainder $15$ is structurally guaranteed
+(\lean{ridge\_remainder\_lock\_general}, \CatAL, zero sorry).
+
+\medskip
+\textbf{The quotient gap:} $|q_2 - q_1| = |24 - 11| = 13$.  This gap equals
+$m_1 - 7 = 20 - 7 = 13$ --- a theorem, not a coincidence.
+
+\textbf{The 13th Fibonacci number:}
+\[
+  1,\;1,\;2,\;3,\;5,\;8,\;13,\;21,\;34,\;55,\;89,\;144,\;\mathbf{233}.
+  \qquad F_{13} = 233.
+\]
+
+\textbf{Update each component:}
+\begin{align*}
+  b' &= b + F_{13} = 42 + 233 = \mathbf{275}, \\[4pt]
+  c' &= 2^{10 + 2 \times 3} - 1 = 2^{16} - 1 = 65536 - 1 = \mathbf{65535}, \\[4pt]
+  a' &= m_2 - (n + 2 - t) = 15 - (10 + 2 - 2) = 15 - 10 = \mathbf{5}.
+\end{align*}
+
+\begin{tcolorbox}[colback=boxgreen,colframe=green!50!black,title=Result: Tau triple]
+\[
+  (5,\;\;275,\;\;65535;\;\;3)
+\]
+The new N-value is $b' = \mathbf{275}$ --- the tau's arithmetic address.
+\end{tcolorbox}
+
+\noindent\textbf{Why is each number forced?}
+\begin{itemize}[itemsep=2pt]
+  \item $b' = 275$: once the quotient gap is forced to 13, the Fibonacci lift
+    $F_{13} = 233$ is uniquely determined, and $42 + 233 = 275$.
+  \item $c' = 65535 = 2^{16} - 1$: the exponent jump $2\Nc = 6$ at $\Nc = 3$
+    carries the ridge from $n = 10$ to $n + 2\Nc = 16$.
+  \item $a' = 5 = (\Nc^2 + 1)/2$: another structural identity, machine-certified.
+    The general $a$-value formula $a' = m - (n + 2 - t)$ used at both steps is
+    proved to be an \emph{orbit projection} — a consequence of the cascade
+    arithmetic, not an ad hoc assignment
+    (\lean{semantic\_floor\_a\_condition\_from\_cascade}, \CatAL, zero sorry).
+\end{itemize}
+
+\subsection{Summary: the three lepton generations}
+
+\begin{tcolorbox}[colback=boxorange,colframe=orange!60!black,
+  title={Lepton Cascade Result (\CatAL, \lean{update\_map\_produces\_canonical\_orbit})}]
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{@{}clcc@{}}
+\toprule
+Generation & Triple $(a,\,b,\,c;\,g)$ & $\Neff = b$ & Particle \\
+\midrule
+$g = 1$ (seed)      & $(1,\;\;73,\;\;\;\;823;\;1)$ & $\mathbf{73}$  & Electron \\
+$g = 2$ (odd step)  & $(9,\;\;42,\;\;1023;\;2)$    & $\mathbf{42}$  & Muon     \\
+$g = 3$ (even step) & $(5,\;275,\;65535;\;3)$       & $\mathbf{275}$ & Tau      \\
+\bottomrule
+\end{tabular}
+\end{center}
+The three N-values $\{73,\,42,\,275\}$ are the output of two forced arithmetic
+steps from a sieve-forced seed.  They are not fitted.  Zero dials.
+\end{tcolorbox}
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{From N-Values to Masses: The InformationMassTransformer}
+\label{sec:imt}
+%─────────────────────────────────────────────────────────────────────────────
+
+\begin{tcolorbox}[colback=boxblue,colframe=blue!40!black,title=The pipeline in one equation]
+\[
+  m_f \;=\; \mathcal{C}_f(a,\,b,\,c;\,g) \;\times\; E_{\rm base}(N_{\rm eff},\,g).
+\]
+Two factors.  Each is a deterministic function of the triple's arithmetic content.
+No parameter is adjusted at prediction time.
+\end{tcolorbox}
+
+\subsection{The base energy $E_{\rm base}(N_{\rm eff},\,g)$}
+
+The \term{base energy} $E_{\rm base}(\Neff, g)$ is an information-theoretic energy
+scale assembled deterministically from the triple's N-value and generation index.
+Five locked components contribute: an entropy term (proportional to the Shannon
+information content of $\Neff$ bits), a holographic-radius term (from the area
+encoding of the orbit), a coherence term, a phase term, and a binding term.
+Each component is an explicit locked function of $\Neff$ and $g$, with no free
+parameters (P01).
+
+The physical picture: in GTE, a particle's rest mass equals the minimum energy
+required to sustain a stable kink whose PSC orbit address has information content
+$\Neff$ bits.  A larger address (more bits) means more structural information must
+be ``carried'' by the kink, requiring more rest energy; this is why muons are heavier
+than electrons ($\Neff^{\mu} = 42 < \Neff^{e} = 73$ would suggest the wrong order,
+but the generation index $g$ in the base energy formula accounts for the mass hierarchy correctly).
+
+The base energy sets the \emph{scale} at which each particle ``weighs.''  It
+is the information-theoretic counterpart of a mass eigenvalue: the amount of
+mass-energy that an $\Neff$-bit informational address at generation $g$ naturally
+carries under the GTE encoding.
+
+For the three lepton addresses, the engine evaluates to:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{@{}llcc@{}}
+\toprule
+Particle & Triple & $\Neff$ & $E_{\rm base}(\Neff, g)$ (MeV) \\
+\midrule
+Electron & $(1,\;73,\;823;\;1)$    & $73$  & $0.4585$ \\
+Muon     & $(9,\;42,\;1023;\;2)$   & $42$  & $110.952$ \\
+Tau      & $(5,\;275,\;65535;\;3)$ & $275$ & $6534.094$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{The calibration factor $\mathcal{C}_f$}
+
+The \term{calibration factor} $\mathcal{C}_f$ is a dimensionless number computed
+from the triple's arithmetic content alone, encoding how the particle's specific
+number-theoretic signature modifies the base scale.  It is computed in two steps.
+
+\subsubsection*{Step A: The feature vector}
+
+From the triple $(a, b, c;\, g)$, form the logarithmic ratio
+\[
+  L(a,b,c) = \ln\!\left(\frac{|b|}{|c|}\right),
+\]
+and the nine-component \emph{feature vector}:
+\[
+  \boldsymbol{\phi} = \bigl(1,\; L,\; L^2,\; g,\; g^2,\; M,\; \mu(a),\; \mu(b),\; \mu(|c|)\bigr),
+\]
+where $\mu(\cdot)$ is the \term{M\"{o}bius function}:
+\[
+  \mu(n) = \begin{cases}
+    1  & n = 1 \\
+    (-1)^k & n \text{ is a product of } k \text{ distinct primes} \\
+    0  & n \text{ has a repeated prime factor}
+  \end{cases},
+\]
+and $M = \mu(a)\,\mu(b)\,\mu(|c|)$ is the \term{M\"{o}bius product}.
+
+The M\"{o}bius function captures the number-theoretic texture of each component:
+primes give $-1$, squarefree composites give $\pm 1$ depending on parity, and
+numbers with squared factors give $0$.  The feature vector encodes how the
+triple's arithmetic character --- its logarithmic ratio, generation, and
+number-theoretic texture --- maps to the calibration factor.
+
+\medskip
+\noindent\textbf{The M\"{o}bius product as a species classifier.}\enspace
+The product $M = \mu(a)\,\mu(b)\,\mu(|c|)$ provides a number-theoretic fingerprint for
+each GTE generation-orbit triple.
+For the electron triple $(1, 73, 823)$: every component is either 1 or prime (hence
+squarefree), giving $M = \mu(1)\cdot\mu(73)\cdot\mu(823) = (+1)(-1)(-1) = +1$.
+For the muon triple $(9, 42, 1023)$: the component $a = 9 = 3^2$ has a repeated prime
+factor, so $\mu(9) = 0$ and $M = 0$.
+Similarly for the tau triple $(5, 275, 65535)$: $b = 275 = 5^2 \cdot 11$ gives $\mu(275) = 0$
+and $M = 0$.
+The electron triple is therefore the unique charged-lepton triple with $M = +1$, giving it a
+distinct arithmetic signature from the muon and tau.
+
+A complementary sector distinction appears in the lepton $c$-values.  All three satisfy
+$c \equiv 7 \pmod{8}$: we have $823 = 102 \times 8 + 7$, $1023 = 127 \times 8 + 7$,
+and $65535 = 8191 \times 8 + 7$.  This common residue class is a GTE-derivable property
+of the lepton branch, distinguishing it arithmetically from the quark sector
+(for example, the quark $c$-value 42 satisfies $42 \equiv 2 \pmod{8}$).
+Lean cert: \lean{lepton\_c\_values\_mod8\_seven} (\CatAL)~\cite{SpivackGTECompleteFramework}.
+
+\subsubsection*{Step B: The Universal Calibration Law}
+
+\begin{tcolorbox}[colback=boxyellow,colframe=yellow!75!black,
+  title={Universal Calibration Law (UCL)}, breakable]
+\[
+  \ln \mathcal{C}_f = \mathbf{k} \cdot \boldsymbol{\phi},
+\]
+where $\mathbf{k} = (k_0,\, k_L,\, k_{L^2},\, k_g,\, k_{g^2},\, k_M,\, k_a,\, k_b,\, k_c)$
+is a \emph{single, fixed} nine-component coefficient vector, the same for every
+fermion, locked before any prediction is made.  The locked vector used in
+the canonical pipeline is:
+\[
+  \mathbf{k} = \begin{aligned}[t]
+    (&-0.15487,\; 0.01970,\; 0.01357,\; 1.54480,\; -0.80925,\\
+     &-0.80587,\; 0.12373,\; -1.50453,\; 1.32657).
+  \end{aligned}
+\]
+\end{tcolorbox}
+
+This vector has algebraic structure known as the \term{Elegant Kernel}: most
+components are expressible in terms of the golden ratio
+$\varphi = (1+\sqrt{5})/2$, the prime modulus 7, and $\pi$.  For instance,
+$k_g \approx \varphi\cos(\pi/10)$, $k_{g^2} \approx -\varphi/2$, and
+$k_0' \approx -1/(2\pi)$.  The Quarter-Lock identity
+$k_M = k_{g^2} + \tfrac{1}{4}k_{L^2}$ is machine-certified in Lean~4
+(\lean{quarterLockLaw}, \CatAL, zero sorry).
+The engine constants also satisfy a structural identity:
+$g_1 + 2w_{\rm phase} = 2^{N_{\rm fam}} - \pi/2^{n_{\rm ridge}}$, where
+the Euler constant $e$ cancels exactly, leaving a combination expressible
+entirely from GTE-derivable quantities (\lean{imt\_gen1\_phase\_structural\_pair}, \CatAL).
+
+\medskip
+\noindent\textbf{Why is $m_\tau$ the dimensional anchor?}\enspace
+The base energy engine produces dimensionless ratios; one dimensional anchor is
+needed to set the overall mass scale.  The tau mass $m_\tau$ is the unique
+\emph{self-consistency condition} (SCC) fixed point of the lepton cascade: it is
+the value at which the cascade's output, fed back as the potential parameter,
+reproduces itself
+(\lean{mphi\_equals\_tau\_mass\_scc}, \CatAL, zero sorry).
+Nothing is fitted: $m_\tau$ is selected by arithmetic self-consistency, not by
+comparison to data.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Worked Lepton-Mass Example}
+\label{sec:worked}
+%─────────────────────────────────────────────────────────────────────────────
+
+We now execute the pipeline for all three charged leptons, carrying full arithmetic.
+All intermediate steps use the canonical locked coefficient vector above.
+
+\subsection{Electron: $(1,\;73,\;823;\;1)$}
+
+\textbf{M\"{o}bius values:}
+$73$ is prime, so $\mu(73) = -1$.
+$823$ is prime, so $\mu(823) = -1$.
+$\mu(1) = 1$ (by definition).
+
+\textbf{Logarithmic ratio:}
+$L = \ln(73/823) = \ln(0.08870\ldots) = -2.4225$.  $L^2 = 5.8685$.
+
+\textbf{M\"{o}bius product:}
+$M = \mu(1)\cdot\mu(73)\cdot\mu(823) = 1\cdot(-1)\cdot(-1) = 1$.
+
+\textbf{Feature vector} ($g=1$, $g^2=1$):
+\[
+  \boldsymbol{\phi} = (1,\; -2.4225,\; 5.8685,\; 1,\; 1,\; 1,\; 1,\; -1,\; -1).
+\]
+
+\textbf{Log-calibration factor:}
+\begin{align*}
+  \ln \mathcal{C}_e &= (-0.15487)(1) + (0.01970)(-2.4225) + (0.01357)(5.8685) \\
+    &\quad + (1.54480)(1) + (-0.80925)(1) + (-0.80587)(1) \\
+    &\quad + (0.12373)(1) + (-1.50453)(-1) + (1.32657)(-1) \\
+    &= -0.15487 - 0.04773 + 0.07963 + 1.54480 - 0.80925 - 0.80587 \\
+    &\quad + 0.12373 + 1.50453 - 1.32657 = \mathbf{0.1084}.
+\end{align*}
+
+\textbf{Calibration factor:} $\mathcal{C}_e = e^{0.1084} = \mathbf{1.1145}$.
+
+\textbf{Mass:}
+\[
+  m_e = 1.1145 \times 0.4585~\text{MeV} = \mathbf{0.5110~\text{MeV}}.
+  \qquad (\text{PDG: } 0.5110~\text{MeV}.)
+\]
+
+\subsection{Muon: $(9,\;42,\;1023;\;2)$}
+
+\textbf{M\"{o}bius values:}
+$9 = 3^2$ has a repeated factor, so $\mu(9) = 0$.
+$42 = 2\cdot3\cdot7$ is squarefree with three prime factors, so $\mu(42) = (-1)^3 = -1$.
+$1023 = 3\cdot11\cdot31$ is squarefree with three prime factors, so $\mu(1023) = -1$.
+
+\textbf{Logarithmic ratio:}
+$L = \ln(42/1023) = -3.1928$.  $L^2 = 10.194$.
+
+\textbf{M\"{o}bius product:}
+$M = \mu(9)\cdot\mu(42)\cdot\mu(1023) = 0\cdot(-1)\cdot(-1) = 0$.
+
+\textbf{Feature vector} ($g=2$, $g^2=4$):
+\[
+  \boldsymbol{\phi} = (1,\; -3.1928,\; 10.194,\; 2,\; 4,\; 0,\; 0,\; -1,\; -1).
+\]
+
+\textbf{Log-calibration factor:}
+\begin{align*}
+  \ln \mathcal{C}_\mu &= (-0.15487)(1) + (0.01970)(-3.1928) + (0.01357)(10.194) \\
+    &\quad + (1.54480)(2) + (-0.80925)(4) + (-0.80587)(0) \\
+    &\quad + (0.12373)(0) + (-1.50453)(-1) + (1.32657)(-1) \\
+    &= -0.15487 - 0.06292 + 0.13843 + 3.08960 - 3.23700 - 0 \\
+    &\quad + 0 + 1.50453 - 1.32657 = \mathbf{-0.0488}.
+\end{align*}
+
+\textbf{Calibration factor:} $\mathcal{C}_\mu = e^{-0.0488} = \mathbf{0.9524}$.
+
+\textbf{Mass:}
+\[
+  m_\mu = 0.9524 \times 110.952~\text{MeV} = \mathbf{105.67~\text{MeV}}.
+  \qquad (\text{PDG: } 105.66~\text{MeV}.)
+\]
+
+\subsection{Tau: $(5,\;275,\;65535;\;3)$}
+
+\textbf{M\"{o}bius values:}
+$5$ is prime, so $\mu(5) = -1$.
+$275 = 5^2\cdot11$ has a repeated factor, so $\mu(275) = 0$.
+$65535 = 3\cdot5\cdot17\cdot257$ is squarefree with four prime factors,
+so $\mu(65535) = (-1)^4 = +1$.
+
+\textbf{Logarithmic ratio:}
+$L = \ln(275/65535) = -5.4734$.  $L^2 = 29.958$.
+
+\textbf{M\"{o}bius product:}
+$M = \mu(5)\cdot\mu(275)\cdot\mu(65535) = (-1)\cdot0\cdot(+1) = 0$.
+
+\textbf{Feature vector} ($g=3$, $g^2=9$):
+\[
+  \boldsymbol{\phi} = (1,\; -5.4734,\; 29.958,\; 3,\; 9,\; 0,\; -1,\; 0,\; 1).
+\]
+
+\textbf{Log-calibration factor:}
+\begin{align*}
+  \ln \mathcal{C}_\tau &= (-0.15487)(1) + (0.01970)(-5.4736) + (0.01357)(29.960) \\
+    &\quad + (1.54480)(3) + (-0.80925)(9) + (-0.80587)(0) \\
+    &\quad + (0.12373)(-1) + (-1.50453)(0) + (1.32657)(1) \\
+    &= -0.15487 - 0.10783 + 0.40656 + 4.63440 - 7.28325 - 0 \\
+    &\quad - 0.12373 + 0 + 1.32657 = \mathbf{-1.3022}.
+\end{align*}
+
+\textbf{Calibration factor:} $\mathcal{C}_\tau = e^{-1.3022} = \mathbf{0.2719}$.
+
+\textbf{Mass:}
+\[
+  m_\tau \approx 0.2719 \times 6534.09~\text{MeV} \approx 1776.9~\text{MeV}.
+\]
+{\sloppy
+The canonical pipeline, carrying full-precision $\mathbf{k}$ coefficients rather than
+the five-digit rounded values displayed here, yields $m_\tau = \mathbf{1775.22}$~MeV
+(PDG: $1776.86$~MeV, relative error $-0.0925\%$).  The canonical
+calibration factors are $\mathcal{C}_e = 1.1145$, $\mathcal{C}_\mu = 0.9524$,
+$\mathcal{C}_\tau = 0.2717$ (source: \texttt{dual\_path\_comparison.json}, P01).
+\par}
+
+\subsection{The three-lepton result}
+
+\begin{tcolorbox}[colback=boxorange,colframe=orange!60!black,
+  title={Three Charged Lepton Masses from the GTE Cascade}]
+\begin{center}
+\renewcommand{\arraystretch}{1.35}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Particle & $\Neff$ & GTE prediction (MeV) & PDG (MeV) & Rel.\ error \\
+\midrule
+Electron & $73$  & $0.510990$ & $0.510999$ & $-0.0018\%$ \\
+Muon     & $42$  & $105.667$  & $105.658$  & $+0.0085\%$ \\
+Tau      & $275$ & $1775.22$  & $1776.86$  & $-0.0925\%$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+Three generations, one fixed coefficient vector, zero fitted parameters.
+\end{tcolorbox}
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{The Full Nine-Fermion Table}
+\label{sec:ninefermion}
+%─────────────────────────────────────────────────────────────────────────────
+
+The same pipeline extends to the six quarks.  Each quark family has its own canonical
+triple from the GTE cascade at $n = 10$ (the family-permuted seeds of P01), but the
+\emph{map} --- base energy engine plus UCL calibration with the same coefficient
+vector $\mathbf{k}$ --- is identical.  The full nine-fermion result is:
+
+\begin{table}[htbp]
+\centering
+\caption{Nine charged-fermion masses: GTE theoretical-path predictions vs.\ PDG.
+Zero continuous parameters are fitted at prediction time; $m_\tau$ is the
+single self-consistency anchor.  Total RMS relative error: $\mathbf{0.295\%}$
+(PDG~2022 targets).  Recomputed against PDG~2024, the RMS improves to
+$\mathbf{0.261\%}$ (the downward top-mass revision moves the PDG target toward
+the prediction).  Eight of the nine fermion errors are below $0.10\%$; the
+RMS is dominated by the top quark.
+Source: canonical artifact \texttt{dual\_path\_comparison.json} (P01).}
+\label{tab:nine_fermions}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+\textbf{Particle} & \textbf{GTE predicted (MeV)} & \textbf{PDG (MeV)} & \textbf{Rel.\ error (\%)} \\
+\midrule
+Electron    & $0.510990$       & $0.510999$       & $-0.0018$ \\
+Muon        & $105.667$        & $105.658$        & $+0.0085$ \\
+Tau         & $1{,}775.22$     & $1{,}776.86$     & $-0.0925$ \\
+\midrule
+Up quark    & $2.16097$        & $2.16000$        & $+0.0450$ \\
+Down quark  & $4.67129$        & $4.67000$        & $+0.0277$ \\
+Strange     & $93.4154$        & $93.4000$        & $+0.0165$ \\
+Charm       & $1{,}275.53$     & $1{,}275.00$     & $+0.0414$ \\
+Bottom      & $4{,}179.49$     & $4{,}180.00$     & $-0.0122$ \\
+Top         & $171{,}159$      & $172{,}760$      & $-0.9265$ \\
+\midrule
+\multicolumn{3}{l}{\textbf{RMS (nine fermions, PDG 2022)}} & $\mathbf{0.295\%}$ \\
+\multicolumn{3}{l}{\textbf{RMS (nine fermions, PDG 2024)}} & $\mathbf{0.261\%}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Honest grading of the result}
+
+\begin{tcolorbox}[colback=boxred,colframe=red!50!black,title=Certification status]
+\begin{itemize}[itemsep=3pt]
+  \item \textbf{The cascade triples and the Lepton Seed:} \CatAL\ ---
+    machine-certified in Lean~4 with zero sorry, zero custom axioms.
+    The output integers $\{73, 42, 275\}$ are proved forced.
+  \item \textbf{The structural pipeline (UCL + Elegant Kernel identities):}
+    \CatA\ --- computationally confirmed, Quarter-Lock identity Lean-certified.
+  \item \textbf{The $0.295\%$ RMS figure:} \CatAD\ --- computational (Category~A)
+    plus a disclosed URC renormalization correction layer (Category~A/D).
+    The nine mass values are predictions of a zero-active-parameter pipeline, not
+    fits; the URC layer modifies the renormalization constant used in $E_{\rm base}$.
+  \item \textbf{Six quark PDG containment intervals:} separately \CatAL\ --- each
+    quark's mass is machine-certified to lie within its PDG~2024 uncertainty band
+    (\lean{m\_u\_pdg\_interval} through \lean{m\_t\_pdg\_interval}).
+\end{itemize}
+A/D means the result passes every quantitative test available, with a disclosed
+but not yet fully formalized correction step.  It is not a fit; it is a prediction
+with a certified structural chain and an honest statement about which link is
+not yet formally Lean-certified.
+\end{tcolorbox}
+
+\subsection{The 1000-permutation null test}
+
+Could the $0.295\%$ agreement be a coincidence of the functional form?  The canonical
+pipeline's 1000-permutation null suite applies the same locked UCL functional form to
+1000 random permutations of the triple arithmetic --- randomly reassigning N-values
+among particles --- and re-scores each permutation.  The canonical result's primary
+$\sigma = 2.95\times10^{-5}$ falls \emph{outside} the entire shuffled-null
+distribution: the minimum permutation $\sigma$ exceeds $5.6\times10^{-2}$, more
+than three orders of magnitude above the canonical baseline.  The agreement is not
+a forgiving ansatz; it is specific to the canonical triples.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Why This Works}
+\label{sec:why}
+%─────────────────────────────────────────────────────────────────────────────
+
+\subsection{MDL selection generates mass-like structures}
+
+The UGP does not start by asking ``what should the electron mass be?''  It asks
+``what is the shortest self-consistent arithmetic structure?''  The answer happens to
+produce, as a byproduct, a sequence of integers $\{73, 42, 275\}$ whose information
+content, when run through the InformationMassTransformer, matches the lepton mass
+spectrum to four significant figures.  The agreement is not engineered; it is a
+structural consequence of MDL minimality at $n = 10$.
+
+The reason MDL produces mass-like structures is that mass --- in information-theoretic
+terms --- is the cost of self-description.  A particle that requires more information
+to specify (higher $\Neff$, more complex triple arithmetic) has higher base energy
+and therefore higher mass.  The cascade's N-values encode this information cost
+directly: the muon's $\Neff = 42$ is smaller than the tau's $\Neff = 275$, and
+correspondingly the muon's base energy ($110.95$~MeV) is smaller than the tau's
+($6534$~MeV).  The calibration factor $\mathcal{C}_f$ then corrects for the specific
+number-theoretic texture of each triple (prime structure, generation index, etc.).
+
+\subsection{Prime-lock and the mass ratios}
+
+The prime-lock condition forces $c_1 = 823$ to be prime and $c_1' = 2137$ to be prime.
+The effect propagates through the cascade: because $b_1 = 73$ is also prime, and
+$b_2 = 42 = 2\cdot3\cdot7$ is deeply composite, and $b_3 = 275 = 5^2\cdot11$ has
+a squared factor, the three triples have distinctly different M\"{o}bius signatures
+($\mu(b) \in \{-1, -1, 0\}$).  The UCL's M\"{o}bius components pick up this texture
+and adjust the calibration factors accordingly.  Without the prime-lock, the
+M\"{o}bius patterns would be arbitrary; with it, they are arithmetically forced, and
+the mass ratios come out right.
+
+\subsection{Why three generations and not more}
+
+The cascade terminates at three generations because the sieve produces exactly three
+lepton triples before the arithmetic structure saturates.  There is no fourth step
+that continues the pattern: the Mersenne capacity $c' = 2^{16} - 1 = 65535$ at
+generation 3 is an arithmetic ceiling above which the prime-lock and mirror-duality
+conditions fail.  The three-generation structure of the Standard Model is therefore
+forced, not assumed
+(\lean{update\_map\_produces\_canonical\_orbit}, \CatAL).
+
+\subsection{The role of the golden ratio and $\pi$}
+
+The Elegant Kernel's coefficients --- $k_g \approx \varphi\cos(\pi/10)$,
+$k_{g^2} = -\varphi/2$, $k_0' = -1/(2\pi)$ --- emerge from GTE symmetry constraints,
+not from fitting.  The golden ratio $\varphi$ appears because the competing
+sub-dynamics of the cascade settle into a gearing ratio of $3/2$ (the logarithmic
+ratio $L^* = -3/2\ln\varphi$, proved from the GTE dynamic-equilibrium condition).
+The factor $\pi$ enters via Bekenstein--Fisher normalization of the information
+content.  The specific combination $\varphi\cos(\pi/10)$ is the generation-scaling
+coefficient forced by the arithmetic geometry of the orbit.
+
+\subsection{The big picture: a single structure, two roles}
+
+The GTE orbit plays two distinct roles in the theory:
+\begin{enumerate}[itemsep=3pt]
+  \item \textbf{Spectrum arm:} the N-values $\{73, 42, 275\}$ from the cascade
+    triples encode the lepton mass addresses.  Fed through the IMT, they produce the
+    charged lepton masses.  The quark N-values, from parallel family-permuted cascades,
+    produce the six quark masses.
+  \item \textbf{Dynamics arm:} the \emph{parity shadow} of the same orbit --- the
+    binary parities of the fifteen canonical cascade triples --- pins the cellular
+    automaton update rule that governs the dynamics of the $\Phi_{\rm MDL}$ field.
+    That rule is $p(L,C,R) = C + R - CR - LCR \pmod{7}$, which restricts to
+    Rule~110 on binary inputs.
+\end{enumerate}
+One integer orbit carries both the particle spectrum and the field dynamics.  The two
+arms converge on the same 19-bit polynomial, a convergence called the UGP--$p$
+triangle.  This structural economy --- one arithmetic substrate, two physically
+distinct roles --- is what makes the GTE framework predictive rather than numerological.
+
+\medskip
+\noindent\textbf{The closed circle.}\enspace
+Two independent derivation chains both determine the same polynomial $p$.
+\textbf{Chain A} follows PSC arithmetic: $\text{PSC} \to \Nc = 3 \to b_1 = 73 \to$
+Lepton Seed $\to$ orbit $\{73, 42, 275\} \to p$ (via the Direct-Interpolation Lift
+Theorem).
+\textbf{Chain B} follows MDL algebra: $\text{MDL} \to \mathbb{Z}_7 \times \mathbb{Z}_3
+\to p(L,C,R) = C + R - CR - LCR$ (directly, from the structure of the field).
+Both routes are machine-certified with zero sorry; they are not two independent
+hypotheses about $p$ but two rigorous proofs that the arithmetic and the algebra are
+consistent descriptions of the same object.  The constants discussed above --- the
+ridge offset 16, the quotient gap 13, and the Fibonacci lift $F_{13} = 233$ --- are
+features of Chain A that are simultaneously explained by Chain B as consequences
+of $\mathbb{Z}_7 \times \mathbb{Z}_3$.
+
+\begin{tcolorbox}[colback=boxblue,colframe=blue!40!black,
+  title=One-paragraph summary of the mass chain]
+Starting from the single prime $823$ (forced by the number-theoretic sieve at
+ridge $n=10$), two forced arithmetic steps produce the integers $\{73,\,42,\,275\}$.
+These integers, when supplied to the InformationMassTransformer --- a locked
+information-theoretic map with no adjustable parameters at prediction time --- yield
+the electron, muon, and tau masses to four significant figures.  The same pipeline
+applied to family-permuted seeds gives the six quark masses, achieving $0.295\%$
+RMS across all nine fermions.  The Lean~4 formalization certifies the cascade
+arithmetic with zero sorry and zero custom axioms; the mass predictions are
+computationally certified and partly Lean-certified.
+\end{tcolorbox}
+
+
+\section*{Further Reading}
+\begin{tcolorbox}[colback=orange!8,colframe=orange!50!black,
+  title=\textbf{Primary Sources}]
+The results in this tutorial are derived in the following papers,
+all available open-access on Zenodo and at
+\href{https://novaspivack.com/research}{novaspivack.com/research}:
+\begin{itemize}
+  \item \textbf{P01 --- Standard Model Parameters from the UGP} (charged fermion masses):\\
+        \href{https://doi.org/10.5281/zenodo.20168787}{doi.org/10.5281/zenodo.20168787}
+  \item \textbf{P48 --- The Complete GTE Framework} (main synthesis monograph):\\
+        \href{https://doi.org/10.5281/zenodo.20560550}{doi.org/10.5281/zenodo.20560550}
+\end{itemize}
+Lean~4 machine proofs: \href{https://github.com/novaspivack/ugp-lean}{github.com/novaspivack/ugp-lean}
+\end{tcolorbox}
+
+\bibliography{../../papers/bib/Spivack_Papers_Bibliography}
+\end{document}
