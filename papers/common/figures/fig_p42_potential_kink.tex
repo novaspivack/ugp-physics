@@ -1,0 +1,56 @@
+% P42 Figure: Z7 potential, kink, domain wall extrusion
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=0.92, every node/.style={font=\small}]
+  % Row 1: potential V(Phi)
+  \begin{scope}
+    \draw[->,thick] (0,0) -- (8.8,0) node[below] {$\Phi$};
+    \draw[->,thick] (0,0) -- (0,2.4) node[left] {$V(\Phi)$};
+    \draw[thick,blue!60!black,domain=0:8.8,samples=120]
+      plot (\x,{0.95+0.55*cos(deg(7*\x/8.8*2*pi))});
+    \foreach \k in {0,2,3,4,6} {
+      \fill[black] (\k*8.8/7,0.38) circle (2pt);
+      \node[font=\scriptsize,below] at (\k*8.8/7,-0.08) {$\k$};
+    }
+    \foreach \k in {1,5} {
+      \fill[gray!45] (\k*8.8/7,0.38) circle (2pt);
+      \node[font=\scriptsize,below,text=gray!65!black] at (\k*8.8/7,-0.08) {$\k$};
+    }
+    \node[font=\scriptsize,align=center] at (4.4,2.15)
+      {$V(\Phi)=\dfrac{m_\varphi^2}{49}\bigl(1-\cos 7\Phi\bigr)$};
+    % BPS kink: vacua 4 to 6, ending near right edge
+    \pgfmathsetmacro{\vfour}{4*8.8/7}
+    \pgfmathsetmacro{\vsix}{6*8.8/7}
+    \draw[very thick,orange!85!black,domain=\vfour-0.15:8.55,samples=100]
+      plot (\x,{0.38+1.15/(1+exp(-(\x-(\vfour+\vsix)/2)*3.2))});
+    \coordinate (kinkTop) at (8.55,{0.38+1.15/(1+exp(-(8.55-(\vfour+\vsix)/2)*3.2))});
+    \draw[orange!85!black,thin,dashed] (kinkTop) -- (10.15,1.48);
+    \node[font=\small\bfseries,orange!85!black,align=left,anchor=west] at (10.2,1.48)
+      {BPS kink\\[-2pt]\scriptsize (orange curve)};
+    % PSC sectors — below plot, arrow up to axis tick labels
+    \node[draw,rounded corners=2pt,fill=white,inner sep=5pt,
+          font=\scriptsize,align=center,anchor=north] (pscbox) at (4.4,-0.92)
+      {\textbf{vacuum index $k$} (tick labels below minima)\\[2pt]
+       PSC-admissible: $\{0,2,3,4,6\}$ \qquad
+       PSC-forbidden: $\{1,5\}$ (faded on axis)};
+    \draw[->,thin,gray!70!black] (pscbox.north) -- (4.4,-0.14);
+  \end{scope}
+  % Row 2: extrusion to domain wall — redesigned with larger box and wide spacing
+  \begin{scope}[yshift=-5.85cm]
+    \node[draw,thick,fill=orange!15,rounded corners=2pt,minimum width=3.8cm,
+          minimum height=2.1cm,align=center,font=\scriptsize] (wall) at (1.5,1.05)
+      {domain wall\\[2pt]uniform in $y,z$};
+    \coordinate (sigStart) at (wall.east);
+    \coordinate (sigEnd) at (9.6,1.05);
+    \draw[->,thick] (sigStart) -- (sigEnd);
+    \node[font=\scriptsize] at ($(sigStart)!0.5!(sigEnd)+(0,0.42)$)
+      {extrude 1+1D kink};
+    \node[font=\scriptsize,align=left,anchor=west] at (9.85,1.05)
+      {$\sigma = \dfrac{8}{49}\,m_\tau$\\[2pt]$= 290.10\,\mathrm{MeV\,GeV}^{-2}$};
+  \end{scope}
+\end{tikzpicture}
+\caption{The $\Phi_{\mathrm{MDL}}$ potential has seven degenerate vacua at
+  $\Phi_k=2\pi k/7$. Stable excitations are kinks in $1{+}1$D (orange curve) and
+  planar domain walls in $3{+}1$D with the same BPS tension~$\sigma$.}
+\label{fig:phimdl_potential_kink_wall}
+\end{figure}

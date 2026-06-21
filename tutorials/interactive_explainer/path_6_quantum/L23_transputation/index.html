@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L23: Transputation — UGP Physics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="../../common/style.css">
+  <style>
+    /* ── Turing degree ladder ────────────────────────────────────── */
+    .turing-ladder { margin: 1.5rem 0; }
+
+    /* ── Constraint cards ────────────────────────────────────────── */
+    .constraint-row {
+      display: flex;
+      gap: 0.75rem;
+      align-items: flex-start;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--stroke-secondary);
+    }
+    .constraint-row:last-child { border-bottom: none; }
+    .constraint-label {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    .constraint-body h3 { margin: 0 0 0.2rem; font-size: 0.92rem; }
+    .constraint-body p  { margin: 0; font-size: 0.84rem; color: var(--text-secondary); }
+
+    /* ── Key result box ──────────────────────────────────────────── */
+    .key-result {
+      background: rgba(6,182,212,0.07);
+      border: 1.5px solid rgba(6,182,212,0.35);
+      border-radius: var(--r-lg);
+      padding: 1.4rem 1.6rem;
+      margin: 1.5rem 0;
+    }
+    .key-result .kr-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    .key-result .kr-main {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0.4rem 0;
+    }
+    .key-result .kr-note {
+      font-size: 0.83rem;
+      color: var(--text-secondary);
+      margin-top: 0.4rem;
+      line-height: 1.6;
+    }
+
+    /* ── Degree boxes ────────────────────────────────────────────── */
+    .degree-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.6rem;
+      margin: 1.5rem 0;
+    }
+    @media (max-width: 600px) { .degree-row { grid-template-columns: 1fr 1fr; } }
+    .degree-box {
+      background: var(--bg-card);
+      border: 1px solid var(--stroke-primary);
+      border-radius: var(--r-md);
+      padding: 0.9rem;
+      text-align: center;
+    }
+    .degree-box.active {
+      border-color: var(--accent);
+      background: rgba(6,182,212,0.07);
+    }
+    .degree-box .deg-name { font-family:'JetBrains Mono',monospace; font-size:1.1rem; font-weight:700; color:var(--text-primary); }
+    .degree-box.active .deg-name { color: var(--accent); }
+    .degree-box .deg-desc { font-size: 0.74rem; color: var(--text-secondary); margin-top: 0.3rem; line-height: 1.4; }
+    .degree-box .deg-example { font-size: 0.7rem; color: var(--text-tertiary); margin-top: 0.25rem; font-style: italic; }
+  </style>
+</head>
+<body style="--path-current: var(--path-6)">
+
+  <header class="site-header">
+    <a href="../../index.html" class="site-logo">UGP Physics</a>
+    <nav class="breadcrumb">
+      <a href="../../index.html">Tutorial Series</a>
+      <span class="bc-sep">›</span>
+      <a href="../index.html">Path 6: Quantum</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">L23: Transputation</span>
+    </nav>
+  </header>
+
+  <main class="page-wrapper">
+
+    <div class="lesson-header">
+      <div class="path-label">Path 6 — Quantum · Lesson 23 of 24</div>
+      <h1>Transputation: Quantum Measurement from MDL</h1>
+      <p class="lesson-subtitle">
+        Why does quantum measurement give a definite outcome? Copenhagen calls it
+        collapse and gives no mechanism. GTE proves the mechanism must exist —
+        and classifies it at exactly Turing degree 0′, one level above ordinary
+        computation, machine-certified with zero sorry.
+      </p>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:50%"></div>
+      </div>
+    </div>
+
+    <!-- ═══ Section 1: The Measurement Problem ═══ -->
+    <section class="lesson-section" id="measurement-problem">
+      <h2>The Measurement Problem</h2>
+      <p>
+        Quantum mechanics says a particle can be in a superposition — genuinely in
+        two states at once. The Schrödinger equation governs how this superposition
+        evolves over time. It is deterministic and smooth.
+      </p>
+      <p>
+        But when you perform a measurement, you get exactly one outcome. The particle
+        is at position A or position B, not both. The smooth wavefunction "collapses"
+        to a single definite result with probability P(k) = |c<sub>k</sub>|².
+      </p>
+      <div class="callout callout--neutral">
+        <p>
+          <strong>The problem in one sentence:</strong> Nothing in the Schrödinger equation
+          describes collapse. The equation predicts an evolving superposition forever —
+          yet we always see a definite outcome. What causes the transition from
+          "all possibilities at once" to "exactly one result"?
+        </p>
+      </div>
+      <p>
+        This is the measurement problem. It has resisted a satisfying resolution
+        for a century. Two main frameworks attempt an answer:
+      </p>
+      <div class="tabs" id="interpretations">
+        <div class="tab-bar">
+          <button class="tab-btn">Copenhagen</button>
+          <button class="tab-btn">Many-worlds</button>
+          <button class="tab-btn">What's missing</button>
+        </div>
+        <div class="tab-panel">
+          <h3>Copenhagen: collapse, but no mechanism</h3>
+          <p>
+            The dominant interpretation since the 1920s: before measurement, the wavefunction
+            describes all possible outcomes simultaneously. At the moment of measurement,
+            it collapses to a single definite outcome, with probabilities given by the
+            Born rule. This recipe works. It does not explain what collapse is.
+          </p>
+          <p style="margin-top:0.75rem">Open questions that Copenhagen never answers:</p>
+          <ul style="font-size:0.87rem;color:var(--text-secondary);padding-left:1.5rem;line-height:2">
+            <li>What counts as an observer or measurement device?</li>
+            <li>What is the physical mechanism of collapse?</li>
+            <li>Why does the Born rule give P = |c<sub>k</sub>|² and not some other formula?</li>
+          </ul>
+        </div>
+        <div class="tab-panel">
+          <h3>Many-worlds: no collapse, but too many universes</h3>
+          <p>
+            Hugh Everett's 1957 proposal: collapse never happens. Instead, the universe
+            splits into a branch for each possible outcome. Every measurement produces
+            every result — in different branches of a constantly splitting universal
+            wavefunction. Each version of you sees one outcome. There are just very many
+            versions.
+          </p>
+          <p style="margin-top:0.75rem">Problems that remain:</p>
+          <ul style="font-size:0.87rem;color:var(--text-secondary);padding-left:1.5rem;line-height:2">
+            <li>What determines when and how the universe splits?</li>
+            <li>What selects the "preferred basis" for splitting?</li>
+            <li>The Born rule still must be postulated — why not P = |c<sub>k</sub>| or |c<sub>k</sub>|⁴?</li>
+            <li>An infinite-branching reality is unverifiable by definition.</li>
+          </ul>
+        </div>
+        <div class="tab-panel">
+          <h3>What's missing from both</h3>
+          <p>
+            Both frameworks share a structural flaw: they take the universe's measurement
+            mechanism as external to the theory. Copenhagen invokes an observer outside
+            quantum mechanics; many-worlds invokes a meta-rule about splitting outside
+            any physical dynamics.
+          </p>
+          <p style="margin-top:0.75rem">
+            A <em>self-contained</em> universe cannot rely on an external observer or
+            meta-rule. The measurement mechanism must be derivable from the universe's
+            own structure. This is exactly what the PSC requirement — Perfect
+            Self-Containment — demands.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 2: Computability Background ═══ -->
+    <section class="lesson-section" id="computability">
+      <h2>A Brief Map of Computational Difficulty</h2>
+      <p>
+        To state the main result precisely, we need a short introduction to how
+        mathematicians classify the difficulty of problems. This is called the
+        theory of Turing degrees.
+      </p>
+      <p>
+        Some problems are computable — there is an algorithm that always
+        terminates and gives the right answer. Some problems are not. Among the
+        non-computable problems, there is a hierarchy of "how hard" they are.
+      </p>
+      <div class="degree-row">
+        <div class="degree-box">
+          <div class="deg-name">0</div>
+          <div class="deg-desc">Ordinary computable</div>
+          <div class="deg-example">Is this number prime? What is digit n of π?</div>
+        </div>
+        <div class="degree-box active">
+          <div class="deg-name">0′</div>
+          <div class="deg-desc">Halting-oracle level</div>
+          <div class="deg-example">Does program P halt? ← Quantum measurement lives here</div>
+        </div>
+        <div class="degree-box">
+          <div class="deg-name">0″</div>
+          <div class="deg-desc">Two oracle jumps</div>
+          <div class="deg-example">Does a halting-oracle program halt?</div>
+        </div>
+        <div class="degree-box">
+          <div class="deg-name">0‴…</div>
+          <div class="deg-desc">Higher oracle levels</div>
+          <div class="deg-example">Nested oracles; increasingly unrealizable</div>
+        </div>
+      </div>
+      <div class="callout callout--info">
+        <p>
+          <strong>The halting problem (Turing, 1936):</strong> Given a program P and
+          an input x, will P(x) ever stop? Turing proved no algorithm can correctly
+          answer this for all (P, x) pairs. The halting problem is the canonical
+          example of a degree-0′ problem: non-computable, but not even harder than
+          necessary.
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══ Section 3: Physical Incompleteness Theorem ═══ -->
+    <section class="lesson-section" id="pit">
+      <h2>The Physical Incompleteness Theorem</h2>
+      <p>
+        Before transputation, there is a foundational result that constrains
+        any self-contained universe's measurement mechanism.
+      </p>
+      <div class="key-result">
+        <div class="kr-label">Physical Incompleteness Theorem (PIT) — CatAL</div>
+        <div class="kr-main">No total-computable algorithm can serve as the selection mechanism for quantum measurement in a PSC-consistent universe</div>
+        <div class="kr-note">
+          PSC (Perfect Self-Containment) requires the universe to contain its own
+          measurement procedure. But any total-computable procedure can be defeated
+          by a diagonal construction — a program that asks about itself. Therefore
+          the selection mechanism cannot be total-computable. Something must happen
+          that lies beyond ordinary computation.
+        </div>
+      </div>
+      <p>
+        This is analogous to Gödel's incompleteness theorem for logic: just as no
+        consistent formal system can prove all truths about itself, no computable
+        procedure can adjudicate all self-referential measurement outcomes. The
+        incompleteness is not a defect — it is a necessary structural feature of
+        any self-describing universe.
+      </p>
+    </section>
+
+    <!-- ═══ Section 4: Transputation ═══ -->
+    <section class="lesson-section" id="transputation">
+      <h2>Transputation: The Forced Internal Adjudicator</h2>
+      <p>
+        PIT says: a computable selector cannot exist. But something must select
+        the outcome. The universe cannot leave measurement results undefined.
+        So what does the selecting?
+      </p>
+      <p>
+        The GTE framework proves this is not a gap to be filled by a future theory —
+        the answer is <em>forced</em> by the structure of any PSC-consistent,
+        record-bearing, diagonal-capable universe.
+      </p>
+
+      <div class="key-result">
+        <div class="kr-label">Transputation theorem
+          <span class="cert" data-lean="closed_choice_forces_transputation"></span>
+        </div>
+        <div class="kr-main">Transputation is the unique forced internal adjudicator in any PSC-consistent universe</div>
+        <div class="kr-note">
+          There must exist a selection mechanism that: (1) exists — forced by PSC
+          and diagonal self-reference; (2) produces exactly one definite outcome per
+          event; (3) is not total-computable — any computable selector would decide
+          the halting problem, which PIT forbids; (4) is not arbitrary — governed by
+          five formal constraints D1–D5 including Born-rule consistency; and
+          (5) has a formal computability class — the Turing-PSC Computability Class (TPC).
+        </div>
+      </div>
+
+      <h3>What transputation is not</h3>
+      <div class="split-3" style="margin:1.5rem 0">
+        <div class="card">
+          <div class="card-header">Not Copenhagen</div>
+          <div class="card-body">
+            <p>Copenhagen invokes an external observer or apparatus. Transputation
+            is internal — no external apparatus is invoked or required.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">Not many-worlds</div>
+          <div class="card-body">
+            <p>Many-worlds keeps all branches. Transputation selects exactly one
+            outcome — only one branch is realized per event.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">Not hidden variables</div>
+          <div class="card-body">
+            <p>Hidden-variable theories (like de Broglie-Bohm) assume a computable
+            deterministic mechanism. Transputation is provably non-computable
+            by the PIT argument.</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>The five formal constraints (D1–D5)</h3>
+      <div>
+        <div class="constraint-row">
+          <div class="constraint-label">D1</div>
+          <div class="constraint-body">
+            <h3>Existence</h3>
+            <p>The adjudicator exists — forced by PSC together with diagonal
+            self-reference and the requirement for stable records.</p>
+          </div>
+        </div>
+        <div class="constraint-row">
+          <div class="constraint-label">D2</div>
+          <div class="constraint-body">
+            <h3>Definiteness</h3>
+            <p>Exactly one outcome is produced per measurement event. The result
+            is a finite, definite record — not a probability amplitude.</p>
+          </div>
+        </div>
+        <div class="constraint-row">
+          <div class="constraint-label">D3</div>
+          <div class="constraint-body">
+            <h3>Non-computability</h3>
+            <p>The adjudicator cannot be total-computable. Any computable selector
+            would decide the halting problem (PIT). This is the negative constraint.</p>
+          </div>
+        </div>
+        <div class="constraint-row">
+          <div class="constraint-label">D4</div>
+          <div class="constraint-body">
+            <h3>Lawfulness</h3>
+            <p>The selector is not arbitrary — it has a unique minimal-description
+            form: ρ* = argmin<sub>ρ</sub> D(ρ | w), the MDL-minimal state given
+            the current record w.</p>
+          </div>
+        </div>
+        <div class="constraint-row">
+          <div class="constraint-label">D5</div>
+          <div class="constraint-body">
+            <h3>Born consistency</h3>
+            <p>The marginal probabilities of the selector equal |c<sub>k</sub>|².
+            This is the interface to the Born rule — derived as a constraint on
+            the selector, not assumed as input.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 5: The Degree 0′ Result ═══ -->
+    <section class="lesson-section" id="degree">
+      <h2>The Turing Degree 0′ Result</h2>
+      <p>
+        The main technical result of the transputation framework is a two-sided
+        classification of where quantum measurement sits in the Turing hierarchy.
+      </p>
+
+      <div class="key-result">
+        <div class="kr-label">Main result — CatAL
+          <span class="cert" data-lean="pt_diagonal_manyOne_degree_halting"></span>
+        </div>
+        <div class="kr-main">Quantum measurement (restricted to the diagonal fragment) has Turing degree exactly 0′</div>
+        <div class="kr-note">
+          Plain English: quantum measurement is exactly as hard as the halting problem —
+          not easier (it cannot be done by an ordinary algorithm), and not harder
+          (it does not require two or more oracle jumps).
+        </div>
+      </div>
+
+      <p>
+        The result is <em>two-sided</em>. Each direction requires its own separate proof:
+      </p>
+
+      <div class="split" style="margin:1.5rem 0">
+        <div class="card">
+          <div class="card-header">Lower bound: degree ≥ 0′
+            <span class="cert" data-lean="halting_manyOne_reducible_to_RT"></span>
+          </div>
+          <div class="card-body">
+            <p>The halting problem reduces to diagonal record-truth: if you could solve
+            "does this quantum record stabilize?", you could also solve the halting problem.
+            Therefore quantum measurement is at least as hard as halting.</p>
+            <p style="margin-top:0.5rem;font-size:0.82rem;color:var(--cert-lean)">
+              Machine-certified unconditionally (CatAL).
+            </p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">Upper bound: degree ≤ 0′
+            <span class="cert" data-lean="pt_limit_computable"></span>
+          </div>
+          <div class="card-body">
+            <p>The adjudicator is limit-computable — approximable by a sequence of
+            computable guesses that eventually stabilize. By the Shoenfield limit
+            lemma, any limit-computable function has degree at most 0′.</p>
+            <p style="margin-top:0.5rem;font-size:0.82rem;color:var(--cert-lean)">
+              Machine-certified conditionally on premises PR1–PR5 (CatAL).
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="callout callout--info">
+        <p>
+          <strong>Why not higher?</strong> If the adjudicator were at degree 0″ or higher,
+          it would require access to a halting-problem oracle for its own adjudications —
+          nested oracles. But realized adjudication outcomes are ordinary finite records:
+          a measurement result is a click in a detector, a spot on a screen. Finite records
+          are degree-0 facts. No nesting is required.
+        </p>
+      </div>
+
+      <h3>The "≤ 8 mind-changes" refinement</h3>
+      <p>
+        The limit-computability of the adjudicator can be made quantitative.
+        A limit-computable function is one that can be approximated by a sequence
+        of guesses that <em>mind-changes</em> — flips its answer — only finitely many times.
+        The GTE adjudicator, for a measurement on a system of weight w, changes
+        its mind at most 2(k<sub>w</sub> − 1) times, where k<sub>w</sub> is the
+        number of PSC-admissible outcomes for record w. For a standard two-outcome
+        measurement (k<sub>w</sub> = 2) the bound is at most 2 mind-changes.
+      </p>
+    </section>
+
+    <!-- ═══ Section 6: Key Takeaways ═══ -->
+    <section class="lesson-section" id="summary">
+      <h2>Key Results</h2>
+      <ul class="takeaway-list">
+        <li>The measurement problem is real: the Schrödinger equation never produces
+          collapse, yet we always observe definite outcomes. Copenhagen and many-worlds
+          both defer to an external or meta-level mechanism.</li>
+        <li>The Physical Incompleteness Theorem proves no total-computable algorithm
+          can serve as the selection mechanism in a PSC-consistent universe (CatAL).</li>
+        <li>Transputation is the forced internal adjudicator: it exists, produces
+          exactly one outcome, is non-computable, is lawful (D1–D5), and is Born-consistent
+          (CatAL: <code>closed_choice_forces_transputation</code>).</li>
+        <li>The Turing degree is exactly 0′ — one level above ordinary computation,
+          two-sided machine-certified. Not easier (lower bound), not harder (upper bound).</li>
+        <li>This is a third category distinct from Copenhagen, many-worlds, and
+          hidden-variable theories — not a variant of any existing interpretation.</li>
+      </ul>
+    </section>
+
+    <!-- ═══ See Also ═══ -->
+    <div class="see-also">
+      <h2>Source material</h2>
+      <div class="see-also-group">
+        <div class="see-also-label">Tutorials</div>
+        <ul class="source-list">
+          <li><a href="https://doi.org/10.5281/zenodo.20657910" target="_blank" rel="noopener">Transputation: Quantum Measurement at Turing Degree 0′ — full tutorial ↗</a></li>
+        </ul>
+      </div>
+      <div class="see-also-group" style="margin-top:0.75rem">
+        <div class="see-also-label">Lean proofs</div>
+        <ul class="source-list">
+          <li><a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Substrate/TransputationStateSelector.lean" target="_blank" rel="noopener">TransputationStateSelector.lean — D1–D5 adjudicator constraints ↗</a></li>
+          <li><a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/LawvereZone.lean" target="_blank" rel="noopener">LawvereZone.lean — Lawvere diagonal fixed-point obstruction ↗</a></li>
+          <li><a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/CUP3DPhysicalIncompleteness.lean" target="_blank" rel="noopener">CUP3DPhysicalIncompleteness.lean — halting undecidability of fMDL ↗</a></li>
+          <li><a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Polynomial/MDLThreeLevelUnification.lean" target="_blank" rel="noopener">MDLThreeLevelUnification.lean — closed choice forces transputation (Level 2→3) ↗</a></li>
+        </ul>
+      </div>
+      <div class="see-also-group" style="margin-top:0.75rem">
+        <div class="see-also-label">What comes next</div>
+        <ul class="source-list">
+          <li><a href="../L24_born_rule/index.html">L24 — The Born Rule as a Theorem</a>: the four independent derivation routes</li>
+        </ul>
+      </div>
+    </div>
+
+  </main>
+
+  <div class="page-wrapper">
+    <footer class="lesson-footer">
+      <a href="../index.html" class="nav-btn nav-btn--prev">← Path 6: Quantum</a>
+      <a href="../L24_born_rule/index.html" class="nav-btn nav-btn--next">L24: Born Rule →</a>
+    </footer>
+  </div>
+
+  <footer class="site-footer">
+    UGP Physics Tutorial Series · Nova Spivack ·
+    <a href="https://novaspivack.com/research">novaspivack.com/research</a>
+  </footer>
+
+  <script src="../../common/interactive.js"></script>
+  <script src="../../common/nav.js"></script>
+  <script>
+    const LEAN_REFS = {
+      // forced adjudicator wrapper (references Transputation.Theorems.closed_choice_forces_transputation)
+      "closed_choice_forces_transputation": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Polynomial/MDLThreeLevelUnification.lean"
+      },
+      // Lawvere diagonal argument — Zone L2 fixed-point obstruction
+      "pt_diagonal_manyOne_degree_halting": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/LawvereZone.lean"
+      },
+      // halting undecidability of fMDL vacuum reachability
+      "halting_manyOne_reducible_to_RT": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/CUP3DPhysicalIncompleteness.lean"
+      },
+      // D4 selector limit-computability
+      "pt_limit_computable": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Substrate/TransputationStateSelector.lean"
+      },
+      "transputation_is_state_selector": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Substrate/TransputationStateSelector.lean"
+      }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      tabSwitch('interpretations');
+      autoRenderLeanBadges(LEAN_REFS);
+    });
+  </script>
+</body>
+</html>

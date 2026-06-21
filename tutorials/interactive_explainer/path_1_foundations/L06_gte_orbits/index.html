@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L06: GTE Orbits — UGP Physics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="../../common/style.css">
+  <style>
+    .triple-box {
+      display: flex; gap: 4px; justify-content: center; align-items: stretch;
+      margin: 1rem 0;
+    }
+    .triple-part {
+      flex: 1; background: var(--bg-elevated);
+      border: 1.5px solid var(--stroke-primary);
+      border-radius: var(--r-md); padding: 0.75rem 0.5rem;
+      text-align: center;
+    }
+    .triple-part .tp-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.5rem; font-weight: 700;
+      color: var(--accent);
+    }
+    .triple-part .tp-letter { font-size: 1.1rem; font-weight: 700; color: var(--text-tertiary); }
+    .triple-part .tp-name  { font-size: 0.7rem; color: var(--text-tertiary); margin-top: 2px; }
+    .triple-part.tb        { border-color: var(--accent); background: rgba(59,130,246,0.1); }
+    .triple-part.tb .tp-letter { color: var(--accent); }
+
+    .orbit-arrow { text-align: center; color: var(--text-tertiary); font-size: 1.2rem; padding: 0.3rem 0; }
+    .orbit-label { font-size: 0.72rem; color: var(--text-tertiary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; }
+    .orbit-gen   { font-size: 0.78rem; background: var(--accent); color: #fff; border-radius: var(--r-full); padding: 2px 8px; display: inline-block; margin-bottom: 0.4rem; }
+
+    .fib-row { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; margin: 0.5rem 0; }
+    .fib-num { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; padding: 4px 8px; background: var(--bg-elevated); border-radius: var(--r-sm); border: 1px solid var(--stroke-secondary); }
+    .fib-num.fib-hi { background: rgba(59,130,246,0.15); border-color: var(--accent); color: var(--accent); font-weight: 700; }
+  </style>
+</head>
+<body style="--path-current: var(--path-1)">
+
+  <header class="site-header">
+    <a href="../../index.html" class="site-logo">UGP Physics</a>
+    <nav class="breadcrumb">
+      <a href="../../index.html">Tutorial Series</a>
+      <span class="bc-sep">›</span>
+      <a href="../index.html">Path 1: Foundations</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">L06: GTE Orbits</span>
+    </nav>
+  </header>
+
+  <main class="page-wrapper">
+
+    <div class="lesson-header">
+      <div class="path-label">Path 1 — Foundations · Lesson 6 of 7</div>
+      <h1>GTE Orbits: From Arithmetic to Particle Masses</h1>
+      <p class="lesson-subtitle">
+        Two arithmetic steps from a single seed — 
+        and the three charged lepton generations appear, with no free parameters.
+      </p>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:86%"></div>
+      </div>
+    </div>
+
+    <!-- ═══ Section 1: What is GTE? ═══ -->
+    <section class="lesson-section" id="what-is-gte">
+      <h2>What Is GTE?</h2>
+      <p>
+        GTE stands for <strong>Generative Triple Evolution</strong>. The name describes 
+        the mechanism precisely: it generates triples of integers, and it evolves them 
+        through a deterministic arithmetic orbit — like a crystal growth law where each 
+        step is forced by the geometry of the previous one.
+      </p>
+      <p>
+        Each state in the orbit is an integer triple <strong>(a, b, c)</strong> at 
+        generation <strong>g</strong>. The three components play distinct roles:
+      </p>
+      <div class="triple-box">
+        <div class="triple-part">
+          <div class="tp-letter">a</div>
+          <div class="tp-name">Parity phase</div>
+          <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:0.4rem">Tracks the step parity; equals N<sub>c</sub>² at odd steps</div>
+        </div>
+        <div class="triple-part tb">
+          <div class="tp-letter" style="color:var(--accent)">b</div>
+          <div class="tp-name">Ladder index (N-value)</div>
+          <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:0.4rem">This is the key output — the arithmetic address of a particle generation</div>
+        </div>
+        <div class="triple-part">
+          <div class="tp-letter">c</div>
+          <div class="tp-name">Capacity</div>
+          <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:0.4rem">The divisor at each step; saturates to Mersenne numbers at the ridge</div>
+        </div>
+      </div>
+      <p>
+        The particle masses come from the <strong>b-values</strong>. 
+        The three generations of charged leptons correspond to the three 
+        b-values produced by two applications of the map: b = {73, 42, 275}.
+      </p>
+    </section>
+
+    <!-- ═══ Section 2: The Map T ═══ -->
+    <section class="lesson-section" id="the-map">
+      <h2>The Map T</h2>
+      <p>
+        The GTE update map T takes a triple (a, b, c) and a step type (odd or even) 
+        and produces the next triple. The mechanism: divide the capacity c by the ladder 
+        index b to get a quotient q and remainder m. These two numbers control the update 
+        of all three components.
+      </p>
+      <div class="card">
+        <div class="card-header">The GTE map T (ridge n = 10, N<sub>c</sub> = 3)</div>
+        <div class="card-body">
+          <p><strong>Step 0 — Divide:</strong></p>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:0.95rem;background:var(--bg-elevated);padding:0.75rem 1rem;border-radius:var(--r-md);margin-bottom:1rem">
+            c ÷ b → quotient q, remainder m &nbsp;&nbsp; (so c = b·q + m)
+          </div>
+          <div class="split">
+            <div>
+              <p><strong>Odd step (t = 1):</strong></p>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:0.88rem;background:var(--bg-elevated);padding:0.75rem;border-radius:var(--r-md)">
+                a' = m − (n + 2 − t)<br>
+                b' = b − (m + q)<br>
+                c' = 2ⁿ − 1 &nbsp;<span style="color:var(--text-tertiary)">(ridge Mersenne)</span>
+              </div>
+            </div>
+            <div>
+              <p><strong>Even step (t = 2):</strong></p>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:0.88rem;background:var(--bg-elevated);padding:0.75rem;border-radius:var(--r-md)">
+                a' = m − (n + 2 − t)<br>
+                b' = b + F<sub>|q₂−q₁|</sub><br>
+                c' = 2<sup>n+2N<sub>c</sub></sup> − 1
+              </div>
+            </div>
+          </div>
+          <p class="small" style="margin-top:0.75rem;color:var(--text-tertiary)">
+            F<sub>k</sub> is the k-th Fibonacci number. The odd step contracts b (subtraction). 
+            The even step lifts b by a Fibonacci number. No free parameter appears anywhere.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 3: The Lepton Seed ═══ -->
+    <section class="lesson-section" id="lepton-seed">
+      <h2>The Lepton Seed</h2>
+      <p>
+        The starting point of the GTE lepton orbit is the <strong>Lepton Seed</strong>:
+      </p>
+      <div style="text-align:center;margin:1.5rem 0">
+        <div class="orbit-gen">Generation g = 1</div>
+        <div class="triple-box" style="max-width:400px;margin:0 auto">
+          <div class="triple-part">
+            <div class="tp-letter">a</div>
+            <div class="tp-val">1</div>
+            <div class="tp-name">parity phase</div>
+          </div>
+          <div class="triple-part tb">
+            <div class="tp-letter" style="color:var(--accent)">b</div>
+            <div class="tp-val" style="color:var(--accent)">73</div>
+            <div class="tp-name">N-value (electron address)</div>
+          </div>
+          <div class="triple-part">
+            <div class="tp-letter">c</div>
+            <div class="tp-val">823</div>
+            <div class="tp-name">capacity</div>
+          </div>
+        </div>
+      </div>
+      <div class="callout callout--neutral">
+        <p>
+          <strong>Where does (1, 73, 823) come from?</strong> It is the unique triple 
+          at ridge level n=10 that passes all four UGP invariants simultaneously — 
+          ridge lock, Fibonacci rigidity, kernel symmetry, and mirror invariance. 
+          It is not chosen. The MDL sieve and mirror constraints force it. 
+          73 is prime (mirror-lock condition). 823 = 73×11 + 20 (the division structure is exact).
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══ Section 4: The Cascade ═══ -->
+    <section class="lesson-section" id="cascade">
+      <h2>The Worked Cascade — Two Steps, Three Generations</h2>
+      <p>
+        Starting from the Lepton Seed, apply T twice. Every number below can be 
+        verified with pencil and paper.
+      </p>
+
+      <div class="steps" id="steps-cascade">
+        <div class="steps-nav">
+          <button class="step-pill">Seed</button>
+          <button class="step-pill">Step 1 — divide</button>
+          <button class="step-pill">Step 1 — update</button>
+          <button class="step-pill">Step 2 — divide</button>
+          <button class="step-pill">Step 2 — Fibonacci</button>
+          <button class="step-pill">Step 2 — update</button>
+          <button class="step-pill">Summary</button>
+        </div>
+
+        <!-- Panel 0: Seed -->
+        <div class="step-panel">
+          <p><strong>Starting triple:</strong> the Lepton Seed at generation 1.</p>
+          <div class="triple-box" style="max-width:380px;margin:0 auto">
+            <div class="triple-part"><div class="tp-letter">a</div><div class="tp-val">1</div></div>
+            <div class="triple-part tb"><div class="tp-letter" style="color:var(--accent)">b</div><div class="tp-val" style="color:var(--accent)">73</div><div class="tp-name">electron N-value</div></div>
+            <div class="triple-part"><div class="tp-letter">c</div><div class="tp-val">823</div></div>
+          </div>
+          <p style="margin-top:1rem">Apply map T with odd step (t=1). First: divide c by b.</p>
+        </div>
+
+        <!-- Panel 1: Step 1 divide -->
+        <div class="step-panel">
+          <p><strong>Odd step (t = 1) — divide c by b:</strong></p>
+          <div class="example-box">
+            <div class="example-header">Division</div>
+            <p style="font-family:'JetBrains Mono',monospace;margin:0">
+              823 ÷ 73 = 11 remainder 20<br><br>
+              Check: 73 × 11 = 803 &nbsp;&nbsp; 803 + 20 = 823 ✓<br><br>
+              q₁ = <strong>11</strong> (quotient)<br>
+              m₁ = <strong>20</strong> (remainder)
+            </p>
+          </div>
+          <p>The quotient q₁ = 11 and remainder m₁ = 20 now drive the update of all three components.</p>
+        </div>
+
+        <!-- Panel 2: Step 1 update -->
+        <div class="step-panel">
+          <p><strong>Odd step (t = 1) — update all three components:</strong></p>
+          <div class="example-box">
+            <div class="example-header">Update rules (odd step, n=10, t=1)</div>
+            <p style="font-family:'JetBrains Mono',monospace;margin:0">
+              b' = b − (m₁ + q₁) = 73 − (20 + 11) = 73 − 31 = <strong>42</strong><br><br>
+              c' = 2¹⁰ − 1 = 1024 − 1 = <strong>1023</strong> &nbsp;(ridge Mersenne)<br><br>
+              a' = m₁ − (n + 2 − t) = 20 − (10 + 2 − 1) = 20 − 11 = <strong>9</strong>
+            </p>
+          </div>
+          <div class="triple-box" style="max-width:380px;margin:0 auto">
+            <div class="triple-part"><div class="tp-letter">a</div><div class="tp-val">9</div><div class="tp-name">= N_c² = 3²</div></div>
+            <div class="triple-part tb"><div class="tp-letter" style="color:var(--accent)">b</div><div class="tp-val" style="color:var(--accent)">42</div><div class="tp-name">muon N-value</div></div>
+            <div class="triple-part"><div class="tp-letter">c</div><div class="tp-val">1023</div><div class="tp-name">= 2¹⁰ − 1</div></div>
+          </div>
+          <p class="small" style="margin-top:0.5rem">
+            b' = 42 is the muon's arithmetic address. 
+            a' = 9 = N_c² is a machine-certified algebraic identity — not an assignment.
+          </p>
+        </div>
+
+        <!-- Panel 3: Step 2 divide -->
+        <div class="step-panel">
+          <p><strong>Even step (t = 2) — divide c by b:</strong></p>
+          <div class="example-box">
+            <div class="example-header">Division</div>
+            <p style="font-family:'JetBrains Mono',monospace;margin:0">
+              1023 ÷ 42 = 24 remainder 15<br><br>
+              Check: 42 × 24 = 1008 &nbsp;&nbsp; 1008 + 15 = 1023 ✓<br><br>
+              q₂ = <strong>24</strong> (quotient)<br>
+              m₂ = <strong>15</strong> (remainder)
+            </p>
+          </div>
+          <div class="callout callout--success" style="margin-top:1rem">
+            <p>
+              <strong>m₂ = 15 is not a coincidence.</strong> The ridge remainder lock theorem 
+              proves: for any valid divisor b₂, (2ⁿ−1) mod b₂ = 15 when n ≥ 5. 
+              Since b₂ = 42 divides R₁₀ = 1008, the remainder 15 is structurally guaranteed. 
+              <span data-lean="ridge_remainder_lock_general"></span>
+            </p>
+          </div>
+        </div>
+
+        <!-- Panel 4: Fibonacci -->
+        <div class="step-panel">
+          <p><strong>The quotient gap and the Fibonacci lift:</strong></p>
+          <div class="example-box">
+            <div class="example-header">Quotient gap</div>
+            <p style="font-family:'JetBrains Mono',monospace;margin:0">
+              |q₂ − q₁| = |24 − 11| = <strong>13</strong>
+            </p>
+          </div>
+          <p>
+            The gap is 13. The Fibonacci sequence at position 13:
+          </p>
+          <div class="fib-row">
+            <span class="fib-num">1</span><span class="fib-num">1</span><span class="fib-num">2</span>
+            <span class="fib-num">3</span><span class="fib-num">5</span><span class="fib-num">8</span>
+            <span class="fib-num">13</span><span class="fib-num">21</span><span class="fib-num">34</span>
+            <span class="fib-num">55</span><span class="fib-num">89</span><span class="fib-num">144</span>
+            <span class="fib-num fib-hi">233 = F₁₃</span>
+          </div>
+          <p>
+            The even step lifts b by F₁₃ = 233. This is not a free parameter — 
+            once the quotient gap is forced to 13 by the orbit structure, the Fibonacci 
+            lift is uniquely determined: b' = 42 + 233.
+          </p>
+          <div class="callout callout--info" style="margin-top:1rem">
+            <p>
+              <strong>Why Fibonacci specifically?</strong> The gap 13 is itself the 
+              Fibonacci number F₇, where the index 7 = ord₇(2) + N<sub>c</sub> + 1 
+              is forced by the Z₇×Z₃ algebra. Here ord₇(2) = 3 is the multiplicative 
+              order of 2 modulo 7 (the unique k with 2<sup>k</sup> ≡ 1 mod 7, giving 
+              k = 3), and N<sub>c</sub> = 3 is the QCD color rank. The Fibonacci 
+              recurrence is not a separate assumption — it is a consequence of the 
+              arithmetic structure, machine-certified by a computer proof system (Lean 4) 
+              that verifies every step automatically, with zero sorry.
+            </p>
+          </div>
+        </div>
+
+        <!-- Panel 5: Step 2 update -->
+        <div class="step-panel">
+          <p><strong>Even step (t = 2) — update all three components:</strong></p>
+          <div class="example-box">
+            <div class="example-header">Update rules (even step, n=10, N_c=3, t=2)</div>
+            <p style="font-family:'JetBrains Mono',monospace;margin:0">
+              b' = b + F₁₃ = 42 + 233 = <strong>275</strong><br><br>
+              c' = 2^(10 + 2×3) − 1 = 2¹⁶ − 1 = 65536 − 1 = <strong>65535</strong><br><br>
+              a' = m₂ − (n + 2 − t) = 15 − (10 + 2 − 2) = 15 − 10 = <strong>5</strong>
+            </p>
+          </div>
+          <div class="triple-box" style="max-width:380px;margin:0 auto">
+            <div class="triple-part"><div class="tp-letter">a</div><div class="tp-val">5</div><div class="tp-name">= (N_c²+1)/2</div></div>
+            <div class="triple-part tb"><div class="tp-letter" style="color:var(--accent)">b</div><div class="tp-val" style="color:var(--accent)">275</div><div class="tp-name">tau N-value</div></div>
+            <div class="triple-part"><div class="tp-letter">c</div><div class="tp-val">65535</div><div class="tp-name">= 2¹⁶ − 1</div></div>
+          </div>
+          <p class="small" style="margin-top:0.5rem">
+            b' = 275 is the tau lepton's arithmetic address. 
+            c' = 65535 = 2¹⁶ − 1 is another Mersenne number. 
+            a' = 5 = (N_c² + 1)/2 — another structural identity. Zero free parameters throughout.
+          </p>
+          <div class="callout callout--neutral" style="margin-top:0.75rem">
+            <p class="small" style="margin:0">
+              <strong>Note on 1023 and 65535:</strong> The odd step produces 
+              c = 2¹⁰ − 1 = 1023; the even step extends it to 
+              2^(n + 2N<sub>c</sub>) − 1 = 2¹⁶ − 1 = 65535 (the exponent jump 
+              2N<sub>c</sub> = 6 carries the ridge from n=10 to 16). 
+              Both values are identical in GF(7) arithmetic — 1023 ≡ 1 mod 7 and 
+              65535 ≡ 1 mod 7 — so the polynomial dynamics are unaffected. 
+              The distinction matters for the physical mass predictions, where 
+              the actual Mersenne value enters the mass formula.
+            </p>
+          </div>
+        </div>
+
+        <!-- Panel 6: Summary -->
+        <div class="step-panel">
+          <p><strong>The three lepton generations — result of two forced steps:</strong></p>
+          <table class="data-table">
+            <thead>
+              <tr><th>Gen</th><th>Triple (a, b, c)</th><th>N-value (b)</th><th>Particle</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>g = 1 (seed)</td><td style="font-family:'JetBrains Mono',monospace">(1,  73,    823)</td><td style="font-weight:700;color:var(--accent)">73</td><td>Electron</td></tr>
+              <tr><td>g = 2 (odd step)</td><td style="font-family:'JetBrains Mono',monospace">(9,  42,  1023)</td><td style="font-weight:700;color:var(--accent)">42</td><td>Muon</td></tr>
+              <tr><td>g = 3 (even step)</td><td style="font-family:'JetBrains Mono',monospace">(5, 275, 65535)</td><td style="font-weight:700;color:var(--accent)">275</td><td>Tau</td></tr>
+            </tbody>
+          </table>
+          <p>
+            The three N-values {73, 42, 275} are the output of two forced arithmetic steps 
+            from a sieve-forced seed. They are the arithmetic addresses from which the 
+            electron, muon, and tau masses are derived. 
+            <span data-lean="update_map_produces_canonical_orbit"></span>
+          </p>
+        </div>
+
+        <div class="steps-footer">
+          <button class="btn btn--secondary" data-action="prev">← Previous</button>
+          <button class="btn btn--primary"   data-action="next">Next →</button>
+          <span class="steps-counter">Step 1 of 7</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 5: Why Three and Not Fitting ═══ -->
+    <section class="lesson-section" id="why-three">
+      <h2>Why Three Generations? And Is This Just a Fit?</h2>
+      <div class="split">
+        <div>
+          <h3>Why exactly N<sub>gen</sub> = 3</h3>
+          <p>
+            The map T produces three triples because the orbit terminates at three steps 
+            under the structural constraints. This is not a parameter — 
+            N<sub>gen</sub> = 3 is forced by seven independent structural conditions, 
+            all machine-certified in Lean 4.
+          </p>
+          <div class="callout callout--success">
+            <p>Seven independent Lean-certified constraints each force N<sub>gen</sub> = 3 independently. One master theorem certifies that all seven hold simultaneously.</p>
+          </div>
+          <p>
+            The same arithmetic that produces three lepton generations produces exactly 
+            three quark generations — forced by the same constraints.
+          </p>
+        </div>
+        <div>
+          <h3>This is not numerology</h3>
+          <p>
+            A natural suspicion: "These numbers were chosen to match the particle masses." 
+            This suspicion is addressed directly by a null test.
+          </p>
+          <div class="callout callout--neutral">
+            <p>
+              <strong>1000-permutation null test:</strong> Take the orbit values {73, 42, 275} 
+              and scramble their order in 1000 random permutations. Apply the mass formula 
+              to each permutation. How many match the SM lepton masses within 1σ?
+            </p>
+            <p style="margin:0;font-weight:700;color:var(--cert-lean)">
+              Answer: zero. Only the orbit order derived by the map T matches.
+            </p>
+          </div>
+          <p>
+            The N-values are not labels you can rearrange. They carry arithmetic structure 
+            (73 is prime, 42 = 6×7, 275 = 5²×11) that is specific to their position 
+            in the orbit. Permuting them destroys the mass predictions.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Key Takeaways ═══ -->
+    <section class="lesson-section" id="takeaways">
+      <h2>Key Takeaways</h2>
+      <ul class="takeaway-list">
+        <li>
+          GTE (Generative Triple Evolution) evolves integer triples (a, b, c) through an arithmetic orbit. 
+          The map T divides c by b, then updates all three components using the quotient and remainder. 
+          Odd and even steps alternate and have different update rules.
+        </li>
+        <li>
+          The lepton seed (1, 73, 823; g=1) is the unique triple at ridge level n=10 
+          satisfying all UGP invariants. It is not chosen — it is the output of the MDL 
+          sieve and mirror constraints.
+        </li>
+        <li>
+          Two applications of T produce three generations: electron (b=73), muon (b=42), 
+          tau (b=275). The b-values are the arithmetic N-values from which particle masses are derived.
+          <span data-lean="update_map_produces_canonical_orbit"></span>
+        </li>
+        <li>
+          m₂ = 15 (the remainder at step 2) is forced by the ridge remainder lock theorem — 
+          not a coincidence. F₁₃ = 233 appears because the quotient gap |q₂ − q₁| = 13 
+          is forced. That gap equals F₇, where the index 7 = ord₇(2) + N<sub>c</sub> + 1 
+          is derived from the Z₇×Z₃ algebraic structure — machine-certified, zero sorry. 
+          Zero free parameters enter either step.
+          <span data-lean="ridge_remainder_lock_general"></span>
+        </li>
+        <li>
+          N<sub>gen</sub> = 3 is forced by seven independent structural constraints, all machine-certified. 
+          A 1000-permutation null test confirms the N-values cannot be rearranged — 
+          only the orbit order matches the SM lepton masses.
+        </li>
+      </ul>
+    </section>
+
+    <!-- ═══ See Also ═══ -->
+    <div class="see-also">
+      <h2>See Also</h2>
+      <div class="see-also-group">
+        <div class="see-also-label">Lean 4 proofs (ugp-lean)</div>
+        <ul class="source-list">
+          <li><code>update_map_produces_canonical_orbit</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/GTE/UpdateMap.lean" target="_blank" rel="noopener">view on GitHub ↗</a></li>
+          <li><code>ridge_remainder_lock_general</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/GTE/MersenneLadder.lean" target="_blank" rel="noopener">view on GitHub ↗</a></li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Source papers</div>
+        <ul class="source-list">
+          <li><a href="https://doi.org/10.5281/zenodo.20560550" target="_blank" rel="noopener">P48 — The Complete GTE Framework, Ch 3 and Ch 5 ↗</a></li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Full tutorial (PDF)</div>
+        <ul class="source-list">
+          <li><a href="https://novaspivack.com/research" target="_blank" rel="noopener">From the Arithmetic Substrate to Particle Masses — UGP Tutorial Series ↗</a></li>
+        </ul>
+      </div>
+    </div>
+
+  </main>
+
+  <div class="page-wrapper">
+    <footer class="lesson-footer">
+      <a href="../L05_uwca/index.html"   class="nav-btn nav-btn--prev">← L05: The UWCA</a>
+      <a href="../L07_the_triangle/index.html" class="nav-btn nav-btn--next">L07: The Triangle →</a>
+    </footer>
+  </div>
+
+  <script src="../../common/interactive.js"></script>
+  <script src="../../common/nav.js"></script>
+  <script>
+    const LEAN_REFS = {
+      "update_map_produces_canonical_orbit": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/GTE/UpdateMap.lean"
+      },
+      "ridge_remainder_lock_general": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/GTE/MersenneLadder.lean"
+      }
+    };
+    document.addEventListener('DOMContentLoaded', () => {
+      initSteps('steps-cascade');
+      autoRenderLeanBadges(LEAN_REFS);
+    });
+  </script>
+</body>
+</html>

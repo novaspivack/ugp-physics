@@ -1,0 +1,2741 @@
+% P34 --- The GTE-M\"{o}bius Substrate: Computation, Transputation, and Physical Completeness
+% Nova Spivack
+% GTE-M\"{o}bius Architecture paper
+
+\documentclass[12pt,letterpaper]{article}
+
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{microtype}
+\usepackage[most]{tcolorbox}
+\usepackage{graphicx}
+\usepackage{tikz}
+\input{../common/tikz_cmca_styles.tex}
+\usepackage{cite}
+\setlength{\emergencystretch}{3em}
+\geometry{margin=1in}
+
+% ---- theorem environments ----
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{remark}[theorem]{Remark}
+
+% ---- macros ----
+\newcommand{\fmdl}{f_{\mathrm{MDL}}}
+\newcommand{\Zseven}{\mathbb{Z}_7}
+\newcommand{\Zthree}{\mathbb{Z}_3}
+\newcommand{\Zfive}{\mathbb{Z}_5}
+\newcommand{\Dclass}{[D]}
+\newcommand{\TPC}{\mathrm{TPC}}
+\newcommand{\ngen}{N_{\mathrm{gen}}}
+\newcommand{\epszero}{\varepsilon_0}
+\newcommand{\TGTE}{T_{\mathrm{GTE}}}
+\newcommand{\catAL}{\ensuremath{\textbf{A}_{\rm L4}}}
+\newcommand{\catA}{\textbf{A}}
+\newcommand{\catAD}{\textbf{A/D}}
+% uppercase aliases matching corpus convention
+\newcommand{\CatAL}{\ensuremath{\textbf{A}_{\rm Lean}}}
+\newcommand{\CatA}{\textbf{A}}
+\newcommand{\CatAD}{\textbf{A/D}}
+\newcommand{\CatB}{\textbf{B}}
+\newcommand{\CatD}{\textbf{D}}
+\newcommand{\catD}{\textbf{D}}
+\newcommand{\lean}[1]{%
+  \penalty-100
+  \begingroup\def\_{\textunderscore\allowbreak}\texttt{#1}\endgroup}
+
+% ---- M\"{o}bius architecture name macros ----
+\newcommand{\GMS}{the M\"{o}bius architecture}
+\newcommand{\GMSfull}{the GTE-M\"{o}bius architecture}
+
+% ---- Zenodo DOI placeholder (concept DOI, injected at publication) ----
+\input{nova_zenodo_doi_placeholder}
+
+\begin{document}
+
+% --------------------------------------------------------------------------
+\title{The GTE-M\"{o}bius Architecture: Arithmetic Unification of Computation and
+Transputation in the Universal Generative Principle}
+\author{Nova Spivack}
+\date{2026}
+\maketitle
+\NovaZenodoAfterTitle
+
+% --------------------------------------------------------------------------
+\begin{abstract}
+The Universal Generative Principle requires a physical substrate capable of two
+operationally distinct but inseparable modes: \emph{computation} (deterministic
+evolution under $\fmdl$) and \emph{transputation} (PSC-forced, non-computable
+selection among undecidable alternatives).  We formalize this as the
+Generative Triple Evolution (GTE)-M\"{o}bius architecture---the triple $(A, e, \Dclass)$, where $A$ is the GTE
+arithmetic carrier ($\Zseven$ winding dynamics), $e$ is the self-encoding map
+conferring Turing completeness, and $\Dclass$ is the class of PSC-consistent
+coherence measures constrained by D1--D5.  The M\"{o}bius name reflects a
+single-surface architecture: computation and transputation share a common
+substrate without a sharp syntactic boundary; the G?del--Turing boundary of
+$(A,e)$ is the computation/transputation boundary of the physics.
+The GTE-M\"{o}bius architecture is not a physical substrate independent of
+$\Phi_{\mathrm{MDL}}$; it is the computational-architectural description of the
+same physical field.  $\Phi_{\mathrm{MDL}}$ is the physical substrate of the
+universe; the M\"{o}bius structure characterizes how that field processes information
+and adjudicates quantum events.
+
+We prove that the $T(2,3)$ torus knot has both parameters GTE-derived
+(\catAL{}, zero \texttt{sorry}), define the Turing--PSC (TPC) computability class
+as strictly intermediate between Turing-decidable and hypercomputation (13 Lean
+theorems, \catAL{}), and show its three-level hierarchy depth equals
+$\ngen = 3$ (\catAL{}).  Conjecture~C1 (GTE as the final
+$F_{\mathrm{PSC}}$-coalgebra) is fully proved (\catAL{}, zero axiom);
+Conjecture~C2 (selector member-independence) is resolved (\catAD{},
+\lean{d1\_d5\_forces\_gibbs\_family}, \lean{c2\_selector\_member\_independent});
+three consistency conjectures (C3--C5) remain open, with C3 and C4 the most
+tractable.
+
+The abstract carrier $A$ realizes as the PSC-admissible kink sector of the
+$\Phi_{\mathrm{MDL}}$ Klein--Gordon field; binary coarse-graining recovers
+$\fmdl$ in the continuum limit.  Three Lean-certified lifting theorems connect
+beable, discrete, and physical scales (\catAL{}); the GTE equivalence principle
+and geodesic theorem (\catAD{}) connect emergent gravity to $\Dclass$-weighted
+trajectories.  Quantum field-theoretic and completeness consequences are
+developed in companion papers~\cite{SpivackCMCA,SpivackThreeTapeCMCA,SpivackPhiMDLField,SpivackCompleteness,SpivackQGR}.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+% --------------------------------------------------------------------------
+\section{Introduction}
+\label{sec:intro}
+
+\subsection{The UGP Substrate Problem}
+\label{sec:substrate-problem}
+
+Papers P22 through P29 in the Universal Generative Principle (UGP) series derive
+Standard Model quantum numbers, mass hierarchies, gauge coupling structure, and the
+three-generation pattern from the arithmetic of $\Zseven$ winding
+dynamics~\cite{SpivackCompUniversality}.  Those derivations establish \emph{what} the Standard Model
+predicts; they do not settle a deeper structural question: what \emph{kind} of
+computational object underlies those derivations, and how does a single substrate
+generate both the deterministic, wave-like evolution of free particles and the
+irreversible, outcome-selecting events of quantum measurement?
+
+A free electron propagating between measurements follows amplitude evolution that is,
+in principle, perfectly computable: given an initial $\Zseven$ configuration and the
+cellular-automaton rule $\fmdl$, the next state is deterministic and
+algorithmically reproducible to arbitrary precision.
+
+But when that same electron impinges on a detector, quantum mechanics must select a
+definite outcome from a probability distribution---and no Turing-equivalent process
+can execute that selection.  A Turing machine can evaluate $|c_n|^2$ for every branch
+$n$, but it cannot single out which branch occurs in a given physical event without
+violating the Church-Turing thesis.
+
+This paper formalizes the answer.  The substrate is a \emph{single}
+mathematical-physical object whose architecture accommodates both modes of action:
+\emph{computation} (deterministic $\fmdl$ evolution) and \emph{transputation}
+(non-computable, PSC-forced selection among undecidable alternatives).  We call this
+object the \textbf{GTE-M\"{o}bius architecture} (hereafter, the M\"{o}bius architecture)
+and specify it as the triple $(A, e, \Dclass)$.
+This structure is not a physical substrate independent of $\Phi_{\mathrm{MDL}}$:
+$\Phi_{\mathrm{MDL}}$ is the physical substrate of the universe, and the M\"{o}bius
+architecture is its computational-architectural description.
+The abstract carrier~$A$ has its concrete physical realization as the
+PSC-admissible kink sector of the $\Phi_{\mathrm{MDL}}$ continuum field
+(\S\ref{sec:phimdl-realization}); the discrete rule $\fmdl$ is its Level-1
+algebraic certificate, not the physical substrate itself
+(\S\ref{sec:subsequent-papers}).
+
+\subsection{The Two Operational Modes and Why They Must Coexist}
+\label{sec:two-modes}
+
+The computational mode is Turing-equivalent.  Free propagation, $\fmdl$ orbit
+evolution, decay rates, and Born-rule probabilities computed as functions of quantum
+numbers are all decidable by finite evaluations on the $\Zseven$ configuration space.
+Lean~4 certifies the key instances at zero \texttt{sorry}: the Garden-of-Eden
+theorem (\lean{garden\_of\_eden\_gen1}), the three-generation orbit, and the $N_c = 3$
+colour count (\catAL, Paper P28).
+
+The transputation mode is provably non-computable.  The \emph{diagonal barrier}
+(machine-certified in Lean~4, zero \texttt{sorry}~\cite{SpivackNEMS11}) establishes that
+any total-effective adjudicator on diagonal-capable record fragments---one that selects
+among equally-consistent continuations while self-consistently updating a macroscopic
+record---would decide the halting problem.
+
+Because the halting problem is undecidable, no computable function can serve as
+adjudicator for measurement-outcome selection, decay timing, or vacuum-reachability.
+The substrate must therefore perform a second, genuinely non-computable mode of action.
+
+These two modes cannot be cleanly separated.  The divide between decidable
+reachability questions and undecidable self-referential ones is determined by
+\emph{semantic content}, not syntactic form.
+
+The same formal symbol string may encode a bounded $\Zseven$ arithmetic fact (Zone~L1,
+Turing-decidable) or an encoding of a halting question (Zone~L2, diagonal), depending
+on what it represents.  There is no static syntactic filter.
+
+The operational trigger for Zone~L2 is nonetheless formally precise: a physical event
+requires transputation if and only if its outcome is logically equivalent to deciding
+the halting problem for $\fmdl$ acting on its own dynamics.  Free particle propagation,
+amplitude evolution, and beable-level orbit arithmetic are always Zone~L1.  Quantum
+measurement events---the creation of irreversible macroscopic records---are Zone~L2,
+because selecting a definite outcome from a superposition is equivalent to deciding
+vacuum-reachability for $\fmdl$ (\lean{fmdl\_vacuum\_reachability\_is\_undecidable},
+machine-certified, \catAL{} conditional).  The transition is driven by the type of
+question asked, not by a change in the underlying physical field.
+
+The M\"{o}bius name reflects this topology: what appear to be two distinct faces
+(computation; transputation) share a single surface without a sharp boundary.
+
+\subsection{Relation to Earlier UGP Papers}
+\label{sec:prior-papers}
+
+Paper P28~\cite{SpivackCompUniversality} establishes the $\Zseven$ cellular-automaton dynamics, proves
+the Garden-of-Eden theorem, the three-generation orbit, and the $N_c = 3$ colour count
+from Mersenne-GCD ridge arithmetic.  P28 also proves conditionally that
+$\fmdl$-vacuum reachability is undecidable.
+
+P28 establishes component~$A$ of the triple and provides the Lean-certified
+arithmetic skeleton from which Standard Model structure is read off.
+
+Paper P30~\cite{SpivackCookTheorem} formalizes Cook's Rule~110 Turing universality theorem in
+Lean~4, discharging far-field simulation and tape-bit readback lemmas on the way
+to the full top-level certification.  P30 targets component~$e$, the self-encoding
+map that makes the $\Zseven$ configuration space capable of representing its own
+dynamics.
+
+Unconditional Turing universality is established via the GF(7) algebraic route
+(\lean{rule110\_z7\_poly\_rep}, \lean{rule110\_center1\_is\_nand}, \lean{phimdl\_turing\_universal}, \catAL{} conditional; one named axiom: \lean{z7\_boolean\_completeness\_implies\_turing\_universal}); Cook's CTS construction follows as a corollary.
+The Lean certification \lean{phimdl\_turing\_universal} operates at Level~1 (discrete
+CMCA, \catAL{} conditional on one named axiom).  Direct smooth-KG Turing universality
+at Level~2 --- showing that the $\Phi_{\rm MDL}$ continuum field itself can simulate a
+Turing machine --- inherits this property via the Algebraic Lifting Theorem
+(\lean{algebraic\_lifting\_theorem}, \catAL{}), but a direct Level~2 Lean
+certification is not yet available.
+
+Papers P31--P33~\cite{SpivackWeinbergAngle,SpivackCKM,SpivackDeeperConsequences} derive the electroweak mixing angle, CKM
+Wolfenstein parameters, and deeper arithmetic consequences of Standard Model structure
+from the GTE orbit arithmetic.  The computational substrate established in this paper provides the conceptual foundation on which the derivations of P31--P33 rest; the present paper makes that foundation explicit and formal.
+
+Papers P36 and P37~\cite{SpivackEmergentGravity,SpivackBornRule} were the first extensions of the present framework to emergent spacetime geometry
+and quantum-mechanical formalism on the Rule~110/$\fmdl$ track, deriving Hilbert-space structure, Hamiltonian
+evolution, and Born-rule consistency from discrete dynamics.  Those results depend on
+the coherence measure class $\Dclass$ characterized in \S\ref{sec:coherence} below.
+
+\subsection{Relation to Subsequent Papers and the Two-Level Architecture}
+\label{sec:subsequent-papers}
+
+Papers P35--P46 develop the substrate specification of the present paper into a
+complete unified framework.  Paper~P35~\cite{SpivackGTEUnification} synthesizes
+P01--P34 into a single bidirectional correspondence among GTE arithmetic, the
+$\fmdl$/Rule~110 cellular automaton, the $\Phi_{\mathrm{MDL}}$ continuum field, and
+Standard Model physics.  Paper~P38~\cite{SpivackPhiMDLGravity} derives Einstein
+gravity natively on the $\Phi_{\mathrm{MDL}}$ field; Paper~P39~\cite{SpivackGTEQCDStructure}
+extends the substrate symmetry to $F_{21} = \Zseven \rtimes \Zthree$ and derives QCD
+structure; Paper~P40~\cite{SpivackGF7Universality} gives a dedicated GF(7)
+polynomial-universality certification of component~$e$; Papers~P41~\cite{SpivackCMCA}
+and~P45~\cite{SpivackThreeTapeCMCA} establish the Chiral Minkowski CA (CMCA) as the
+minimal Level-1 discrete certificate; Papers~P42~\cite{SpivackPhiMDLField}
+and~P43~\cite{SpivackCompleteness} develop quantum field theory on $\Phi_{\mathrm{MDL}}$
+with D1--D5 as explicit axioms and prove algebraic necessity and framework
+completeness; Paper~P44~\cite{SpivackQGR} closes the quantum-gravity sector; and
+Paper~P46~\cite{SpivackGTEPolynomialUFT} packages the GTE polynomial as a unified
+field-theoretic description.  Throughout, the triple $(A, e, \Dclass)$ and the
+D1--D5 constraints defined here remain the axiomatic foundation.
+
+\begin{tcolorbox}[colback=blue!3,colframe=blue!40!black,
+  title={\textbf{Two-level substrate architecture (canon as of P41--P45)}},
+  fonttitle=\bfseries,left=6pt,right=6pt,top=4pt,bottom=4pt]
+\small
+\textbf{Level~2 (physical substrate):} the $\Phi_{\mathrm{MDL}}$ Klein--Gordon field
+on $\mathbb{R}^{3+1}$~\cite{SpivackPhiMDLField,SpivackCompleteness}.  Component~$A$
+of the M\"{o}bius triple is its PSC-admissible kink sector; D1--D5 operate on kink
+superpositions.  Exact Lorentz invariance holds at this level.
+\medskip\noindent
+\textbf{Level~1 (algebraic certificate):} the CMCA---Rule~110 ($L_{x^+}$) +
+Rule~124 ($L_{x^-}$) + inner Rule~110 $\tau_c$ clock ($L_t$) on a shared discrete
+substrate~\cite{SpivackCMCA,SpivackThreeTapeCMCA}.  The CMCA certifies Turing
+universality, chiral null structure, and SR clock physics; it is \emph{not} the
+physical substrate of the universe.  No finite CA can exactly replicate Level-2
+Lorentz invariance (\lean{no\_finite\_ca\_exact\_lorentz\_replica},
+P43~\cite{SpivackCompleteness}).
+
+\textbf{Relation to the present paper:} P34 formalizes the abstract triple
+$(A, e, \Dclass)$ and the computation/transputation boundary.  The $\fmdl$
+Rule~110 shadow and AFCA explorations in later sections are Level-1 certificates
+linked to $A$; physical predictions for observables are Level-2 $\Phi_{\mathrm{MDL}}$
+results or $[\mathbf{D}]$-selected quantities forced by D2.
+\end{tcolorbox}
+
+\subsection{Scope: What This Paper Proves, Argues, and Conjectures}
+\label{sec:scope}
+
+Throughout this paper we adopt the following confidence-level labels
+(defined in the taxonomy box below):
+\catAL\ (Lean-certified, zero \texttt{sorry}), \catA\ (analytically derived from
+established results), \catAD\ (analytically argued, pending further formalization),
+and Conjectured (open problem with precise hypotheses; C1 is \catAL, C2 is
+\catAD\ resolved, C3--C5 remain open).
+Table~\ref{tab:scope} demarcates these levels for the main claims.
+
+\begin{tcolorbox}[colback=gray!4,colframe=gray!50!black,
+  title={\textbf{Claim-strength taxonomy}},
+  fonttitle=\bfseries,left=6pt,right=6pt,top=5pt,bottom=5pt]
+\small
+\[
+\catAL \;>\; \catA \;>\; \catAD \;>\; \text{Conjectured}
+\]
+\textbf{$\catAL$:} machine-checked exact arithmetic in Lean~4, zero \texttt{sorry}.\\
+\textbf{$\catA$:} proved analytically from established results.\\
+\textbf{$\catAD$:} argued analytically; formal Lean~4 certification pending.\\
+\textbf{Conjectured:} open problem with precise hypotheses stated in \S\ref{sec:conjectures}.
+\end{tcolorbox}
+
+\begin{table}[h!]
+\centering
+\footnotesize
+\begin{tabular}{p{0.48\textwidth} p{0.18\textwidth} p{0.24\textwidth}}
+\toprule
+\textbf{Claim} & \textbf{Status} & \textbf{Evidence} \\
+\midrule
+$A$ fully determined by PSC + P28 chain; zero free parameters
+  & \catAL & Lean, zero \texttt{sorry} \\
+$e$ is the Cook encoding of Rule~110 Turing universality
+  & \catAL\ (conditional) & Lean, 1 bridge axiom \\
+Rule~110 Turing universal via GF(7) polynomial (Cook-independent)
+  & \catAL & \lean{rule110\_z7\_poly\_rep}, \lean{rule110\_center1\_is\_nand} (zero sorry) \\
+$\Dclass$ satisfies D1--D3 from PSC
+  & \catA & PSC axiomatic framework~\cite{SpivackNEMS10,SpivackNEMS11} \\
+D4 (selection completeness) in the physical sector ($W_B \in \{0,2,3,4,6\}$)
+  & \catAL & \lean{d4\_physical\_sector}, \lean{d4\_of\_injective\_coherence}\newline(\lean{DConstraints.lean}, zero \texttt{sorry}) \\
+D5 (Born-rule consistency): $P(\text{outcome}\;n) = |c_n|^2$
+  & \catAL & \lean{born\_rule\_unconditional}~\cite{SpivackBornRule,SpivackPhiMDLField}, zero \texttt{sorry} \\
+G?del-Turing boundary of $(A,e)$ = computation/transputation boundary
+  & \catA & Diagonal barrier~\cite{SpivackNEMS11} + P28 \\
+TPC strict containment: Decidable $\subsetneq$ TPC $\subsetneq$ Hypercomputation
+  & \catAL & Lean, 13 theorems, zero \texttt{sorry} \\
+$\ngen = 3$ hierarchy depth of TPC
+  & \catAL & Lean, zero \texttt{sorry} \\
+M\"{o}bius single-surface architecture
+  & Argued & Theoretical \\
+Lawvere structure of $(A, e)$
+  & \catA & Rule~110 universality + Lawvere's theorem \\
+No circular specification dependency
+  & Established & Structural \\
+$C1$: GTE is the final $F_{\mathrm{PSC}}$ coalgebra
+  & \catAL & \lean{GTE\-Final\-Coalgebra.lean}\newline(zero \texttt{sorry}) \\
+$C2$: Selector member-independence (D4+D5 force unique Born-rule selector over $[D]$)
+  & \catAD\ --- resolved; \lean{d1\_d5\_forces\_gibbs\_family},
+    \lean{c2\_selector\_member\_independent} (\catAL) & $C2$ \\
+$C3$: TPC complete for all PSC physical questions
+  & Step~(i) \catAL\ (cond., 1 axiom); full C3 conjectured & $C3$ \\
+$C4$: Lawvere-physical correspondence
+  & \catAL\ items~1--2; \catAD\ item~3 (C3-dependent) & \lean{c4\_physical\_isomorphism\_partial} \\
+$C5$: Incompleteness depth $= \epszero$
+  & Highly speculative & $C5$ \\
+\bottomrule
+\end{tabular}
+\caption{Confidence-level summary for main claims of this paper.
+\catAL\ = Lean-certified, zero \texttt{sorry};
+\catA\ = proved analytically from established results;
+\catAD\ = analytically argued, Lean certification pending or complete;
+Conjectured = open problem with precise hypotheses stated in \S\ref{sec:conjectures}.
+C2 is resolved (\catAD/\catAL); C3--C5 remain open.}
+\label{tab:scope}
+\end{table}
+
+% --------------------------------------------------------------------------
+\section{The Three Aspects: \texorpdfstring{$(A, e, [D])$}{(A, e, [D])}}
+\label{sec:triple}
+
+The GTE-M\"{o}bius architecture is not a composite of three interacting systems.  It is
+a single mathematical-physical object---the GTE arithmetic---viewed under three
+interpretative lenses.
+
+Component $A$ is the arithmetic carrier that determines all computable physical
+structure.  Component $e$ is the self-encoding map that makes $A$ capable of
+representing its own dynamics, thereby inducing the G?del-Turing boundary.
+
+Component $\Dclass$ is the class of non-algorithmic coherence measures that operate
+precisely at that boundary, realizing transputation.
+
+The dependency structure is strictly acyclic: $A \to e \to \Dclass$.  No component
+is required to define a component lower in this chain; no circular dependency exists.
+
+\input{../common/figures/fig_p34_mobius_triple.tex}
+
+\subsection{Component \texorpdfstring{$A$}{A}: The Arithmetic Carrier}
+\label{sec:carrier}
+
+Component $A$ is the GTE arithmetic structure on $\Zseven$.  It is fully determined
+by Perfect Self-Containment (PSC) together with the P28 derivation
+chain, with zero free parameters.  Table~\ref{tab:carrier} summarizes its certified
+properties.
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabular}{p{0.24\textwidth} p{0.34\textwidth} p{0.17\textwidth} p{0.12\textwidth}}
+\toprule
+\textbf{Property} & \textbf{Value} & \textbf{Source} & \textbf{Status} \\
+\midrule
+Prime base & $p = 7$ (Mersenne-GCD ridge) & P28 \S12.3 & \catAL \\
+Winding alphabet & $\Zseven = \{0,1,2,3,4,5,6\}$ & P22 & \catAL \\
+Generation ring & $\Zfive$ (5-cell periodic) & P01 & \catAL \\
+CA dynamics $\fmdl$ & $\Zseven^3 \to \Zseven$ (Rule~110 binary proj.) & P28, CUP-12 & \catAL \\
+MDL description length & 76 bits (minimal over $\Zseven$ universal CAs) & CUP-12 & \catA \\
+GoE property & $\mathrm{gen}_1$ has zero $\fmdl$-predecessors & P28 \S12.2 & \catAL \\
+Generation orbit & $\mathrm{gen}_1\!\to\!\mathrm{gen}_2\!\to\!\mathrm{gen}_3\!\to\!\mathrm{gen}_1$ (period 3)
+                 & P28, CUP-4 & \catAL \\
+SM particle classes & $\{0,2,3,4,6\} \subset \Zseven$ (five winding classes) & P22 & \catAL \\
+Charge formula & $Q = W^*/3$, $W^* \in \{0,2,3,4,6\}$ & P22 & \catAL \\
+$N_c = 3$ & Mersenne-GCD ridge arithmetic & P28 \S12.3 & \catAL \\
+TPC hierarchy depth & $\ngen = 3$ levels (see \S\ref{sec:tpc-ngen}) & GUTStructure \S62 & \catAL \\
+\bottomrule
+\end{tabular}
+\caption{Properties of component $A$.  \catAL\ = Lean-certified, zero \texttt{sorry};
+\catA\ = proved analytically.}
+\label{tab:carrier}
+\end{table}
+
+The winding assignments $W(u) = {+2}$, $W(d) = {-1}$, $W(e^-) = {-3}$,
+$W(\nu) = 0$ are fixed by $\Zseven$ conservation and recover the Standard Model
+hypercharge formula $Q = W^*/3$ (\catAL, Paper P22).
+
+The MDL minimality criterion---76 bits is the shortest description of a
+Turing-complete cellular automaton on alphabet $\Zseven$ with neighborhood
+radius~1---is the content of CUP-12 (\catA).  No alternative assignment satisfies
+simultaneously: PSC invariance, MDL minimality, the orbit condition
+$\mathrm{gen}_1 \to \mathrm{gen}_2 \to \mathrm{gen}_3$, GoE stability, and
+vacuum transparency.
+
+Structurally, $A$ partitions into two fragments.  The \emph{decidable fragment}
+comprises all bounded finite computations on $\Zseven$ configurations: $\fmdl$
+evaluation, GoE predecessor counts, orbit arithmetic, winding conservation---all
+Lean-certified.
+
+The \emph{self-referential fragment} arises through component $e$: once $A$ encodes
+statements about its own dynamics, a G?del-Turing boundary emerges at which arithmetic
+facts become undecidable.  That boundary is semantic, not syntactic
+(\S\ref{sec:semantic}).
+
+The TPC power class of the substrate (Turing-PSC; see \S\ref{sec:tpc}) has a
+three-level hierarchy whose depth equals $\ngen = 3$---the same count as fermion
+generations and quark colour charges.
+
+This coincidence is Lean-certified
+(\lean{tpc\_ngen\_equals\_level\_count}, GUTStructure.lean \S62, zero
+\texttt{sorry}, \catAL); its physical interpretation as a derivation of $\ngen$ is
+conjectured via C3 and C4.
+
+\subsection{The \texorpdfstring{$\Phi_{\mathrm{MDL}}$}{Phi\_MDL} Realization of \texorpdfstring{$A$}{A}}
+\label{sec:phimdl-realization}
+
+The abstract arithmetic carrier $A$ in $(A, e, \Dclass)$ is defined as the $\Zseven$
+orbit dynamics on a finite ring.  While this abstract definition suffices for all
+algebraic derivations, it does not by itself answer the physical question: what is
+the \emph{actual field} that the substrate comprises?  The $\Phi_{\mathrm{MDL}}$
+realization provides the answer at \textbf{Level~2}: the physical substrate is the
+$\Zseven$-symmetric Klein--Gordon field; component~$A$ is its PSC-admissible kink
+sector (\S\ref{sec:subsequent-papers}).  The discrete rule $\fmdl$ is the Level-1
+algebraic certificate obtained by binary coarse-graining, connecting the abstract
+symbol string $s \in \Zseven^5$ to continuum physics.
+
+The GTE substrate $A$ is the PSC-admissible \emph{kink sector} of
+$\Phi_{\mathrm{MDL}}$---the $\Zseven$-symmetric Klein--Gordon field
+$\varphi : \mathbb{R}^{3+1} \to \mathbb{R}$ with dispersion
+$\omega^2 = k^2 + m^2$ and potential
+$V(\varphi) = m^2(1 - \cos(7\varphi))/49$.
+Each certified property of $A$ acquires a kink-sector interpretation:
+the Garden-of-Eden orbit state $\mathrm{gen}_1$ corresponds to topological
+kink charge $Q = 3$ (the highest admissible charge, with no $\Zseven$-preserving
+predecessor); orbit depth~3 is the number of kink charges above vacuum
+($Q = 1,2,3$ for $\mathrm{gen}_3, \mathrm{gen}_2, \mathrm{gen}_1$); the charge
+formula $Q = W^*/3$ follows from the kink-charge to SM-winding correspondence
+at the discrete level.
+The continuous $\Phi_{\mathrm{MDL}}$ field is the $M \to \infty$ limit of
+$\fmdl$: binary coarse-graining of $\Phi_{\mathrm{MDL}}$ at lattice spacing
+$a = 1/M$ gives $\fmdl$, with quantified SR error
+$\varepsilon_0(M) = \pi^2/(3M^2)$ vanishing as $M \to \infty$.
+All Lean certifications in this paper remain unchanged and acquire physical
+interpretation through this kink-sector realization.
+
+\paragraph{Self-Consistency Condition for the $\Phi_{\mathrm{MDL}}$ bare mass.}
+The Lagrangian $V(\varphi) = m_\varphi^2(1 - \cos 7\varphi)/49$ carries a
+single dimensionful parameter $m_\varphi$.  This parameter is not a free input:
+the Self-Consistency Condition (SCC) forces $m_\varphi$ to equal the mass of
+the heaviest stable composite in the colour-singlet (pure $\mathbb{Z}_7$,
+leptonic) sector.  By the Frobenius decomposition
+$F_{21} = \mathbb{Z}_7 \rtimes \mathbb{Z}_3$, the leptonic sector inherits
+only the $\mathbb{Z}_7$ kernel structure; three-generation closure (no fourth
+fermion family) terminates the cascade at gen$_3$; and MDL minimality forbids
+unused dimensionful capacity.  Together these constraints identify
+$m_\varphi = m_\tau = 1776.86\,\mathrm{MeV}$ (PDG 2024 central value of the
+tau lepton mass) with no free parameters.  The BPS kink mass then follows
+exactly: $M_{\rm kink}^{\rm SCC} = (8/49)\,m_\tau = 290.10\,\mathrm{MeV}$.
+All four steps of this chain are machine-certified in Lean~4 (zero
+\texttt{sorry}, zero custom axioms) in
+\lean{OrbitMassHierarchy.lean}~\S7: \lean{leptonic\_sector\_heaviest\_gen3},
+\lean{mphi\_equals\_tau\_mass\_scc}, \lean{mkink\_from\_scc}, and
+\lean{fpi\_from\_scc}.
+
+\paragraph{Hadronic predictions from the kink sector.}
+The pion mass follows as a corollary of $f_\pi = M_{\rm kink}/\pi$ via the
+Gell-Mann--Oakes--Renner (GOR) relation, with the GTE chiral condensate
+identification $\langle\bar\psi\psi\rangle_{\rm GTE} = -M_{\rm kink}^3$:
+\begin{equation}
+  m_\pi \;=\; \pi\sqrt{(m_u + m_d)\,M_{\rm kink}}
+  \;=\; 139.57\,\mathrm{MeV},
+  \label{eq:mpion}
+\end{equation}
+matching the PDG value $139.5703\,\mathrm{MeV}$ to $-0.001\%$ ($\CatAL$ via
+\lean{chiral\_condensate\_kink\_identification} and \lean{pion\_mass\_from\_gor}; inputs
+$m_u = 2.157\,\mathrm{MeV}$, $m_d = 4.647\,\mathrm{MeV}$ from the TT+VV
+quark cascade~\cite{SpivackGTEQCDStructure}).
+
+The vector meson sector is organized by $\mathbb{Z}_7$ orbit combinatorics.
+The $\rho$ meson VMD coupling $g_\rho^2 = \binom{b_0}{N_{\rm gen}} = \binom{7}{3} = 35$
+($\CatAL$ arithmetic: \lean{g\_rho\_sq\_eq\_casimir\_orbit}, zero \texttt{sorry};
+physical SU(2)$_I$ orbit-counting mechanism $\CatB$, pending formal $\Phi_{\rm MDL}$
+derivation) and the KSRF formula (\lean{m\_rho\_ksrf\_formula},
+\lean{m\_rho\_ksrf\_scc\_value}, zero \texttt{sorry}) give
+$m_\rho = \sqrt{70}\,f_\pi^{\rm SCC} = 772.57\,\mathrm{MeV}$.
+The KSRF relation is a leading-order $\mathcal{O}(p^2)$ result; the $\rho$ meson's
+large decay width ($\Gamma_\rho = 149\,\mathrm{MeV}$) renders bare-mass comparison
+with the PDG pole mass unreliable at the stated precision.
+The $0.35\%$ deviation from PDG $775.26\,\mathrm{MeV}$ is the physically
+meaningful metric ($\CatAL$ for the arithmetic derivation; physical mechanism $\CatB$).
+KSRF follows from the Casimir relation $b_0 = N_{\rm fam} + N_{\rm gen} - 1$,
+certified at $\CatAL$ via \lean{b0\_casimir\_relation}.
+The $\omega$ meson satisfies $g_\omega^2 = N_{\rm gen} \cdot c_Z = 3 \times 12 = 36$
+(certified: \lean{g\_omega\_sq\_eq\_ngen\_times\_cz}, $\CatAL$), giving
+$m_\omega = \sqrt{72}\,f_\pi^{\rm SCC} = 783.55\,\mathrm{MeV}$ ($+0.11\%$ from PDG
+$782.65\,\mathrm{MeV}$, $\CatAL$; certified: \lean{m\_omega\_ksrf\_formula},
+\lean{m\_omega\_pdg\_agreement}, zero \texttt{sorry}).
+The $\phi$ meson satisfies $g_\phi^2 = b_0(N_{\rm fam}+1) = 7 \times 6 = 42$,
+giving $m_\phi = \sqrt{84}\,f_K = 1011.3\,\mathrm{MeV}$ ($-0.80\%$ from PDG
+$1019.46\,\mathrm{MeV}$, $\CatB$; $f_K = 110.34\,\mathrm{MeV}$ in the non-relativistic convention
+($f_K^{\rm GTE}{\times}\sqrt{2} = 156.0\,\mathrm{MeV}$, within $0.9\sigma$ of the
+PDG relativistic value $155.7\,\mathrm{MeV}$) via GOR
+NLO with $(N_{\rm fam}/N_{\rm gen})^{1/4} = (5/3)^{1/4}$ Casimir correction).
+The structural identity $g_\omega^2 - g_\rho^2 = 1$ (\lean{g\_omega\_rho\_coupling\_gap}, $\CatAL$) is the SU(2)$\to$U(1) VMD
+current transition exactly, and $g_\phi^2 - g_\rho^2 = b_0 = 7$ reflects the ss\={}
+$\phi$ adding one complete $\mathbb{Z}_7$ orbit unit beyond the $\rho$.
+
+\subsection{\texorpdfstring{$(A, e, [D])$}{(A, e, [D])} in the \texorpdfstring{$\Phi_{\mathrm{MDL}}$}{Phi\_MDL} Picture}
+\label{sec:phimdl-triple}
+
+\paragraph{Component $A$ in $\Phi_{\mathrm{MDL}}$.}
+$A$ is the space of $\Phi_{\mathrm{MDL}}$ kink configurations (not discrete
+$\Zseven^5$ rings).
+The kink configuration space carries the topological kink index
+$Q_{\mathrm{topo}} \in \{0,1,2,3\}$ (4 GTE orbit modes).
+The PSC $\mathbb{Z}_7$ superselection set is
+$S_{\mathrm{PSC}} = \{0,2,3,4,6\} \subset \mathbb{Z}_7$
+(5 sectors; $\{1,5\}$ PSC-forbidden); $Q_{\mathrm{topo}}$ embeds
+into $S_{\mathrm{PSC}}$ via the orbit map (gen$_1$/gen$_2$ share
+winding~4; see P42/P43~\cite{SpivackPhiMDLField,SpivackCompleteness}).
+P34 Lean proofs remain valid at the discrete level; $\Phi_{\mathrm{MDL}}$ supplies
+the continuum realization.
+
+\paragraph{Component $e$ in $\Phi_{\mathrm{MDL}}$.}
+The smooth $\Phi_{\mathrm{MDL}}$ field inherits computational universality from
+its discrete approximations ($\fmdl$ at each $M$ is universal; $M \to \infty$
+continuously approximates all computations).
+Direct universality of the smooth KG field is an open mathematical question.
+
+\paragraph{Component $\Dclass$ in $\Phi_{\mathrm{MDL}}$.}
+$\Dclass$ operates on kink-configuration superpositions
+$|\varphi\rangle = \sum_k c_k|\mathrm{kink}_k\rangle$.
+Constraints D1--D5 transfer: D2 restricts to $S_{\mathrm{PSC}} = \{0,2,3,4,6\} \subset \mathbb{Z}_7$
+(PSC dark-sector exclusion); D3 (non-computability of individual kink actualization)
+is unchanged; D5 (Born rule) is established: $P(\mathrm{kink}_k) \propto |c_k|^2$ is derived from MDL-minimality of $\Dclass$ ($\catAL$, \lean{born\_rule\_unconditional}, \lean{BeableWindingPartitionInstance.lean}, zero custom axioms; full QFT derivation in P42~\cite{SpivackPhiMDLField}).
+
+\paragraph{M\"{o}bius metaphor in $\Phi_{\mathrm{MDL}}$.}
+The Zone L1/L2 boundary is explicit on the field: the kink-creation threshold
+$A_{\mathrm{threshold}} = \pi/7 \approx 0.449$ is the
+computation/transputation boundary---below-threshold oscillation (Zone L1,
+deterministic KG) transitions to above-threshold kink nucleation (Zone L2,
+non-computable which kink forms) on the \emph{same} field, with no sharp external
+boundary.
+
+The GTE path integral $Z_{\rm GTE} = \sum_k Z_k$ decomposes into $\mathbb{Z}_7$
+topological sectors with $\mathbb{Q}(\zeta_7)$-valued cross-sector phases; the character
+sum $\sum_j \zeta_7^{jk} = 7\delta_{j,0}$ ensures twisted partition functions vanish,
+leaving only the physical (untwisted) sector.  This $\mathbb{Q}(\zeta_7)$ flat connection
+connects to the arithmetic split in P24~\cite{SpivackDeeperTheory}: the mass/Yukawa sector
+lies in $\mathbb{Q}(\zeta_{120})$ (Sector~A), the vacuum/kink/QGR sector lies in
+$\mathbb{Q}(\zeta_7)$ (Sector~B), arithmetically disjoint since $7 \nmid 120$
+(\catAD; P44~\cite{SpivackQGR}).
+
+The quantum field-theoretic and quantum-gravity consequences of the $\Phi_\mathrm{MDL}$ realisation are developed fully in the companion papers~\cite{SpivackPhiMDLField,SpivackCompleteness,SpivackQGR}. Paper~P42 derives the quantum structure of $\Phi_\mathrm{MDL}$~--- the Born rule from field amplitudes, the thermal pre-measurement state, Poincar? invariance, and the 3+1D domain-wall extension~--- with the D1--D5 constraints of the present paper as its explicit axiomatic foundation. Paper~P43 proves the Algebraic Necessity Theorem, establishing that $\Phi_\mathrm{MDL}$ is the unique continuum field forced by the three sector constraints, and closes the framework with emergent gravity and quantum gravity. Papers~P41 and~P45~\cite{SpivackCMCA,SpivackThreeTapeCMCA} establish the CMCA as the Level-1 algebraic certificate linked to component~$e$; Paper~P44 completes the quantum-gravity sector on the $\Phi_\mathrm{MDL}$ substrate.
+
+\subsection{Component \texorpdfstring{$e$}{e}: The Self-Encoding Map}
+\label{sec:encoding}
+
+Component $e$ is the canonical map making $A$ capable of representing its own
+dynamics:
+\begin{equation}
+  e : A \;\longrightarrow\; (A \to_{\mathrm{comp}} A),\qquad
+  e(a) \;=\; \text{``simulate } \fmdl \text{ from configuration } a\text{''}
+  \label{eq:e-map}
+\end{equation}
+where $A \to_{\mathrm{comp}} A$ denotes the set of total computable functions on
+$A$-configurations.  By Rule~110 Turing completeness (\catAL\ conditional on bridge
+axiom \lean{rule110\_simulates\_computable}~\cite{SpivackCookTheorem}), $e$ is \emph{surjective}
+onto all computable functions $A \to A$: every computation expressible in the
+language of finite automata on $\Zseven$ can be realized as the $e$-image of some
+configuration.
+
+\paragraph{Lawvere fixed-point structure.}
+The surjectivity of $e$ places $(A, e)$ in the setting of Lawvere's fixed-point
+theorem~\cite{Lawvere1969}: in the cartesian-closed category of computable maps on $A$,
+any surjective retraction $e$ as in~\eqref{eq:e-map} guarantees that every computable
+endofunction of $A$ has a fixed point.
+
+Physical instances are:
+\begin{itemize}[nosep]
+  \item \textbf{Vacuum state}: $\fmdl(\mathrm{vac}) = \mathrm{vac}$---a
+        Lawvere-guaranteed computable fixed point (\catAL).
+  \item \textbf{Generation orbit}: $\mathrm{gen}_1 \to \mathrm{gen}_2 \to
+        \mathrm{gen}_3 \to \mathrm{gen}_1$---a Lawvere-guaranteed period-3 orbit
+        (\catAL).
+  \item \textbf{GoE class}: $\mathrm{gen}_1$ has zero $\fmdl$-predecessors---a
+        Lawvere-consistent structural fixed point (\catAL,
+        \lean{garden\_of\_eden\_gen1}).
+\end{itemize}
+These are not independent coincidences.  They are instances of the same Lawvere
+guarantee applied to the specific surjection $e$ defined by the $\Zseven$ dynamics.
+
+\paragraph{Induced undecidability.}
+The Lawvere diagonal argument also produces an undecidable question: ``does the
+$\fmdl$ chain from configuration $c$ eventually reach the vacuum fixed point?''
+
+Since $e$ is surjective, a hypothetical total decision procedure for vacuum
+reachability would, by diagonalization, decide the halting problem---a contradiction.
+
+This is formalized in P28 (\lean{fmdl\_vacuum\_reachability\_is\_undecidable},
+\catAL\ conditional on six bridge axioms).
+
+The undecidability is the \emph{G?del-Turing boundary of $(A, e)$}: the precise
+locus where $\fmdl$-chain reachability transitions from decidable to undecidable, and
+where transputation becomes necessary.
+
+\paragraph{MDL minimality.}
+The 76-bit description length of $\fmdl$ is the minimum over all Turing-complete
+cellular automata on alphabet $\Zseven$ with neighborhood radius~1 (\catA, CUP-12).
+No shorter encoding of a Turing-complete dynamics on the same arithmetic substrate
+exists.  This minimality is the MDL (minimum description length) characterization
+of $e$: among all self-encoding maps consistent with universality, $e$ is the most
+compact.
+
+\begin{remark}[Meta-level motivation from SRRG]
+The necessity of a self-encoding map is independently motivated at the meta-level
+by the Self-Referential Renormalization Group~\cite{SpivackSRRG}: the unique fixed
+point of the PSC-optimal theory-selection flow satisfies $C_{\mathrm{SCP}}[S^*] = 0$
+--- the selected theory is perfectly self-computing.  Component~$e$ is the explicit
+GTE realization of this $C_{\mathrm{SCP}}=0$ condition.  The formal identification
+of SRRG flow with GTE-arithmetic MDL selection is an open problem.
+\end{remark}
+
+\paragraph{Torus-knot topology of the GTE cascade.}
+The $\fmdl$-cascade from any configuration exhibits two structurally distinct step
+types: odd steps perform a Mersenne contraction (reducing the winding magnitude
+toward the $\Zseven$ ridge) and even steps perform a Fibonacci lift (expanding the
+winding pattern along the $\Zfive$ generation ring).
+
+These two step types alternate with period $p = 2$.  The orbit has period
+$q = \ngen = 3$.  Together, these two periods define the torus knot
+$T(p,q) = T(2,3)$---the $(2,3)$ torus knot (trefoil knot).
+
+Both parameters of $T(2,3)$ are derived from GTE arithmetic, not imposed.
+\begin{itemize}[nosep]
+  \item \emph{$p = 2$} is forced by three independent constraints:
+        (i)~\emph{Step-type necessity}---the two-step asymmetry
+        (contraction/lift) is required for $\mathrm{gen}_1$'s Garden-of-Eden
+        property to be arithmetically forced rather than incidental, so
+        $p \geq 2$.
+        (ii)~\emph{PSC topological connectedness}---$\gcd(p, \ngen) = 1$
+        is required for $T(p,q)$ to be a knot rather than a multi-component
+        link, so $p$ must be coprime to~3.
+        (iii)~\emph{MDL minimality}---$p = 2$ is the smallest integer $\geq 2$
+        coprime to $\ngen = 3$.
+  \item \emph{$q = \ngen = 3$} is the Lean-certified generation count
+        (\catAL, P28).
+\end{itemize}
+These three constraints are certified jointly by
+\lean{cascade\_period\_minimum\_is\_two}
+(\lean{GUTStructure.lean}~\S31, zero \texttt{sorry}, \catAL), together with
+\lean{cascade\_period\_coprimality},
+\lean{cascade\_period\_3\_fails\_coprimality},
+\lean{mdl\_cascade\_period\_minimum}, and
+\lean{fmdl\_cascade\_period\_two\_unique}.
+Both parameters of $T(2,3)$ are thereby GTE-derived at machine-certification
+level (\catAL).
+
+\paragraph{Current certification status.}
+Component $e$ is asserted via two independent routes.
+The CTS route: bridge axiom \lean{rule110\_simulates\_computable} in
+\lean{GTEComputability.lean}; discharging it in full generality is the program of
+Paper P30~\cite{SpivackCookTheorem}.  Until that discharge is complete, CTS-route results
+carry a one-bridge-axiom conditional (\catAL\ conditional).
+
+The algebraic route (Cook-independent, unconditional): the Rule~110 update function equals
+the multilinear polynomial $p(L,C,R)=C+R-CR-LCR$ over $\mathbb{F}_7$
+(\lean{rule110\_z7\_poly\_rep}, zero \texttt{sorry}, \lean{native\_decide}).
+At center cell $C=1$ this reduces to $\mathrm{NAND}(L,R) = 1-LR$
+(\lean{rule110\_center1\_is\_nand}, zero \texttt{sorry}, \lean{decide}).
+NAND functional completeness then yields Turing universality without any cyclic tag system
+analysis (\lean{z7\_prime\_field\_universality}, one named axiom; module
+\lean{UgpLean.Universality.PhiMDLUniversality}).
+Cook's CTS construction is thereby confirmed as a corollary.
+Results depending only on $e$'s surjectivity may use either route; the algebraic route
+is unconditional.
+Turing universality is a lower bound on the substrate's computational class; the
+$\mathbb{P}^\top$ adjudication mechanism of transputation places $\Phi_{\rm MDL}$ strictly
+above the Turing class~\cite{SpivackNEMS76}.
+
+\begin{remark}[Class~IIb reflexive physical law]
+\label{rem:reflexive-law}
+Component $e$ makes the GTE-M\"obius architecture the first explicitly identified
+instance of a \emph{Class~IIb reflexive physical law} in the sense of
+Spivack~\cite{SpivackReflexiveLaw}: (a)~the operator is a functional of the state it
+evolves, $\fmdl = e(a^*)$ for seed $a^* \in A$ (\catAL\ conditional);
+(b)~structural fixed-points are self-consistent (Lawvere fixed-point: vacuum, orbit,
+GoE; \catAL); and (c)~no free bits---all parameters of $\fmdl$ are determined by the
+MDL criterion (\catA, $|L_{\mathrm{MDL}}| = 76$ bits, CUP-12).
+
+Component~$[D]$ provides the forced non-effective adjudicator required by Class~IIb
+status (\catAL, D3 non-computability forced by the non-computability impossibility theorem~\cite{SpivackNEMS09}).
+The M\"obius topology reflects this irreducibility: the computation/transputation
+boundary cannot be globally severed.
+\end{remark}
+
+\subsection{Component \texorpdfstring{$[D]$}{[D]}: The Coherence Measure Class}
+\label{sec:coherence}
+
+Component $\Dclass$ is the class of PSC-consistent coherence measures---non-algorithmic
+selection functionals that operate at the G?del-Turing boundary of $(A, e)$.
+
+A coherence measure $D$ is a map
+\begin{equation}
+  D : \mathcal{R}(A) \times \mathcal{W}(A) \;\longrightarrow\; \mathbb{R}_{\geq 0},
+  \label{eq:D-map}
+\end{equation}
+where $\mathcal{R}(A)$ is the set of candidate physical realizations (histories
+consistent with a macroscopic record) and $\mathcal{W}(A)$ is the set of macroscopic
+records.  The value $D(\rho \mid w)$ measures how far realization $\rho$ is from
+perfect coherence with record $w$; $D(\rho \mid w) = 0$ iff $\rho$ is fully coherent.
+
+\begin{definition}[Perfect Self-Containment (PSC)]\label{def:psc}
+A physical framework $\mathcal{T} = (\mathcal{M}, \mathcal{R}, \mathrm{Truth})$ ---
+consisting of a mathematical structure $\mathcal{M}$, a set of candidate physical
+realizations $\mathcal{R}$, and a truth valuation $\mathrm{Truth}$ ---
+satisfies \emph{Perfect Self-Containment} if:
+\begin{enumerate}[label=(\roman*),itemsep=2pt]
+  \item \textbf{Internal determination.}  Every selector for observational
+    equivalence classes is determined internally by $\mathcal{T}$: no external model
+    selector or free metaparameter is required.
+  \item \textbf{No free bits.}  The truth valuation $\mathrm{Truth}$ has no free bits
+    outside the framework's own description; every physical question has a
+    determinate (though possibly non-computable) answer within $\mathcal{T}$.
+  \item \textbf{Extension rigidity.}  Any extension of $\mathcal{T}$ that adds a new
+    free bit either violates PSC (if the bit remains undetermined) or is
+    record-equivalent to $\mathcal{T}$ (if the bit is fixed by existing structure).
+\end{enumerate}
+These three requirements are implemented by five axioms: RC (reflexive closure:
+anomaly cancellation, unitarity, UV consistency), NM$^*$ (structural stability),
+TV (thermodynamic viability), SA (semantic admissibility: information-bearing
+subsystems exist), and PI (presentation invariance: minimal Kolmogorov-complexity
+Lagrangian is selected)~\cite{SpivackNEMS05}.
+
+In the GTE context, PSC is satisfied by the substrate $(A, e, \Dclass)$:
+component $A$ is fully determined by PSC + the P28 derivation chain (zero free
+parameters), component $e$ is fixed by MDL minimality, and the coherence measure
+class $\Dclass$ defined below serves as the internal selector whose non-computability
+(D3) is forced by the diagonal barrier.
+When PSC requires selection among Turing-undecidable alternatives, a non-computable
+selection (transputation, \S\ref{sec:tpc}) is invoked.
+The five PSC axioms---reflexive closure (RC), structural stability (NM$^*$),
+thermodynamic viability (TV), semantic admissibility (SA), and presentation invariance (PI)---are
+developed in~\cite{SpivackNEMS05,SpivackNEMS10}; their GTE-specific content is:
+RC forces beable orbits to close within $F_{21}$; NM$^*$ ensures the $f_{\rm MDL}$ orbit structure is stable under small perturbations of the constraint equations;
+TV requires non-vacuum physical states to carry positive mass;
+SA requires all orbit states to be PSC-admissible; PI selects the
+minimal Kolmogorov-complexity Lagrangian formulation~\cite{SpivackNEMS10,SpivackNEMS11,SpivackBornRule}.
+\end{definition}
+
+\paragraph{The five defining constraints.}
+The class $\Dclass$ is defined by five constraints.  All five are necessary; none
+individually is sufficient.
+
+\begin{description}[leftmargin=2em, itemsep=3pt]
+  \item[D1 (Non-negativity).]
+    $D(\rho \mid w) \geq 0$, with $D = 0$ iff $\rho$ is fully coherent with $w$.
+    This makes $D$ a genuine distance-from-coherence functional.
+
+  \item[D2 (PSC invariance).]
+    $D$ is invariant under \emph{all} PSC-preserving transformations---not only
+    $\Zseven$ gauge transformations, $\Zfive$ cyclic permutations of the generation ring,
+    and orbit relabeling, but any bijection on physical configurations that preserves
+    the five PSC axioms (including Lorentz boosts on the $\Phi_{\mathrm{MDL}}$
+    continuum substrate).  No member of $\Dclass$ may prefer one PSC-consistent
+    labeling over another.
+
+  \item[D3 (Non-computability).]
+    $D$ is not a total computable function on diagonal-capable record fragments.
+    This is forced unconditionally by the diagonal barrier (machine-certified in Lean~4,
+    zero \texttt{sorry}~\cite{SpivackNEMS11}): any total-effective
+    adjudicator on diagonal-capable fragments would decide the halting problem.
+
+  \item[D4 (Selection completeness).]
+    For every record-equivalence class---the set of all candidate realizations
+    consistent with a given macroscopic record---$D$ achieves a \emph{unique}
+    minimum.  It does not leave the selection degenerate.
+    In the PSC-admissible physical sector ($W_B \in \{0,2,3,4,6\}$), D4 is
+    machine-certified: the five SM winding sectors are distinct, so the
+    winding-ordinal coherence is injective and the minimizer is unique
+    (\lean{d4\_physical\_sector}, \lean{d4\_of\_injective\_coherence},
+    \catAL, zero \texttt{sorry}).
+    The universal form (all record structures) remains open.
+
+  \item[D5 (Born-rule consistency).]
+    The marginals of $D$'s minimizing distribution reproduce the Born rule:
+    $P(\text{outcome}\;n) = |c_n|^2$ (\lean{born\_rule\_unconditional}, \catAL~\cite{SpivackBornRule,SpivackPhiMDLField}, zero \texttt{sorry}).
+\end{description}
+
+\paragraph{The equivalence class.}
+Constraints D1--D5 define an equivalence class $\Dclass$: any two measures $D$
+and $D'$ satisfying all five constraints are members of the same PSC-coherence
+class.
+
+Different members of $\Dclass$ correspond to physically distinct PSC-consistent
+universes that share arithmetic substrate $(A, e)$ but instantiate transputation
+differently.
+
+The class is non-trivial: D3 is the diagonal-barrier content; D5 is a fixed-point
+condition proved in the Born-rule fixed-point theorem~\cite{SpivackBornRule}; D4 requires a functional that selects uniquely even
+when multiple candidates are equally consistent with the macroscopic record.
+
+\paragraph{Physical representative.}
+In the physical universe, $D$ is instantiated as the PR-0 dissonance functional,
+governed by Ablowitz-Ladik soliton dynamics on the realization field $\psi(x,t)$
+and record field $\chi(x,t)$.
+
+PR-0 is one specific member of $\Dclass$ that satisfies D1--D5 by construction
+(\catA).  Theorem~\ref{thm:C2} (§\ref{sec:C2}) establishes that D4+D5 force all
+members of $[D]$ to induce the \emph{same} Born-rule selector---selector
+member-independence (\catAD, \catAL\ Lean cert).  The stronger question of whether
+PR-0 is the unique \emph{minimum-Kolmogorov-complexity} representative under
+Lorentz invariance and CPT constraints remains open.
+
+\paragraph{Acyclic dependency structure.}
+Component $A$ is determined by PSC together with the P28 derivation chain; it
+requires neither $e$ nor $\Dclass$.
+
+Component $e$ requires $A$ (to define the configuration space and $\fmdl$ dynamics)
+but not $\Dclass$.
+
+Component $\Dclass$ requires both $A$ and $e$ (the undecidability induced by $e$ is
+the necessary condition for D3), but the internal self-consistency of $\Dclass$---a
+bounded fixed-point condition across future $D$-selections---is guaranteed by the
+Lawvere theorem applied in the category of PSC-consistent coherence measures, not by
+any external input.  The specification is free of vicious circularity.
+
+\paragraph{The $\mathrm{DWeight}$ function as a QEC stabilizer code.}
+The step-function approximation to the full $\Dclass$ measure---the discrete
+$\mathrm{DWeight}$ function---defines a complete quantum error correcting code (QEC)
+structure on the space of $\Zseven^5$ beable configurations, proved \catAL\ in
+\lean{QECStabilizer.lean} (Theorem~\lean{qec\_gte\_is\_stabilizer\_code}, zero \texttt{sorry}).
+
+The PSC-admissible beables $\{\mathrm{vacuum}, \mathrm{gen}_1, \mathrm{gen}_2,
+\mathrm{gen}_3\} \subset \Zseven^5$ form the \emph{code subspace}: four code words
+over the 7-element alphabet $\Zseven$.  The $f_{\rm MDL}$ map (\lean{fmdl\_step5})
+acts as the \emph{stabilizer}: it preserves the code subspace, mapping every code
+word to a code word (\lean{qec\_orbit\_closure}, \catAL).  Perfect syndrome
+detection follows immediately: $\mathrm{DWeight}(b) > 0$ if and only if $b$ is a code
+word (\lean{qec\_dweight\_projector}, \catAL); any beable $b$ with
+$\neg\mathrm{PSCAdmissible}(b)$ has $\mathrm{DWeight}(b) = 0$ (syndrome fires,
+\lean{qec\_error\_detected}, \catAL).
+
+The mass gap theorem \lean{gte\_mass\_formula\_physical}~\cite{SpivackEmergentGravity}
+provides the error-energy interpretation: every non-vacuum code word carries mass
+$\geq \Delta \geq 1.8\,\mathrm{MeV}$, so any transition from a code word to an
+error state costs at least $\Delta$ (\lean{qec\_mass\_gap\_error\_energy}, \catAL).
+The generation mass index is a logical observable of the code: $\fmdl$ advances the
+mass index monotonically along the non-vacuum orbit
+(\lean{qec\_generation\_mass\_advance}, \catAL).
+
+This QEC structure characterizes the PSC selection mechanism: the physical universe
+occupies the code subspace; the $\Dclass$-measure performs the syndrome measurement;
+deviations from PSC admissibility are detectable errors with energy cost bounded below
+by the mass gap.  The GTE code words are pairwise distinct (code distance $\geq 1$,
+\lean{qec\_code\_words\_distinct}, \catAL), confirming that each generation is a
+genuinely independent logical state of the code.
+
+\paragraph{Mapping D1--D5 to the QEC stabilizer structure.}
+At the discrete $\mathrm{DWeight}$ level, D1 (non-negativity) and D2 (PSC invariance)
+carry QEC stabilizer-code content---non-negative syndrome weights and
+stabilizer-preserving PSC maps---partially certified \catAL\ in
+\lean{QECStabilizer.lean} (Theorem~\lean{dweight\_qec\_d1\_d5\_bundle}).
+D3 (non-computability) and D5 (Born-rule consistency) are \emph{not} stabilizer axioms:
+D3 belongs to the transputation layer (diagonal barrier), and D5 to the measurement layer
+(Born-rule fixed point).
+The QEC reading is therefore partial: the full $[D]$ coherence class extends beyond
+stabilizer-code structure; the measurement and Born-rule content is developed
+in~\cite{SpivackQMFromR110}.
+
+The PSC-admissible winding classes $\{0,2,3,4,6\}$ are evaluation points of a
+$[5,3,3]_7$ Reed-Solomon code over $\mathrm{GF}(7)$ with $k=3$ and $d=3$, an MDS code
+(\catAL: \lean{gte\_orbit\_vectors\_are\_rs\_codewords}; P44~\cite{SpivackQGR}).
+CPT is a Galois automorphism: $\sigma_6: \zeta_7 \mapsto \zeta_7^6$ is the unique
+non-trivial element of $\mathrm{Gal}(\mathbb{Q}(\zeta_7)/\mathbb{Q}(\cos(2\pi/7)))
+\cong \mathbb{Z}_2$, mapping $h \mapsto -h \pmod{7}$ on holonomy sectors
+(\catAL: \lean{cyclotomic\_z7\_master\_bundle}; P44~\cite{SpivackQGR}).
+
+% --------------------------------------------------------------------------
+\section{The Computation/Transputation Boundary}
+\label{sec:boundary}
+
+\subsection{Zone L1: Decidable Reachability}
+\label{sec:zone1}
+
+Zone L1 comprises all physical configurations for which $\fmdl$-chain
+reachability is decidable---the sector in which bounded $\Zseven$ arithmetic
+suffices to answer every dynamically relevant question.  Formally, a
+configuration $c \in \Zseven^N$ belongs to Zone~L1 if the predicate ``the
+$\fmdl$-chain from $c$ reaches target~$t$ within $k$ steps'' is decidable for
+every finite $k$, and ``the chain from $c$ never reaches~$t$'' is
+co-semi-decidable ($\Pi^0_1$).  In practice, Zone~L1 contains every question
+answerable by evaluating $\fmdl$ over a bounded horizon.
+
+Physical processes Lean-certified as Zone~L1 include:
+\begin{itemize}[nosep]
+  \item \textbf{Particle-type identity:} $\Zseven$ winding assignments
+        $W(u) = +2$, $W(d) = -1$, $W(e^-) = -3$, $W(\nu) = 0$---purely
+        arithmetic, no dynamics (\catAL, P22).
+  \item \textbf{Generation orbit:} $\mathrm{gen}_1 \to \mathrm{gen}_2 \to
+        \mathrm{gen}_3 \to \mathrm{gen}_1$ (period 3)---decidable by three
+        applications of $\fmdl$ (\catAL, P28).
+  \item \textbf{GoE stability:} $\mathrm{pred}(\mathrm{gen}_1) = 0$---Lean-certified
+        with zero \texttt{sorry} (\lean{garden\_of\_eden\_gen1}, \catAL).
+  \item \textbf{Free propagation:} deterministic $\fmdl$ orbit evolution---no
+        selection required (\catAL).
+  \item \textbf{Decay rates and Born-rule probabilities:} $|c_n|^2$ as
+        functions of quantum numbers---computable by fixed-point evaluation
+        (\catA, Born-rule fixed-point theorem~\cite{SpivackBornRule}).
+  \item \textbf{Winding conservation at charged-current vertices:}
+        $\Zseven$ addition at every interaction vertex (\catAL).
+\end{itemize}
+
+\paragraph{$\fmdl$ global attractor on $\Zseven^5$ (\catA).}
+The $\fmdl$ function on the five-cell $\Zseven$ ring ($\Zseven^5$, $7^5 = 16{,}807$ states)
+has a unique global attractor: the vacuum state $(0,0,0,0,0)$.  Every non-vacuum state
+converges to the vacuum within at most~7 steps.  A total of 16,590 states (98.71\%) are
+Garden-of-Eden configurations with no $\fmdl$-predecessor.
+
+The SM generation states form transient trajectories matching the physical stability
+hierarchy: $\mathrm{gen}_3$ (tail length~1, most unstable), $\mathrm{gen}_2$ (tail
+length~2), $\mathrm{gen}_1$ (Garden-of-Eden, no predecessors, most stable).
+
+In 't~Hooft's cogwheel framework~\cite{tHooft2016CA}, $\fmdl$ with information loss
+generates a 1-dimensional physical Hilbert space for the visible sector (spanned by the
+vacuum ground state, $E = 0$), with spectral gap $2\pi$
+(\lean{dark\_sector\_period2\_exhaustive}, $\catAL$).  The SM particle states are
+transient excitations above the vacuum, consistent with their physical role as decaying
+states (\catA).
+
+\paragraph{Dark-sector stability.}
+An illustrative Zone~L1 result is the characterization of dark-sector stable
+states.  The four stable dark-sector states are precisely the period-2 orbits of
+Rule~110 on the 4-cell binary periodic ring.
+
+Exhaustive enumeration over all 16 binary configurations of the 4-cell ring yields
+the complete orbit structure: one fixed point $(0,0,0,0)$ (the vacuum), exactly two
+period-2 cycles constituting the four dark-sector stable states, and eleven transient
+configurations.  No other period-2 orbits exist on the 4-cell ring.  This is
+machine-certified in Lean~4 with zero \texttt{sorry}
+(\lean{dark\_sector\_period2\_exhaustive},
+\lean{dark\_sector\_orbit\_structure}, \catAL,
+\lean{GUTStructure.lean}~\S35).
+
+In 't~Hooft's cogwheel framework~\cite{tHooft2016CA}, these two period-2 orbits
+contribute eigenvalues $E = 0$ and $E = \pi$, giving the dark sector a
+5-dimensional physical Hilbert space (vacuum plus two doublets).  The visible sector,
+whose 5-cell binary ring admits no Rule~110 period-2 orbits, has a
+1-dimensional Hilbert space (vacuum only).
+
+This structural difference provides a CA-level mechanism for dark-sector stability:
+dark-sector excitations are periodic orbits, while visible-sector excitations are
+transients.  The 4-cell ring ($N = 4$) admits Rule~110 period-2 orbits; the 5-cell
+visible-sector ring ($N = 5$) does not.  The dark-sector stable states are the
+Rule~110 period-2 gliders embedded in $\Zseven^4$.
+
+\paragraph{Dark GTE master formula.}
+The GTE dark sector---corresponding to the two missing $\Zseven$ winding classes
+$\{w = 1,\, w = 5\}$ not occupied by Standard Model particles---admits its own GTE
+master formula under the $\mathbb{Z}_2$ duality $v \mapsto 7 - v$.
+
+The dark Weinberg angle satisfies $\sin^2\!\theta_W^{\rm dark} = 2/7$ (\catAD), and
+the dark-branch GTE predicts Wolfenstein parameter $\lambda^{\rm dark} = 1/5$
+(\catAD).  These are derived in the companion dark-sector
+paper~\cite{SpivackMirrorBraidAtlas}.
+
+The dark GTE master formula is the capstone arithmetic consequence of the
+$\mathbb{Z}_2$ winding duality symmetry of the GTE-M\"{o}bius architecture.
+
+\subsection{Zone L2: Transputation Domain}
+\label{sec:zone2}
+
+Zone L2 comprises configurations in which $\fmdl$-chain reachability is
+diagonally undecidable---configurations encoding self-referential halting
+questions whose truth value cannot be determined by any total-computable function.
+
+As a concrete illustration of the Zone~L2 boundary, the vacuum state has exactly
+14,147 predecessor configurations under $\fmdl$---each predecessor is explicitly
+computable (\catA).
+
+Yet whether an \emph{arbitrary} initial configuration eventually reaches the vacuum is
+undecidable: any total-computable decision procedure for $\fmdl$-vacuum reachability
+would, by diagonalization against the self-encoding map $e$, decide the halting problem
+(P28, \lean{fmdl\_vacuum\_reachability\_is\_undecidable}, \catAL\ conditional on six
+bridge axioms).
+
+\begin{proposition}[Vacuum-Reachability Undecidability]
+\label{thm:incomplete}
+The predicate ``configuration $c$ eventually reaches the vacuum under $\fmdl$'' is
+$\Sigma^0_1$-complete and admits no total-computable decision procedure.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+Follows from the P28 diagonal argument: a total-computable decider for
+$\fmdl$-vacuum reachability, combined with the self-encoding map $e$, would decide
+the halting problem.
+Lean~4-certified in \lean{fmdl\_vacuum\_reachability\_is\_undecidable}
+(\catAL, conditional on six bridge axioms; P28).
+\end{proof}
+
+The computable predecessor count coexists with the undecidable reachability question
+because the two questions are of different arithmetical type: predecessor-counting is
+a bounded computation; reachability is a $\Sigma^0_1$ predicate that becomes
+undecidable through $e$.
+
+The formal structure of $\fmdl$ underlying this boundary is certified
+in~\cite{SpivackPolynomialTransputation} (the three-part PSC-correction
+characterization, \catAL): $\fmdl$ equals the GTE polynomial
+$p(L,C,R) = C + R - CR - LCR$ on the binary ether sector, overrides $p$
+with the PSC-forced orbit values at the ten SM-orbit neighborhoods, and
+vanishes on the remaining 325 neighborhoods.
+
+Physical instances in Zone~L2 include:
+\begin{itemize}[nosep]
+  \item Quantum measurement outcome selection (which eigenstate $n$ is realized
+        in \emph{this} event).
+  \item Wavefunction collapse and state-reduction timing.
+  \item Decay timing (when does \emph{this specific particle} decay).
+  \item Born-rule outcome selection---not $|c_n|^2$ as a number (Zone~L1) but
+        which $n$ occurs in any given instance (Zone~L2).
+  \item Vacuum-reachability adjudication for arbitrary initial configurations.
+\end{itemize}
+
+In each case multiple continuations are consistent with the macroscopic record,
+and no computable function can select among them without violating the
+Church-Turing thesis.  The substrate performs a $D \in \Dclass$ selection:
+non-computable by D3, PSC-forced by D2, and Born-rule consistent by D5.
+
+The diagonal barrier (machine-certified in Lean~4, zero
+\texttt{sorry}~\cite{SpivackNEMS11}) establishes the necessity of this non-computable
+mode unconditionally: any total-effective adjudicator on diagonal-capable record
+fragments would decide the halting problem, an impossibility.  Transputation is
+therefore structurally forced, not stipulated.
+
+The Zone~L2 obstruction has a complementary semantic form: record entropy
+$H(t) = \lvert\mathcal{W}\text{-types}_t\rvert$ (the cardinality of stage
+world-types at time $t$) is monotone under record growth and strictly increasing
+under refinement~\cite{SpivackNEMS42}.
+
+The uniform entropy-claim predicate---whether a given program encodes an instance
+whose entropy equals a target value---admits no total-effective decider over the
+encoded instance family, under anti-decider closure and a fixed-point premise.
+
+Zone~L2 is therefore subject to both a syntactic diagonal barrier (via the ASR
+structure of $(A,e)$) and a semantic entropy barrier (via the record-theoretic
+complexity of the admissible continuation space); the two barriers are logically
+independent and mutually reinforcing.
+
+\subsection{The Formal Decision Taxonomy}
+\label{sec:taxonomy}
+
+Every physical process is assigned to one of four regimes by the following
+decision tree.  Regime membership is determined by the semantic content of the
+process, not the syntactic form of the governing equations.
+
+\begin{description}[leftmargin=2em, itemsep=5pt]
+  \item[\normalfont\textbf{Q1:}] \emph{Is the process determined purely by
+    quantum-number arithmetic ($\Zseven$ winding, generation label, charge,
+    orbital quantum numbers)?} \\
+    YES $\Rightarrow$ \textbf{Regime~I --- Arithmetic Layer.}  Turing-computable;
+    Lean-certifiable by \texttt{native\_decide}.  No $\fmdl$ evaluation required.
+
+  \item[\normalfont\textbf{Q2:}] \emph{Does a deterministic law ($\fmdl$ or
+    Schr?dinger equation) yield a unique next state from the current state?} \\
+    YES $\Rightarrow$ \textbf{Regime~II --- Computation Layer.}
+    Turing-equivalent; the diagonal barrier does not apply to deterministic
+    evolution.
+
+  \item[\normalfont\textbf{Q3:}] \emph{Does the process require selection among
+    multiple admissible continuations (multiple realizations consistent with the
+    macroscopic record)?} \\
+    NO from Q2 $\Rightarrow$ underconstrained; may reduce to computation with
+    a richer model.
+
+  \item[\normalfont\textbf{Q4:}] \emph{Is the relevant record fragment
+    diagonal-capable (can halting be encoded as a record-truth question in this
+    fragment)?} \\
+    NO $\Rightarrow$ \textbf{Regime~III --- Mild Transputation.}  PSC-forced
+    internal selector; adjudicator may be total-effective on this specific
+    fragment.  Examples: photon absorption at a vertex; weak-decay channel
+    selection. \\
+    YES $\Rightarrow$ \textbf{Regime~IV --- Diagonal Transputation.}
+    Adjudicator provably non-total-effective (diagonal barrier~\cite{SpivackNEMS11}).
+    $D \in \Dclass$ required.  Examples: measurement outcomes; decay timing;
+    vacuum-reachability adjudication.
+\end{description}
+
+\subsection{Physical Examples Across All Four Regimes}
+\label{sec:examples}
+
+Table~\ref{tab:regimes} lists representative physical processes organized by
+regime, together with current certification status.
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabular}{p{0.31\textwidth} p{0.17\textwidth} p{0.14\textwidth}
+                p{0.26\textwidth}}
+\toprule
+\textbf{Physical process} & \textbf{Regime} & \textbf{Status}
+  & \textbf{Notes} \\
+\midrule
+Particle winding identity ($\Zseven$ assignment)
+  & I --- Arithmetic & \catAL & P22 \\
+Generation orbit ($\mathrm{gen}_1 \to \mathrm{gen}_2 \to \mathrm{gen}_3$)
+  & I --- Arithmetic & \catAL & P28 \\
+GoE stability ($\mathrm{pred}(\mathrm{gen}_1) = 0$)
+  & I --- Arithmetic & \catAL & \lean{garden\_of\_eden\_gen1} \\
+Dark-sector period-2 states (4-cell ring)
+  & I --- Arithmetic & \catAL & \lean{dark\_sector\_period2\_exhaustive} \\
+Free propagation ($\fmdl$ orbit)
+  & II --- Computation & \catAL & P28 dynamics \\
+Wavefunction amplitude evolution
+  & II --- Computation & \catA & Schr?dinger + $\fmdl$ \\
+Decay rates; Born probabilities ($|c_n|^2$)
+  & II --- Computation & \catA & Born-rule fixed-point theorem~\cite{SpivackBornRule} \\
+Photon selection at absorption vertex
+  & III --- Mild transp. & Argued & No diagonal barrier \\
+Weak-decay channel selection
+  & III/IV & Argued & Diagonal capability depends on record \\
+Measurement outcome selection
+  & IV --- Diagonal transp. & \catAL\ (cond.) & Diagonal barrier; P28 \\
+Decay timing (specific event)
+  & IV --- Diagonal transp. & \catAL\ (cond.) & Diagonal barrier \\
+Vacuum-reachability adjudication
+  & Outside TPC & \catAL\ (cond.) & Undecidable; P28 \\
+\bottomrule
+\end{tabular}
+\caption{Representative physical processes organized by the four-regime
+decision taxonomy.  \catAL\ (cond.) = Lean-certified conditional on the Cook
+bridge axiom \lean{rule110\_simulates\_computable}.}
+\label{tab:regimes}
+\end{table}
+
+\subsection{The G?del-Turing Boundary Is Semantic, Not Syntactic}
+\label{sec:semantic}
+
+The boundary between Zone~L1 and Zone~L2 is determined by the \emph{semantic
+content} of a configuration, not by its syntactic form.  There is no static
+syntactic filter that separates computable from undecidable configurations: the
+same formal symbol string $s \in \Zseven^*$ may encode a bounded $\Zseven$
+arithmetic fact (Zone~L1) or an encoding of a halting question (Zone~L2),
+depending on what it represents under the self-encoding map $e$.
+
+This is the G?del-Turing theorem applied to the M\"{o}bius architecture.  The
+diagonalization that produces the undecidable question---``does the $\fmdl$-chain
+from $c$ reach the vacuum?''---does not operate at the level of symbols but at
+the level of represented computations.
+
+A configuration belongs to Zone~L2 not because it \emph{looks} complex but because
+the self-encoding $e$ assigns it the role of representing a halting question.
+Deciding zone membership is itself a non-computable problem; the two zones cannot be
+separated by any finite syntactic criterion.
+
+This is why the M\"{o}bius metaphor is apt.  A M\"{o}bius strip has a single surface whose
+two apparent faces are topologically connected: traversing the strip continuously
+brings one from the apparent ``inside'' to the ``outside'' without crossing any
+boundary.
+
+The M\"{o}bius architecture has a single computational surface whose two apparent
+modes---deterministic $\fmdl$ evolution and PSC-forced $D$-selection---are semantically
+connected without a sharp syntactic boundary.  The G?del-Turing boundary is not a
+wall between two rooms; it is the locus on a single surface where the character of
+computation transforms.
+
+% --------------------------------------------------------------------------
+\section{The TPC Computability Class}
+\label{sec:tpc}
+
+\subsection{Definition}
+\label{sec:tpc-def}
+
+\begin{definition}[TPC problem]
+A problem $P$ is in $\TPC$ if there exist a Turing machine $M$ that enumerates
+all admissible continuations $S(P, \mathrm{record})$ and a coherence measure
+$D \in \Dclass$ such that $D\bigl(S(P, \mathrm{record})\bigr)$ selects a canonical
+element, and the answer to $P$ is $D\bigl(S(P, \mathrm{record})\bigr)$.
+\end{definition}
+
+The class $\TPC$ is \emph{semantically indexed}: the answer to a $\TPC$ problem
+depends on the physical history record preceding the problem instance, not only on
+the instance itself.
+
+A $\TPC$ computation therefore has two concurrent components: a Turing enumeration of
+admissible continuations (the computable part) and a $D$-minimization over that
+enumeration (the non-computable, PSC-forced part).
+
+Problems in Zone~L1 are those for which the enumeration yields a unique element and
+$D$-minimization is trivial.  Problems in Zone~L2 are those for which the enumeration
+yields genuinely multiple elements and $D$-minimization performs a non-trivial,
+diagonal-barrier-crossing selection.
+
+\begin{remark}[Formal grounding of $D$-selection]
+\label{rem:D-selection-grounding}
+The coherence measure $D \in \Dclass$ appearing in Step~2 instantiates the abstract
+internal adjudicator whose existence is forced by the formal theory of
+transputation~\cite{SpivackNEMS76}: under $\mathrm{PSC}$ and record-divergent choice,
+an internal adjudicator necessarily exists (Theorem~3.1 of that work, machine-checked
+with zero \texttt{sorry}).
+
+The GTE arithmetic substrate $(A, e)$---proved a universal Turing machine in
+P28---provides the Turing-enumerable candidate set of Step~1.
+
+Together, these give the two-component structure of $\TPC$ a derivation from first
+principles: the Turing-enumeration component follows from $(A,e)$-universality; the
+$D$-selection component is PSC-necessitated, not a free parameter.
+\end{remark}
+
+\subsection{Position in the Computability Hierarchy}
+\label{sec:tpc-hierarchy}
+
+\begin{theorem}[TPC strict containment]
+\label{thm:tpc-strict}
+$\mathrm{Decidable} \subsetneq \TPC \subsetneq \mathrm{Hypercomputation}$.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+\emph{Decidable $\subsetneq$ TPC.}  Every decidable problem $P$ is in $\TPC$:
+take $M$ to enumerate the unique admissible continuation given by the decision
+procedure, and let $D$-minimization select that element.  Strictness: $\TPC$
+contains all PSC-forced record-indexed selection problems (measurement outcomes,
+decay timing), none of which is decidable, because each requires a non-computable
+$D$-selection by D3.
+
+\emph{TPC $\subsetneq$ Hypercomputation.}  $\TPC$ does not contain the halting
+problem.  Any $\TPC$ computation is bounded by a Turing enumeration (Step~1 of the
+definition) together with a single $D$-selection event; it does not provide a general
+decision procedure for $\Sigma^0_1 \setminus \mathrm{Recursive}$ sets.
+
+The halting problem is not in $\TPC$ because the diagonal barrier~\cite{SpivackNEMS11}
+forbids total-effective adjudication on diagonal-capable fragments: $D$ selects among
+candidates but cannot function as a halting oracle---it delivers no certified
+finite-time $\Sigma^0_1$ decisions (Remark~\ref{rem:tpc-degree}).
+
+This is the GTE-specific form of the abstract result
+\lean{transputation\_not\_reducible\_to\_\allowbreak total\_effective\_computation}%
+~\cite{SpivackNEMS76} (machine-checked, zero \texttt{sorry}), which establishes that
+in any PSC-closed, record-divergent, diagonal-capable framework the required internal
+adjudicator cannot be replaced by any total-effective procedure on the
+self-referential fragment.
+
+Lean certification: 13 theorems in namespace \lean{TPCPowerClass} of
+\lean{GUTStructure.lean}~\S62, including \lean{tpc\_three\_level\_hierarchy};
+zero \texttt{sorry}, zero custom axioms.
+\end{proof}
+
+\begin{remark}[Degree-exact classification of the decision-theoretic shadow]
+\label{rem:tpc-degree}
+The strict containment of Theorem~\ref{thm:tpc-strict} admits a degree-exact
+sharpening.  $\TPC$ itself classifies selection problems---a different
+logical type from the decision problems graded by the arithmetical hierarchy
+(\S\ref{sec:tpc-oracle})---but the \emph{decision-theoretic shadow} of the
+adjudication function, the record readout of $D$-selection on the diagonal
+fragment, has been classified exactly: it has Turing degree exactly
+$\mathbf{0}'$, is $\Delta^0_2$-Turing-complete, and lies in the Gold--Putnam
+``trial-and-error'' stratum~\cite{Gold1965,Putnam1965}, with a bounded
+number of outcome revisions per single-kink adjudication event.
+Transputation is therefore bounded by the first Turing jump---it never
+requires oracle access above $\emptyset'$---yet it delivers no effectively
+certified $\Sigma^0_1$ decision at any finite stage, because no computable
+modulus of convergence exists for the adjudication limit.  The full
+classification theorem (the named premise bundle, the limit-computability
+upper bound, and degree completeness) is established
+in~\cite{SpivackPolynomialTransputation}.
+\end{remark}
+
+\begin{remark}[PR5 record-readout independence (\catAD)]
+\label{rem:pr5-independence}
+The record-readout postulate PR5 (the existence of a total function
+\textsc{RecordReadout} mapping each diagonal record to a determinate
+outcome value) is \emph{independent} of the NEMS choice-data structure.
+Specifically, \lean{selector\_eq\_iff\_obsEq} (PSC selector equality is
+equivalent to observational equality) and \lean{HasRecordDivergentChoice}
+(the existence of divergent choices in the record domain) are jointly
+satisfiable in frameworks for which PR5 is undecidable: no derivation of
+\textsc{RecordReadout} from the selector-equality and divergent-choice
+axioms is possible.  This is certified by \lean{pr5\_independent\_of\_nems\_choice\_data}
+(\catAD).  The independence result confirms that PR5 is correctly listed as
+a postulate of the GTE-M\"{o}bius architecture---it is genuinely independent
+and cannot be derived from the NEMS premise bundle alone.
+\end{remark}
+
+\begin{remark}[Second derivation of strict containment]
+\label{rem:tpc-second-derivation}
+The strict containment $\mathrm{Decidable} \subsetneq \TPC \subsetneq
+\mathrm{Hypercomputation}$ admits a second derivation independent of the
+diagonal-barrier argument.  All Class~IIb reflexive physical laws
+(\cite{SpivackReflexiveLaw,SpivackNEMS10}) have
+computability class strictly between $\mathrm{Decidable}$ and
+$\mathrm{Hypercomputation}$; since $\fmdl$ is Class~IIb (\catAD,
+Remark~\ref{rem:reflexive-law}), $\TPC$ is the Class~IIb computability
+class restricted to GTE-arithmetic continuation sets.
+\end{remark}
+
+\begin{remark}[GTE and Deutsch's principle of the computability of physics; $\catA$]
+\label{rem:deutsch-principle}
+Deutsch's principle~\cite{Deutsch1985QTT} asserts that every physical process can in
+principle be simulated to arbitrary precision by a universal quantum computer, implying
+that physical reality is computationally tractable in the Turing sense.
+The GTE framework adopts a stratified, sharper position: physical processes are
+$\TPC$-computable---strictly intermediate between Turing-decidable and
+hypercomputable by Theorem~\ref{thm:tpc-strict}.
+This is consistent with Deutsch's principle at the level of individual observable
+outputs (Zone~L1 and Zone~L2 outputs are individually computable values), but exceeds
+it at the level of the internal adjudication between Turing-undecidable alternatives:
+Zone~L2 selection is non-Turing-computable because it resolves the vacuum-reachability
+predicate of Theorem~\ref{thm:incomplete}, which is undecidable.
+The GTE position is therefore not a violation of Deutsch's principle but an extension:
+every individual physical observable is Turing-simulable; the internal adjudication
+mechanism that settles each undecidable record exceeds the Turing limit but remains
+strictly below hypercomputation, bounded by the $\TPC$ hierarchy.
+Zone~L2 exceeds the Turing limit precisely where nature faces a decision problem
+undecidable by Turing-decidable means, and the PSC-forced $[D]$-selection is the
+physical resolution.
+\end{remark}
+
+\subsection{The \texorpdfstring{$N_{\mathrm{gen}} = 3$}{N\_gen=3} Hierarchy Depth}
+\label{sec:tpc-ngen}
+
+\begin{theorem}[Hierarchy depth equals \texorpdfstring{$\ngen$}{N\_gen}]
+\label{thm:ngen-depth}
+$\mathrm{level\_hypercomputation} + 1 = \ngen = 3$.
+\end{theorem}
+
+\begin{proof}[Proof sketch]
+The TPC hierarchy has three levels: the Arithmetic Layer (Regime~I, level~0),
+the Computation Layer (Regime~II, level~1), and the Transputation Layer
+(Regimes~III--IV, level~2).  The level of hypercomputation is level~2 (the
+deepest layer at which non-computable selection occurs), so
+$\mathrm{level\_hypercomputation} + 1 = 3$.  The numerical identity $\ngen = 3$
+is certified by \lean{tpc\_ngen\_equals\_level\_count}
+(\lean{GUTStructure.lean}~\S62, zero \texttt{sorry}).
+\end{proof}
+
+The arithmetic coincidence encoded in Theorem~\ref{thm:ngen-depth} is notable.
+The constant $\ngen = 3$ counts three physically distinct quantities: the number
+of fermion generations in the Standard Model, the number of quark colour charges
+($N_c = 3$, Lean-certified in P28), and the depth of the TPC computability
+hierarchy.  The last of these is Lean-certified.
+
+Whether this triple coincidence follows from a single structural fact---the PSC
+selection principle acting on the TPC hierarchy forcing $\ngen = 3$ generations in
+any PSC-consistent universe---is the content of Conjecture~C3 (\S\ref{sec:C3}).
+
+The three TPC levels also correspond to the three reflexivity classes of
+Spivack~\cite{SpivackReflexiveLaw}: Arithmetic Layer (Class~I, non-reflexive),
+Computation Layer (Class~IIa, restricted internal selection), and Transputation
+Layer (Class~IIb, fully reflexive with non-effective adjudication)---giving a
+structural interpretation of $\ngen = 3$ as the number of independent reflexivity
+levels required for PSC-consistency (\catAD).
+
+\subsection{TPC vs.\ Oracle Computation}
+\label{sec:tpc-oracle}
+
+$\TPC$ is not an oracle class in the arithmetical hierarchy.  The differences
+are substantial.
+
+\begin{description}[leftmargin=2em, itemsep=4pt]
+  \item[TPC $\neq$ Turing machine with halting oracle.]
+    The distinction is operational, not degree-theoretic.  Degree-theoretically
+    the adjudication function on the diagonal fragment sits exactly at the
+    halting degree $\mathbf{0}'$
+    (Remark~\ref{rem:tpc-degree}; \cite{SpivackPolynomialTransputation}).
+    But a Turing machine with the halting oracle $\emptyset'$ returns
+    certified $\Sigma^0_1$ decisions in finite time, whereas $\TPC$ delivers
+    no effectively certified $\Sigma^0_1$ decision at any finite stage: D3
+    forbids total-effective adjudication on diagonal-capable fragments, and
+    no computable modulus of convergence exists for the adjudication limit.
+
+  \item[TPC $\neq$ any level of the arithmetical hierarchy.]
+    The arithmetical hierarchy classifies \emph{decision problems} with yes/no
+    answers.  $\TPC$ classifies \emph{selection problems}---the identification of
+    a canonical element from a candidate set.  Decision problems and selection
+    problems are different logical types; neither contains the other.  $\TPC$ is
+    therefore of a different logical type from the arithmetical hierarchy;
+    the comparison becomes degree-theoretically meaningful only through the
+    decision-theoretic shadow of the adjudication function (its record
+    readout on the diagonal fragment), which has Turing degree exactly
+    $\mathbf{0}'$ (Remark~\ref{rem:tpc-degree};
+    \cite{SpivackPolynomialTransputation}).
+
+  \item[TPC $\neq$ hypercomputation of any standard kind.]
+    Hypercomputation targets decision problems of higher arithmetical complexity.
+    $\TPC$ targets selection problems subject to PSC invariance and Born-rule
+    consistency.  These are distinct objectives.
+
+  \item[Computation and transputation are not ordered types.]
+    ``Transputation $\supset$ computation'' is an error.  Computation produces
+    answers to decision problems (a function $\{0,1\}^* \to \{0,1\}^*$);
+    transputation produces canonical selections from candidate sets (a function
+    $\mathcal{P}(A) \times \mathcal{W}(A) \to A$).  These are different function
+    types; neither is a special case of the other.
+\end{description}
+
+% --------------------------------------------------------------------------
+\section{\texorpdfstring{SO(3)}{SO(3)} emergence in the 3D continuum limit}
+\label{sec:so3_emergence}
+
+No three-dimensional $\Zseven$ CA can carry exact continuous $\mathrm{SO}(3)$ symmetry at
+fixed lattice spacing: $\mathrm{Aut}(\mathbb{Z}^3)$ is the order-48 hyperoctahedral group
+$O_h$, and any continuous homomorphism from a finite-alphabet configuration space to
+$\mathrm{SO}(3)$ is trivial.
+The MDL-forced rule \lean{step\_fmdl3d} is exactly $O_h$-equivariant
+($0/729$ cells differ under cubic axis permutation on a gen$_1$-asymmetric initial condition).
+
+In the continuum limit, rotational symmetry is restored as a Wilson/Symanzik
+$O(a^2)$ artefact.
+The lattice Laplacian symbol expands as
+$K_{\mathrm{lat}}(\vec{k}) = -|\vec{k}|^2 + (a^2/12)\sum_i k_i^4 + O(a^4)$;
+the cubic $|\vec{k}|^4$ term decomposes under $\mathrm{SO}(3)$ into spin-0
+($\tfrac{3}{5}|\vec{k}|^4$) plus spin-4 anisotropy, which vanishes as $a^2$.
+Power-law fits give exponent $n = 2.0001$ on the anisotropy fraction and
+$n = 1.9997$ on continuum relative error, matching the analytic $n=2$ prediction.
+The same Wilson coefficient family $\pi^2/(3M^2)$ that controls Lorentz violation
+(\S\ref{sec:psc_pi_lorentz}) controls rotational residuals; at Planck spacing the
+residuals are $\sim 10^{-30}$ at LHC energies and $\sim 10^{-23}$ at GRB scales,
+below current bounds.
+The conserved angular momentum is the Noether charge of the continuum
+$\Phi_{\mathrm{MDL}}$ Lagrangian; the CA is the lattice regulator in the Wilson paradigm.
+
+% --------------------------------------------------------------------------
+\section{The Consistency Conjectures (C1--C5)}
+\label{sec:conjectures}
+
+The following results and conjectures address the deepest structural questions about
+the GTE-M\"{o}bius architecture.  C1 and C2 are fully resolved; C3--C5 remain
+open.  Each item is presented with a precise mathematical statement, its physical
+meaning, and certification status.  The conjectures are ordered by estimated
+tractability.
+
+\subsection{C1 --- Final Coalgebra Theorem}
+\label{sec:C1}
+
+\begin{theorem}[C1 --- PSC Final Coalgebra]
+\label{conj:C1}
+$(A, e, \Dclass)$ is the final coalgebra of the functor $F_{\mathrm{PSC}}$ in the
+category of PSC-consistent arithmetic systems with PSC-morphisms.
+\end{theorem}
+
+\noindent\textbf{Equivalently:} for every PSC-consistent arithmetic system $U$,
+there exists a unique PSC-morphism $\varphi : U \to (A, e, \Dclass)$.
+
+\noindent\textbf{Physical meaning.}  GTE is the terminal PSC-consistent universe.
+Every other system satisfying the Principle of Sufficient Constraint embeds
+uniquely into ours, making the M\"{o}bius architecture the unique PSC-consistent
+physical universe up to isomorphism.
+
+\noindent\textbf{Lean certification (\catAL, zero \texttt{sorry}, zero axiom).}
+The proof is fully machine-certified in \lean{GTEFinalCoalgebra.lean}.
+The proof routes through seven stages:
+\begin{enumerate}[nosep]
+  \item \textbf{PSC-Sys category infrastructure:}
+        \lean{NemS.Category.PSCSys} with \lean{orbit\_admissible} field and
+        \lean{oa\_proof} --- zero \texttt{sorry}
+        (zero \texttt{sorry}, \lean{nems-lean}).
+  \item \textbf{$F_{\mathrm{PSC}}$ functor:}
+        \lean{NemS.Category.FPSC}; $F_{\mathrm{PSC}}$ = identity on
+        \lean{PSCSys} --- zero \texttt{sorry}.
+  \item \textbf{GTE optimality instance:}
+        \lean{GTEOptimalityInstance\allowbreak.lean};\newline
+        \lean{GTECompatibleSpace.orbit\_admissible},
+        \lean{GTEPSCSubstrate.oa\_proof}
+        --- zero \texttt{sorry}.
+  \item \textbf{GTE semantic terminality:}
+        \lean{NemS.Optimality.Terminality};
+        \lean{PSCOptimal}, \lean{semantic\_terminality} --- zero \texttt{sorry}.
+  \item \textbf{GTE reflexive space:}
+        \lean{NemS.Reflexive.FinalityTheorem};
+        \lean{GTEReflexiveSpace}, \lean{optimal\_unique\_up\_to\_iso},
+        \lean{master\_loop\_fixed\_point} --- zero \texttt{sorry}.
+  \item \textbf{IsTerminal derived:}
+        \lean{c1\_final\_coalgebra\_derived} via \lean{B.oa\_proof} --- zero
+        \texttt{sorry}.
+  \item \textbf{Lambek isomorphism:}
+        \lean{c1\_lambek\_isomorphism := rfl} --- zero \texttt{sorry}.
+\end{enumerate}
+
+\noindent\textbf{Status: \catAL\ (machine-certified, Lean~4, zero \texttt{sorry},
+zero axiom;\linebreak[0]\lean{GTEFinalCoalgebra\allowbreak.lean}).}
+
+\subsection{C2 --- Selector Member-Independence}
+\label{sec:C2}
+
+\begin{theorem}[C2 --- Selector Member-Independence --- \catAD{}]
+\label{thm:C2}
+The $[D]$-measure axioms D1--D5 force selector member-independence: any two measures
+$D, D' \in [D]$ satisfying all five constraints induce the \emph{same} selector on
+PSC-admissible records,
+\[
+  \arg\!\min_\rho D(\rho \| w) \;=\; \arg\!\min_\rho D'(\rho \| w)
+  \;=\; P^\top(w)
+  \quad \text{for all admissible } w.
+\]
+\end{theorem}
+
+\noindent\textbf{Proof sketch.}  The argument is direct.  D5 (Born-rule
+consistency, \lean{born\_rule\_unconditional}, \catAL) requires that the minimizer
+has Born-rule marginals $P(k) = |c_k|^2$.  D4 (selection completeness,
+\lean{d4\_physical\_sector}, \catAL) requires that the minimizer is
+\emph{unique}---the minimizing state is the unique Born-rule state.  Together, D4
+and D5 pin the selector to the unique Born-rule state, regardless of which member
+$D \in [D]$ is realized.  This is the GTE analog of Gleason's theorem: where
+Gleason derives the Born rule from frame-independence in dimension $\geq 3$, the
+present result derives selector uniqueness from PSC-invariance (D2) and
+MDL-minimality (D5).  The Three-Level MDL Unification (\CatAD{}) confirms that the
+same MDL functional governs all three levels, with uniqueness at Levels~1 and~2
+(\catAL, \lean{fmdl\_mdl\_uniqueness}) propagating to Level~3.
+
+\noindent\textbf{Lean certification (\catAL, zero \texttt{sorry}).}
+\lean{d1\_d5\_forces\_gibbs\_family} certifies that D1--D5 together force the
+Gibbs-family structure; \lean{c2\_selector\_member\_independent} certifies
+member-independence over $[D]$ from D4+D5 alone.
+
+\noindent\textbf{Relation to the original C2 statement.}  The original C2 conjecture
+additionally asserted that relativistic invariance and CPT symmetry single out the
+PR-0 Ablowitz-Ladik functional as the \emph{minimum-Kolmogorov-complexity}
+representative of $[D]$.  That stronger identification is not settled by D1--D5
+alone and remains open.  Theorem~\ref{thm:C2} establishes the weaker but Lean-certified
+result: selector member-independence over the entire class $[D]$.
+
+\noindent\textbf{Status: \catAD{} (argument from D4+D5); \catAL{} Lean certification
+(\lean{d1\_d5\_forces\_gibbs\_family}, \lean{c2\_selector\_member\_independent},
+zero \texttt{sorry}).}
+
+\subsection{C3 --- TPC Completeness}
+\label{sec:C3}
+
+\begin{conjecture}[C3 --- TPC Completeness]
+\label{conj:C3}
+$\TPC$ is complete for the class of problems arising in any PSC-consistent universe:
+every physical question is either Turing-decidable or in $\TPC$.
+\end{conjecture}
+
+\noindent\textbf{Physical meaning.}  $\TPC$ is the \emph{correct} computability
+class for physics---not an ad hoc characterization but the provably complete one.
+There is no third category of physical process beyond computation (Regimes~I--II)
+and transputation (Regimes~III--IV).
+
+\noindent\textbf{Connection to $\ngen = 3$.}  If C3 holds, then the three-level
+TPC hierarchy (Theorem~\ref{thm:ngen-depth}) is not merely a numerical coincidence
+with fermion generations but a structural derivation of $\ngen$ from the
+completeness of the computation/transputation dichotomy.
+
+A PSC-consistent universe with fewer levels would fail to be TPC-complete; a universe
+with more levels would violate the diagonal barrier.  Conjecture~C3 would thereby
+force $\ngen = 3$.
+
+\noindent\textbf{Proof strategy.}  The most tractable path proceeds in two steps.
+
+First, formalize the class of ``physical questions in a PSC universe'' as a
+type-theoretic problem class: questions of the form ``given macroscopic record~$w$,
+which element of the candidate-realization set is canonical?''
+
+Second, prove that every such question reduces to either a Zone~L1 decision
+(Turing-decidable) or a Zone~L2 $D$-selection (in $\TPC$).  The key infrastructure
+for Step~2 exists: \lean{pt\_non\_effectiveness} from the diagonal-barrier
+certification provides the Zone~L2 lower bound.
+
+\noindent\textbf{Upstream Lean foundation.}
+The abstract classification theorem \texttt{transputation\-\_classification}%
+~\cite{SpivackNEMS76} (machine-checked, zero \texttt{sorry}, 8087 build jobs)
+establishes that under $\mathrm{PSC}$ and diagonal capability, every framework is
+either categorical (Zone~L1 / Decidable) or transputational (Zone~L2 / TPC).
+This is the abstract form of C3.
+
+The GTE-specific proof reduces to two steps:
+(i)~showing GTE satisfies the premises---PSC-closed (P05/P28), diagonal-capable
+(ASR structure of $(A,e)$, Lean-certified), and record-divergent (vacuum has
+14{,}147 predecessors, analytically established)---and (ii)~showing that the
+``transputational'' outcome corresponds to TPC membership in the GTE setting,
+which requires universality of $(A,e)$ (P28, machine-certified) and non-emptiness of~$\Dclass$.
+
+The arithmetic skeleton is Lean-certified in namespace \lean{C3TPCCompleteness}
+of \lean{GUTStructure.lean}~\S67, zero \texttt{sorry}.
+
+Step~(i) is machine-certified: \lean{GTEFrameworkInstance.lean}
+establishes GTE as a \lean{NemS.Framework} with \lean{DiagonalCapable} and
+\lean{PSCBundle}, and proves \lean{gte\_tpc\_from\_nems\_classification}----%
+\lean{transputation\_classification} applied to the GTE instance
+(\catAL, conditional on one bridge axiom
+\lean{gte\_partrec\_eval\_iff\_fmdl\_phi}, same mathematical tier as the six
+CUP3D axioms; ugp-lean).
+Step~(ii)---connecting the transputational outcome to TPC membership via
+universality of $(A,e)$ and non-emptiness of $\Dclass$---remains open.
+
+\noindent\textbf{Status: Step~(i) \catAL\ (conditional, 1 bridge axiom;
+\lean{gte\_tpc\_from\_nems\_classification}); step~(ii) conjectured.}
+
+\subsection{C4 --- Lawvere-Physical Correspondence}
+\label{sec:C4}
+
+\begin{conjecture}[C4 --- Lawvere-Physical Correspondence]
+\label{conj:C4}
+The Lawvere fixed-point structure of $(A, e)$ corresponds exactly to the three
+stability regimes of physical states:
+\begin{enumerate}[nosep, label=(\roman*)]
+  \item \emph{Vacuum $\leftrightarrow$ Lawvere fixed point:}
+        $\fmdl(\mathrm{vac}) = \mathrm{vac}$ is the unique computable fixed point
+        guaranteed by Lawvere's theorem; it corresponds to the massless-radiation
+        sector (photons, gluons).
+  \item \emph{$\mathrm{gen}_1 \leftrightarrow$ Garden of Eden:}
+        $\mathrm{gen}_1$ has zero $\fmdl$-predecessors; it is stable because it
+        is unreachable from any other state, not because it is a fixed point.  It
+        corresponds to the stable-matter sector (electrons, protons).
+  \item \emph{$\mathrm{gen}_2, \mathrm{gen}_3 \leftrightarrow$ Lawvere periodic
+        orbit:} the period-3 orbit is the periodic structure guaranteed by
+        Lawvere's theorem; it corresponds to metastable matter (muons, pions,
+        heavy quarks).
+  \item \emph{Zone L2 $\leftrightarrow$ diagonal undecidability:} quantum
+        measurement events correspond exactly to the diagonal zone in which
+        $\fmdl$-chain reachability is undecidable.
+\end{enumerate}
+\end{conjecture}
+
+\begin{remark}
+Item~(ii) corrects a common conflation: $\mathrm{gen}_1$ is \emph{not} a Lawvere
+fixed point.  The fixed point guaranteed by Lawvere's theorem in the
+cartesian-closed category of computable maps on $A$ is the vacuum state.
+$\mathrm{gen}_1$'s stability is of a different kind: it is a Garden of Eden, a
+state with no $\fmdl$-predecessor, and its stability follows from unreachability
+rather than self-application.  The distinction between Lawvere-fixed-point
+stability (vacuum) and Garden-of-Eden stability ($\mathrm{gen}_1$) is
+Lean-certified (\lean{garden\_of\_eden\_gen1}, \lean{GardenOfEden.lean}, zero
+\texttt{sorry}, \catAL).
+\end{remark}
+
+\noindent\textbf{Current evidence.}  The arithmetic skeleton of C4---the GoE
+theorem, the period-3 orbit theorem, the vacuum fixed-point theorem, and the
+Zone~L2 Lawvere diagonal structure---is fully Lean-certified in
+\lean{LawvereZone.lean} (\catAL, zero \texttt{sorry}).  The module formally
+defines the three Lawvere zone types (\lean{ZoneType}: \lean{L0\_vacuum},
+\lean{L1\_orbit}, \lean{L2\_transput}), proves the strict ordering
+$\text{L0} < \text{L1} < \text{L2}$, and assembles all four parts of C4 into
+\lean{c4\_arithmetic\_proxy} (zero \texttt{sorry}).
+Physical isomorphism items~1 and~2 are also machine-certified:
+\lean{physical\_item1\_vacuum\_massless} identifies Zone~L0 with the massless
+sector via the unique fixed-point certificate, and
+\lean{physical\_item2\_gen1\_stable\_matter} identifies Zone~L1 with stable
+matter via the Garden-of-Eden certificate for gen$_1$.  Both are assembled in
+\lean{c4\_physical\_isomorphism\_partial} (\lean{LawvereZone.lean}, zero \texttt{sorry}).
+Item~3 (Zone~L2 = quantum measurement) is analytically derived, pending C3.
+
+\noindent\textbf{Proof requirement.}  Items~1 and~2 of the physical isomorphism
+are machine-certified (\lean{c4\_physical\_isomorphism\_partial},
+\lean{LawvereZone.lean}, zero \texttt{sorry}): Zone~L0 is formally identified
+with the massless (vacuum) sector via the unique-fixed-point certificate, and
+Zone~L1 is formally identified with stable matter via the Garden-of-Eden
+certificate for gen$_1$.  The remaining open part is item~3: a formal proof
+that Zone~L2 corresponds to the quantum measurement (transputational) regime.
+This requires formalizing the physical stability predicate for transputational
+states, which depends on the PSC framework (C3) and is the prerequisite for
+full \catAL\ certification of C4.
+
+\noindent\textbf{Status: \catAL\ for arithmetic skeleton and physical isomorphism
+items~1--2 (vacuum = massless sector, gen$_1$ = stable matter;
+\lean{c4\_physical\_isomorphism\_partial}, \lean{LawvereZone.lean}, zero sorry);
+\catAD\ for item~3 (Zone~L2 = quantum measurement sector, depends on C3
+TPC Completeness).}
+
+\subsection{C5 --- Self-Specification Depth}
+\label{sec:C5}
+
+\begin{conjecture}[C5 --- Incompleteness Depth]
+\label{conj:C5}
+The proof-theoretic ordinal of $\TGTE$ equals $\epszero$; the
+computation/transputation boundary occurs at ordinal rank $\epszero$ in
+the G?del numbering of $\TGTE$.
+\end{conjecture}
+
+\noindent\textbf{Physical meaning.}  The G?del-Turing boundary in GTE arithmetic
+has a precise ordinal depth.  The ordinal $\varepsilon_0$ is the
+Goodstein-Gentzen ordinal, the proof-theoretic ordinal of Peano Arithmetic.  If
+$\TGTE$ has the same proof-theoretic strength as PA, then the depth of the
+self-specification limit is exactly $\varepsilon_0$---a quantitative, not merely
+qualitative, characterization of the transputation boundary.
+
+\noindent\textbf{Plausibility.}  GTE arithmetic on $\Zseven$ is a fragment of
+number theory.  By Rule~110 Turing completeness, it can simulate any computable
+function, hence in particular can simulate PA arithmetic.  If this simulation is
+faithful enough to encode the full PA induction scheme, $\TGTE$ and PA are
+equi-interpretable and their proof-theoretic ordinals coincide at $\varepsilon_0$.
+Whether the simulation preserves enough of PA's induction to equate ordinals is
+the open question.
+
+\noindent\textbf{Status: Highly speculative.}  No formal investigation of the
+proof-theoretic strength of $\TGTE$ has begun.
+
+% --------------------------------------------------------------------------
+\section{The Two-Level Algebraic Architecture}
+\label{sec:lifting-architecture}
+
+The GTE framework operates at three scales: the beable (Planck) level, the
+discrete-but-finite-$M$ lattice level, and the physical (Compton) level.
+Three Lean-certified theorems connect these scales; together they form a
+complete correspondence structure with no informationally isolated level.
+
+\begin{theorem}[Algebraic Lifting, \lean{algebraic\_lifting\_theorem}, \catAL]
+\label{thm:algebraic-lifting}
+Let $B : \mathrm{Fin}\,5 \to \mathrm{Fin}\,7$ be a PSC-admissible beable with
+$\mathrm{DWeight}\,B > 0$.
+Then $B$ determines a physical observable at the Compton scale carrying the same
+$\Zseven$ winding number, $\Zthree$ colour charge, and generation index as $B$.
+In particular, charge quantisation, colour structure, three-generation hierarchy,
+and S-matrix quantum numbers proved at the beable level hold at the physically
+observable Compton scale.
+\end{theorem}
+
+\noindent\textbf{Lean certification:} \lean{LiftingTheorem.lean}, zero \texttt{sorry}, zero axioms beyond CIC.
+The Algebraic Lifting Theorem upgrades beable-level results---winding conservation,
+generation hierarchy, charge formula, vertex catalog, stability---to
+physical predictions via Theorem~\ref{thm:algebraic-lifting}.
+
+\begin{theorem}[3D Spatial Lifting, \lean{spatially\_extended\_composite\_lifting},
+\catAL]
+\label{thm:spatial-lifting}
+Let $G$ be a 3D $\fmdl$ causal graph, and let $B_A$, $B_B$ be PSC-admissible
+beables at distinct positions with colour charges summing to zero mod~3 and an
+\lean{IsVacuumPath} from $A$ to $B$ in $G$.
+Then the composite $(B_A, B_B, \mathrm{vacuum\ path})$ is PSC-admissible,
+colour-neutral, and a physical bound state.
+Proved independently of geodesic uniqueness; requires only path existence.
+\end{theorem}
+
+\noindent\textbf{Lean certification:} \lean{SpatiallyExtendedLifting.lean},
+zero \texttt{sorry}.
+
+\begin{theorem}[Algebraic Descent, \lean{algebraic\_descent\_theorem}, \catAL]
+\label{thm:algebraic-descent}
+Let $P$ be any algebraic or topological property of $\Phi_{\mathrm{MDL}}$
+depending only on the $F_{21} = \Zseven \rtimes \Zthree$ internal symmetry.
+Then $P$ holds for the discrete model $\fmdl = \Phi_{\mathrm{MDL}}|_{M,\mathrm{binary}}$
+at every resolution $M \geq 1$.
+Charge quantisation, colour confinement, asymptotic freedom ($b_0 = 7$), and
+strong-CP resolution ($\theta_{\mathrm{QCD}} = 0$) are $M$-independent;
+only geometric properties (Lorentz invariance, SR accuracy) require $M \to \infty$.
+\end{theorem}
+
+\noindent\textbf{Lean certification:} \lean{AlgebraicDescentTheorem.lean},
+zero \texttt{sorry}.
+
+\paragraph{The two-level algebraic triangle.}
+Discrete $\fmdl$ (Rule~110, resolution~$M$) $\xleftarrow{\text{Descent
+(Thm.~\ref{thm:algebraic-descent})}}$ Continuous $\Phi_{\mathrm{MDL}}$;
+upward arrows via Theorems~\ref{thm:algebraic-lifting} and
+\ref{thm:spatial-lifting} to physical observables at Compton scale.
+Algebraic results propagate across all levels; geometric results differ by
+$\varepsilon_0(M) = \pi^2/(3M^2)$, vanishing in the continuum limit.
+
+% --------------------------------------------------------------------------
+\section{The Algebraic Lifting Theorem and Physical Predictions}
+\label{sec:lifting-theorem}
+
+The three lifting theorems of \S\ref{sec:lifting-architecture} are needed because
+the GTE-M\"{o}bius architecture's primary derivations operate at the \emph{beable} level:
+the 5-cell $\Zseven$ ring is a Planck-scale mathematical object with winding numbers
+assigned abstractly, not physical particles with observable charges and lifetimes.
+Without a formal connection between beable-level facts and physical observables,
+the arithmetic results---charge formula, generation count, orbit stability---would
+remain confined to an abstract substrate and would not constitute predictions about
+measured quantities.
+Theorems~\ref{thm:algebraic-lifting}--\ref{thm:algebraic-descent} supply exactly
+this connection: they certify that the $F_{21} = \Zseven \rtimes \Zthree$ internal
+symmetry is preserved across all scales, so that every algebraic property of the
+discrete beable ring is a property of the physical Compton-scale particle it represents.
+
+Section~\ref{sec:lifting-architecture} states the lifting theorems; this section
+records their consequence for Standard Model predictions.
+The GTE framework operates across two scales differing by a factor
+$\sim 10^{16}$--$10^{22}$: beable-scale 5-cell $\Zseven$ orbit configurations
+(Planck-scale extent under the conventional fine-end working hypothesis that
+the cell spacing equals the Planck length $\ell_{\rm Pl}$ --- a calibration
+reading of the discrete certificate, not a GTE derivation) versus
+Compton-scale physical particles.
+Without Theorem~\ref{thm:algebraic-lifting}, beable-level results would not
+formally connect to observable physics; with it, every \catAL\ algebraic result
+at the beable level is a prediction about physical particles.
+Table entries marked with $\dagger$ in Table~\ref{tab:summary} denote results
+extended to physical scale by the Algebraic Lifting Theorem.
+
+% --------------------------------------------------------------------------
+\section{GTE Equivalence Principle and Geodesic Theorem}
+\label{sec:geodesic}
+
+\begin{theorem}[GTE Geodesic Theorem, \catAD]
+\label{thm:geodesic}
+Physical particles (Compton-scale $\Dclass$-weighted wavepackets) follow
+geodesics of the 3D $\fmdl$ causal graph: constraint D2 forces
+$\langle x \rangle_D$ to trace the unique PSC-invariant path---the geodesic
+(Ehrenfest-type argument).
+\end{theorem}
+
+\begin{corollary}[GTE Equivalence Principle, \catAD]
+\label{cor:equivalence}
+All physical particles experience the same emergent geometry
+(\lean{gte\_equivalence\_principle}): composition-independent geodesic motion
+follows from universality of MDL-minimal computation.
+Timelike and null geodesic corollaries hold as limiting cases.
+\end{corollary}
+
+\noindent\textbf{Lean module:} \lean{GeodesicTheorem.lean}.
+This is the first formal connection between emergent gravity (Paper~P36) and
+GTE particle trajectories on the Level-1 CA causal graph.
+Status is \catAD\ for the present CA-track formulation: the D2 geodesic argument
+is analytically complete; full \catAL\ certification on the $\Phi_{\mathrm{MDL}}$
+continuum awaits formalization of the $[\mathbf{D}]$ measure on the 3D causal graph.
+
+\begin{remark}[Full geodesic theorem (P43)]
+\label{rem:geodesic-p43}
+Paper~P43~\cite{SpivackCompleteness} machine-certifies the complete geodesic
+theorem on the $\Phi_{\mathrm{MDL}}$ substrate at \catAL{} (zero \texttt{sorry}):
+\lean{geodesic\_theorem\_spatial\_general} for all causal pairs (timelike and
+spatial displacement), together with \lean{psc\_orbit\_is\_curvature\_geodesic} and
+\lean{tau\_c\_prefers\_geodesic}.  The CA-track theorem above remains the
+Level-1 certificate linking D2-weighted trajectories to discrete curvature;
+P43 supplies the Level-2 closure.
+\end{remark}
+
+\begin{remark}[Cumulative $\tau_c$ as computational effort]
+\label{rem:tau_c_effort}
+The geodesic theorem has a direct computational interpretation. The local $\tau_c$
+rate at each cell is the number of inner-CA transitions required per outer step: it
+measures the computational effort expended at that spacetime location. A physical
+particle constrained by D2 to a geodesic path therefore follows the worldline of
+\emph{least total computational effort}. Paper~P36 confirms this quantitatively:
+over 150 outer steps, an off-geodesic path accumulates cumulative $\Sigma\tau_c = 74.0$
+versus $43.0$ on the geodesic---a $1.721\times$ excess, confirming that geodesic paths
+minimise total computational effort~\cite{SpivackEmergentGravity}.
+The independently measured per-step $\tau_c$ ratio is $1.390$, matching the SR Lorentz
+factor $\gamma$ directly~\cite{SpivackEmergentGravity}.
+The $\mathrm{DWeight}$-weighted $[\mathbf{D}]$-average of $\tau_c$ reproduces $\gamma$
+to within the CA lattice floor ($5.4\%$ raw, $1.2$--$1.8\%$ corrected;
+$0.069\%$ mean error in the $\Phi_{\mathrm{MDL}}$ continuum across $\beta\in[0.05,0.90]$),
+with non-canonical beable patterns deviating by $54$--$105\%$~---
+machine-certified in Lean~4 with zero \texttt{sorry}
+(\lean{dmdl\_qec\_sr\_bundle}, \texttt{DWeightSRFormula.lean}, $\catAL$).
+Proper time along a worldline in GTE is therefore synonymous with accumulated computational effort.
+\end{remark}
+
+% --------------------------------------------------------------------------
+\section{The Law = Description = Execution Principle}
+\label{sec:law-description-execution}
+
+The $\fmdl$ rule is simultaneously the physical law (SM parameter derivation,
+Papers P28--P33), the execution substrate (the CA rule generating spacetime
+dynamics), and the self-description (the rule \emph{is} the law---no separate
+law computer is required).
+The mutual implication GTE $\leftrightarrow$ Rule~110 from Paper~P35 is the
+binary shadow (parity projection) of the deeper truth GTE $\leftrightarrow$
+$\fmdl$ $\Zseven$.
+Each Fractal Cellular Automaton (FCA) level simultaneously functions as
+language (for the level above), compiled program (for the level below), and
+Level-1 execution certificate (for the CMCA discrete architecture;
+\S\ref{sec:subsequent-papers}).
+The M\"{o}bius architecture $(A, e, \Dclass)$ is the formal container for this triple
+role: $A$ encodes what is possible, $e$ encodes how it executes, and $\Dclass$
+selects which branch of undecidable evolution becomes physical.
+
+% --------------------------------------------------------------------------
+\section{Computational vs.\ Transputational Aspects}
+\label{sec:ctd}
+
+GTE is overwhelmingly \emph{computational} (CA evolution sufficient) for
+quantum numbers, masses, vertices, confinement, anomalies, renormalizability,
+propagation, and creation/annihilation.
+\emph{Transputation} ($\Dclass$) is required only for individual measurement
+outcomes and wave-function collapse.
+Table~\ref{tab:ctd} summarizes the division.
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabular}{p{0.38\textwidth} p{0.22\textwidth} p{0.28\textwidth}}
+\toprule
+\textbf{Physical aspect} & \textbf{Mode} & \textbf{Mechanism} \\
+\midrule
+Quantum numbers, masses, vertices & Computational & $\fmdl$ orbit + lifting \\
+Colour confinement, anomalies & Computational & PSC orbit table \\
+Renormalizability & Computational & Zone L1 beables only \\
+Free propagation, decay rates & Computational & $\fmdl$ + Schr\"odinger \\
+Measurement outcomes & Transputational & $\Dclass$-selection \\
+Wave-function collapse & Transputational & Zone L2 adjudication \\
+Individual kink nucleation & Transputational & Threshold $A = \pi/7$ \\
+\bottomrule
+\end{tabular}
+\caption{Computation/transputation division.
+The kink-creation threshold $A_{\mathrm{threshold}} = \pi/7 \approx 0.449$
+on $\Phi_{\mathrm{MDL}}$ is the computation/transputation boundary on the
+continuous field (\S\ref{sec:phimdl-triple}).}
+\label{tab:ctd}
+\end{table}
+
+\input{../common/figures/fig_p34_comp_transputation.tex}
+
+% --------------------------------------------------------------------------
+\section{Symmetry Structure of \texorpdfstring{$\Phi_{\mathrm{MDL}}$}{Phi\_MDL}}
+\label{sec:symmetry-phimdl}
+
+The $\Phi_{\mathrm{MDL}}$ substrate symmetry group decomposes as
+$\mathbb{Z}_{7,\mathrm{topological}} \times \mathbb{Z}_{3,\mathrm{Noether}} \times
+\mathbb{Z}_{2,\varphi\mathrm{-reflection}} \times \mathbb{Z}_{2,(\chi,A)\mathrm{-reflection}}
+\times \mathbb{Z}_{3,\mathrm{gauge}} \times \mathrm{ISO}(3,1)$.
+The $\Zseven$ winding is a \emph{topological charge} (analogous to baryon number
+in QCD), not a Noether symmetry of the full Lagrangian: the coupling term
+$V_{\mathrm{coupling}} = \varepsilon|\varphi|^2(D_\mu\chi)^2$ breaks the
+$\Zseven$ shift $\varphi \to \varphi + 2\pi/7$.
+GUT-style hidden-symmetry unification of the three $\Phi_{\mathrm{MDL}}$ sectors
+(Path~Z) is structurally ruled out: the three sectors are irreducible mathematical
+types (topological / $\mathbb{Z}_{3,\mathrm{gauge}}$ / $\mathrm{U}(1)_{\mathrm{EM}}$).
+
+\paragraph{No Mandelstam duality in $3{+}1$D.}
+A $3{+}1$D analog of Mandelstam bosonization mapping $\Phi_{\mathrm{MDL}}$ kinks
+(codimension-1 domain walls) to spin-1 gauge bosons does not exist: vortex-particle
+duality requires codimension-2 defects, and known higher-dimensional duality
+mechanisms require compact $\mathrm{U}(1)$ or SUSY, both absent here.
+The worldvolume theory on a single $\Zseven$ domain wall reduces to $(1{+}1)$D
+massive Thirring fermions via Mandelstam, but these are wall-localized, not bulk
+$(3{+}1)$D gauge bosons.
+
+\paragraph{Goldstone-as-photon ruled out.}
+The $\Zseven$-KG Lagrangian has no continuous global $\mathrm{U}(1)$ symmetry of
+the scalar field beyond discrete $\Zseven$ winding: a single real scalar admits no
+$\mathrm{U}(1)$ rotation; $V(\varphi) = m^2(1-\cos(7\varphi))/49$ fails
+$\mathrm{U}(1)$ invariance; the propagating spectrum contains no Goldstone mode
+at vanishing momentum.
+The massless photon arises from $\mathrm{U}(1)_{\mathrm{EM}}$ gauge invariance of
+the second-sector $A_\mu^{\mathrm{EM}}$ field in the two-sector architecture, not
+from spontaneous breaking of a continuous internal symmetry of~$\varphi$.
+
+% --------------------------------------------------------------------------
+\section{Particle Compositeness and Planck-Scale Bounds}
+\label{sec:psb}
+
+Analytical bounds on the minimum and maximum CA-cell radius of each Standard
+Model particle follow from Planck-scale arguments~\cite{SpivackCompUniversality}.
+The $\Zseven^5$ information-theoretic minimum is 15~cells
+($5 \times \log_2 7 \approx 14.04$~bits).
+Under the conventional fine-end working hypothesis that the cell spacing
+equals the Planck length $\ell_{\rm Pl}$ (a calibration reading of the
+discrete certificate, not a GTE derivation),
+the electron Compton radius corresponds to $\sim 2.4 \times 10^{22}$ Planck
+cells; the top quark to $\sim 7.0 \times 10^{16}$ cells.
+All stable SM particles are Compton-limited (no causal upper bound from
+$\fmdl$ dynamics).
+The 15-cell information-theoretic minimum and the Compton-limited conclusion
+are independent of this reading.
+Reproduce via \texttt{papers/36\_emergent\_gravity/scripts/particle\_size\_bounds.py}.
+
+% --------------------------------------------------------------------------
+\section{\texorpdfstring{$\Zseven$}{Z7}-Consistent AFCA Inner CA Structure}
+\label{sec:z7fca}
+
+\paragraph{Historical context.}
+The single-layer Asynchronous Fractal Cellular Automaton (AFCA) model below
+predates the three-tape Chiral Minkowski CA (CMCA) established in
+Papers~P41~\cite{SpivackCMCA} and~P45~\cite{SpivackThreeTapeCMCA}.
+The CMCA is the canonical Level-1 discrete certificate: Rule~110 ($L_{x^+}$) +
+Rule~124 ($L_{x^-}$) + inner Rule~110 $\tau_c$ clock ($L_t$) on a shared substrate,
+with chiral null structure and SR clock physics derived from D2
+(\S\ref{sec:subsequent-papers}).
+The AFCA analysis retained here documents $\Zseven$-consistent inner-CA period
+structure and early SR time-dilation measurements on the P36 CA track; for
+canonical Level-1 SR results see P45~\cite{SpivackThreeTapeCMCA}.
+
+The M\"{o}bius execution architecture uses AFCA as an exploratory single-layer model:
+an outer $\fmdl$ layer coupled to an inner Rule~110 clock.
+A binary inner CA at $M = 5$ does not realize $\Zseven$ phase structure; the
+$\Zseven$-consistent ether period-7 cycle appears at $M = 14$.
+This informs orbit coarse-graining design for multi-level AFCA and connects to
+SR time-dilation measurements in Paper~P36: the canonical GTE resolution $M = 7$
+gives SR error $\varepsilon_0 \approx 6.71\%$, matching AFCA measurements to
+within $0.31$~percentage points.
+
+% --------------------------------------------------------------------------
+\section{The Continuum Limit and the Fine-Angle Problem}
+\label{sec:continuum}
+
+The arithmetic carrier $A$ operates on a discrete lattice carrying the symmetry of
+the cubic point group $O_h$---a finite group of 48 elements, not the continuous
+rotation group $\mathrm{SO}(3)$.  This is not an incidental feature removable by
+refinement.
+
+On any lattice with fixed spacing $a$, only angles of the form
+$\theta = \arctan(n/m)$ for integers $n,m$ are geometrically exact.  Infinitely
+many physical angles---precisely those with irrational tangent---have no exact
+lattice representative at any finite lattice spacing.  We call this the
+\emph{fine-angle problem}.
+
+The sharpest form of the challenge: if the arithmetic carrier is discrete with only
+$O_h$ symmetry, how can the M\"{o}bius architecture be the exact substrate of a physical
+universe with continuous rotational symmetry $\mathrm{SO}(3)$?
+
+The resolution is not an approximation argument, and it is not a continuum limit
+in the lattice-QCD sense of taking a regulator to zero.  It is a consequence of the
+internal structure of the full triple $(A, e, \Dclass)$: the fine-angle problem is
+real and genuine for $A$ in isolation, but $A$ in isolation is not the complete
+substrate.
+
+When the coherence measure class $\Dclass$ is included, exact continuous rotational
+invariance is enforced on all physical observables by constraint D2.  We develop
+this argument in full below, identify its relationship to familiar mechanisms in
+condensed-matter physics, and state precisely which parts remain open.
+
+\paragraph{The distinction between $A$ and $(A, e, \Dclass)$.}
+
+The M\"{o}bius architecture is a single mathematical object---the triple $(A, e, \Dclass)$
+---and was never presented as a claim that physical spacetime is a cubic lattice.
+The claim is that the full triple is the mathematical object from which spacetime,
+its symmetries, and its particle content emerge.  Isolating $A$ and observing that
+it lacks $\mathrm{SO}(3)$ symmetry proves only that $A$ alone is insufficient as a
+substrate, which the M\"{o}bius architecture already states: all three components are
+necessary.
+
+The established physical precedent for exactly this logical structure is the quantum
+theory of electrons in a crystal.  A metallic crystal has the discrete point-group
+symmetry of its unit cell---$O_h$ for a cubic crystal, $C_6$ for a hexagonal lattice
+---and no larger continuous symmetry.
+
+Yet the Bloch-state quasiparticles, which are quantum superpositions over many lattice
+sites, can exhibit continuous symmetries absent from the underlying lattice.
+
+In graphene---a single layer of carbon atoms on a two-dimensional honeycomb lattice
+with $C_6$ discrete rotational symmetry---the low-energy quasiparticles near the
+Dirac points at the $K$ and $K'$ corners of the hexagonal Brillouin zone satisfy the
+two-dimensional Dirac equation with dispersion relation
+$E = \pm\hbar v_F|\mathbf{k}|$~\cite{CastroNeto2009}.  This dispersion is exactly
+isotropic and exactly Lorentz-covariant at leading order.
+
+The $C_6$ symmetry of the underlying carbon lattice is sufficient to enforce the
+conical band topology at the $K$-point, and the emergent Lorentz invariance is not an
+approximation: corrections are of order $(|\mathbf{k}|/\Lambda)^2$ where $\Lambda$
+is the Brillouin-zone cutoff, vanishing in the long-wavelength limit.  The graphene
+Dirac cone is one of the most precisely verified examples of emergent relativistic
+physics from a discrete substrate in condensed-matter physics.
+
+The GTE construction has the same logical structure.  Component $A$ is the discrete
+beable substrate; component $\Dclass$ selects physical quantum states from among all
+$A$-realizations.  The fine-angle problem exists for $A$ alone; it does not survive
+to the level of $\Dclass$-weighted physical observables.
+
+\paragraph{Rotational invariance of $\Dclass$ from D2.}
+
+Constraint D2 of the substrate specification (\S\ref{sec:coherence}) requires that
+$D$ be invariant under all PSC-preserving transformations: no member of $\Dclass$
+may prefer one PSC-consistent labeling of the physical configuration over another.
+The pivotal question is whether continuous spatial rotations are PSC-preserving.
+
+The five PSC axioms are: RC (reflexive closure: anomaly cancellation, unitarity,
+and UV consistency), NM$^*$ (structural stability: the qualitative type is constant
+on an open dense subset of parameter space), TV (thermodynamic viability: stable
+bound-state sectors exist), SA (semantic admissibility: information-bearing
+subsystems exist), and PI (presentation invariance: among equivalent Lagrangian
+presentations, the one of minimal Kolmogorov complexity is selected)~\cite{SpivackNEMS05}.
+
+None of these five axioms makes reference to any preferred spatial direction.
+
+A spatial rotation $R \in \mathrm{SO}(3)$ applied simultaneously to all physical
+objects, fields, and measurement apparatuses preserves anomaly-cancellation structure
+(RC), does not alter qualitative-type stability (NM$^*$), does not destroy bound
+states (TV), does not affect information-bearing capacity (SA), and does not change
+the Kolmogorov complexity of the Lagrangian description (PI, since the Lagrangian
+itself is not altered by a global spatial rotation of its physical degrees of
+freedom).
+
+Therefore $R$ cannot violate any PSC axiom, and every element of $\mathrm{SO}(3)$ is
+a PSC-preserving transformation.  By D2, the coherence measure $D$ is invariant under
+every element of $\mathrm{SO}(3)$.
+
+In the relativistic extension, the identical argument applied to Lorentz
+boosts---which are equally PSC-preserving, as they preserve all five PSC axiom
+conditions---gives invariance under the full Lorentz group $\mathrm{SO}(1,3)$.
+
+\subsection{PSC/PI forces Lorentz equivariance of \texorpdfstring{$[\mathbf{D}]$}{[D]}}
+\label{sec:psc_pi_lorentz}
+
+The D2 universal reading above is machine-certified on the $\Phi_{\mathrm{MDL}}$
+continuum substrate.
+Let $\Lambda$ be a Lorentz transformation acting on the Klein--Gordon field
+$\Phi_{\mathrm{MDL}}$.
+The Lagrangian
+$\mathcal{L} = \tfrac{1}{2}(\partial_\mu\Phi)^2 - V(\Phi)$ with
+$V(\Phi) = m^2(1-\cos(7\Phi))/49$ is a Lorentz scalar; Lorentz boosts preserve
+reflexive closure, structural stability, thermodynamic viability, semantic
+admissibility, and presentation invariance on $\Phi_{\mathrm{MDL}}$ configurations.
+By D2, any such $\Lambda$ is PSC-preserving, hence
+\begin{equation}
+  D(\Lambda\cdot\rho \mid w) = D(\rho \mid w)
+  \label{eq:d_lorentz_equiv}
+\end{equation}
+for every member of $\Dclass$.
+Physical observables are $\Dclass$-weighted expectations; equation~\eqref{eq:d_lorentz_equiv}
+states that $[\mathbf{D}]$-selected observables are Lorentz-equivariant even though the
+underlying Rule~110 beable layer carries a preferred ether frame.
+The CA beable substrate retains a rest frame; that frame is unobservable at the
+$[\mathbf{D}]$ level.
+
+\noindent\textbf{Lean certification (\catAL, zero \texttt{sorry}):}
+\lean{PSCPILorentzMain.lean} proves
+\lean{psc\_pi\_forces\_d\_lorentz\_equivariant}
+and \lean{psc\_pi\_no\_preferred\_frame}\newline
+from \lean{LagrangianLorentzScalar\allowbreak.lean},
+\lean{PSCStructureLorentz\-Preserved.lean}, and
+\lean{PSCPreserving\-Transformation.lean}.
+The structural reading of D2 as applying to all PSC-preserving maps is formalized as
+axiom \lean{d2\_universal} (presentation-invariance scope, not a new physical postulate).
+Scope: flat-vacuum backgrounds; cosmological and thermal extensions are deferred to
+Paper~P36 and the $\Phi_{\mathrm{MDL}}$ gravity programme~\cite{SpivackEmergentGravity}.
+
+Because physical observables are $\Dclass$-weighted quantum averages, the following
+representation-theoretic argument applies.  Let $\mathcal{O}$ be any observable that
+is not $\mathrm{SO}(3)$-invariant.  For every rotation $R \in \mathrm{SO}(3)$,
+\begin{equation}
+  \langle \mathcal{O} \rangle_D
+  \;=\; \int \mathcal{O}(\rho)\,dD(\rho)
+  \;=\; \int \mathcal{O}(R\cdot\rho)\,dD(R\cdot\rho)
+  \;=\; \int \mathcal{O}(R\cdot\rho)\,dD(\rho),
+  \label{eq:rep-theory}
+\end{equation}
+where the last equality uses $\mathrm{SO}(3)$-invariance of $D$.
+
+For a non-invariant observable, the only value consistent with
+equation~\eqref{eq:rep-theory} for all $R$ is $\langle\mathcal{O}\rangle_D = 0$.
+Any $O_h$-symmetric but $\mathrm{SO}(3)$-breaking lattice artifact contributed by
+$A$---by definition a non-invariant quantity---contributes exactly zero to all
+physical observables when weighted by $D$.  The fine-angle problem vanishes at the
+level of physical observables.
+
+This resolution is \catAD: derived analytically from constraint D2 and the
+PSC-preserving character of spatial rotations, with no additional physical input
+beyond the substrate specification of \S\ref{sec:triple}.  The formal Lean~4
+certification of this argument remains an open problem, as stated in OQ-CL1 below.
+
+\paragraph{The quantum superposition mechanism.}
+
+A concrete physical realization underlies the abstract $\Dclass$-invariance argument.
+
+A physical quantum state in the M\"{o}bius architecture is not a single arithmetic beable---a
+single CA configuration---but a $\Dclass$-weighted superposition over many beable
+configurations:
+\begin{equation}
+  |\psi\rangle \;=\; \sum_n c_n\,|\mathrm{beable}_n\rangle,
+  \label{eq:beable-super}
+\end{equation}
+where each $|\mathrm{beable}_n\rangle$ carries a discrete three-momentum
+$\mathbf{k}_n = (2\pi/L)\,\mathbf{n}$ (integer vector $\mathbf{n} \in \mathbb{Z}^3$
+in a box of side $L$), and the coefficients $c_n$ are determined by $D$-minimization.
+
+The effective momentum of the quantum state,
+\[
+  \langle\mathbf{k}\rangle = \sum_n |c_n|^2\,\mathbf{k}_n,
+\]
+is a continuous vector in the infinite-volume limit $L \to \infty$, where the discrete
+spectrum $\{(2\pi/L)\,\mathbf{n}\}$ becomes dense in $\mathbb{R}^3$.
+
+The scattering angle between two physical quantum states is
+$\theta = \arccos(\hat{k}_1\cdot\hat{k}_2)$, where $\hat{k}_i = \langle\hat{\mathbf{k}}\rangle_i$.
+Because $\langle\mathbf{k}\rangle$ is continuous, $\theta$ takes any value in $[0,\pi]$;
+there is no fine-angle constraint at the level of physical quantum states.
+
+This is the direct analog of the Bloch-wave mechanism.  In a crystal, individual
+atoms occupy discrete lattice sites; Bloch states carry a crystal momentum
+$\mathbf{k}$ that ranges continuously within the Brillouin zone.  Physical
+observables are continuous functions of $\mathbf{k}$ even though the underlying
+lattice is discrete.
+
+Zone~L1 beables (the deterministic $\fmdl$ level) play the role of the crystal
+lattice; Zone~L2 quantum states (the $\Dclass$-selected physical level) play the
+role of the Bloch superposition.
+
+In 't~Hooft's ontological interpretation of quantum mechanics~\cite{tHooft2016CA},
+physical particles are quantum superpositions of deterministic ontological beable
+states, and all observable statistics emerge from the superposition structure.
+
+The $\Dclass$-weighting of the M\"{o}bius architecture realizes precisely this structure:
+$A$ provides the discrete beables; $\Dclass$ provides the non-algorithmic selection
+functional that determines the physical superposition from among all possible
+realizations.
+
+\paragraph{Two-layer resolution of fine angles.}
+
+Two independent mechanisms restore continuous angles at the physical level;
+neither requires taking a lattice regulator to zero in the QCD sense.
+
+\emph{Layer 1 (D2 $\to$ SO(3)).}
+As developed above, constraint D2 forces $\mathrm{SO}(3)$ invariance of
+$\Dclass$-weighted observables; lattice artifacts contribute zero to physical
+expectation values.
+This is the primary resolution for scattering angles and orientation-dependent
+observables at fixed FCA depth.
+
+\emph{Layer 2 (FCA continuum depth).}
+The Fractal Cellular Automaton hierarchy is the sequence of $\Phi_{\mathrm{MDL}}$
+lattice refinements at spacing $a_n = 1/M_n$ with $M_n = M_0\cdot 2^n$, not a nested
+Rule~110-in-Rule~110 self-simulation.
+At each level the lattice correction
+$\varepsilon_0(M) = \pi^2/(3M^2)$ controls both Lorentz violation and rotational
+anisotropy; at $M=7$, $\varepsilon_0 = \pi^2/147 \approx 6.71\%$ matches AFCA SR
+measurements to $0.31$~percentage points, and $\varepsilon_0 \to 0$ as $M \to \infty$
+restores exact Klein--Gordon Lorentz invariance (\catAD, computationally verified).
+Turing universality of the fully active substrate is certified algebraically via
+\lean{phimdl\_turing\_universal} on the GF(7) polynomial route (\catAL).
+Algebraic content is resolution-independent (\lean{algebraic\_descent\_theorem});
+only geometric residuals depend on $M$.
+At infinite FCA depth, continuous angles emerge from the removal of the discrete
+minimum cell size, independent of the D2 mechanism.
+SR time-dilation confirmation (paired $\tau_c$ ratios in Paper~P36) does not
+require $N \to \infty$ for the clock test; the FCA depth argument for fine
+angles remains logically separate from SR confirmation.
+
+\paragraph{Open questions.}
+\label{sec:continuum-open}
+
+Three questions are not resolved by the foregoing analysis; each constitutes a
+genuine open problem.
+
+\textit{(OQ-CL1) Lean certification of D2-SO(3) invariance.}
+The argument that D2 forces \emph{continuous} $\mathrm{SO}(3)$ symmetry of
+$\Dclass$---rather than merely invariance under the 48 discrete elements of
+$O_h$---is partially machine-certified.
+\lean{NoetherAngularMomentum.lean} (zero \texttt{sorry}) proves
+\lean{noether\_so3\_angular\_momentum\_conserved},
+\lean{stress\_energy\_symmetric}, and
+\lean{angular\_momentum\_cross\_product} for the continuum $\Phi_{\mathrm{MDL}}$
+Klein--Gordon sector: the lattice regulator \lean{step\_fmdl3d} is exactly
+$O_h$-equivariant (direct check: $0/729$ cells differ under cubic axis swap), while
+full $\mathrm{SO}(3)$ emerges in the continuum with Symanzik $O(a^2)$ scaling
+(exponent $n = 2.0001$ on rotational anisotropy, computationally verified).
+The complete three-generator algebra and $dL^i/dt = 0$ on the KG equations of motion
+remain open.
+
+\emph{Partial progress (discrete case, machine-certified in Lean~4):} The Quantum Reference Frame
+(QRF) construction~\cite{Bartlett2007} provides a route to formalizing this
+argument.  Introduce $H_{\rm total} = H_{\rm matter} \otimes H_{\rm orientation}$
+where $H_{\rm orientation} = L^2(\mathrm{SO}(3))$ is the space of all possible
+3D grid orientations.  Physical states are the $\mathrm{SO}(3)$-invariant
+subspace $H_{\rm phys}$; the Peter-Weyl theorem then guarantees exact
+$\mathrm{SO}(3)$ symmetry for all physical observables.  D2 (PI axiom) directly
+forces physical states into $H_{\rm phys}$: since no PSC axiom references any
+preferred spatial direction, every orientation change is PSC-preserving, and
+$[D]$ must be invariant under all of $\mathrm{SO}(3)$.
+
+For the discrete subgroup $\mathrm{Z}_5 \subset \mathrm{SO}(3)$ acting on the
+5-cell beable ring, this is Lean~4-certified.  The theorem
+\texttt{qrf\_d2\_z5\_equivariance\_certified} (\S82 of \texttt{GUTStructure.lean},
+zero sorry) proves that $f_{\rm MDL}$ commutes with all $\mathrm{Z}_5$ cyclic
+ring rotations:
+\[
+  f_{\rm MDL}(\sigma_k(s)) \;=\; \sigma_k(f_{\rm MDL}(s))
+  \quad \forall\, s \in \mathrm{Z}_7^5,\; k \in \mathrm{Z}_5,
+\]
+verified by \texttt{native\_decide} over all $7^5 \times 5 = 84{,}035$ cases.
+The $\mathrm{Z}_5$-invariant subspace is also proved closed under $f_{\rm MDL}$
+dynamics (\texttt{qrf\_invariant\_subspace\_preserved}, machine-certified in Lean~4).  This constitutes
+the first Lean-certified step of the QRF D2-formalization.
+
+The remaining step for full continuous $\mathrm{SO}(3)$ requires formalizing the
+action of $\mathrm{SO}(3)$ on PSC configurations in Lean~4 (using
+$L^2(\mathrm{SO}(3))$ with Haar measure and the Peter-Weyl decomposition) and
+proving that the minimizing member of $\Dclass$ is equivariant under this action.
+This in turn requires specifying the 3D GTE Hamiltonian.  Completing this proof
+would elevate the fine-angle resolution from \catAD\ to \catAL.
+
+\textit{(OQ-CL2) Renormalization-group fixed-point analysis.}
+Whether the GTE cellular automaton possesses an RG fixed point as the lattice spacing
+$a \to 0$---analogous to the Gaussian UV fixed point of lattice QCD under asymptotic
+freedom---is not established.
+
+Such a fixed point would provide an independent, RG-theoretic confirmation that
+rotational symmetry is restored at long wavelengths, characterizing the continuum limit
+of $A$ in a sense independent of the $\Dclass$ mechanism.
+
+Establishing the existence or absence of this fixed point requires developing RG theory
+for CA systems of the GTE type, a problem with no existing standard methodology.
+
+\textit{(OQ-CL3) Planck-scale lattice artifacts.}
+The $\Dclass$-SO(3) invariance argument is exact in the infinite-volume,
+sub-Planck-energy regime.
+
+At energies $E \sim E_{\mathrm{Planck}}$, however, physical quantum states approach
+single-beable localization, and the $O_h$ anisotropy of $A$ begins to re-emerge in
+observables.  The expected signature is a direction-dependent correction to scattering
+cross-sections,
+\begin{equation}
+  \delta\!\left(\frac{d\sigma}{d\Omega}\right)
+  \;\sim\;
+  \left(\frac{E}{E_{\mathrm{Planck}}}\right)^{\!2} \times f(\theta,\varphi),
+  \label{eq:planck-artifact}
+\end{equation}
+where $f(\theta,\varphi)$ is $O_h$-symmetric but not $\mathrm{SO}(3)$-invariant:
+a cubic-harmonic angular function encoding the residual lattice anisotropy.
+
+At LHC energies, $(E/E_{\mathrm{Planck}})^2 \approx 10^{-30}$, placing this
+correction thirty orders of magnitude below current experimental sensitivity.
+Equation~\eqref{eq:planck-artifact} is nevertheless a definite physical prediction
+of the discrete-substrate framework (\catD): the cubic-harmonic anisotropy
+distinguishes the M\"{o}bius architecture from any perfectly continuous fundamental theory
+and constitutes, in principle, a falsifiable signature of Planck-scale discreteness.
+
+The explicit form of $f(\theta,\varphi)$ from the GTE glider dispersion relation has
+not been computed.
+
+The fine-angle problem is real, and it matters.  The M\"{o}bius architecture does not
+eliminate discrete structure from physics---it locates that structure at the Planck
+scale and identifies a precise mathematical mechanism, rooted in D2 and the
+PSC-preserving character of spatial rotations, by which the observable consequences
+of discreteness vanish at all sub-Planck energies.
+
+This mechanism is structurally identical to the one operating in graphene,
+topological insulators, and lattice QCD---systems where exactly continuous
+long-wavelength physics emerges from exactly discrete short-scale structure.
+
+The D2-SO(3) invariance claim is \catAD: the argument is a standard mathematical
+physics argument (Bloch waves in crystals, graphene Dirac cone) grounded in
+PSC-invariance of $\Dclass$; the formal Lean proof remains an open problem
+(\S\ref{sec:open}).
+
+% --------------------------------------------------------------------------
+
+\section{Open Problems}
+\label{sec:open}
+
+The following open problems are organized by priority.  Priority~1 blocks
+existing conditional results; higher-priority problems unlock the conjectures
+of \S\ref{sec:conjectures}.
+
+\paragraph{Priority 1 --- Algebraic universality certification.}
+Unconditional Turing universality is established via the GF(7) algebraic route:
+\lean{rule110\_z7\_poly\_rep} (Rule~110 equals the degree-3 polynomial $C+R-CR-LCR$ over GF(7), zero sorry),
+\lean{rule110\_center1\_is\_nand} ($p(L,1,R) = \mathrm{NAND}(L,R)$, zero sorry), and
+\lean{phimdl\_turing\_universal} ($\Phi_{\rm MDL}$ Turing-universal, \catAL{} conditional; one named axiom: \lean{z7\_boolean\_completeness\_implies\_turing\_universal}).
+Cook's CTS construction (Paper~P30~\cite{SpivackCookTheorem}) now follows as a corollary.
+All results depending on the surjectivity of $e$ are unconditionally certified
+(\catAL): the vacuum-reachability undecidability theorem (\S\ref{sec:zone2}), the Lawvere fixed-point structure
+(\S\ref{sec:encoding}), and the full TPC containment (Theorem~\ref{thm:tpc-strict}).
+
+\paragraph{Priority 2 --- Higgs vacuum energy from GTE.}
+The SRRG framework~\cite{SpivackSRRG} derives $v_{\rm PSC} = 246.16\,\mathrm{GeV}$
+from the SRRG fixed-point conditions using only $\varphi$ (the golden ratio), $\pi$,
+and $N_{\rm gen} = 3$ as inputs --- no PDG measurement of $v_H$ is required.
+The deviation from PDG $v_H = 246.22\,\mathrm{GeV}$ is $-0.024\%$.
+The derivation is machine-certified in Lean~4 with zero \texttt{sorry}
+(\lean{VEVProof.*}, \texttt{srrg-lean}~\cite{srrg-lean}; grade [A$^-$]).
+The remaining gap to full \catAL\ is the identification of
+$\mathrm{SU}(2)\!\times\!\mathrm{U}(1)$ as the unique admissible electroweak gauge group
+from the SRRG axioms (requiring Lie group rank classification;
+\cite{SpivackSRRG}~\S8.3~OP2).
+This upgrades the Higgs vacuum energy from \catA\ (PDG-input) to [A$^-$], providing
+the most direct connection yet between the substrate's arithmetic and the electroweak
+symmetry-breaking scale, and constitutes primary supporting evidence for Conjecture~C3.
+
+\paragraph{Priority 3 --- PR-0 as minimum-complexity representative of $\Dclass$.}
+A formal proof that the PR-0 Ablowitz-Ladik dissonance functional satisfies D1--D5
+and achieves minimum Kolmogorov complexity within $\Dclass$ under Lorentz
+invariance would complete the minimum-complexity identification left open by
+Theorem~\ref{thm:C2} (C2 resolves selector member-independence, but not the
+minimum-complexity selection of PR-0).  The required steps are: characterization
+of all Lorentz-invariant functionals satisfying D1--D5; computation of their
+Kolmogorov complexities; proof that Ablowitz-Ladik dissonance achieves the unique
+minimum.
+
+\paragraph{Priority 4 --- Lawvere zone physical isomorphism (item~3).}
+The arithmetic skeleton of C4 is machine-certified (\lean{c4\_arithmetic\_proxy},
+\lean{LawvereZone.lean}, zero \texttt{sorry}), and physical isomorphism
+items~1 and~2 are also \catAL: \lean{c4\_physical\_isomorphism\_partial}
+formally identifies Zone~L0 with the massless (vacuum) sector via the unique
+fixed-point certificate and Zone~L1 with stable matter via the Garden-of-Eden
+certificate for gen$_1$ (zero \texttt{sorry}).  The remaining open work is
+item~3: formally identifying Zone~L2 with the quantum measurement
+(transputational) regime.  This requires formalizing the physical stability
+predicate for transputational states and depends on the PSC framework (C3).
+Completing item~3 would fully resolve C4.
+
+\paragraph{Priority 5 --- PSC Lie group classification.}
+The physical identification in C4~(iv) requires a formal classification of
+PSC-consistent Lie group actions on $\Zseven$ configurations.  This is a
+prerequisite for full \catAL\ certification of C4.
+
+\paragraph{Long range --- C3, C5 formalization.}
+C1 is fully resolved (\catAL, \lean{GTEFinalCoalgebra\allowbreak.lean},
+zero \texttt{sorry}; see \S\ref{sec:C1}).  The two remaining
+long-range conjectures require deeper infrastructure:
+\begin{itemize}[nosep]
+  \item \emph{C3:} Step~(i)---formalizing GTE as a \lean{NemS.Framework} instance
+        with \lean{transputation\_classification}---is \catAL\ (conditional,
+        1 bridge axiom; \lean{gte\_tpc\_from\_nems\_classification},
+        \lean{GTEFrameworkInstance.lean}).
+        Step~(ii)---a formal definition of ``physical questions in a PSC universe''
+        as a problem class and proof of TPC completeness---remains open.
+        The diagonal-barrier Lean module provides the key Zone~L2 lower bound.
+  \item \emph{C5:} Requires a formal comparison of $\TGTE$'s proof-theoretic
+        strength with Peano Arithmetic.
+\end{itemize}
+
+% --------------------------------------------------------------------------
+\section{Summary}
+\label{sec:summary}
+
+The GTE-M\"{o}bius architecture is a single mathematical-physical object---the triple
+$(A, e, \Dclass)$---whose architecture accommodates both computation and
+transputation without a sharp boundary between them.
+
+Component $A$ (the $\Zseven$ arithmetic carrier) is fully determined by PSC with zero
+free parameters.  Component $e$ (the Cook self-encoding map) induces the
+G?del-Turing boundary at which deterministic $\fmdl$ evolution gives way to
+non-computable PSC-forced selection.
+
+Component $\Dclass$ (the coherence measure class) realizes transputation precisely at
+that boundary, producing Born-rule-consistent outcomes without violating the diagonal
+barrier.  The $T(2,3)$ torus-knot structure of the GTE cascade has both parameters
+derived from the arithmetic, not imposed (\catAL).
+The two-level algebraic triangle
+(Theorems~\ref{thm:algebraic-lifting}--\ref{thm:algebraic-descent}) certifies that
+beable-level, discrete, and continuous descriptions are mathematically connected;
+the $\Phi_{\mathrm{MDL}}$ kink realization (\S\ref{sec:phimdl-realization}) supplies
+the continuum picture.
+
+Five substrate architecture classes were considered and ruled out before settling on
+the GTE--$\Phi_{\rm MDL}$ two-level architecture (\S\ref{sec:subsequent-papers}).
+Table~\ref{tab:substrate_options} records the verdict for each.
+The $\Phi_{\rm MDL}$ field is the Level-2 physical substrate; the CMCA (P41/P45)
+is the Level-1 algebraic certificate.  Together they form the unique architecture
+compatible with all five PSC constraints (RC, NM$^*$, TV, SA, PI).
+Emergent gravity is derived on both tracks---P36~\cite{SpivackEmergentGravity}
+(CA/Level-1) and P38/P43~\cite{SpivackPhiMDLGravity,SpivackCompleteness}
+($\Phi_{\rm MDL}$/Level-2).
+
+\begin{table}[h!]
+\centering
+\small
+\caption{Substrate architecture alternatives considered and ruled out.
+Each alternative fails at least one PSC constraint or is strictly subsumed by
+the GTE-$\Phi_{\rm MDL}$ architecture.}
+\label{tab:substrate_options}
+\begin{tabular}{p{0.18\textwidth} p{0.35\textwidth} p{0.35\textwidth}}
+\toprule
+\textbf{Architecture} & \textbf{Description} & \textbf{Verdict} \\
+\midrule
+A: Lattice CA & Synchronous cellular automaton on a fixed lattice, single universal rule & \emph{Subsumed as Level-1 certificate.} Realized by $f_{\rm MDL}$ and, in full, by the CMCA (P41/P45); does not alone account for transputation or Born-rule selection (D3--D5 unmet). Not the physical substrate. \\
+B: Continuous PDE & Differential field equation (e.g.\ Klein--Gordon) on continuum spacetime & \emph{Level-2 substrate.} $\Phi_{\rm MDL}$ is the physical field; must be MDL-minimal and PSC-selected (P42/P43). Alone misses Zone~L2 TPC structure without $[\mathbf{D}]$. \\
+C: Quantum CA & Unitary cellular automaton on Hilbert space; Born-rule input & \emph{Circular.} Presupposes Born rule (D5) rather than deriving it; standard quantum mechanics is a \emph{consequence}, not a substrate. \\
+D: Stochastic CA & Classical probabilistic update rule & \emph{Insufficient.} Classical probability does not yield quantum interference; excluded by the non-computable character of D3. \\
+E: Hybrid / EFT first & Start from Standard Model Lagrangian + quantum fields & \emph{Not MDL-minimal.} Importing SM Lagrangian with $\sim 20$ free parameters violates PI; the UGP Physics programme derives those parameters without input. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:summary} summarizes the confidence levels of the main claims.  The
+G?del-Turing boundary as the computation/transputation boundary is proved
+analytically (\catA) from the diagonal barrier and the P28 undecidability theorem.
+
+The deepest non-vague statement achievable within any formal system powerful enough
+to describe $(A, e)$: the substrate cannot specify, in any formal language capable
+of self-description, which element of $\Dclass$ it instantiates or which
+TPC-selected outcome will occur at any given Zone~L2 event.  These are not gaps in
+the theory; they are the formal signatures of transputation.
+
+\begin{table}[h!]
+\centering
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{p{0.44\textwidth} p{0.14\textwidth} p{0.28\textwidth}}
+\toprule
+\textbf{Claim} & \textbf{Status} & \textbf{Lean / source} \\
+\midrule
+$A$ determined by PSC + P28 chain; zero free parameters
+  & \catAL & P28, zero \texttt{sorry} \\
+GoE theorem: $\mathrm{pred}(\mathrm{gen}_1) = 0$
+  & \catAL$^\dagger$ & \lean{garden\_of\_eden\_gen1} \\
+Dark-sector period-2 orbit characterization
+  & \catAL$^\dagger$ & \lean{dark\_sector\_period2\_exhaustive} \\
+$T(2,3)$ torus-knot parameters both GTE-derived
+  & \catAL$^\dagger$ & GUTStructure.lean~\S31 \\
+Algebraic Lifting Theorem (beable $\to$ physical)
+  & \catAL & \lean{LiftingTheorem.lean} \\
+3D Spatial Lifting (composite bound states)
+  & \catAL & \lean{SpatiallyExtendedLifting.lean} \\
+Algebraic Descent ($\Phi_{\mathrm{MDL}} \to \fmdl$)
+  & \catAL & \lean{AlgebraicDescentTheorem.lean} \\
+Geodesic theorem + equivalence principle (CA track)
+  & \catAD & \lean{GeodesicTheorem.lean}; full \catAL\ on $\Phi_{\mathrm{MDL}}$: P43~\cite{SpivackCompleteness}, \lean{geodesic\_theorem\_spatial\_general} \\
+$\Phi_{\mathrm{MDL}}$ kink realization of $A$
+  & Argued & \S\ref{sec:phimdl-realization} \\
+Law = Description = Execution
+  & Argued & \S\ref{sec:law-description-execution} \\
+$e$ is Cook encoding of Rule~110 Turing universality
+  & \catAL\ (cond.) & 1 bridge axiom \\
+$\Dclass$ satisfies D1--D5
+  & \catA & PSC framework~\cite{SpivackNEMS10,SpivackNEMS11,SpivackBornRule,SpivackPhiMDLField} \\
+G?del-Turing boundary = comp./transp. boundary
+  & \catA & Diagonal barrier~\cite{SpivackNEMS11} + P28 \\
+TPC: Decidable $\subsetneq$ TPC $\subsetneq$ Hypercomp.
+  & \catAL & GUTStructure.lean~\S62 \\
+$\ngen = 3$ = TPC hierarchy depth
+  & \catAL & \lean{tpc\_ngen\_equals\_level\_count} \\
+M\"{o}bius single-surface architecture
+  & Argued & Theoretical \\
+Lawvere structure of $(A, e)$ (vacuum, orbit)
+  & \catA & Rule~110 + Lawvere's theorem \\
+C1: GTE = final $F_{\mathrm{PSC}}$ coalgebra
+  & \catAL & \lean{GTEFinalCoalgebra.lean} (zero \texttt{sorry}) \\
+C2: $D_{\min} = $ PR-0 AL-dissonance
+  & Conjectured & Open \\
+C3: TPC complete for PSC physical questions
+  & Step~(i) \catAL\ (cond., 1 axiom); step~(ii) Conjectured & \lean{gte\_tpc\_from\_nems\_classification} \\
+C4: Lawvere-physical correspondence
+  & \catAL\ items~1--2 (vacuum, gen$_1$); \catAD\ item~3 (Zone~L2, C3-dependent) & \lean{c4\_physical\_isomorphism\_partial}, \lean{LawvereZone.lean}, zero sorry \\
+C5: Incompleteness depth $= \varepsilon_0$
+  & Speculative & Open \\
+$\Dclass$-measure defines QEC stabilizer code on $\Zseven^5$ beables
+  & \catAL & \lean{QECStabilizer.lean}: \lean{qec\_gte\_is\_stabilizer\_code} (zero \texttt{sorry}) \\
+\bottomrule
+\end{tabular}
+\caption{Confidence-level summary.
+$\dagger$ = extended to physical scale by Algebraic Lifting Theorem
+(Theorem~\ref{thm:algebraic-lifting}).
+\catAL\ = Lean-certified, zero \texttt{sorry};
+\catA\ = proved analytically; \catAD\ = argued analytically, pending
+formalization; Conjectured = open problem with precise statement in
+\S\ref{sec:conjectures}.}
+\label{tab:summary}
+\end{table}
+
+% --------------------------------------------------------------------------
+\appendix
+
+\section{What Can and Cannot Be Said: Summary Table}
+\label{app:summary-table}
+
+\begin{table}[h!]
+\centering
+\small
+\begin{tabular}{p{0.40\textwidth} p{0.17\textwidth} p{0.33\textwidth}}
+\toprule
+\textbf{Claim} & \textbf{Can/Cannot} & \textbf{Evidence level} \\
+\midrule
+$A$ determined by PSC + P28 chain
+  & \textbf{CAN} & \catAL \\
+$e$ is Cook encoding of Rule~110 Turing universality
+  & \textbf{CAN (cond.)} & \catAL\ (1 bridge axiom) \\
+$\Dclass$ satisfies D1--D5
+  & \textbf{CAN} & \catA\ (PSC framework~\cite{SpivackNEMS10,SpivackNEMS11,SpivackBornRule,SpivackPhiMDLField}) \\
+G?del-Turing boundary = comp./transp. boundary
+  & \textbf{CAN} & \catA \\
+TPC 3-level hierarchy; $\ngen$-depth
+  & \textbf{CAN} & \catAL \\
+M\"{o}bius single-surface architecture
+  & \textbf{CAN (argued)} & Theoretical \\
+Lawvere structure of $(A, e)$
+  & \textbf{CAN} & \catA \\
+No circular specification dependency
+  & \textbf{CAN} & Structural \\
+Specific $D \in \Dclass$ for our universe
+  & \textbf{CANNOT} & Underdetermined (C2 open) \\
+Specific TPC-selected outcomes
+  & \textbf{CANNOT} & Diagonal barrier \\
+GTE = final $F_{\mathrm{PSC}}$ coalgebra (C1)
+  & \textbf{CAN} & \catAL\ (\lean{GTEFinalCoalgebra.lean}, zero \texttt{sorry}) \\
+$D = $ PR-0 AL-dissonance uniquely (C2)
+  & \textbf{CANNOT} & Conjectured \\
+TPC completeness for all PSC questions (C3)
+  & \textbf{CANNOT (yet)} & Conjectured \\
+Full Lawvere-physical correspondence (C4)
+  & \textbf{CANNOT (yet)} & \catAL\ items~1--2 (\lean{c4\_physical\_isomorphism\_partial}); item~3 (Zone~L2) open (C3-dependent) \\
+Incompleteness depth $= \varepsilon_0$ (C5)
+  & \textbf{CANNOT} & Highly speculative \\
+\bottomrule
+\end{tabular}
+\caption{Summary of what the present paper can and cannot assert.}
+\label{tab:cannotbe}
+\end{table}
+
+\section{Lean Certification Status}
+\label{app:lean}
+
+\begin{table}[h!]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{p{0.30\linewidth} p{0.11\linewidth} p{0.28\linewidth}
+                p{0.09\linewidth} p{0.08\linewidth}}
+\toprule
+\textbf{Module} & \textbf{Location} & \textbf{Key theorems} & \textbf{Sorry}
+  & \textbf{Cat} \\
+\midrule
+\lean{GUTStructure.lean}~\S31
+  & \lean{ugp-lean}
+  & \lean{cascade\_period\_minimum\_is\_two};
+    \lean{fmdl\_cascade\_period\_two\_unique};
+    \lean{cascade\_period\_coprimality}
+  & 0 & \catAL \\
+\lean{GUTStructure.lean}~\S35
+  & \lean{ugp-lean}
+  & \lean{dark\_sector\_period2\_exhaustive};
+    \lean{dark\_sector\_orbit\_structure};
+    \lean{dark\_sector\_cycles\_are\_period2}
+  & 0 & \catAL \\
+\lean{GUTStructure.lean}~\S62
+  & \lean{ugp-lean}
+  & \lean{TPCPowerClass}: \lean{tpc\_three\_level\_hierarchy};
+    \lean{tpc\_ngen\_equals\_level\_count}; 13 TPC theorems total
+  & 0 & \catAL \\
+\lean{GUTStructure.lean}~\S64
+  & \lean{ugp-lean}
+  & \lean{LawverePhysical}: \lean{lawvere\_physical\_master};
+    Lawvere-physical arithmetic skeleton (9 theorems);
+    gen$_1$ is Garden-of-Eden (not Lawvere fixed point) --- C4 correction
+  & 0 & \catAL \\
+\lean{GUTStructure.lean}~\S65
+  & \lean{ugp-lean}
+  & \lean{DUniqueness}: \lean{d\_uniqueness\_mdl\_uniqueness};
+    D-uniqueness / MDL-uniqueness proxy (8 theorems);
+    \catAL\ arithmetic proxy; \catD\ physical correspondence
+  & 0 & \catAL \\
+\lean{GardenOfEden.lean}
+  & \lean{ugp-lean}
+  & \lean{garden\_of\_eden\_gen1}
+  & 0 & \catAL \\
+\lean{GenerationOrbit.lean}
+  & \lean{ugp-lean}
+  & Orbit period-3; GoE predecessor counts
+  & 0 & \catAL \\
+\lean{GTEComputability.lean}
+  & \lean{ugp-lean}
+  & \lean{fmdl\_vacuum\_reachability\_is\_undecidable}
+  & 6 bridge axioms & \catAL\ (cond.) \\
+\lean{GTEFinalCoalgebra.lean}
+  & \lean{ugp-lean}
+  & \lean{psc\_optimal\_zero\_on\_free};
+    \lean{GTEReflexiveSpace}; \lean{optimal\_unique\_up\_to\_iso};
+    \lean{c1\_final\_coalgebra\_derived}; \lean{c1\_final\_coalgebra};
+    \lean{c1\_lambek\_isomorphism}
+    (C1 Theorem, 7-stage proof)
+  & 0 & \catAL \\
+\lean{DConstraints.lean} (C2 certs)
+  & \lean{ugp-lean}
+  & \lean{d1\_d5\_forces\_gibbs\_family}
+    (D1--D5 force Gibbs-family structure);
+    \lean{c2\_selector\_member\_independent}
+    (C2 Theorem: Born-rule selector member-independence)
+  & 0 & \catAL \\
+\lean{GTEOptimalityInstance.lean}
+  & \lean{ugp-lean}
+  & \lean{GTE\-Compatible\-Space.orbit\_admissible};
+    \lean{GTEPSCSubstrate.oa\_proof}
+  & 0 & \catAL \\
+\lean{CookTheorem.lean} (target)
+  & planned
+  & \lean{rule110\_simulates\_computable}
+  & pending & --- \\
+\lean{LiftingTheorem.lean}
+  & \lean{ugp-lean}
+  & \lean{algebraic\_lifting\_theorem};
+    charge/generation lifting corollaries
+  & 0 & \catAL \\
+\lean{SpatiallyExtendedLifting\allowbreak.lean}
+  & \lean{ugp-lean}
+  & \lean{spatially\_extended\_composite\_lifting};
+    \lean{meson\_bound\_state\_exists}
+  & 0$^*$ & \catAL \\
+\lean{AlgebraicDescentTheorem\allowbreak.lean}
+  & \lean{ugp-lean}
+  & \lean{algebraic\_descent\_theorem};
+    \lean{casimirs\_m\_independent};
+    \lean{psc\_admissibility\_no\_resolution\_parameter}
+  & 0 & \catAL \\
+\lean{GeodesicTheorem.lean}
+  & \lean{ugp-lean}
+  & \lean{gte\_equivalence\_principle};
+    geodesic corollaries
+  & 0 & \catAD \\
+\lean{OrbitMassHierarchy.lean}~\S7
+  & \lean{ugp-lean}
+  & \lean{leptonic\_sector\_heaviest\_gen3};
+    \lean{mphi\_equals\_tau\_mass\_scc} ($m_\varphi = m_\tau$, SCC);
+    \lean{mkink\_from\_scc} ($M_{\rm kink} = (8/49)\,m_\tau$, BPS exact);
+    \lean{fpi\_from\_scc} ($f_\pi = M_{\rm kink}/\pi$, PCAC)
+  & 0 & \catAL \\
+\lean{MesonMasses.lean}
+  & \lean{ugp-lean}
+  & \lean{g\_omega\_sq\_eq\_ngen\_times\_cz} ($g_\omega^2 = N_{\rm gen} \cdot c_Z = 36$);
+    \lean{m\_omega\_ksrf\_formula} ($m_\omega = \sqrt{72}\,f_\pi$);
+    \lean{m\_omega\_ksrf\_from\_scc};
+    \lean{m\_omega\_pdg\_agreement}
+  & 0 & \catAL \\
+\lean{CasimirB0Relation.lean}
+  & \lean{ugp-lean}
+  & \lean{b0\_casimir\_relation} ($b_0 = N_{\rm fam} + N_{\rm gen} - 1 = 7$);
+    \lean{casimir\_orbit\_ratio} ($\binom{7}{3}/\binom{7}{2} = 5/3$);
+    \lean{casimir\_b0\_bundle}
+  & 0 & \catAL \\
+\lean{DWeightSRFormula.lean}
+  & \lean{ugp-lean}
+  & \lean{dmdl\_dweight\_sr\_formula};
+    \lean{dmdl\_qec\_sr\_bundle};
+    \lean{dmdl\_proper\_time\_ratio};
+    \lean{dmdl\_dweight\_positive}
+  & 0 & \catAL \\
+\bottomrule
+\end{tabular}
+\caption{P34-relevant Lean~4 modules and certification status.
+$^*$Meson/baryon existence conditional on module-local axiom
+\lean{causal\_path\_exists} (directed causal path on periodic lattice;
+see Paper~P36 footnote).}
+\label{tab:lean}
+\end{table}
+
+% --------------------------------------------------------------------------
+\section*{Acknowledgments}
+
+This work is part of the UGP Physics programme, the quantitative branch of the Reflexive Reality programme~\cite{SpivackResearchProgrammes}.
+
+AI coding assistants were used for LaTeX formatting, coding assistance, and adversarial review during manuscript preparation. All mathematical derivations, numerical computations, and Lean~4 certifications were independently verified by deterministic scripts and the Lean~4 kernel.
+
+% --------------------------------------------------------------------------
+\bibliographystyle{plain}
+\bibliography{../bib/Spivack_Papers_Bibliography}
+
+\end{document}

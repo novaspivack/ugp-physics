@@ -1,0 +1,145 @@
+# Configuration for UGP Yukawa/CKM/PMNS mixing matrix calculation - PMNS-FOCUSED
+# Research Question 1.2: Priority 1 - Optimize PMNS angles using ultra-aggressive approach
+
+experiment:
+  name: ugp_yukawa_ckm_pmns_pmns_focused
+  description: "UGP → Yukawas & CKM/PMNS mixing matrices with PMNS-FOCUSED ultra-aggressive optimization"
+  inputs:
+    runs:
+      - "canonical_gte_triples.json"
+
+# Options
+options:
+  neutrino_model: "majorana"
+  pdg_targets_ckm: [0.2245, 0.041, 0.00365]
+  pdg_targets_pmns: [33.44, 8.57, 49.2]
+
+# PMNS-FOCUSED ULTRA-AGGRESSIVE OPTIMIZATION GRID
+# Even more extreme ranges specifically for PMNS optimization
+optimization_grid:
+  # Ultra-extreme tau0 scaling for maximum PMNS coverage
+  tau0_scaling_factors: [
+    0.0001, 0.0002, 0.0005, 0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 
+    0.2, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0, 50.0, 100.0, 200.0, 
+    500.0, 1000.0, 2000.0, 5000.0, 10000.0
+  ]
+  
+  # Ultra-extreme epsilon scaling for PMNS sensitivity
+  epsilon_scaling_factors: [
+    0.0001, 0.0002, 0.0005, 0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1,
+    0.2, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0, 50.0, 100.0, 200.0, 
+    500.0, 1000.0, 2000.0, 5000.0
+  ]
+  
+  # Ultra-extreme epsilon_prime scaling for PMNS mixing
+  epsilon_prime_scaling_factors: [
+    0.0001, 0.0002, 0.0005, 0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1,
+    0.2, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0, 50.0, 100.0, 200.0, 
+    500.0, 1000.0, 2000.0, 5000.0
+  ]
+  
+  # Advanced normalization methods including PMNS-specific options
+  normalization_methods: [
+    "spectral_radius", "frobenius", "max_element", "trace_norm", "l1_norm",
+    "l_inf_norm", "nuclear_norm", "schatten_1", "schatten_2", "schatten_inf",
+    "mixed_norm_1", "mixed_norm_2", "custom_weighted"
+  ]
+
+# PMNS-FOCUSED TARGETS
+pmns_targets:
+  pmns_angles:
+    theta12_target: 33.44  # degrees - solar mixing
+    theta13_target: 8.57   # degrees - reactor mixing  
+    theta23_target: 49.2   # degrees - atmospheric mixing
+    theta12_tolerance: 2.0  # degrees - ultra-tight tolerance
+    theta13_tolerance: 1.0  # degrees - ultra-tight tolerance
+    theta23_tolerance: 3.0  # degrees - ultra-tight tolerance
+  
+  # Maintain CKM success while optimizing PMNS
+  ckm_maintenance:
+    theta12_target: 33.44  # degrees
+    theta13_target: 8.57   # degrees
+    theta23_target: 49.2   # degrees
+    theta12_tolerance: 8.0  # degrees - relaxed for maintenance
+    theta13_tolerance: 8.0  # degrees - relaxed for maintenance
+    theta23_tolerance: 8.0  # degrees - relaxed for maintenance
+
+# PMNS-FOCUSED WEIGHTING
+pmns_focused_weights:
+  # Ultra-aggressive PMNS weighting - prioritize PMNS angles heavily
+  pmns_theta12: 20.0  # EXTREME weight - solar mixing
+  pmns_theta13: 15.0  # Very high weight - reactor mixing
+  pmns_theta23: 18.0  # Very high weight - atmospheric mixing
+  
+  # Maintain CKM success
+  ckm_theta12: 5.0    # Medium weight - maintain CKM success
+  ckm_theta13: 3.0    # Low weight - maintain CKM success
+  ckm_theta23: 3.0    # Low weight - maintain CKM success
+
+# SUCCESS CRITERIA - PMNS-FOCUSED
+success_criteria:
+  pmns_angle_accuracy:
+    pmns_theta12_error: "< 5%"   # Target: < 1.67° error
+    pmns_theta13_error: "< 10%"  # Target: < 0.86° error  
+    pmns_theta23_error: "< 8%"   # Target: < 3.94° error
+  
+  ckm_maintenance:
+    ckm_theta12_error: "< 15%"   # Maintain previous success
+    ckm_theta13_error: "< 15%"   # Maintain previous success
+    ckm_theta23_error: "< 15%"   # Maintain previous success
+  
+  overall_performance:
+    pmns_weighted_error: "< 10%"  # Primary metric
+    overall_mixing_score: "< 15%" # Secondary metric
+    improvement_factor: "> 3.0x vs baseline PMNS"
+
+# ENHANCED ANALYSIS - PMNS-FOCUSED
+analysis:
+  optimization_method: "pmns_focused_ultra_aggressive_grid_search"
+  primary_evaluation_metric: "pmns_weighted_error"
+  secondary_evaluation_metrics: ["overall_mixing_score", "individual_pmns_angle_errors"]
+  
+  # Enhanced PMNS analysis
+  pmns_specific_analysis:
+    neutrino_mass_hierarchy_analysis: true
+    pmns_cp_violation_analysis: true
+    pmns_mixing_pattern_analysis: true
+    pmns_parameter_sensitivity: true
+  
+  parameter_sensitivity_analysis: true
+  optimization_landscape_mapping: true
+  best_configuration_analysis: true
+  pmns_optimization_path: true
+
+# ENHANCED OUTPUT - PMNS-FOCUSED
+output:
+  save_matrices: true
+  save_angles: true
+  save_eigenvalues: true
+  save_vectors: true
+  save_permutation_choice: true
+  
+  # PMNS-specific outputs
+  save_pmns_angle_analysis: true
+  save_pmns_parameter_sensitivity: true
+  save_pmns_optimization_landscape: true
+  save_best_pmns_configurations: true
+  save_pmns_cp_violation_analysis: true
+  save_neutrino_mass_analysis: true
+  
+  format: "csv"
+  detailed_reporting: true
+  pmns_focused_report: true
+
+# VALIDATION - PMNS-FOCUSED
+validation:
+  unitary_check: true
+  pdg_ordering_check: true
+  eigenvalue_ordering: true
+  jarlskog_invariant_check: true
+  
+  # PMNS-specific validation
+  pmns_angle_bounds_check: true
+  pmns_angle_consistency_check: true
+  pmns_mixing_pattern_validation: true
+  neutrino_mass_validation: true

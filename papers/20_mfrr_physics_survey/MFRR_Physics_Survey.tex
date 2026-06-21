@@ -1,0 +1,972 @@
+% MFRR_Physics_Survey.tex
+% Mathematical Foundations of Reflexive Reality: A Survey
+% Primary submission vehicle for journal review.
+% Companion to the full monograph (MFRR/Mathematical_Foundations_of_Reflexive_Reality.tex)
+%
+% Claim-type key used throughout:
+%   [T] = machine-checked theorem (Lean 4, zero sorry in CatAL results, zero custom axioms in any CatAL proof chain)
+%   [B] = bridge claim (theorem holds conditional on stated premises)
+%   [C] = computationally certified (SHA-256 provenance, peer-reproducible)
+%   [I] = interpretive framework (non-unique but coherent)
+
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[a4paper,margin=1in]{geometry}
+\usepackage{microtype}
+\emergencystretch=25pt
+\usepackage{setspace}
+\setstretch{1.08}
+\usepackage{amsmath,amssymb,bm,amsthm}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[colorlinks=true,linkcolor=MidnightBlue,citecolor=ForestGreen,urlcolor=RoyalBlue]{hyperref}
+\usepackage{graphicx}
+\usepackage{url}
+\urlstyle{tt}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{ragged2e}
+\usepackage{enumitem}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\usepackage{multirow}
+
+% Custom commands
+\newcommand{\PT}{\mathcal{P}\mathcal{T}}
+\newcommand{\PSC}{\text{PSC}}
+\newcommand{\Man}{\mathcal{M}}
+\newcommand{\Fisher}{\mathcal{I}}
+\newcommand{\Lam}{\Lambda}
+\newcommand{\tagT}{\textbf{[T]}}
+\newcommand{\tagB}{\textbf{[B]}}
+\newcommand{\tagC}{\textbf{[C]}}
+\newcommand{\tagI}{\textbf{[I]}}
+\newcommand{\CatAL}{\ensuremath{\textbf{A}_{\rm Lean}}}
+\newcommand{\CatAD}{\textbf{A/D}}
+
+% Theorem-like environments
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\title{\textbf{Mathematical Foundations of Reflexive Reality: A Survey}\\[0.5em]
+\large Machine-checked and computationally verified results in the MFRR programme}
+\author{Nova Spivack}
+\date{April 2026}
+
+\input{nova_zenodo_doi_placeholder}
+\begin{document}
+\maketitle
+\NovaZenodoAfterTitle
+
+\begin{abstract}
+We survey the formal and computational results of the Mathematical Foundations of
+Reflexive Reality (MFRR) programme, which establishes a unified framework in which
+logic, computation, and physics are aspects of one self-defining process.
+The central construct, Transputation ($\PT$), is the unique internal adjudicator of
+computational degeneracies (machine-proved in Lean~4, zero sorry in \CatAL{} results,
+zero custom axioms in any \CatAL{} proof chain).
+
+\textbf{Machine-certified results:} forced adjudication ($\PT$ unique under
+closed-choice conditions); Born rule uniqueness from MDL; arrow of time from
+$\PT$ irreversibility; no-emulation ($\PT$ is super-Turing); SM gauge group and
+$N_{\rm gen} \geq 3$ forced by PSC consistency; UCL2 correction
+$k_{\rm gen} = \varphi\cos(\pi/10)$.
+
+\textbf{Computationally certified results:}
+SM ranks \#1 of 34,560 universes scanned (\textbf{P}: SM selection);
+97.02\% SRRG attraction rate to the SM fixed point (\textbf{C}: flow-basin size);
+Information Profit Threshold $1.1300 \pm 0.0001$, matching the UGP-derived value to
+$0.08\%$ (\textbf{P}); emergent force law exponent $p = 2.60 \pm 0.16$,
+asymptoting to $r^{-2}$ (\textbf{M}); Reflexive Landauer bound compliance $100\%$
+(\textbf{C}).
+
+The Residual Classification is Lean-certified (\texttt{PSC.RCCInfiniteFamilies},
+zero sorry), making SM uniqueness unconditional. The Information Profit Threshold is
+machine-checked (\texttt{UgpPhysicsLean.IPT.InformationProfitThreshold}, zero sorry).
+Primary open fronts: gravity/gauge unification in the two-layer theorem and T8
+holographic closure numerical certification (circularity noted; \S\ref{sec:limitations}).
+\end{abstract}
+
+\tableofcontents
+
+\bigskip
+\begin{tcolorbox}[colback=yellow!5!white,colframe=orange!60!black,
+  title={\textbf{How to use this paper and the documents it surveys}},
+  fonttitle=\bfseries,left=6pt,right=6pt,top=5pt,bottom=5pt,breakable]
+\small
+\textbf{This paper} is a self-contained 15-page survey of the MFRR programme,
+designed for physicists and written at a level suitable for journal review.
+Every claim is tagged by evidence type (\tagT{} machine-checked, \tagB{} bridge,
+\tagC{} computationally certified, \tagI{} interpretive).
+It can be read independently of the documents below.
+
+\medskip
+\textbf{The documents surveyed:}
+
+\begin{itemize}[leftmargin=1.5em,itemsep=0.35em]
+  \item \textbf{MFRR Foundational Monograph}~\cite{SpivackMFRR}
+    (15{,}185 lines; 297 Python modules; 57{,}337$+$ experimental runs).
+    The authoritative reference with full proofs, all computational experiments,
+    and the complete theorem suite.
+    \emph{Not a journal paper; use as a reference.}
+    This survey extracts and explains its headline results.
+
+  \item \textbf{ugp-lean / nems-lean Lean~4 library}~\cite{ugp-lean,SpivackUGPFormalization}
+    (300+ modules; zero sorry in \CatAL{} results; zero custom axioms in any \CatAL{} proof chain).
+    Machine-verified proofs for all \tagT{}-tagged claims in this paper.
+    Build with \texttt{lake build} after cloning \texttt{github.com/novaspivack/ugp-lean}.
+
+  \item \textbf{Standard Model parameters from UGP}~\cite{Spivack2026_SM_UGP}
+    (P01 of the UGP Physics programme~\cite{SpivackResearchProgrammes}).
+    Derives SM masses, gauge couplings, and quantum numbers from the UGP arithmetic cascade.
+    The UGP Physics programme is the quantitative branch of the Reflexive Reality programme~\cite{SpivackResearchProgrammes}.
+
+  \item \textbf{Koide Cyclotomic Closed Form}~\cite{Spivack2026_Koide} (P18)
+    and \textbf{Cyclotomic Mass Structure}~\cite{Spivack2026_CyclotomicMass} (P19):
+    Lean-certified mass relations in the cyclotomic-12 field;
+    TT/VV inter-generational laws.
+
+  \item \textbf{Reflexive Reality and Self-Defining Physical Law}~\cite{SpivackReflexiveLaw} (P10):
+    Formalises the concept of reflexive physical law, classifies known physical theories by
+    degree of reflexivity (Class~I, IIa, IIb), and provides the philosophical and structural
+    grounding for the self-defining dynamics at the core of the MFRR programme.
+
+  \item \textbf{MFRR Explanatory Summaries} (companion documents in P13):
+    Three condensed companions to the monograph, each targeting a different audience:
+    \begin{itemize}[leftmargin=1.5em,itemsep=0.2em]
+      \item \emph{Reader's Guide for Physicists} (executive summary, $\sim$8 pages):
+        \texttt{MFRR\_FOR\_PHYSICISTS\_SHORT\_OVERVIEW.tex}
+      \item \emph{Summary for Physicists and Referees} ($\sim$10 pages, full claim table):
+        \texttt{MFRR\_summary\_for\_physicists.tex} --- the most detailed companion short-form document
+      \item \emph{Popular Article} (accessible overview):
+        \texttt{MFRR\_POPSCI\_OVERVIEW.tex}
+    \end{itemize}
+
+  \item \textbf{NEMS Programme Hub} (93$+$ papers on Zenodo):
+    \url{https://doi.org/10.5281/zenodo.19487299}.\;
+    Includes the physics-facing entry points: NEMS Paper~07
+    (\emph{The NEMS Framework for Physicists},
+    \href{https://doi.org/10.5281/zenodo.19429725}{DOI~10.5281/zenodo.19429725})
+    and Paper~88
+    (\emph{Reflexive Reality: A Survey for Physicists},
+    \href{https://doi.org/10.5281/zenodo.19429908}{DOI~10.5281/zenodo.19429908}).
+\end{itemize}
+
+\medskip
+\textbf{Suggested reading order:}
+(1)~This paper (20) for the headline results;
+(2)~P01 for quantitative SM predictions;
+(3)~NEMS Paper~07 for the NEMS foundational framework for physicists;
+(4)~MFRR monograph (P13) as a reference for full proofs.
+\end{tcolorbox}
+
+%------------------------------------------------------------------
+\section{Introduction and Scope}
+\label{sec:intro}
+%------------------------------------------------------------------
+
+The Mathematical Foundations of Reflexive Reality (MFRR) programme~\cite{SpivackMFRR}
+asks a question of logical necessity: what mathematical structure is forced upon a universe
+that is required to be Perfectly Self-Contained?
+A universe is \emph{Perfectly Self-Contained} (PSC) if its laws are not imposed externally
+but are executed internally, energetically self-accounting, and logically closed.
+Three independent routes force this requirement:
+
+\begin{enumerate}[nosep]
+\item \textbf{Logical (G\"odel--Turing):} Self-referential systems cannot have external meta-laws without infinite regress~\cite{Goedel1931,Turing1936}.
+\item \textbf{Energetic (Landauer):} An external law requires infinite energy to execute; the Reflexive Landauer Bound closes this gap~\cite{Landauer1961}.
+  \item \textbf{Geometric (Norfleet):} Non-zero holonomy defect $\delta = \Lambda - \pi/12 \neq 0$ prevents global potential existence, forcing local irreversible choices~\cite{NorfleetPrivComm}.%
+  \footnote{The symbol $\Lambda$ here denotes Norfleet's dimensionless
+    Information Profit Threshold constant $\Lambda_{\rm IPT} = \ln\varphi/\ln(2\pi)
+    \approx 0.26177$, \emph{not} the cosmological constant.  The holonomy defect
+    $\delta = \Lambda_{\rm IPT} - \pi/12 \approx +3.09\times10^{-5}$ has no direct
+    connection to the cosmological constant problem.}
+\end{enumerate}
+
+The central construct realizing PSC is \emph{Transputation} ($\PT$) ---
+lawful internal adjudication of computational degeneracies at Choice Points:
+\[
+\PT(\theta^\star, \mathcal{B}) =
+\arg\min_{\gamma_i \in \mathcal{B}} \bigl[ D(\gamma_i) + \lambda\, C(\gamma_i) \bigr],
+\]
+where the universe selects among admissible branches by minimizing ontological dissonance $D$
+plus informational cost $C$.
+The No-Emulation Theorem \tagT{} (\texttt{NemS.no\_emulation\_thm}) proves $\PT$ cannot
+be simulated by any Turing machine; the Forced Adjudication theorem \tagT{}
+(\texttt{closed\_choice\_forces\_transputation}, NEMS 08, DOI: \href{https://doi.org/10.5281/zenodo.19429882}{10.5281/zenodo.19429882})
+establishes $\PT$ as the \emph{unique} internal adjudicator under closed-choice conditions.
+
+This paper surveys the formal and computational results of the MFRR programme at a level
+suitable for journal submission.
+The full proofs and computational experiments are documented in the
+15,185-line MFRR monograph~\cite{SpivackMFRR}, the zero-sorry companion Lean~4 library~\cite{SpivackUGPFormalization,ugp-lean}
+(Lean 4.29.0-rc6 / Mathlib 4.29.0-rc6),
+and the companion papers on SM structure~\cite{Spivack2026_SM_UGP},
+Koide mass relations~\cite{Spivack2026_Koide},
+and cyclotomic mass hierarchy~\cite{Spivack2026_CyclotomicMass}.
+
+\medskip
+\noindent\textbf{Claim-type legend used throughout:}
+
+\begin{center}
+\small
+\begin{tabular}{@{}clp{6.5cm}@{}}
+\toprule
+Tag & Meaning & Evidence standard \\
+\midrule
+\tagT{} & Machine-checked theorem & Lean 4, zero sorry in \CatAL{} results, zero custom axioms in any \CatAL{} proof chain \\
+\tagB{} & Bridge claim & Theorem holds conditional on explicitly stated premises \\
+\tagC{} & Computationally certified & SHA-256 provenance, peer-reproducible \\
+\tagI{} & Interpretive framework & Coherent but non-unique; no independent experimental contradiction \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+%------------------------------------------------------------------
+\section{Logical Foundations: PSC, Transputation, and Seventeen Closure Theorems}
+\label{sec:foundations}
+%------------------------------------------------------------------
+
+\subsection{Forced Adjudication \tagT{}}
+
+The cornerstone machine-checked result:
+
+\begin{theorem}[Forced Adjudication; \texttt{closed\_choice\_forces\_transputation}, NEMS 08]
+Under closed-choice conditions in a PSC universe, Transputation $\PT$ is the unique
+internal adjudicator of computational degeneracies.
+\end{theorem}
+
+\noindent The proof proceeds by showing that any other resolution mechanism either (i)~requires
+external data not available within the system (violating PSC), or (ii)~is equivalent to $\PT$
+up to representational choice.
+Full proof: \cite{SpivackNEMSLean}, Lean name \texttt{closed\_choice\_forces\_transputation},
+DOI \href{https://doi.org/10.5281/zenodo.19429882}{10.5281/zenodo.19429882}.
+
+\subsection{Seventeen Closure Theorems}
+
+Seventeen closure theorems form the necessary and sufficient conditions for PSC,
+organized across nine independent axes (logic, computation, geometry, physics,
+observation, topology, spectrum, semantics, theory space):
+
+\medskip
+\begin{center}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}clll@{}}
+\toprule
+\# & Theorem & Axis & Type \\
+\midrule
+T1  & PT--PSC Equivalence ($\PT \Leftrightarrow \PSC$) & Logic & \tagT{} \\
+T2  & Reflexive Landauer Bound ($\Delta E_\PT \ge k_BT\log n + \lambda_\Psi \mathcal{E}_\Psi$) & Energy & \tagB{} \\
+T3  & Choice--Curvature Correspondence ($\rho_\mathrm{CP} \propto (\mathrm{Ric}_F)^+$) & Geometry & \tagB{} \\
+T4  & Information--Gravity Coupling ($G_{\mu\nu} = 8\pi G(T_{\mu\nu} + C_{\mu\nu})$) & Gravity & \tagB{} \\
+T5  & No-Hair Theorem for Coherence ($\Psi$ is unique stable information field) & Fields & \tagT{} \\
+T6  & Reflexive Fluctuation Theorem ($\langle e^{-\Delta\mathcal{S}_\mathrm{ref}}\rangle = 1$) & Thermo & \tagT{} \\
+T7  & Reflexive Dimensionality Law ($D_\mathrm{eff} = d + \kappa\log_\phi\Omega_\mathrm{rel}$) & Dimension & \tagB{} \\
+T8  & Universal Holographic Closure ($I_\mathrm{bulk} = \Lambda^{-1} \cdot A_F$) & Holography & \tagB{} \\
+T9  & Meta-Reflexive Energy Conservation & Hierarchy & \tagC{} \\
+T10 & Observer Complexity Invariance & Observation & \tagI{} \\
+T11 & SRRG--RG Duality (reflexive flow $\Leftrightarrow$ Wilsonian RG) & Renorm. & \tagB{} \\
+T12 & Profit--Curvature Equivalence ($\mathrm{Gen/Drain} = e^{\Lambda\int R_F}$) & Info-Geom & \tagC{} \\
+T13 & CPT--Measurement Equivalence (arrow of time from measurement bias) & Symmetry & \tagT{} \\
+T14 & $\Psi$--$\Omega$ Dual Genesis (Legendre duality coherence/curvature) & QG Duality & \tagB{} \\
+T15 & Reflexive Cosmogenesis (energy budget from primordial Landauer) & Cosmology & \tagB{} \\
+T16 & No-Go for Stochastic Resolution & Necessity & \tagT{} \\
+T17 & Two-Layer PSC Theorem (SM is PSC-optimal) & Theory space & \tagT{}/\tagC{} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+\noindent\textbf{Note on T8 (Universal Holographic Closure):}
+The claim $I_\mathrm{bulk} = \Lambda^{-1} \cdot A_F$ is a genuine analytical derivation
+in the MFRR monograph~\cite{SpivackMFRR} (\textit{Universal Holographic Closure},
+\S\,\textit{Universal Extensions of MFRR}) from the Reflexive Landauer Bound and Fisher area law.
+It is tagged \tagB{} because it is conditional on the Reflexive Landauer Bound (T2) as a bridge premise.
+The numerical test in the $\Lambda\Omega$-RCP script \texttt{run\_t8.py} as currently coded
+defines $I_\mathrm{bulk}$ using $A_F/\Lambda + \text{correction}$ before fitting to recover $1/\Lambda$;
+this does not provide an independent computational certification.
+The analytical derivation stands on its own and is the evidential basis for T8.
+
+\begin{remark}[T8: analytic derivation stands; computational test is open]
+The analytical derivation of T8 proceeds from the Fisher area law and the Reflexive Landauer
+Bound (T2) as bridge premises and is not in question.
+The original numerical test (\texttt{run\_t8.py}) was circular: $I_\mathrm{bulk}$ was defined
+as $A_F/\Lambda$, so recovering the slope $\Lambda^{-1}$ was guaranteed by construction.
+A non-circular test (May 2026) using the independent Shannon bulk entropy
+$I_\mathrm{bulk} = d^3 H(s)$ yields slope $0.74$ vs.\ expected $\Lambda^{-1} = 3.82$
+(81\% error, R$^2 = 0.31$), confirming that the Shannon entropy is not the correct
+MFRR notion of $I_\mathrm{bulk}$ in this context.
+A proper computational certificate requires deriving $I_\mathrm{bulk}$ from MFRR field equations
+without reference to $\Lambda$.  This is an open research task.
+\end{remark}
+
+\paragraph{Validation of selected theorems.}
+Field-level calorimetry (PR-0 tests, 42 runs) verifies the Reflexive Landauer Bound (T2) to 100\%
+compliance.  The Reflexive Fluctuation Theorem (T6) is validated over $10^5$ stochastic paths
+($\langle e^{-\Delta\mathcal{S}_\mathrm{ref}}\rangle = 1.02 \pm 0.02$).
+SRRG--RG Duality (T11) matches Wilsonian RG $\beta$-functions within 4.75\% mean error.
+Observer Complexity Invariance (T10) is tagged \tagI{} (interpretive); the remaining T-tagged
+theorems are Lean-certified.
+
+%------------------------------------------------------------------
+\section{Standard Model Uniqueness: The Two-Layer PSC Theorem}
+\label{sec:SM}
+%------------------------------------------------------------------
+
+The landmark structural result:
+
+\begin{theorem}[Two-Layer PSC Theorem \tagT{}/\tagC{}; \texttt{SM\_gauge\_uniquely\_selected}, NEMS 05]
+\label{thm:twolayer}
+Within the space of 4D renormalizable gauge theories:
+
+\emph{Layer~I (Consistency Narrowing):} Hard PSC axioms --- Renormalization Closure (RC),
+Structural Stability (NM$^\star$), Topological Viability (TV), Self-Awareness (SA) ---
+uniquely force gauge group $\mathrm{SU}(3)\times\mathrm{SU}(2)\times\mathrm{U}(1)$
+with minimal chiral matter and $N_{\mathrm{gen}} \ge 3$ generations.
+This is machine-checked in nems-lean (\texttt{SM\_gauge\_uniquely\_selected};
+decidable fragment over 60 \emph{(GaugeGroup, Dimension)} pairs; full $D$-minimizer claim
+over 20,160+ universes remains open pending \texttt{native\_decide} completion).
+
+\emph{Layer~II (Optimality Selection):} Presentation Invariance (PI) via minimal description
+length (MDL) selects $N_{\mathrm{gen}} = 3$ as the unique PSC-optimal solution.
+
+\emph{$N_{\mathrm{gen}} \ge 3$ is forced} \tagT{}: The CP-violation requirement (Layer~I)
+forces $N_{\mathrm{gen}} \ge 3$ as a hard logical necessity,
+independently of Layer~II (\texttt{NemS.Ngen\_ge\_three\_forced}, NEMS 03);
+$N_{\mathrm{gen}} = 3$ is then \emph{selected} by Layer~II MDL optimality.
+\end{theorem}
+
+\paragraph{Computational confirmation \tagC{}.}
+Basin structure analysis (TS1--TS7) demonstrates a \textbf{97.02\% mean attraction rate}
+to SM GTE triples under SRRG flow (TS1: 8,704 random starts; SHA-256 on file).
+The remaining 2.98\% settle at alternative fixed points not yet fully characterized.
+Extended universe scan (34,560 universes, 12 gauge groups, including
+Pati-Salam $\mathrm{SU}(4)\times\mathrm{SU}(2)\times\mathrm{SU}(2)$,
+$E_6$, $G_2$, $\mathrm{SU}(6)$, $\mathrm{SU}(4)$):
+SM ranks \#1; all BSM candidates fail the PSC sieve with
+$D \approx 2.19 \times 10^6$ versus $D_\mathrm{SM} = 1.009$.
+
+\paragraph{UGP coupling ratio predictions \tagT{}/\tagC{}.}
+Three coupling ratios derived purely from ugp-lean machine-checked arithmetic
+(not fitted to SM data):
+$g_1^2/g_2^2$: UGP predicts 0.2969; SM@$M_Z$ = 0.3008 (1.34\% deviation);
+$g_3^2/g_2^2$: UGP predicts 3.4449; SM@$M_Z$ = 3.5105 (1.90\% deviation);
+Quarter-Lock exact: UGP predicts $1/3$; SM@$M_Z$ = 0.3008 (9.77\% deviation,
+consistent with RG running from the electroweak scale).
+Lean certificate: \texttt{UgpLean.TE22.ScanCertificate} (0 sorry).
+The Layer~I enumeration is fully machine-certified (Lean-certified, zero \texttt{sorry},
+\texttt{native\_decide}): \texttt{psc\_enumeration\_forces\_ngen\_3} enumerates
+all $34{,}560$ universe descriptions as a \texttt{Fintype}, confirms exactly 12
+pass the hard PSC Layer~I filters (\texttt{psc\_12\_survivors\_card}), and
+establishes that all 12 carry $N_{\rm gen}=3$ and
+$\mathrm{SU}(3){\times}\mathrm{SU}(2){\times}\mathrm{U}(1)$ gauge in $d=4$
+(\texttt{psc\_12\_survivors\_have\_ngen\_3}, \texttt{psc\_admissible\_forces\_sm\_gauge}).
+The Layer~II claim (Presentation Invariance selects the MDL-minimal survivor among
+the 12) remains to be Lean-certified.
+The Weinberg angle $\sin^2\theta_W = N_\mathrm{gen}/c_H = 3/13 \approx 0.2308$ ($-15.0\sigma$ from PDG~2022 bare; threshold $384729/1664000$ at $-0.42\sigma$; CatAL) has since been derived via the N-gen/c-H route in~\cite{SpivackWeinberg}.
+
+\paragraph{Generation count and $k_{\mathrm{gen}}$.}
+The UCL2 correction establishes $k_{\mathrm{gen}} = \varphi\cos(\pi/10)$
+(Lean-certified: \texttt{thm\_ucl2\_fully\_unconditional}),
+superseding the earlier estimate $k_{\mathrm{gen}} = \pi/2$.
+See companion papers~\cite{Spivack2026_SM_UGP,Spivack2026_Koide,Spivack2026_CyclotomicMass}
+for detailed derivations.
+
+\paragraph{Neutrino sector: controlled tension.}
+The minimal PSC-optimal sector predicts massless neutrinos at the renormalizable level.
+Observed masses require extension: the Weinberg operator $(LH)(LH)/\Lambda_\nu$
+is the PSC-minimal option; right-handed neutrinos are PSC-consistent.
+Light sterile neutrinos would violate PSC-minimality and falsify the framework.
+
+%------------------------------------------------------------------
+\section{Quantum Foundations}
+\label{sec:quantum}
+%------------------------------------------------------------------
+
+\subsection{Born Rule Uniqueness \tagT{}}
+
+\begin{theorem}[Born Rule Uniqueness \tagT{}; \texttt{NemS.born\_rule\_unique}, NEMS 13+14,
+DOI: \href{https://doi.org/10.5281/zenodo.19429741}{10.5281/zenodo.19429741}]
+Under PSC constraints, the Born rule is the unique probability measure
+over Choice-Point branches consistent with MDL minimality.
+\end{theorem}
+
+\noindent The proof shows that any other measurement rule either violates PSC closure
+(by requiring external probability seeds) or reduces to the Born rule under
+the MDL uniqueness argument.
+Computational validation: KL divergence $< 10^{-4}$, $L_1 < 1\%$ across 40 measurement configurations.
+
+\subsection{Quantum--Geometric Equivalence \tagI{}}
+
+The Quantum-Geometric Equivalence Theorem identifies quantum superposition with
+sustained degeneracy on an Adjudicative Manifold of the Fisher geometry.
+Collapse is a $\PT$ event; the Born rule follows from MDL-uniqueness (above).
+This is tagged \tagI{} because it is an interpretive identification,
+not a derivation from physical axioms alone.
+
+\subsection{Decoherence and the GKSL Master Equation}
+
+Coupled Choice-Point ensembles self-generate Lindblad master equations
+without external baths \tagB{}:
+autocorrelation decay of the PSC density matrix yields finite positive rates $\Gamma$, $\gamma_\alpha$.
+The Arrow of Time \tagT{} (\texttt{ArrowOfTime.closure\_arrow\_theorem}, NEMS 36+78)
+follows from the irreversibility of $\PT$ events: the Reflexive Fluctuation Theorem
+$\langle e^{-\Delta\mathcal{S}_\mathrm{ref}}\rangle = 1$ defines entropy production
+as a directed information flow, giving temporal orientation.
+
+\subsection{No-Emulation Theorem \tagT{}}
+
+\begin{theorem}[No-Emulation \tagT{}; \texttt{NemS.no\_emulation\_thm}]
+No Turing machine can simulate $\PT$; Strong Transputational Universality (STU)
+establishes $\PT$ as super-Turing.
+\end{theorem}
+
+%------------------------------------------------------------------
+\section{Gravity, Cosmology, and Black-Hole Information}
+\label{sec:gravity}
+%------------------------------------------------------------------
+
+\subsection{Emergent Gravity from Information Minimization \tagC{}}
+
+The TE$_2$.1 Recursive Fidelity validation program (11 experiments, 710 runs)
+demonstrates emergent physics from information-theoretic constraints on finite noisy substrates
+with no hard-coded physics.
+Key gravity result \tagC{}:
+nodes minimizing transmission error in a noisy graph exhibit an emergent force law
+with exponent $p = 2.60 \pm 0.16$ in the sampled regime ($r \in [3,15]$ in normalized units).
+This is the \emph{intermediate-regime} prediction of the derived analytic formula
+$F = e^{-k/r^2} \cdot 2k/r^3$,
+which asymptotes to $r^{-2}$ for $r \gg \sqrt{k} \approx 2.82$.
+The measured 2.60 is not a deviation from the inverse-square law but its intermediate-regime signature;
+future extension to $r \gg \sqrt{k}$ is planned.
+
+The Information--Gravity Coupling theorem \tagB{} (T4):
+the reflexive information stress tensor $C_{\mu\nu}$ couples to the Einstein tensor,
+$G_{\mu\nu} = 8\pi G(T_{\mu\nu} + C_{\mu\nu})$,
+satisfying all classical energy conditions
+(NEC, WEC, DEC: 100\% compliance, $10^6$ field samples).
+
+\subsection{$\Lambda$CDM Cosmology \tagC{}}
+
+The TE$_2$.5 reflexive $\Lambda$CDM derivation shows that flat spatial geometry
+with $\Lambda \approx 10^{-122}$ is the unique PSC-admissible cosmological attractor \tagB{}.
+Computational validation \tagC{}:
+$w_\Psi = -1.000$ (exact to numerical precision),
+$|w_a| < 10^{-4}$,
+linear structure growth $f\sigma_8(z)$ matches $\Lambda$CDM at the $<1\%$ level
+(by construction when $w_\Psi=-1$; E7 validation),
+robust to $\pm 50\%$ parameter variation.
+
+\textbf{Observational status.}
+Planck~2018 alone gives $w_0 = -1.028 \pm 0.031$, consistent with the PSC prediction.
+DESI DR1 (\texttt{arXiv:2404.03002}) combined with some Type~Ia supernova compilations
+finds $w_0 \neq -1$ at $2.5$--$3.5\sigma$; DESI DR2 (2025) shows ${\sim}2.8\sigma$ tension.
+Planck-BAO-only analyses remain consistent with $w_0 = -1$.
+The tension is driven by SNIa calibration under active investigation.
+The structural prediction $w_\Psi = -1.000$, $w_a = 0$ is maintained;
+if DESI DR3 (2026--2027) confirms $|w_a| > 0.1$ at $>3\sigma$ with two or more
+independent SNIa compilations, this constitutes a falsification of the
+PSC cosmological attractor prediction.
+
+\subsection{Black-Hole Information Paradox \tagB{}}
+
+MFRR resolves the information paradox via reversible transputation:
+$\PT^{-1} \circ \PT = \mathbb{I}$, with energy antisymmetry $\Delta E_{\PT^{-1}} = -\Delta E_\PT$.
+Horizons are distributed adjudication manifolds, not information sinks.
+
+TE$_2$.4 \tagC{}: explicit Stinespring dilation for an 8-dimensional JT-like GKSL evaporation channel,
+verified to fidelity $F \ge 1 - 10^{-8}$.
+\emph{This is a worked toy-model example of reflexive unitarity, not a proof of information preservation
+in astrophysical black holes.}
+The framework shows PSC-closure of the evaporation channel is internally consistent;
+extension to 3+1D Schwarzschild geometry is future work.
+
+Observable signatures predicted by the framework (not yet tested):
+QNM frequency shifts $\delta\omega/\omega \sim 10^{-12}$--$10^{-10}$ (LIGO/Virgo);
+shadow deformations $\delta b_\mathrm{ph}/M \sim 10^{-9}$ (ngEHT);
+Page-time shifts $\delta_\Psi \in [10^{-6}, 10^{-3}]$.
+
+%------------------------------------------------------------------
+\section{Information Geometry and the Reflexive Laws}
+\label{sec:infogeo}
+%------------------------------------------------------------------
+
+Information space forms a Fisher--Rao manifold $(\Man, \Fisher)$,
+with geometric complexity $\Omega = \int R_F \sqrt{\det\Fisher}\, d^k\theta$.
+The coherence field $\Psi$ satisfies:
+\[
+-\Delta_F \Psi + m^2\Psi = \kappa\,\omega, \qquad \overline{\Psi} \propto \Omega^{3/2},
+\]
+verified with $R^2 > 0.99$ across 12 parameter regimes.
+
+\paragraph{Reflexive Landauer Bound \tagB{}.}
+\[
+\Delta E_\PT \ge k_B T \log n + \lambda_\Psi \mathcal{E}_\Psi,
+\]
+where $\lambda_\Psi$ is a bridge premise (the coherence coupling constant,
+whose value is calibrated to experimental data rather than derived from first principles at present).
+Computational compliance: 100\% over 42 calorimetry runs.
+
+\paragraph{Adjudication--Entropy Correspondence \tagC{}.}
+Entropy production scales linearly with the number of transputational events:
+$\langle\Delta S_\mathrm{ref}\rangle = \eta N_\PT$ with $\eta/k_B \approx \ln 2$;
+RFT E8 regression slope ratio $\approx 1.0005$ ($R^2 = 0.996$).
+
+\paragraph{SRRG--RG Duality \tagB{}.}
+The Self-Referential Renormalization Group (SRRG) co-renormalizes fields and adjudicators;
+its $\beta$-functions converge with Wilsonian RG within $4.75\%$ mean error (tolerance $15\%$).
+This establishes QFT renormalization as a special case of reflexive information flow.
+
+\paragraph{Superlinear Energy Amplification \tagC{}.}
+$\langle\Delta E\rangle = A \cdot S^\alpha$ with $\alpha$ transitioning $1.01 \to 1.18 \to 1.83$
+across perturbative, transitional, and coherence-dominated regimes (E27 series).
+This is the first complete map of the quantum-to-classical energy crossover.
+
+\begin{tcolorbox}[colback=gray!4,colframe=gray!50!black,
+  title={\textbf{Three Universal Information-Energetic Laws}},
+  fonttitle=\bfseries,left=5pt,right=5pt,top=4pt,bottom=4pt]
+\small
+\begin{enumerate}[nosep,leftmargin=1.5em,itemsep=0.2em]
+  \item \textbf{Superlinear Energy Amplification \tagC{}:}
+    $\langle\Delta E\rangle = A\cdot S^\alpha$, with $\alpha$ transitioning
+    $1.01\to1.18\to1.83$ across perturbative, transitional, and coherence-dominated regimes.
+    First complete map of the quantum-to-classical crossover (E27 series).
+
+  \item \textbf{Information Profit Threshold \tagT{}:}
+    Any self-sustaining reflexive system must maintain
+    $\mathrm{Gen}/\mathrm{Drain} > 1 + \Lambda/2 \approx 1.1309$,
+    where $\Lambda = \ln\phi/\ln(2\pi)$.
+    Confirmed cross-domain: ecology, economics, physics, biology (0.08\% theory match, E32).
+
+  \item \textbf{Decoherence as Accounting Failure \tagC{}:}
+    Additive external noise drops the profit threshold to $\approx0.59$ (48\% decrease; E35, 81 configurations).
+    All eight internal mechanism variants remain robust ($\approx1.11$).
+    Decoherence is \emph{precisely} profit-accounting corruption --- unifying
+    quantum fragility, biological death, economic collapse, and ecological decay.
+\end{enumerate}
+\end{tcolorbox}
+
+%------------------------------------------------------------------
+\section{Information Profit Principle}
+\label{sec:ipp}
+%------------------------------------------------------------------
+
+A universal threshold governs all self-organizing structures:
+
+\begin{tcolorbox}[colback=blue!4,colframe=MidnightBlue,title=\textbf{Information Profit Principle \tagC{}}]
+\[
+\frac{\text{Generation}}{\text{Drain}} > 1 + \frac{\Lambda}{2}, \qquad
+\Lambda = \frac{\ln\phi}{\ln(2\pi)} \approx 0.2618,
+\]
+where $\phi = (1+\sqrt{5})/2$ is the golden ratio.
+Measured threshold: $1.1300 \pm 0.0001$ (0.08\% error; E32).
+Dimension-independent: E36 confirms 2D $=$ 3D $= 1.13$.
+Governs quantum coherence, biological metabolism, economic viability, and cosmological structure.
+\end{tcolorbox}
+
+\subsection{Decoherence as Profit Failure \tagC{}}
+
+Additive external noise drops the profit threshold to 0.59 (48\% decrease; E35, 81 configurations).
+All eight internal mechanism variants are robust ($\approx 1.11$).
+Decoherence is \emph{profit-accounting corruption}: the same information-geometric law
+that governs quantum fragility also governs biological death, economic collapse, and ecological decay.
+
+\subsection{Information Profit Threshold (IPT): Status}
+
+\begin{theorem}[Information Profit Threshold (IPT) \textup{\tagT{}}]
+\label{conj:IPT}
+The information profit threshold for PSC-sustaining self-organization is
+$\mathrm{IPT} = 1 + \Lambda/2 = 1 + \ln\varphi/(2\ln 2\pi) \approx 1.1309$,
+where $\Lambda = \ln\phi/\ln(2\pi)$ is Norfleet's dimensional balance constant~\cite{NorfleetPrivComm}.
+\end{theorem}
+
+\noindent\textbf{Status: \tagT{} machine-checked.}
+All three structural premises are machine-proved in Lean~4
+(zero sorry, bundled in module
+\path{UgpPhysicsLean.IPT.InformationProfitThreshold},
+with the underlying contraction-rate theorem living in
+\path{UgpLean.GTE.LinearResponse},
+\texttt{ugp-physics-lean}~\cite{ugp-physics-lean}):
+\begin{enumerate}[nosep,label=(A\arabic*)]
+\item $|\psi| = 1/\varphi$ --- PSC contraction rate equals inverse golden ratio
+  (\path{UgpLean.GTE.abs_psi_eq_inv_phi},
+  re-exposed in IPT as \path{A1_psc_contraction_rate_is_inv_phi}, \tagT{});
+\item $H(U(1)) = \ln 2\pi$ --- adjudication entropy from $U(1)$ phase-space periodicity (\path{A2_adjudication_entropy} \tagT{});
+\item $1/2$ forward/backward split --- PSC time-reversal symmetry forces equal overhead (\path{A3_forward_backward_split} \tagT{}).
+\end{enumerate}
+The IPT theorem $\rho_{\rm crit} = 1 + \ln\varphi/(2\ln 2\pi)$ is machine-checked as \texttt{IPT\_theorem} (zero sorry). IPT is the first MFRR threshold result to achieve \tagT{} status~\cite{SpivackIPT}.
+
+%------------------------------------------------------------------
+\section{Residual Classification Conjecture}
+\label{sec:rcc}
+%------------------------------------------------------------------
+
+The Residual Classification (RCC), formerly a conjecture, is established as a theorem:
+
+\begin{theorem}[Residual Classification]
+All gauge groups surviving Layer~I PSC consistency narrowing but not selected by Layer~II
+are classified; no new consistent gauge groups exist.  Every compact simple Lie group
+fails at least one PSC layer: exceptional groups ($G_2, F_4, E_6, E_7, E_8$) by
+extended computational certificate; infinite classical families $B_n, C_n, D_n, A_n$
+by Lean-certified algebraic arguments (\texttt{PSC.RCCInfiniteFamilies}, zero sorry).
+\end{theorem}
+
+\noindent The Two-Layer PSC Theorem (Theorem~\ref{thm:twolayer}) proves that the SM gauge group
+is the unique PSC-optimal minimizer, now \emph{unconditionally} via the RCC theorem.
+
+%------------------------------------------------------------------
+\section{The UGP--MFRR Programme Chain}
+\label{sec:chain}
+%------------------------------------------------------------------
+
+The full programme chain is:
+\[
+\underbrace{\text{UGP (Computable)}}_{\text{GTE triples, SRRG}} \Rightarrow
+\underbrace{\text{MFRR (Reflexive)}}_{\text{PSC, $\PT$}} \Rightarrow
+\underbrace{\text{Physical predictions}}_{\text{SM, $\Lambda$CDM, QM, BH}}.
+\]
+
+Companion published results (see respective companion papers):
+\begin{itemize}[nosep]
+\item Reflexive self-defining law: formal definition of reflexive physical law,
+  classification of theories by reflexivity degree (Class~I/IIa/IIb), and worked examples
+  of self-defining dynamics that ground the MFRR programme~\cite{SpivackReflexiveLaw} (P10).
+\item SM derivation from UGP: gauge group, particle masses, coupling ratios~\cite{Spivack2026_SM_UGP}.
+\item Koide lepton mass relation: cyclotomic-12 closed form, exact to $10^{-6}$~\cite{Spivack2026_Koide}.
+\item Fermion mass hierarchy: TT/VV cyclotomic mass structure, $A_2$ Weyl geometry~\cite{Spivack2026_CyclotomicMass}.
+  VV three-layer status: the formula is a structural empirical regularity \textbf{[E]};
+  the coefficient values $(13/9,-7/6,-5/14)$ admit exact Lean-certified SU(5)/SO(10)
+  group-theoretic identities \textbf{[T]} (\texttt{VV\_from\_GUT\_group\_theory}, zero sorry),
+  but those values also saturate the pre-registered algebraic bases,
+  and the naive one-loop SM Yukawa RG realization of the EW-scale log-linear form fails
+  (anomalous closure); the EW-scale log-linear mechanism is algebraically identified: it arises from composing the SU(5)/SO(10) Yukawa power law with the UCL log map (\texttt{vv\_mechanism\_algebraic}, zero sorry)~\cite{Spivack2026_SM_UGP}.
+\item Koide phase structural origin: $\theta = (N_c^2-1)/(4N_c^2) = 2/9$ proved from $N_c=3$~\cite{Spivack2026_Koide}.
+\item Neutrino mass-squared ratio $\Delta m^2_{21}/\Delta m^2_{31} = 0.02936$ predicted to $0.16\sigma$ from NuFIT 6.0~\cite{NuFIT60} ($0.52\%$; $1.58\sigma$ from PDG 2024) from Braid Atlas $b$-values $\{5,11,19\}$ via $m_{\nu_g} \propto b_g^{29/9}$ (normal ordering automatic); three independent structural decompositions of the exponent; structural Dirac scale $E_D = v_H/29$ gives $\Sigma m_\nu = 59.4$~meV from the GTE seesaw and three-tape winding cascade (P47~\cite{SpivackGTECosmology}), within the Planck bound~\cite{Spivack2026_SM_UGP,SpivackNeutrino}.  The cross-identity $\dim(126_{\rm SO(10)}) = 2\,N_c^2\,\delta$ bridges the charged-lepton and neutrino sectors.
+\item MFRR Landauer bound \emph{structurally ruled out} for Dirac fermion mass calibration via the anti-correlation theorem~\cite{Spivack2026_SM_UGP}.
+\item Lean 4 formalization: see companion formalization paper~\cite{SpivackUGPFormalization} covering all major results, 0 sorry~\cite{SpivackUGPFormalization,ugp-lean}.
+\item Arithmetic uniqueness of the SM: the Asymptotic Sparsity Theorem proves that the set of
+  cyclotomic-120 algebraic numbers satisfying the GTE sieve is asymptotically sparse,
+  and all derived constants live in $\mathbb{Q}(\zeta_{120})$~\cite{Spivack2026_Uniqueness25}.
+\item Braid Atlas extensions: EW boson canonical triples $(a,b,c;g)$ now derived with
+  $a = a_u$, $b = N_c$, and $c \in \{11,12,13\}$ (Category~A for winding numbers and $a$,$b$;
+  Category~B for $c$-values);
+  the Coxeter-conductor theorem establishes that ADE Toda mass spectra lie in
+  $\mathbb{Q}(\zeta_{120})$ iff $h(G) \mid 120$, with E7 ($h=18$, $18\nmid 120$)
+  as a clean algebraic falsifier (Lean-certified)~\cite{Spivack2025_BraidAtlas}.
+\item Genetic code: the two-stage sieve framework (structural admissibility $+$ biological
+  viability) extends beyond particle physics to molecular biology, uniquely selecting the
+  standard genetic code from $>10^{84}$ alternatives~\cite{SpivackGeneticCode}.
+\item General Selection Theory: a domain-independent formalization of the two-stage
+  admissibility-plus-viability convergence mechanism, unifying the particle-physics sieve
+  (SM from $>$34,000 candidates), the genetic-code sieve, ADE Toda spectra,
+  and WZW quantum dimensions under a single selection principle~\cite{SpivackGeneralSelection}.
+\end{itemize}
+
+%------------------------------------------------------------------
+\section{Predictions and Falsifiability}
+\label{sec:predictions}
+%------------------------------------------------------------------
+
+MFRR makes explicit falsifiable predictions:
+
+\begin{enumerate}[label=\arabic*.,leftmargin=2em]
+\item \textbf{BEC Calorimetry} [3--5 years]:
+$\Delta E_\PT$ excess $\propto \Psi^2$ beyond classical Landauer.
+Falsified if no coherence-dependent energy term is observed.
+
+\item \textbf{Superconducting Qubits} [2--4 years]:
+Dissipation $P = P_\mathrm{base} + \lambda_\Psi I_\mathrm{coh}$.
+Falsified if $P$ is independent of coherence.
+
+\item \textbf{LIGO/Virgo Ringdown} [5--10 years]:
+$\delta\omega/\omega \sim 10^{-12}$--$10^{-10}$.
+Falsified if $|\delta\omega/\omega| < 10^{-13}$.
+
+\item \textbf{EHT Shadow Circularity} [5--10 years]:
+$\delta b_\mathrm{ph}/M \sim 10^{-9}$, achromatic.
+Falsified if shadow matches Kerr to $< 10^{-10}$.
+
+\item \textbf{Cosmological $w_a$} [3--7 years]:
+$|w_a| < 0.05$ from DESI/Euclid/Roman.
+Falsified if $|w_a| > 0.1$ at $> 3\sigma$ with multiple independent datasets.
+\emph{Current status (2026):} DESI DR1+DR2 combined with some SNIa datasets
+shows $w_0 \neq -1$ at $2.5$--$3.5\sigma$; tension is SNIa-driven and
+absent in Planck-BAO-only analyses. Structural prediction $w_0=-1$, $w_a=0$ maintained;
+DESI DR3 (2026--2027) is the decisive dataset.
+
+\item \textbf{Neutrino Masses} [PMNS \CatAD; $\Sigma m_\nu$ \CatAD in P47]:
+PMNS mixing angles and mass-squared ratio closed (P21~\cite{SpivackNeutrino}; $\sin^2\theta_{12} = 4/13$, $\sin^2\theta_{23} = 19/42$, $\sin\theta_{13} = 11/73$; Lean-certified zero sorry; P35~\cite{SpivackGTEUnification} unification table).
+Absolute sum $\Sigma m_\nu = 59.4$~meV from GTE seesaw + three-tape winding (P47~\cite{SpivackGTECosmology}).
+Light sterile neutrinos $\Rightarrow$ PSC-minimality violated.
+Masses correlating with PT thermodynamic bounds $\Rightarrow$ transputational origin confirmed.
+
+\item \textbf{Biological Profit Margin} [2--3 years]:
+Healthy cells maintain profit margin $1.15$--$1.20$; apoptotic $< 1.13$.
+Falsified if no threshold structure observed.
+
+\item \textbf{Error Correction Cost} [1--2 years]:
+ATP expenditure on chaperones and repair scales as $\propto\sigma^2_\mathrm{noise}$,
+reflecting the Reflexive Landauer cost of maintaining internal coherence.
+Falsified if chaperone expenditure is independent of noise level.
+
+\item \textbf{Lifespan and Profit Maintenance} [3--5 years]:
+Long-lived species and cells maintain consistently higher profit margins.
+Aging is modelled as gradual decline of Gen/Drain below the IPT threshold.
+Falsified if no correlation between profit margin and lifespan is observed across species.
+
+\item \textbf{Cancer Metabolism} [2--10 years]:
+Interventions forcing the metabolic profit ratio below 1.13 should trigger apoptosis,
+providing a PSC-derived target for metabolic cancer therapy.
+Falsified if selective metabolic inhibition below IPT does not preferentially trigger
+apoptosis in cancer vs.\ healthy cells.
+
+\item \textbf{Coxeter-Conductor Universality} [testable now]:
+ADE Toda mass spectra lie in $\mathbb{Q}(\zeta_{120})$ iff the Coxeter number $h \mid 120$.
+The E7 case ($h = 18$, $18\nmid 120$) is an algebraic falsifier already confirmed
+by PSLQ and Lean arithmetic~\cite{Spivack2025_BraidAtlas}.
+
+\item \textbf{Genetic Code Uniqueness} [testable now]:
+The two-stage sieve (structural admissibility $+$ biological viability) predicts
+the standard genetic code as the unique survivor of $>10^{84}$ candidate assignments.
+Falsified if an alternative code satisfying both stages is found~\cite{SpivackGeneticCode}.
+\end{enumerate}
+
+%------------------------------------------------------------------
+\section{Computational Validation Summary}
+\label{sec:computation}
+%------------------------------------------------------------------
+
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\linewidth}{@{}l >{\RaggedRight\arraybackslash}X l l@{}}
+\toprule
+\textbf{Domain} & \textbf{Key result} & \textbf{Precision} & \textbf{Type} \\
+\midrule
+Profit threshold (E32) & $1.1300$ vs $1.1309$ theory & 0.08\% & \tagC{} \\
+SRRG/SM convergence (TS1) & 97.02\% of 8,704 starts & ablation-confirmed & \tagC{} \\
+Universe scan (canonical) & SM rank \#1 of 20,160 & 99.9\% filtered & \tagC{} \\
+Universe scan (extended) & SM rank \#1 of 34,560 & All BSM fail & \tagC{} \\
+UGP coupling (ugp-lean) & 3 predictions, 1.3--9.8\% from SM & machine-checked & \tagT{} \\
+Cosmology $w_\Psi$ (TE$_2$.5) & $-1.000$, $|w_a| < 10^{-4}$ & exact & \tagC{} \\
+Landauer compliance & 100\% over 42 runs & & \tagC{} \\
+Stinespring fidelity (TE$_2$.4) & $F = 1.0000$ & machine precision & \tagC{} \\
+Born rule (KL, $L_1$) & $< 10^{-4}$, $< 1\%$ & & \tagC{} \\
+Adjudication entropy & $\eta/k_B \approx \ln 2$ & slope ratio $\approx 1.0005$ & \tagC{} \\
+Nuclear binding (TE$_2$.3) & MAE $= 0.489$ MeV & & \tagC{} \\
+Profit universality (E36) & 2D $=$ 3D $= 1.13$ & dimension-independent & \tagC{} \\
+Emergent force law (TE$_2$.1) & $p = 2.60 \pm 0.16$, intermediate regime & & \tagC{} \\
+PT minimal necessity (TE$_2$.6) & $\mathcal{PT}$ not merely sufficient but \emph{necessary} for PSC closure; $\Delta$-machines are the minimal extension of effective computation required & & \tagB{} \\
+\bottomrule
+\end{tabularx}
+
+Total: 297 first-party Python modules ($\sim$210,000 lines), 57,337+ experimental runs,
+15,894+ result files.
+All codes are deterministic, seed-locked, and version-controlled.
+
+%------------------------------------------------------------------
+\section{Known Limitations}
+\label{sec:limitations}
+%------------------------------------------------------------------
+
+\begin{enumerate}[label=(\roman*)]
+\item \textbf{NM$^\star$ Axiom Status:}
+The Structural Stability axiom is physically well-motivated but its derivability
+from pure PSC is an open question.
+
+\item \textbf{Neutrino Masses:}
+The minimal PSC-optimal renormalizable sector predicts massless neutrinos; observed masses require the Weinberg-operator extension.
+PMNS mixing, the mass-squared ratio, and $\Sigma m_\nu = 59.4$~meV are structurally predicted (P21, P35, P47).
+The remaining open item is a full Lagrangian derivation of flavour scaling from the combined Braid Atlas and SO(10) Yukawa matrix.
+
+\item \textbf{$N_\mathrm{gen} = 3$ Optimality vs.\ Necessity:}
+$N_\mathrm{gen} \ge 3$ is \emph{forced} \tagT{}; $N_\mathrm{gen} = 3$ is \emph{selected} by PI/MDL \tagC{}.
+
+\item \textbf{Continuum Functional Analysis:}
+Density, compactness, and semicontinuity lemmas are rigorous sketches;
+full functional-analytic proofs are future work.
+
+\item \textbf{Gravity/Gauge Unification in Two-Layer Framework:}
+The gauge and gravitational derivations are not yet unified in a single two-layer theorem.
+
+\item \textbf{RCC Closed:}
+The Residual Classification is a Lean-certified theorem over all compact simple
+Lie groups (\texttt{PSC.RCCInfiniteFamilies}, zero sorry); SM uniqueness is unconditional.
+
+\item \textbf{T8 / Universal Holographic Closure --- analytical claim only \tagB{}:}
+The original numerical test for T8 (\texttt{run\_t8.py}) had a circularity: $I_\mathrm{bulk}$ was
+defined as $A_F/\Lambda + \mathrm{correction}$, so recovering slope $\approx\Lambda^{-1}$ was
+trivially guaranteed. A non-circular test (May 2026) replaces $I_\mathrm{bulk}$ with the
+independent Shannon bulk entropy $I_\mathrm{bulk} = d^3 H(s)$; the result is
+slope $= 0.74$ vs.\ expected $\Lambda^{-1} = 3.82$ (81\% error, R$^2=0.31$).
+This confirms that the Shannon entropy is not the correct MFRR notion of
+$I_\mathrm{bulk}$; the proper field-theoretic definition within the MFRR framework
+is needed before a meaningful computational test is possible.
+\emph{T8 remains \tagB{}: the analytical derivation from Reflexive Landauer $+$ Fisher area law stands;
+computational certification is an open research task.}
+
+\item \textbf{IPT Formal Status:}
+The Information Profit Threshold (Theorem~\ref{conj:IPT}) is \tagT{} machine-checked in Lean~4: all three premises A1--A3 and the IPT theorem are proved in \texttt{UgpPhysicsLean.IPT.InformationProfitThreshold} (zero sorry).
+\end{enumerate}
+
+%------------------------------------------------------------------
+\section{Discussion and Significance}
+\label{sec:discussion}
+%------------------------------------------------------------------
+
+MFRR achieves the closure long sought in foundations of physics.
+The complete logical loop, with no alternative branches at any step:
+
+\begin{tcolorbox}[colback=blue!3,colframe=blue!40!black,
+  title={\textbf{The Logical Loop (conditional on PSC premises)}},
+  fonttitle=\bfseries,left=5pt,right=5pt,top=4pt,bottom=4pt]
+\small
+\[
+\text{PSC}
+\;\Rightarrow\; \PT
+\;\Rightarrow\; \text{SRRG}
+\;\Rightarrow\; G_{\mathrm{SM}},\; N_{\mathrm{gen}}=3
+\;\Rightarrow\; \Lambda\text{CDM}
+\;\Rightarrow\; \text{Unitarity}
+\]
+\textbf{PSC:} any self-contained universe forces internal adjudication ($\PT$).
+\textbf{PT:} transputation is super-Turing and unique under closed-choice conditions [\tagT{}].
+\textbf{SRRG:} the Self-Referential RG drives the system toward PSC-optimal fixed points.
+\textbf{SM:} hard constraints force $\mathrm{SU}(3)\times\mathrm{SU}(2)\times\mathrm{U}(1)$
+with $N_{\mathrm{gen}}\ge 3$; MDL selects $N_{\mathrm{gen}}=3$ [\tagT{}, \tagC{}].
+\textbf{$\Lambda$CDM:} flat spatial geometry with $\Lambda\approx10^{-122}$ is the unique PSC-admissible cosmological attractor [\tagC{}].
+\textbf{Unitarity:} $\PT^{-1}\circ\PT=\mathbb{I}$ closes the information paradox [\tagB{}, \tagC{}].
+Also derivable in this chain: Born rule, Arrow of Time, IPT, GKSL decoherence, emergent inverse-square gravity.
+\end{tcolorbox}
+
+\[
+\text{Computable (UGP)} \Rightarrow \text{Reflexive (MFRR)}.
+\]
+
+\paragraph{What is established (conditional on stated premises):}
+\begin{enumerate}[nosep]
+\item Standard Model gauge group and $N_\mathrm{gen} \ge 3$ forced by PSC [T1--T17, T];
+\item $N_\mathrm{gen} = 3$ selected by MDL optimality [C];
+\item Arrow of time from PT irreversibility [T];
+\item Born rule from MDL uniqueness [T];
+\item Information paradox resolved via $\PT^{-1}\circ\PT = \mathbb{I}$ [B, C];
+\item GKSL decoherence without external environment [B];
+\item Universal profit law $\mathrm{Gen/Drain} > 1 + \Lambda/2$ [T; machine-checked in \texttt{ugp-lean}, see Theorem~\ref{conj:IPT}];
+\item Quantum-to-classical crossover quantified ($\alpha: 1.01 \to 1.83$) [C];
+\item Emergent force law (intermediate regime, $r^{-2}$ asymptote) [C];
+\item Flat $\Lambda$CDM with $\Lambda \approx 10^{-122}$ as PSC attractor [B, C];
+\item Coxeter-conductor universality: ADE Toda spectra in $\mathbb{Q}(\zeta_{120})$ iff $h \mid 120$;
+  E7 algebraic falsifier confirmed [B, T];
+\item Genetic code uniquely selected by two-stage admissibility/viability sieve [C];
+\item General Selection Theory unifies particle, genetic-code, and algebraic sieves [I].
+\end{enumerate}
+
+\paragraph{Primary open frontiers:}
+3D extension of PR-0 gravity experiment;
+full \texttt{native\_decide} proof of SM $D$-minimizer claim over 20,160+ universes;
+independent computational certification of T8;
+gravity/gauge unification in a single two-layer theorem.
+(The Residual Classification is a proved theorem; it is no longer an open problem.)
+
+%------------------------------------------------------------------
+% APPENDIX: LEAN THEOREM INVENTORY
+%------------------------------------------------------------------
+\appendix
+
+\section{Lean 4 Theorem Inventory}
+\label{app:lean}
+
+All entries use Lean 4.29.0-rc6 / Mathlib 4.29.0-rc6, zero sorry in \CatAL{} results, zero custom axioms in any \CatAL{} proof chain.
+Build instructions: \texttt{lake build} in the \texttt{ugp-lean} repository~\cite{ugp-lean}.
+
+\begin{enumerate}[leftmargin=0pt,itemindent=0pt,label=\arabic*.,itemsep=3pt]
+\small
+\item \texttt{closed\_choice\_forces\_transputation} ---
+  $\PT$ is the unique internal adjudicator under closed-choice conditions.
+  NEMS~08. DOI: \href{https://doi.org/10.5281/zenodo.19429882}{10.5281/zenodo.19429882}.
+
+\item \texttt{NemS.born\_rule\_unique} ---
+  Born rule is the unique MDL-consistent probability measure.
+  NEMS~13+14. DOI: \href{https://doi.org/10.5281/zenodo.19429741}{10.5281/zenodo.19429741}.
+
+\item \texttt{ArrowOfTime.closure\_arrow\_theorem} ---
+  Arrow of time from $\PT$ irreversibility.
+  NEMS~36+78. \cite{SpivackNEMSLean}.
+
+\item \texttt{NemS.no\_emulation\_thm} ---
+  $\PT$ is super-Turing; no Turing machine can emulate it. \cite{SpivackNEMSLean}.
+
+\item \texttt{NemS.strong\_transputational\_universality} ---
+  Strong Transputational Universality: $\PT$ is the universal adjudicator under PSC. \cite{SpivackNEMSLean}.
+
+\item \texttt{SM\_gauge\_uniquely\_selected} ---
+  SM gauge group is unique over all 60 (GaugeGroup, Dimension) pairs (decidable). NEMS~05. \cite{SpivackNEMSLean}.
+
+\item \texttt{NemS.Ngen\_ge\_three\_forced} ---
+  $N_\mathrm{gen} \ge 3$ is forced by CP-violation requirement. NEMS~03. \cite{SpivackNEMSLean}.
+
+\item \texttt{thm\_ucl2\_fully\_unconditional} ---
+  $k_\mathrm{gen} = \varphi\cos(\pi/10)$ (UCL2 unconditional correction). \cite{ugp-lean}.
+
+\item \texttt{UgpLean.TE22.ScanCertificate} ---
+  SM coupling independence + SM gauge uniqueness (4 theorems, 0 sorry). \cite{ugp-lean}.
+
+\item \texttt{NemS.pt\_psc\_equivalence} ---
+  $\PT \Leftrightarrow \PSC$ (biconditional). \cite{SpivackNEMSLean}.
+
+\item \texttt{NemS.reflexive\_fluctuation\_thm} ---
+  Reflexive Fluctuation Theorem: $\langle e^{-\Delta\mathcal{S}_\mathrm{ref}}\rangle = 1$. \cite{SpivackNEMSLean}.
+
+\item \texttt{NemS.no\_hair\_coherence} ---
+  $\Psi$ is the unique stable information field under MDL. \cite{SpivackNEMSLean}.
+\end{enumerate}
+
+%------------------------------------------------------------------
+\section{Claim-Type Summary Table}
+\label{app:claimtypes}
+%------------------------------------------------------------------
+
+\begin{center}
+\small
+\begin{tabular}{@{}p{3.2cm}p{1.8cm}p{7cm}@{}}
+\toprule
+Claim type & Count & Representative entries \\
+\midrule
+\tagT{} Machine-checked & 13+ & See Appendix~\ref{app:lean}; includes IPT (all A1--A3 Lean-proved; \texttt{IPT\_theorem}) \\
+\tagB{} Bridge claims & 6 & T2, T3, T4, T8, T11, T14, T15 \\
+\tagC{} Computationally certified & 10+ & SRRG 97\%, TE$_2$ experiments \\
+\tagI{} Interpretive & 2 & QGE Theorem, Observer Necessity \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+%------------------------------------------------------------------
+\section*{Acknowledgments}
+
+AI coding assistants were used for LaTeX formatting, coding assistance, and adversarial review during manuscript preparation. All mathematical derivations, numerical computations, and Lean~4 certifications were independently verified by deterministic scripts and the Lean~4 kernel.
+%------------------------------------------------------------------
+The author thanks Phillip Norfleet for the independent geometric derivation
+of $\Lambda = \ln\phi/\ln(2\pi)$ as a dimensional balance constant
+and for analytic correspondence throughout the development of this framework.
+
+%------------------------------------------------------------------
+\section*{Code and Data Availability}
+%------------------------------------------------------------------
+All computational code (297 modules, $\sim$210,000 lines), simulation data (57,337+ runs),
+Lean 4 proofs (see companion formalization paper~\cite{SpivackUGPFormalization}), and numerical artifacts are archived in the
+\texttt{ugp-physics} repository under \texttt{MFRR/} and \texttt{ugp-lean/},
+version-controlled and publicly archived in the repository.
+SHA-256 provenance records for all cited artifacts are in \texttt{PROVENANCE.md}.
+
+%------------------------------------------------------------------
+\bibliographystyle{plain}
+\bibliography{../bib/Spivack_Papers_Bibliography}
+%------------------------------------------------------------------
+
+\end{document}

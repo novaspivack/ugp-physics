@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L07: The Triangle — UGP Physics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="../../common/style.css">
+  <style>
+    /* ── Large annotated triangle ────────────────────────────── */
+    .big-triangle-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 2rem 0;
+    }
+
+    /* ── Edge tabs ───────────────────────────────────────────── */
+    .edge-tabs {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+    .edge-pill {
+      padding: 6px 14px;
+      border-radius: var(--r-full);
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1.5px solid var(--stroke-primary);
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.14s;
+    }
+    .edge-pill:hover { border-color: var(--accent); color: var(--text-primary); }
+    .edge-pill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    .edge-panel { display: none; }
+    .edge-panel.active { display: block; }
+
+    /* ── Path complete banner ────────────────────────────────── */
+    .path-complete {
+      background: rgba(34,197,94,0.08);
+      border: 1.5px solid var(--cert-lean);
+      border-radius: var(--r-lg);
+      padding: 1.5rem;
+      text-align: center;
+      margin: 2rem 0;
+    }
+    .path-complete h3 { color: var(--cert-lean); margin: 0 0 0.5rem; font-size: 1.1rem; }
+    .path-complete p  { margin: 0; color: var(--text-secondary); font-size: 0.9rem; }
+  </style>
+</head>
+<body style="--path-current: var(--path-1)">
+
+  <header class="site-header">
+    <a href="../../index.html" class="site-logo">UGP Physics</a>
+    <nav class="breadcrumb">
+      <a href="../../index.html">Tutorial Series</a>
+      <span class="bc-sep">›</span>
+      <a href="../index.html">Path 1: Foundations</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">L07: The Triangle</span>
+    </nav>
+  </header>
+
+  <main class="page-wrapper">
+
+    <div class="lesson-header">
+      <div class="path-label">Path 1 — Foundations · Lesson 7 of 7</div>
+      <h1>The Triangle: One Substrate, Three Views</h1>
+      <p class="lesson-subtitle">
+        UGP arithmetic, the GTE orbit, and the polynomial are not three separate things. 
+        They are three descriptions of a single mathematical object — and all three arrows between them are machine-certified.
+      </p>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:100%"></div>
+      </div>
+    </div>
+
+    <!-- ═══ Section 1: What We Have ═══ -->
+    <section class="lesson-section" id="what-we-have">
+      <h2>What Path 1 Has Built</h2>
+      <p>
+        Over six lessons, three distinct objects have appeared. It is tempting to think 
+        of them as separate pieces of the theory. This lesson shows they are not.
+      </p>
+      <div class="split-3" style="margin:1.5rem 0">
+        <div class="card">
+          <div class="card-header">UGP arithmetic (L04)</div>
+          <div class="card-body">
+            <p>The survivor space — configurations of prime residues satisfying the four UGP invariants. This is the substrate: the space in which everything else lives.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">GTE orbit (L06)</div>
+          <div class="card-body">
+            <p>The sequence of triples (1,73,823) → (9,42,1023) → (5,275,65535). Two arithmetic steps from the lepton seed. The N-values b = {73, 42, 275} are the particle mass addresses.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">Polynomial p (L03)</div>
+          <div class="card-body">
+            <p>p(L,C,R) = C + R − CR − LCR over GF(7). The update rule. On binary inputs it equals Rule 110. Selected by MDL — 19 bits.</p>
+          </div>
+        </div>
+      </div>
+      <p>
+        The question: are these three separate objects, or are they related? 
+        The answer — proved and machine-certified — is that they are 
+        <strong>three descriptions of the same algebraic object</strong>, 
+        viewed from three different angles.
+      </p>
+    </section>
+
+    <!-- ═══ Section 2: The Triangle ═══ -->
+    <section class="lesson-section" id="triangle">
+      <h2>The Triangle</h2>
+
+      <div class="big-triangle-wrap">
+        <svg id="big-triangle" style="width:100%;max-width:500px;height:auto"></svg>
+        <p class="diagram-caption" style="margin-top:0.75rem">
+          Three nodes. Three edges. All arrows machine-certified.
+        </p>
+      </div>
+
+      <!-- Edge explorer -->
+      <h3>Explore the three edges</h3>
+      <div class="edge-tabs">
+        <button class="edge-pill" id="edge0">Edge 1 — UGP → GTE</button>
+        <button class="edge-pill" id="edge1">Edge 2 — UGP → Polynomial</button>
+        <button class="edge-pill" id="edge2">Edge 3 — GTE → Polynomial</button>
+      </div>
+
+      <div id="panel-edge0" class="edge-panel">
+        <div class="card">
+          <div class="card-header">Edge 1 — UGP arithmetic → GTE orbit (the T map)</div>
+          <div class="card-body">
+            <p>
+              The GTE update map T is a finite-local endomorphism of the survivor space 
+              (as shown in L04 and L05). When you follow the orbit of the lepton seed 
+              under T — starting at (1, 73, 823) and applying the map twice — you get 
+              the two subsequent triples that encode the muon and tau.
+            </p>
+            <p>
+              The GTE orbit is not defined separately from the UGP substrate. 
+              <strong>It IS the orbit generated by the UGP update map T on the survivor space</strong>, 
+              starting from the MDL-forced seed. The spectrum arm of the theory 
+              (masses, quantum numbers) is produced by following this orbit.
+            </p>
+            <p style="margin:0">
+              <span data-lean="update_map_produces_canonical_orbit"></span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div id="panel-edge1" class="edge-panel">
+        <div class="card">
+          <div class="card-header">Edge 2 — UGP arithmetic → Polynomial (the UWCA)</div>
+          <div class="card-body">
+            <p>
+              The polynomial p(L,C,R) is the native update rule of the survivor space. 
+              UWCA tiles are clopen cylinders — the natural basic sets of the survivor 
+              space's topology (L04). The polynomial is not placed on top of the substrate: 
+              it is constructed from the substrate's invariants by MDL minimization.
+            </p>
+            <p>
+              The dynamics arm of the theory (computational universality, Rule 110) 
+              comes from the polynomial evaluated on the survivor space. The GTE dynamics 
+              IS the UWCA running the tile set Σ_GTE — a finite tile set derived from 
+              the GTE map T.
+            </p>
+            <p style="margin:0">
+              P08: <em>"UGP supplies the substrate (UWCA evaluator); GTE is a program 
+              (finite tile set) that runs on it."</em>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div id="panel-edge2" class="edge-panel">
+        <div class="card">
+          <div class="card-header">Edge 3 — GTE orbit → Polynomial (orbit parity + MDL)</div>
+          <div class="card-body">
+            <p>
+              This is the closing edge — the hardest to see. It says: the GTE orbit's 
+              own algebraic structure forces the polynomial.
+            </p>
+            <p>
+              The orbit has a <strong>parity shadow</strong>: the pattern of even/odd remainders 
+              alternating through the cascade encodes the same information as the polynomial's 
+              GF(7) structure. Combined with the MDL selection principle — which uniquely 
+              picks the polynomial as the shortest rule consistent with the invariants — 
+              the orbit structure and the polynomial are two representations of the same object.
+            </p>
+            <p style="margin:0">
+              <span data-lean="uwca_sweep_implements_rule110"></span>
+              &nbsp; The closing edge is machine-certified: the orbit parity shadow + MDL 
+              uniquely identifies the polynomial. All three arrows are proved.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 3: GTE as a Program ═══ -->
+    <section class="lesson-section" id="gte-as-program">
+      <h2>GTE Is a Program Running on the UWCA</h2>
+      <p>
+        One way to state the triangle relationship concisely is P08's formulation:
+      </p>
+      <div class="callout callout--info">
+        <p style="font-style:italic;font-size:1.02rem">
+          "UGP supplies the substrate (UWCA evaluator); GTE is a program 
+          (finite tile set) that runs on it."
+        </p>
+      </div>
+      <div class="split" style="margin:1.5rem 0">
+        <div>
+          <p>
+            <strong>The machine:</strong> The UWCA is the evaluation mechanism — 
+            the survivor space together with the four-pass sweep. It is a universal computer 
+            (L05). Any computable function can be expressed as a finite tile set running on it.
+          </p>
+          <p>
+            <strong>The program:</strong> The GTE update map T is implemented as a specific 
+            tile set Σ_GTE. This tile set encodes the orbit arithmetic — the divide-then-update 
+            rule — in terms of local clopen operations on the survivor space.
+          </p>
+        </div>
+        <div>
+          <p>
+            <strong>The same orbit:</strong> The sequence 
+            (1,73,823) → (9,42,1023) → (5,275,65535) is simultaneously:
+          </p>
+          <ul>
+            <li><strong>An arithmetic sequence</strong> — produced by applying T to integer triples. This is the spectrum arm: masses, quantum numbers.</li>
+            <li><strong>A computation</strong> — what the UWCA computes when it runs tile set Σ_GTE. This is the dynamics arm.</li>
+          </ul>
+          <p>
+            "GTE orbit" and "UWCA running Σ_GTE" are two names for the same 
+            mathematical object, viewed from two different angles.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 4: Why It Matters ═══ -->
+    <section class="lesson-section" id="why-matters">
+      <h2>Why This Matters</h2>
+      <p>
+        The triangle is not an aesthetic observation. It has concrete consequences.
+      </p>
+      <div class="split-3" style="margin:1.5rem 0">
+        <div class="card">
+          <div class="card-header">No double-counting</div>
+          <div class="card-body">
+            <p class="small">
+              If the three objects were separate, the theory would have three independent 
+              foundations — and each would need its own justification. Because they are 
+              one object, a single justification (MDL + PSC) covers all three. 
+              No hidden redundancy.
+            </p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">Mutual consequences</div>
+          <div class="card-body">
+            <p class="small">
+              Any result about the polynomial (e.g., Turing universality via Rule 110) 
+              is automatically a result about the GTE orbit — and vice versa. 
+              Proofs about one side of the triangle transfer to the other.
+            </p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">Zero free parameters again</div>
+          <div class="card-body">
+            <p class="small">
+              The triangle shows that the particle spectrum (GTE) and the dynamics 
+              (polynomial) are both forced by the same substrate (UGP). 
+              No independent choice is made for either.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Key Takeaways ═══ -->
+    <section class="lesson-section" id="takeaways">
+      <h2>Key Takeaways</h2>
+      <ul class="takeaway-list">
+        <li>
+          The UGP triangle has three nodes: (1) the arithmetic substrate (survivor space), 
+          (2) the GTE orbit (particle spectrum), and (3) the polynomial p(L,C,R). 
+          All three are the same mathematical object viewed from different perspectives.
+        </li>
+        <li>
+          <strong>Edge 1 (UGP → GTE):</strong> The GTE orbit is the trajectory of the lepton seed under the UGP update map T. The spectrum arm grows from the substrate.
+          <span data-lean="update_map_produces_canonical_orbit"></span>
+        </li>
+        <li>
+          <strong>Edge 2 (UGP → Polynomial):</strong> The polynomial is the native update rule of the survivor space. The UWCA evaluates it. GTE is a finite tile program running on the UWCA.
+          <span data-lean="uwca_sweep_implements_rule110"></span>
+        </li>
+        <li>
+          <strong>Edge 3 (GTE → Polynomial, the closing edge):</strong> The orbit parity shadow combined with MDL uniquely identifies the polynomial. All three arrows are machine-certified. The triangle closes.
+        </li>
+        <li>
+          This unification means there are no redundant assumptions: a single MDL + PSC derivation justifies all three objects simultaneously. Proofs on one side of the triangle transfer to the others.
+        </li>
+        <li>
+          <strong>The triangle closes a circle:</strong> two independent routes — 
+          Chain A (PSC arithmetic: N<sub>c</sub>=3 → ridge → Fibonacci → orbit → p) 
+          and Chain B (MDL algebra: Z₇×Z₃ → p directly) — both arrive at the same 
+          polynomial. This convergence is machine-certified with zero sorry.
+        </li>
+      </ul>
+    </section>
+
+    <!-- ═══ Circle Closure ═══ -->
+    <div class="callout callout--success" style="margin:1.5rem 0">
+      <p>
+        <strong>The triangle closes a circle.</strong> Two independent derivation 
+        routes both arrive at the same polynomial p. <strong>Chain A</strong> 
+        (PSC arithmetic chain): PSC → N<sub>c</sub>=3 → ridge constant 16 → 
+        Fibonacci gap 13 → orbit {73, 42, 275} → p (via orbit-parity interpolation). 
+        <strong>Chain B</strong> (MDL algebraic chain): MDL → Z₇×Z₃ → p directly. 
+        Both routes are machine-certified with zero sorry — they are not two 
+        independent hypotheses about p but two rigorous proofs that the arithmetic 
+        and the algebra are consistent descriptions of the same object.
+      </p>
+    </div>
+
+    <!-- ═══ Path Complete ═══ -->
+    <div class="path-complete">
+      <h3>Path 1 Complete</h3>
+      <p>
+        You now have the full foundation: the problem (L01), the principle (L02), 
+        the polynomial (L03), the substrate (L04), the UWCA (L05), the orbit (L06), 
+        and the triangle that unifies them (L07).
+      </p>
+      <p style="margin-top:0.75rem">
+        <a href="../../index.html" style="color:var(--cert-lean);font-weight:600">← Back to all paths</a>
+        &nbsp;&nbsp;|&nbsp;&nbsp;
+        <span style="color:var(--text-tertiary);font-size:0.88rem">Path 2: Why This Polynomial? — coming soon</span>
+      </p>
+    </div>
+
+    <!-- ═══ See Also ═══ -->
+    <div class="see-also">
+      <h2>See Also</h2>
+      <div class="see-also-group">
+        <div class="see-also-label">Source papers</div>
+        <ul class="source-list">
+          <li><a href="https://novaspivack.com/research" target="_blank" rel="noopener">P08 — The Universal Generative Principle (GTE as UWCA program, §5) ↗</a></li>
+          <li><a href="https://doi.org/10.5281/zenodo.20560550" target="_blank" rel="noopener">P48 — The Complete GTE Framework, Ch 3 (The Triangle) ↗</a></li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Full tutorial (PDF)</div>
+        <ul class="source-list">
+          <li><a href="https://novaspivack.com/research" target="_blank" rel="noopener">How the UWCA Works, §5: GTE as a UWCA Program ↗</a></li>
+        </ul>
+      </div>
+    </div>
+
+  </main>
+
+  <div class="page-wrapper">
+    <footer class="lesson-footer">
+      <a href="../L06_gte_orbits/index.html" class="nav-btn nav-btn--prev">← L06: GTE Orbits</a>
+      <a href="../../index.html"             class="nav-btn nav-btn--next">All Paths →</a>
+    </footer>
+  </div>
+
+  <script src="../../common/interactive.js"></script>
+  <script src="../../common/nav.js"></script>
+  <script>
+    const LEAN_REFS = {
+      "uwca_sweep_implements_rule110": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/UWCASimulation.lean"
+      },
+      "update_map_produces_canonical_orbit": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/GTE/UpdateMap.lean"
+      }
+    };
+
+    // Edge panel switcher
+    function initEdgeTabs() {
+      const edges = [
+        { btn: 'edge0', panel: 'panel-edge0' },
+        { btn: 'edge1', panel: 'panel-edge1' },
+        { btn: 'edge2', panel: 'panel-edge2' },
+      ];
+
+      function activate(idx) {
+        edges.forEach((e, i) => {
+          document.getElementById(e.btn).classList.toggle('active', i === idx);
+          document.getElementById(e.panel).classList.toggle('active', i === idx);
+        });
+      }
+
+      edges.forEach((e, i) => {
+        document.getElementById(e.btn).addEventListener('click', () => activate(i));
+      });
+
+      activate(0);
+    }
+
+    // Large annotated triangle
+    function drawBigTriangle(svgEl) {
+      if (!svgEl) return;
+      const ns    = 'http://www.w3.org/2000/svg';
+      const W     = 500;
+      const H     = 320;
+
+      const style   = getComputedStyle(document.documentElement);
+      const accent  = style.getPropertyValue('--accent').trim() || '#3B82F6';
+      const bgCard  = style.getPropertyValue('--bg-card').trim() || '#27272A';
+      const bgElev  = style.getPropertyValue('--bg-elevated').trim() || '#1F1F23';
+      const text1   = style.getPropertyValue('--text-primary').trim() || '#F4F4F5';
+      const text3   = style.getPropertyValue('--text-tertiary').trim() || '#71717A';
+      const stroke  = style.getPropertyValue('--stroke-primary').trim() || 'rgba(255,255,255,0.12)';
+      const green   = style.getPropertyValue('--cert-lean').trim() || '#22C55E';
+
+      svgEl.setAttribute('viewBox', `0 0 ${W} ${H}`);
+      svgEl.setAttribute('aria-label', 'UGP triangle: three nodes and three machine-certified edges');
+
+      const mk = (id, col) => {
+        const marker = document.createElementNS(ns, 'marker');
+        marker.setAttribute('id', id); marker.setAttribute('markerWidth','7');
+        marker.setAttribute('markerHeight','6'); marker.setAttribute('refX','6');
+        marker.setAttribute('refY','3'); marker.setAttribute('orient','auto');
+        const p = document.createElementNS(ns, 'path');
+        p.setAttribute('d','M0,0 L7,3 L0,6 Z'); p.setAttribute('fill', col);
+        marker.appendChild(p);
+        return marker;
+      };
+
+      const defs = document.createElementNS(ns, 'defs');
+      defs.appendChild(mk('arrow-main', accent));
+      defs.appendChild(mk('arrow-close', green));
+      svgEl.appendChild(defs);
+
+      // Node positions
+      const nodes = {
+        ugp:  { x: W/2,   y: 28, label: 'UGP arithmetic', sub: 'survivor space + invariants', ac: true  },
+        gte:  { x: 60,    y: H-50, label: 'GTE orbit',     sub: 'spectrum + masses',          ac: false },
+        poly: { x: W-60,  y: H-50, label: 'Polynomial p',  sub: 'C+R\u2212CR\u2212LCR',      ac: false },
+      };
+
+      const nw = 130; const nh = 46;
+
+      Object.entries(nodes).forEach(([k, {x, y, label, sub, ac}]) => {
+        const rect = document.createElementNS(ns, 'rect');
+        rect.setAttribute('x', x - nw/2); rect.setAttribute('y', y);
+        rect.setAttribute('width', nw); rect.setAttribute('height', nh);
+        rect.setAttribute('rx', '7');
+        rect.setAttribute('fill', bgElev);
+        rect.setAttribute('stroke', ac ? accent : stroke);
+        rect.setAttribute('stroke-width', ac ? '2' : '1.5');
+        svgEl.appendChild(rect);
+
+        const t1 = document.createElementNS(ns, 'text');
+        t1.setAttribute('x', x); t1.setAttribute('y', y + nh/2 - 6);
+        t1.setAttribute('text-anchor','middle'); t1.setAttribute('font-size','10.5');
+        t1.setAttribute('font-weight','700'); t1.setAttribute('fill', text1);
+        t1.setAttribute('font-family','inherit'); t1.textContent = label;
+        svgEl.appendChild(t1);
+
+        const t2 = document.createElementNS(ns, 'text');
+        t2.setAttribute('x', x); t2.setAttribute('y', y + nh/2 + 9);
+        t2.setAttribute('text-anchor','middle'); t2.setAttribute('font-size','8.5');
+        t2.setAttribute('fill', text3); t2.setAttribute('font-family','inherit');
+        t2.textContent = sub;
+        svgEl.appendChild(t2);
+      });
+
+      // Edges
+      const edges = [
+        { x1: W/2 - 30, y1: 74, x2: 100, y2: H-54, label: 'T map\n(spectrum)', lx: 210, ly: 155, col: accent, marker: 'arrow-main' },
+        { x1: W/2 + 30, y1: 74, x2: W-105, y2: H-54, label: 'UWCA\n(dynamics)', lx: 316, ly: 155, col: accent, marker: 'arrow-main' },
+        { x1: 128, y1: H-50, x2: W-133, y2: H-50, label: 'orbit parity + MDL\n(closing edge, CatAL)', lx: W/2, ly: H-12, col: green, marker: 'arrow-close' },
+      ];
+
+      edges.forEach(({ x1, y1, x2, y2, label, lx, ly, col, marker }) => {
+        const line = document.createElementNS(ns, 'line');
+        line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+        line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+        line.setAttribute('stroke', col); line.setAttribute('stroke-width', '1.8');
+        line.setAttribute('marker-end', `url(#${marker})`);
+        svgEl.appendChild(line);
+
+        label.split('\n').forEach((part, pi) => {
+          const lt = document.createElementNS(ns, 'text');
+          lt.setAttribute('x', lx); lt.setAttribute('y', ly + pi * 13);
+          lt.setAttribute('text-anchor','middle');
+          lt.setAttribute('font-size', pi === 0 ? '9' : '7.5');
+          lt.setAttribute('fill', pi === 0 ? col : text3);
+          lt.setAttribute('font-weight', pi === 0 ? '600' : '400');
+          lt.setAttribute('font-family','inherit');
+          lt.textContent = part;
+          svgEl.appendChild(lt);
+        });
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      drawBigTriangle(document.getElementById('big-triangle'));
+      initEdgeTabs();
+      autoRenderLeanBadges(LEAN_REFS);
+    });
+  </script>
+</body>
+</html>

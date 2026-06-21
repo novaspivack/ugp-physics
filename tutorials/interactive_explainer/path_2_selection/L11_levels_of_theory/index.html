@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L11: The Four Levels of the Theory — UGP Physics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="../../common/style.css">
+  <style>
+    /* ── Level ladder diagram ───────────────────────────────────────── */
+    .level-ladder {
+      margin: 1.5rem 0;
+      position: relative;
+    }
+    .level-rung {
+      display: grid;
+      grid-template-columns: 80px 1fr;
+      gap: 1rem;
+      align-items: stretch;
+      margin-bottom: 6px;
+      cursor: pointer;
+    }
+    .level-rung:hover .rung-card { border-width: 2px; transform: translateX(3px); }
+    .level-rung.active .rung-card { border-width: 2px; }
+
+    .rung-num {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 1.5rem;
+      border-radius: var(--r-md);
+      border: 2px solid var(--stroke-primary);
+    }
+    .rung-card {
+      border-radius: var(--r-md);
+      border: 1.5px solid var(--stroke-primary);
+      padding: 0.75rem 1rem;
+      transition: transform 0.15s, border-color 0.2s;
+    }
+    .rung-card .rc-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.2rem; }
+    .rung-card .rc-object { font-size: 0.78rem; font-family: 'JetBrains Mono', monospace; color: var(--text-tertiary); }
+    .rung-card .rc-desc { font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.3rem; }
+    .rung-card .rc-keyword {
+      display: inline-block;
+      margin-top: 0.3rem;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 2px 6px;
+      border-radius: var(--r-full);
+    }
+
+    /* Level 0 — orange */
+    .lr-0 .rung-num { color: #F97316; border-color: rgba(249,115,22,0.4); background: rgba(249,115,22,0.08); }
+    .lr-0 .rung-card { border-color: rgba(249,115,22,0.3); }
+    .lr-0.active .rung-card { border-color: #F97316; background: rgba(249,115,22,0.06); }
+    .lr-0 .rc-keyword { background: rgba(249,115,22,0.12); color: #F97316; }
+
+    /* Level 1 — blue */
+    .lr-1 .rung-num { color: #3B82F6; border-color: rgba(59,130,246,0.4); background: rgba(59,130,246,0.08); }
+    .lr-1 .rung-card { border-color: rgba(59,130,246,0.3); }
+    .lr-1.active .rung-card { border-color: #3B82F6; background: rgba(59,130,246,0.06); }
+    .lr-1 .rc-keyword { background: rgba(59,130,246,0.12); color: #3B82F6; }
+
+    /* Level 2 — green */
+    .lr-2 .rung-num { color: #10B981; border-color: rgba(16,185,129,0.4); background: rgba(16,185,129,0.08); }
+    .lr-2 .rung-card { border-color: rgba(16,185,129,0.3); }
+    .lr-2.active .rung-card { border-color: #10B981; background: rgba(16,185,129,0.06); }
+    .lr-2 .rc-keyword { background: rgba(16,185,129,0.12); color: #10B981; }
+
+    /* Level 3 — violet */
+    .lr-3 .rung-num { color: var(--accent); border-color: rgba(139,92,246,0.4); background: rgba(139,92,246,0.08); }
+    .lr-3 .rung-card { border-color: rgba(139,92,246,0.3); }
+    .lr-3.active .rung-card { border-color: var(--accent); background: rgba(139,92,246,0.06); }
+    .lr-3 .rc-keyword { background: rgba(139,92,246,0.12); color: var(--accent); }
+
+    /* Vertical connector */
+    .level-connector {
+      margin-left: 39px;
+      width: 2px;
+      height: 14px;
+      background: var(--stroke-primary);
+    }
+
+    /* ── Level detail panel ─────────────────────────────────────────── */
+    .level-detail {
+      background: var(--bg-elevated);
+      border: 1.5px solid var(--stroke-primary);
+      border-radius: var(--r-lg);
+      padding: 1.25rem 1.5rem;
+      min-height: 180px;
+      margin-top: 0.75rem;
+      transition: border-color 0.2s;
+    }
+    .level-detail .ld-header { font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; }
+    .level-detail .ld-examples { margin-top: 0.75rem; }
+    .level-detail .ld-ex-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-tertiary); margin-bottom: 0.3rem; }
+    .ex-pill {
+      display: inline-block;
+      margin: 2px 3px;
+      padding: 2px 8px;
+      border-radius: var(--r-full);
+      font-size: 0.78rem;
+      background: var(--bg-card);
+      border: 1px solid var(--stroke-primary);
+    }
+
+    /* ── Coarse/fine toggle ─────────────────────────────────────────── */
+    .coarse-strip {
+      display: flex;
+      gap: 0;
+      border: 1.5px solid var(--stroke-primary);
+      border-radius: var(--r-md);
+      overflow: hidden;
+      margin: 1.25rem 0;
+    }
+    .cs-half {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      text-align: center;
+      font-size: 0.88rem;
+    }
+    .cs-half strong { display: block; font-size: 1rem; margin-bottom: 0.25rem; }
+    .cs-1 { background: rgba(59,130,246,0.08); border-right: 1px solid var(--stroke-primary); }
+    .cs-2 { background: rgba(139,92,246,0.08); }
+    .cs-bracket {
+      font-size: 0.72rem; color: var(--text-tertiary);
+      margin-top: 0.4rem;
+    }
+
+    /* ── Conflation error example ────────────────────────────────────── */
+    .error-box {
+      border: 2px solid #EF4444;
+      border-radius: var(--r-md);
+      padding: 0.75rem 1rem;
+      background: rgba(239,68,68,0.06);
+      margin: 0.75rem 0;
+    }
+    .error-box .eb-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #EF4444; letter-spacing: 0.07em; margin-bottom: 0.3rem; }
+    .correct-box {
+      border: 2px solid var(--cert-lean);
+      border-radius: var(--r-md);
+      padding: 0.75rem 1rem;
+      background: rgba(34,197,94,0.06);
+      margin: 0.75rem 0;
+    }
+    .correct-box .eb-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: var(--cert-lean); letter-spacing: 0.07em; margin-bottom: 0.3rem; }
+
+    /* ── Result level table ─────────────────────────────────────────── */
+    .result-level-grid {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 2px;
+      margin: 1rem 0;
+    }
+    .rlg-cell {
+      background: var(--bg-elevated);
+      border: 1px solid var(--stroke-secondary);
+      padding: 0.4rem 0.6rem;
+      font-size: 0.83rem;
+    }
+    .rlg-cell.rlg-head { background: var(--bg-card); font-weight: 700; font-size: 0.72rem; color: var(--text-secondary); }
+    .rlg-cell.lv0 { border-left: 3px solid #F97316; }
+    .rlg-cell.lv1 { border-left: 3px solid #3B82F6; }
+    .rlg-cell.lv2 { border-left: 3px solid #10B981; }
+    .rlg-cell.lv3 { border-left: 3px solid var(--accent); }
+    .cert-al { color: var(--cert-lean); font-weight: 700; font-size: 0.78rem; }
+    .cert-ad { color: #3B82F6; font-weight: 700; font-size: 0.78rem; }
+  </style>
+</head>
+<body style="--path-current: var(--path-2)" data-path="2" data-lesson="4" data-total="4">
+
+  <header class="site-header">
+    <a href="../../index.html" class="site-logo">UGP Physics</a>
+    <nav class="breadcrumb">
+      <a href="../../index.html">Tutorial Series</a>
+      <span class="bc-sep">›</span>
+      <a href="../index.html">Path 2: Selection</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">L11: The Four Levels</span>
+    </nav>
+  </header>
+
+  <main class="page-wrapper">
+
+    <!-- ═══ Lesson Header ═══ -->
+    <div class="lesson-header">
+      <div class="path-label">Path 2 — Selection · Lesson 11 of 11</div>
+      <h1>The Four Levels of the Theory</h1>
+      <p class="lesson-subtitle">
+        Every result in the GTE framework lives on one of four levels: raw polynomial, 
+        orbit map, CMCA tape, or continuum field. Placing a result at the wrong level 
+        is a precision error — not just imprecise language.
+      </p>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:100%"></div>
+      </div>
+    </div>
+
+    <!-- ═══ Section 1: Why levels exist ═══ -->
+    <section class="lesson-section" id="why-levels">
+      <h2>Why Does the Theory Have Levels?</h2>
+      <p>
+        Most physical theories have one layer: equations describe what the universe does. 
+        The GTE framework has four, because it includes its own <em>selection mechanism</em>. 
+        The polynomial is not just a rule of physics — it is selected, from an enormous 
+        space, by a principle that operates at a different level of abstraction than the physics itself.
+      </p>
+      <p>
+        Each level is the same underlying physics described at a different resolution:
+      </p>
+      <ul style="margin:0.75rem 0 0.75rem 1.5rem;line-height:2">
+        <li>Level 0: the arithmetic rule itself — just the formula</li>
+        <li>Level 1: the rule restricted to physically admissible inputs — the orbit map</li>
+        <li>Level 2: the full running automaton — the CMCA tape in space and time</li>
+        <li>Level 3: the continuum limit — the physical field Φ_MDL</li>
+      </ul>
+      <p>
+        Understanding these levels is essential for reading GTE papers correctly. 
+        Every result carries a level label that tells you what kind of claim it is, 
+        how strong it is, and whether it is machine-certifiable.
+      </p>
+    </section>
+
+    <!-- ═══ Section 2: The four-level ladder ═══ -->
+    <section class="lesson-section" id="ladder">
+      <h2>The Level Ladder</h2>
+      <p>Click a level to explore it:</p>
+
+      <div class="level-ladder" id="ladder">
+
+        <div class="level-rung lr-3" data-level="3">
+          <div class="rung-num">3</div>
+          <div class="rung-card">
+            <div class="rc-name">The Continuum Field</div>
+            <div class="rc-object">Object 2 — Φ_MDL</div>
+            <div class="rc-desc">The Z₇-symmetric Klein-Gordon gauge field on ℝ³˒¹. What the universe <em>is</em>.</div>
+            <span class="rc-keyword">Physical</span>
+          </div>
+        </div>
+        <div class="level-connector"></div>
+
+        <div class="level-rung lr-2" data-level="2">
+          <div class="rung-num">2</div>
+          <div class="rung-card">
+            <div class="rc-name">The CMCA Tape</div>
+            <div class="rc-object">Object 1 extended — running tape</div>
+            <div class="rc-desc">f_MDL embedded in a spatially-extended chiral automaton (Rule 110 + Rule 124). Three tapes → 3+1D.</div>
+            <span class="rc-keyword">Algebraic</span>
+          </div>
+        </div>
+        <div class="level-connector"></div>
+
+        <div class="level-rung lr-1" data-level="1">
+          <div class="rung-num">1</div>
+          <div class="rung-card">
+            <div class="rc-name">The PSC-Orbit Map</div>
+            <div class="rc-object">Object 1 — f_MDL</div>
+            <div class="rc-desc">The polynomial restricted to PSC-admissible inputs. Generates the SM generation orbit. All quantum numbers live here.</div>
+            <span class="rc-keyword">Algebraic</span>
+          </div>
+        </div>
+        <div class="level-connector"></div>
+
+        <div class="level-rung lr-0" data-level="0">
+          <div class="rung-num">0</div>
+          <div class="rung-card">
+            <div class="rc-name">The Raw Polynomial</div>
+            <div class="rc-object">Object 0 — p(L,C,R)</div>
+            <div class="rc-desc">Just the formula C+R−CR−LCR over GF(7). No dynamics, no orbit — the arithmetic rule alone.</div>
+            <span class="rc-keyword">Pure math</span>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="level-detail" id="level-detail">
+        <div class="ld-header" id="ld-header">Click a level above to explore it in detail</div>
+        <div id="ld-body" style="color:var(--text-secondary);font-size:0.88rem">
+          Each level corresponds to a distinct type of claim. Proofs about Level 0–2 
+          are discrete algebraic facts — machine-certifiable in Lean 4. 
+          Proofs about Level 3 require the Algebraic Lifting Theorem.
+        </div>
+        <div class="ld-examples" id="ld-examples" style="display:none">
+          <div class="ld-ex-label">Example results at this level</div>
+          <div id="ld-pills"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 3: Coarse two-level scheme ═══ -->
+    <section class="lesson-section" id="coarse">
+      <h2>The Coarse Two-Level Scheme</h2>
+      <p>
+        Most GTE papers use a simpler two-level vocabulary that groups Levels 0–2 together:
+      </p>
+
+      <div class="coarse-strip">
+        <div class="cs-half cs-1">
+          <strong>Level 1 (coarse)</strong>
+          The Algebraic Certificate
+          <div class="cs-bracket">Fine Levels 0 + 1 + 2</div>
+          <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:0.3rem">
+            Discrete, algebraic, machine-certifiable in Lean 4
+          </div>
+        </div>
+        <div class="cs-half cs-2">
+          <strong>Level 2 (coarse)</strong>
+          The Physical Substrate
+          <div class="cs-bracket">Fine Level 3</div>
+          <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:0.3rem">
+            Continuous, physically real — the actual universe
+          </div>
+        </div>
+      </div>
+
+      <p>
+        When a paper says "Level 1 certificate" it means all discrete algebraic 
+        structure — polynomial, orbit map, and CMCA tape. When it says "Level 2 field" 
+        it means the continuum field Φ_MDL.
+      </p>
+    </section>
+
+    <!-- ═══ Section 4: Results sorted by level ═══ -->
+    <section class="lesson-section" id="results-table">
+      <h2>Where Key Results Live</h2>
+
+      <div class="result-level-grid">
+        <div class="rlg-cell rlg-head">Result / claim</div>
+        <div class="rlg-cell rlg-head">Level</div>
+        <div class="rlg-cell rlg-head">Cert</div>
+
+        <div class="rlg-cell lv0">Rule 110 connection (binary restriction)</div>
+        <div class="rlg-cell">0</div>
+        <div class="rlg-cell cert-al">CatAL</div>
+
+        <div class="rlg-cell lv0">MDL minimality — 19-bit coding closed</div>
+        <div class="rlg-cell">0</div>
+        <div class="rlg-cell cert-al">CatAL</div>
+
+        <div class="rlg-cell lv0">GF(7) unique minimal prime</div>
+        <div class="rlg-cell">0</div>
+        <div class="rlg-cell cert-al">CatAL</div>
+
+        <div class="rlg-cell lv1">Three SM generations exist</div>
+        <div class="rlg-cell">1</div>
+        <div class="rlg-cell cert-al">CatAL</div>
+
+        <div class="rlg-cell lv1">Electric charge formula Q = w_c/3</div>
+        <div class="rlg-cell">1</div>
+        <div class="rlg-cell cert-al">CatAL</div>
+
+        <div class="rlg-cell lv1">Strong CP angle θ = 0</div>
+        <div class="rlg-cell">1</div>
+        <div class="rlg-cell cert-al">CatAL</div>
+
+        <div class="rlg-cell lv1">Winding-sector admissibility {0,2,3,4,6}</div>
+        <div class="rlg-cell">1</div>
+        <div class="rlg-cell cert-al">CatAL</div>
+
+        <div class="rlg-cell lv2">3+1D Minkowski spacetime structure</div>
+        <div class="rlg-cell">2</div>
+        <div class="rlg-cell cert-al">CatAL</div>
+
+        <div class="rlg-cell lv2">SR time dilation from CMCA clock</div>
+        <div class="rlg-cell">2</div>
+        <div class="rlg-cell cert-al">CatAL</div>
+
+        <div class="rlg-cell lv2">Holographic area scaling</div>
+        <div class="rlg-cell">2</div>
+        <div class="rlg-cell cert-al">CatAL</div>
+
+        <div class="rlg-cell lv3">Exact Lorentz invariance</div>
+        <div class="rlg-cell">3</div>
+        <div class="rlg-cell cert-al">CatAL</div>
+
+        <div class="rlg-cell lv3">Particle masses</div>
+        <div class="rlg-cell">3</div>
+        <div class="rlg-cell cert-ad">CatAD</div>
+
+        <div class="rlg-cell lv3">Einstein equations G_μν = 8πG T_μν</div>
+        <div class="rlg-cell">3</div>
+        <div class="rlg-cell cert-ad">CatAD</div>
+
+        <div class="rlg-cell lv3">Born rule</div>
+        <div class="rlg-cell">3</div>
+        <div class="rlg-cell cert-al">CatAL</div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 5: Why conflation is an error ═══ -->
+    <section class="lesson-section" id="conflation">
+      <h2>Why Conflating Levels Is a Precision Error</h2>
+      <p>
+        The most common conflation is treating a Level 2 (CMCA tape) result as though 
+        it were a Level 3 (Φ_MDL) claim. Here is why this matters:
+      </p>
+
+      <div class="tabs" id="error-tabs">
+        <div class="tab-bar">
+          <button class="tab-btn">Example 1: CA ≠ Universe</button>
+          <button class="tab-btn">Example 2: Level 2 ≠ Level 3</button>
+          <button class="tab-btn">The fix</button>
+        </div>
+
+        <div class="tab-panel">
+          <div class="error-box">
+            <div class="eb-label">Common mistake</div>
+            <p style="margin:0;font-style:italic">"The universe is a cellular automaton."</p>
+          </div>
+          <p>
+            This statement conflates Level 2 with Level 3. The CMCA tape (Level 2) is 
+            the <em>algebraic certificate</em> for the continuum field. The certificate is not 
+            the physical thing — it is the description of the physical thing.
+          </p>
+          <p>
+            A CA has a preferred spatial lattice and a preferred frame. The continuum field 
+            Φ_MDL has exact Lorentz invariance (Level 3, proved via the Algebraic Lifting Theorem). 
+            These are incompatible unless you understand the level distinction.
+          </p>
+          <div class="correct-box">
+            <div class="eb-label">Correct statement</div>
+            <p style="margin:0">
+              "The universe is described by the continuum field Φ_MDL (Level 3), 
+              whose algebraic structure is certified by the CMCA tape (Level 2)."
+            </p>
+          </div>
+        </div>
+
+        <div class="tab-panel">
+          <div class="error-box">
+            <div class="eb-label">Common mistake</div>
+            <p style="margin:0;font-style:italic">
+              "The CMCA tape has a finite spatial resolution, 
+              therefore the physical universe has a minimum length scale."
+            </p>
+          </div>
+          <p>
+            This argument takes a Level 2 property (the discrete lattice of the CMCA tape) 
+            and incorrectly promotes it to a Level 3 claim (a physical minimum length). 
+            The Algebraic Lifting Theorem maps discrete structure to continuum structure — 
+            the lattice does not survive the lift.
+          </p>
+          <p>
+            The Algebraic Lifting Theorem 
+            <span data-lean="algebraic_lifting_theorem"></span>
+            makes this precise: the discrete CA structure and exact Lorentz invariance live 
+            at different levels — the CA is the algebraic certificate, not the physical substrate. 
+            Level 2 ≠ Level 3.
+          </p>
+          <div class="correct-box">
+            <div class="eb-label">Correct statement</div>
+            <p style="margin:0">
+              "The CMCA tape has a discrete structure (Level 2). 
+              The continuum field Φ_MDL has exact Lorentz invariance (Level 3). 
+              The Algebraic Lifting Theorem bridges them; no minimum length survives the lift."
+            </p>
+          </div>
+        </div>
+
+        <div class="tab-panel">
+          <h3>The general rule for level-labeling</h3>
+          <p>
+            Before citing a result, ask: <em>which object is the result about?</em>
+          </p>
+          <ul style="margin:0.75rem 0 0.75rem 1.5rem;line-height:2">
+            <li><strong>Just the formula</strong> (polynomial coefficients, multilinearity, link to Rule 110) → Level 0</li>
+            <li><strong>The orbit structure</strong> (generations, quantum numbers, admissible sectors) → Level 1</li>
+            <li><strong>The running automaton</strong> (3+1D, SR time dilation, kink spectrum existence) → Level 2</li>
+            <li><strong>The physical field</strong> (Lorentz invariance, particle masses, gravity, QM) → Level 3</li>
+          </ul>
+          <p>
+            A result at Level N is not automatically a result at Level N+1. 
+            Lifting to the next level requires the Algebraic Lifting Theorem, 
+            which is itself a non-trivial theorem (CatAL, machine-certified).
+          </p>
+          <div class="callout callout--success">
+            <div class="callout-title">The Algebraic Lifting Theorem</div>
+            <p>
+              <span data-lean="algebraic_lifting_theorem"></span>
+              — this is the bridge from Levels 0–2 (discrete, algebraic) to Level 3 (continuum, physical).
+              Without this theorem, every Level 3 claim would require independent justification.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 6: Step-through — placing claims ═══ -->
+    <section class="lesson-section" id="practice">
+      <h2>Practice: Place the Claim on the Correct Level</h2>
+      <p>Walk through these five claims and see which level they belong to:</p>
+
+      <div class="steps" id="steps-claims">
+        <div class="steps-nav">
+          <button class="step-pill">Claim A</button>
+          <button class="step-pill">Claim B</button>
+          <button class="step-pill">Claim C</button>
+          <button class="step-pill">Claim D</button>
+          <button class="step-pill">Claim E</button>
+        </div>
+
+        <div class="step-panel">
+          <p class="callout callout--neutral" style="font-style:italic">
+            "There are exactly three non-vacuum orbit types under f_MDL."
+          </p>
+          <p>
+            <strong>Answer: Level 1.</strong> This is a statement about f_MDL — the PSC-projected 
+            orbit map. It concerns the orbit structure of the discrete dynamics on the 5-cell ring, 
+            not the raw polynomial formula and not the continuum field.
+          </p>
+          <p>Machine-certified: <span data-lean="gte_uniquely_predicts_three_generations"></span></p>
+        </div>
+
+        <div class="step-panel">
+          <p class="callout callout--neutral" style="font-style:italic">
+            "The polynomial p(L,C,R) = C+R−CR−LCR requires exactly 19 bits to specify."
+          </p>
+          <p>
+            <strong>Answer: Level 0.</strong> This is a statement about the formula itself — 
+            its description length relative to alternatives. No orbit structure, no dynamics, 
+            no physical field is involved.
+          </p>
+          <p>Machine-certified: <span data-lean="mdl_ca_rule_coding_closed"></span></p>
+        </div>
+
+        <div class="step-panel">
+          <p class="callout callout--neutral" style="font-style:italic">
+            "The CMCA tape with three spatial tapes sharing a common outer clock produces 
+            exactly 3+1 spacetime dimensions."
+          </p>
+          <p>
+            <strong>Answer: Level 2.</strong> This is a statement about the CMCA tape architecture — 
+            a property of the running automaton, not the abstract orbit map and not the continuum field.
+          </p>
+          <p>Machine-certified: <span data-lean="causal_graph_spectral_dim_eq_4"></span></p>
+        </div>
+
+        <div class="step-panel">
+          <p class="callout callout--neutral" style="font-style:italic">
+            "Elementary particles are BPS topological kink solitons of the Φ_MDL field 
+            with exact Lorentz invariance."
+          </p>
+          <p>
+            <strong>Answer: Level 3.</strong> This is a claim about the continuum field Φ_MDL 
+            and its particle content. It requires the Algebraic Lifting Theorem to derive 
+            from the Level 0–2 certificates.
+          </p>
+          <p>The Lorentz claim is machine-certified; particle existence follows from Level 2 kink structure via the Lifting Theorem.</p>
+        </div>
+
+        <div class="step-panel">
+          <p class="callout callout--neutral" style="font-style:italic">
+            "The strong CP angle θ_QCD = 0, with no axion required."
+          </p>
+          <p>
+            <strong>Answer: Level 1.</strong> The strong CP result is proved algebraically 
+            from the Z₇ winding structure — it follows from the orbit map without any reference 
+            to the running CMCA tape or the continuum field. Three independent algebraic proofs 
+            establish it at Level 1.
+          </p>
+          <p>
+            This is one of the most important Level 1 results: a major open problem in the 
+            Standard Model resolved by pure discrete arithmetic.
+          </p>
+        </div>
+
+        <div class="steps-footer">
+          <button class="btn btn--secondary" data-action="prev">← Previous</button>
+          <button class="btn btn--primary"   data-action="next">Next →</button>
+          <span class="steps-counter">Claim 1 of 5</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 7: The Descent Theorem ═══ -->
+    <section class="lesson-section" id="descent">
+      <h2>The Descent Theorem: The Certificate Is Necessary, Not Just Sufficient</h2>
+      <p>
+        The Algebraic Lifting Theorem (introduced above) runs upward: 
+        prove something in the Levels 0–2 certificate → that property holds in Φ_MDL. 
+        But there is a reverse direction too, and it is equally important.
+      </p>
+
+      <div class="callout callout--success">
+        <div class="callout-title">The Descent Theorem: The Certificate Is Necessary, Not Just Sufficient</div>
+        <p>
+          <strong>The Algebraic Descent Theorem</strong>
+          (<span data-lean="algebraic_descent_theorem"></span>, CatAL, zero sorry):
+          Whatever physical constraints the continuum field Φ_MDL must satisfy — 
+          charge quantization, color confinement, three generations, θ_QCD = 0 — 
+          these hold independently of the specific field configuration M. 
+          The CA certificate enforces them.
+        </p>
+        <p>
+          <strong>In plain language:</strong> you cannot construct a version of Φ_MDL that 
+          violates the ℤ₇ structure. The descent direction shows that the algebraic certificate 
+          is not merely a <em>sufficient</em> condition — it is a <em>necessary</em> one. 
+          The physical field cannot escape what the certificate certifies.
+        </p>
+      </div>
+
+      <p>
+        The pair of theorems forms a closed loop:
+      </p>
+      <ul style="margin:0.75rem 0 0.75rem 1.5rem;line-height:2">
+        <li>
+          <strong>Lifting (upward):</strong> certificate structure → Φ_MDL structure. 
+          A Level 0–2 algebraic proof automatically gives a Level 3 physical claim.
+        </li>
+        <li>
+          <strong>Descent (downward):</strong> Φ_MDL structure → certificate structure. 
+          Every physical property of Φ_MDL is tracked back to the algebraic certificate; 
+          no physical freedom exists beyond what the certificate allows.
+        </li>
+      </ul>
+      <p>
+        Together, they establish an exact equivalence: the algebraic certificate and the 
+        continuum field Φ_MDL carry precisely the same structural information, described 
+        at different levels of resolution. This is why Lean 4 can certify physical predictions — 
+        the discrete algebraic facts at Level 0–2 are both necessary and sufficient for 
+        the Level 3 physics.
+      </p>
+    </section>
+
+    <!-- ═══ Key Takeaways ═══ -->
+    <section class="lesson-section" id="takeaways">
+      <h2>Key Takeaways</h2>
+      <ul class="takeaway-list">
+        <li>
+          The GTE theory has four levels of description, all describing the same underlying 
+          physics at different resolutions. 
+          Level 0 = raw polynomial; Level 1 = PSC-orbit map f_MDL; 
+          Level 2 = CMCA tape; Level 3 = continuum field Φ_MDL.
+        </li>
+        <li>
+          The coarse two-level scheme used in most papers groups Levels 0–2 as "algebraic 
+          certificate" and Level 3 as "physical substrate." Both schemes are valid; the 
+          fine-grained scheme is needed for precise claims.
+        </li>
+        <li>
+          Conflating levels is a precision error. A Level 2 property (e.g., CMCA lattice 
+          spacing) does not automatically transfer to Level 3 (Φ_MDL field). The bridge 
+          requires the Algebraic Lifting Theorem:
+          <span data-lean="algebraic_lifting_theorem"></span>
+        </li>
+        <li>
+          All Level 0–2 results are machine-certifiable in Lean 4 (discrete, algebraic). 
+          Most Level 3 results require the Lifting Theorem and are either CatAL or CatAD.
+        </li>
+        <li>
+          Common mistake: "the universe is a cellular automaton" — a Level 2 claim 
+          incorrectly stated as a Level 3 claim. The universe is Φ_MDL (Level 3); 
+          the CMCA is its algebraic certificate (Level 2).
+        </li>
+        <li>
+          The Algebraic Lifting Theorem runs upward (certificate → physics); 
+          the Algebraic Descent Theorem runs downward (physics → certificate). 
+          Together they establish that the algebraic certificate and Φ_MDL carry precisely 
+          the same structural information. The certificate is not just sufficient — it is 
+          necessary:
+          <span data-lean="algebraic_descent_theorem"></span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ═══ Path 2 Complete ═══ -->
+    <div class="callout callout--success" style="margin:2rem 0">
+      <div class="callout-title">Path 2 Complete!</div>
+      <p>
+        You have finished Path 2: Selection. You now understand the complete chain from 
+        10<sup>290</sup> candidates → MDL elimination → 19 bits → unique polynomial, 
+        and how to place any result in the theory on the correct level.
+      </p>
+      <p>
+        The next path, <strong>Path 3: Particles</strong>, builds on this foundation to show 
+        how the polynomial substrate generates the Standard Model particle zoo.
+      </p>
+    </div>
+
+    <!-- ═══ See Also ═══ -->
+    <div class="see-also">
+      <h2>See Also</h2>
+      <div class="see-also-group">
+        <div class="see-also-label">Lean 4 proofs (ugp-lean)</div>
+        <ul class="source-list">
+          <li><code>algebraic_lifting_theorem</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Spacetime/LiftingTheorem.lean" target="_blank" rel="noopener">view on GitHub ↗</a></li>
+          <li><code>algebraic_lifting_theorem</code> (Level 2 ≠ Level 3 proof) — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Spacetime/LiftingTheorem.lean" target="_blank" rel="noopener">view on GitHub ↗</a></li>
+          <li><code>algebraic_descent_theorem</code> (certificate is necessary, not just sufficient) — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/AlgebraicDescentTheorem.lean" target="_blank" rel="noopener">view on GitHub ↗</a></li>
+          <li><code>gte_uniquely_predicts_three_generations</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Spacetime/ThreeGenerationCapstone.lean" target="_blank" rel="noopener">view on GitHub ↗</a></li>
+          <li><code>causal_graph_spectral_dim_eq_4</code> (3+1D from CMCA) — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Spacetime/SpectralDimension.lean" target="_blank" rel="noopener">view on GitHub ↗</a></li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Source papers</div>
+        <ul class="source-list">
+          <li><a href="https://doi.org/10.5281/zenodo.20560550" target="_blank" rel="noopener">P48 — The Complete GTE Framework, Ch. 3 ↗</a></li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Full tutorial (PDF)</div>
+        <ul class="source-list">
+          <li><a href="https://doi.org/10.5281/zenodo.20657872" target="_blank" rel="noopener">The Levels of the Theory — UGP Tutorial Series ↗</a></li>
+        </ul>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ═══ Lesson Footer Navigation ═══ -->
+  <div class="page-wrapper">
+    <footer class="lesson-footer">
+      <a href="../L10_19bit_accounting/index.html" class="nav-btn nav-btn--prev">← L10: 19-Bit Accounting</a>
+      <a href="../../index.html" class="nav-btn nav-btn--next">Tutorial Home →</a>
+    </footer>
+  </div>
+
+  <!-- Math -->
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})">
+  </script>
+
+  <script src="../../common/interactive.js"></script>
+  <script src="../../common/nav.js"></script>
+  <script>
+    const LEAN_REFS = {
+      "algebraic_lifting_theorem": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Spacetime/LiftingTheorem.lean"
+      },
+      "gte_uniquely_predicts_three_generations": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Spacetime/ThreeGenerationCapstone.lean"
+      },
+      "causal_graph_spectral_dim_eq_4": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Spacetime/SpectralDimension.lean"
+      },
+      "mdl_ca_rule_coding_closed": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/MDLDerivabilityCriterion.lean"
+      },
+      "algebraic_descent_theorem": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/AlgebraicDescentTheorem.lean"
+      }
+    };
+
+    // ── Level ladder data ─────────────────────────────────────────────────
+    const LEVEL_DATA = {
+      0: {
+        header: "Level 0 — The Raw Polynomial",
+        color: "#F97316",
+        body: "Just the formula p(L,C,R) = C+R−CR−LCR over GF(7) as a mathematical expression. No spacetime, no dynamics, no orbit — just the arithmetic rule. Plain English: the recipe card, before you've cooked anything.",
+        examples: [
+          "Rule 110 restriction theorem",
+          "MDL minimality — 19-bit coding closed",
+          "GF(7) unique minimal prime",
+          "Multilinear polynomial uniqueness",
+          "Coefficient structure (4 monomials)"
+        ]
+      },
+      1: {
+        header: "Level 1 — The PSC-Orbit Map (f_MDL)",
+        color: "#3B82F6",
+        body: "The polynomial restricted to PSC-admissible neighborhood configurations. f_MDL turns the abstract rule into dynamics on the 5-cell ring that generates the SM generation orbit. Plain English: the first time the recipe says something concrete about what the finished dish must contain.",
+        examples: [
+          "Three SM generations (CatAL)",
+          "Electric charge formula Q = w_c/3 (CatAL)",
+          "Strong CP angle θ = 0 (CatAL)",
+          "Winding-sector admissibility {0,2,3,4,6}",
+          "Color confinement as MDL-inadmissibility"
+        ]
+      },
+      2: {
+        header: "Level 2 — The CMCA Tape",
+        color: "#10B981",
+        body: "f_MDL embedded in a running, spatially-extended automaton — the Chiral Minkowski Cellular Automaton. Chiral architecture (Rule 110 + Rule 124) with inner clock. Three tapes sharing a global clock give 3+1D. Plain English: the full kitchen running — the dish is being cooked, but not yet the physical meal.",
+        examples: [
+          "Dimensional Protocol Principle — 3+1D (CatAL)",
+          "SR time dilation from CMCA clock (CatAL)",
+          "Lorentz algebra so(1,3) (CatAL)",
+          "Holographic area scaling (CatAL)",
+          "Kink-spectrum existence via Lifting"
+        ]
+      },
+      3: {
+        header: "Level 3 — The Continuum Field (Φ_MDL)",
+        color: "#8B5CF6",
+        body: "The unique continuum Lorentz-invariant quantum field certified by Levels 0–2. Φ_MDL is a Z₇-symmetric Klein-Gordon gauge field on ℝ³˒¹ with symmetry group F₂₁ = Z₇⋊Z₃. Particles are BPS kink solitons. Plain English: the finished dish — what actually exists.",
+        examples: [
+          "Exact Lorentz invariance (CatAL)",
+          "Particle masses (CatAD)",
+          "3+1D spacetime (CatAL)",
+          "Einstein equations G = 8πG T (CatAD)",
+          "Born rule (CatAL)",
+          "Cosmological constant bracket (CatAD)"
+        ]
+      }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initSteps('steps-claims');
+      tabSwitch('error-tabs');
+      autoRenderLeanBadges(LEAN_REFS);
+
+      // Level ladder interaction
+      const rungs    = document.querySelectorAll('.level-rung[data-level]');
+      const detail   = document.getElementById('level-detail');
+      const ldHeader = document.getElementById('ld-header');
+      const ldBody   = document.getElementById('ld-body');
+      const ldEx     = document.getElementById('ld-examples');
+      const ldPills  = document.getElementById('ld-pills');
+
+      rungs.forEach(rung => {
+        rung.addEventListener('click', () => {
+          rungs.forEach(r => r.classList.remove('active'));
+          rung.classList.add('active');
+          const lv = parseInt(rung.dataset.level, 10);
+          const d  = LEVEL_DATA[lv];
+          ldHeader.textContent = d.header;
+          ldHeader.style.color = d.color;
+          ldBody.textContent   = d.body;
+          detail.style.borderColor = d.color;
+          ldEx.style.display = 'block';
+          ldPills.innerHTML = d.examples.map(
+            e => `<span class="ex-pill">${e}</span>`
+          ).join('');
+        });
+      });
+    });
+  </script>
+</body>
+</html>

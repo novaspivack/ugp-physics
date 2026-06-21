@@ -1,0 +1,1548 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Quantum Mechanics from Rule 110: Hilbert Space, Hamiltonian, and Born Rule
+%
+%  Nova Spivack --- 2026
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt]{article}
+
+% ===================== PREAMBLE =====================
+\usepackage[margin=1in]{geometry}
+\usepackage{authblk}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\allowdisplaybreaks
+\setlength{\abovedisplayskip}{6pt}
+\setlength{\belowdisplayskip}{6pt}
+\setlength{\abovedisplayshortskip}{4pt}
+\setlength{\belowdisplayshortskip}{4pt}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+\usepackage{cite}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx,ragged2e,array}
+\usepackage{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage[toc]{appendix}
+\usepackage{float}
+\usepackage{placeins}
+\usepackage{multicol}
+
+\setlength{\emergencystretch}{3em}
+\raggedbottom
+
+\newcolumntype{P}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\graphicspath{{./}}
+
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black}
+\input{nova_zenodo_doi_placeholder}
+
+% ── Theorem environments ──────────────────────────────────────────────────────
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% ── Convenience macros ────────────────────────────────────────────────────────
+\newcommand{\UGP}{\text{UGP}}
+\newcommand{\GTE}{\text{GTE}}
+\newcommand{\MDL}{\text{MDL}}
+\newcommand{\ZS}{\mathbb{Z}_7}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\lean}[1]{%
+  \penalty-100
+  \begingroup\def\_{\textunderscore\allowbreak}\texttt{#1}\endgroup}
+\newcommand{\sorry}{\texttt{sorry}}
+
+% Status badge macros
+\newcommand{\CatA}{\textbf{A}}
+\newcommand{\CatAL}{\ensuremath{\textbf{A}_{\rm Lean}}}
+\newcommand{\CatAD}{\textbf{A/D}}
+\newcommand{\CatD}{\textbf{D}}
+
+% QM macros
+\newcommand{\ket}[1]{|{#1}\rangle}
+\newcommand{\bra}[1]{\langle{#1}|}
+\newcommand{\Hil}{\mathcal{H}}
+\newcommand{\Ham}{\hat{H}}
+\newcommand{\Neff}{N_{\rm eff}}
+\newcommand{\CMCA}{\text{CMCA}}
+
+%─────────────────────────────────────────────────────────────────────────────
+\title{Quantum Mechanics from Rule~110:\\
+  Hilbert Space, Hamiltonian, and Born Rule}
+
+\author{Nova Spivack}
+\affil{Independent Research}
+\date{2026}
+
+\begin{document}
+\maketitle
+\NovaZenodoAfterTitle
+
+%─────────────────────────────────────────────────────────────────────────────
+\begin{abstract}
+We apply 't~Hooft's cellular automaton interpretation of quantum mechanics
+to the GTE cellular automaton $f_{\rm MDL}$ on $\mathbb{Z}_7^5$,
+the 16,807-state visible-sector ring encoding the Standard Model generation structure.
+
+The complete orbit decomposition of $f_{\rm MDL}$ (\CatA) reveals a single cycle:
+the vacuum fixed point $(0,0,0,0,0)$ with $E=0$.
+The physical Hilbert space is one-dimensional; $f_{\rm MDL}$ belongs to 't~Hooft's
+information-loss regime.
+SM generation states are transients with tail lengths
+$\ell({\rm gen}_1)=3 > \ell({\rm gen}_2)=2 > \ell({\rm gen}_3)=1$,
+matching the empirical stability hierarchy (\CatA).
+A direct eigenvalue-to-mass correspondence is falsified on every formulation tested (\CatA).
+
+The \textbf{Two-Role Structural Principle} (\CatAD) separates roles:
+the cogwheel construction provides Hilbert space structure, unitarity, and the Born rule
+(\CatAL, Lean-certified); the GTE $N_{\rm eff}$ cascade provides the mass spectrum.
+
+The seven $\ZS$ winding-equivalence classes of $\mathbb{Z}_7^5$
+(\CatAL, \lean{gauge\_arithmetic\_identification}) are identified as
+'t~Hooft's information-equivalence gauge classes (\CatAD):
+the five SM winding sectors $\{0,2,3,4,6\}$ yield $U(1)_{\rm EM}$, $SU(2)_L$,
+and $SU(3)_c$; sector $W=1$ predicts the SU(5) $Y$-leptoquark;
+the $X$-leptoquark ($Q=+4/3$) cohabits $W=4$.
+
+The AFCA causal graph is update-schedule-independent (Lean-certified);
+discrete Minkowski causal cones are embedded with coordinate surjection certified.
+Full Minkowski bijection remains open (\CatD).
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+%─────────────────────────────────────────────────────────────────────────────
+%  Claim-strength taxonomy
+%─────────────────────────────────────────────────────────────────────────────
+\begin{tcolorbox}[colback=gray!4,colframe=gray!50!black,
+  title={\textbf{Claim-strength taxonomy}},
+  fonttitle=\bfseries,left=6pt,right=6pt,top=5pt,bottom=5pt]
+\small
+\[
+\CatAL \;>\; \CatAD \;>\; \CatA \;>\; \CatD
+\]
+\textbf{$\CatAL$:} machine-checked exact arithmetic in Lean~4, zero \texttt{sorry}.\\
+\textbf{$\CatAD$:} full analytic derivation; computationally confirmed.\\
+\textbf{$\CatA$:} computationally confirmed; an analytic derivation or Lean cert remains.\\
+\textbf{$\CatD$:} exploratory / long-term open.
+\end{tcolorbox}
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Introduction}
+\label{sec:intro}
+
+Whether quantum mechanics is fundamental or emergent from an
+underlying deterministic substrate is one of the deepest open
+questions in theoretical physics.
+'t~Hooft's cellular automaton interpretation of quantum
+mechanics~\cite{tHooft2016CA} provides a rigorous framework in which
+quantum states are superpositions of ontological basis states
+(``beables''), the Hamiltonian is defined by the periods of deterministic
+orbits, and the Born rule is a consequence of information loss at the
+coarse-graining scale.
+The framework accommodates both fully reversible automata
+(Chapter~2 of~\cite{tHooft2016CA}) and irreversible automata with
+information loss (Chapter~7), and shows that the two regimes lead to
+qualitatively different quantum structures.
+
+The UGP Physics programme, the quantitative branch of the Reflexive Reality programme~\cite{SpivackCompUniversality,SpivackResearchProgrammes}
+identifies Rule~110 as the minimal description-length (MDL) cellular
+automaton compatible with the Standard Model generation structure.
+The GTE cellular automaton $f_{\MDL}$ is a $\mathbb{Z}_7$-valued
+extension of Rule~110 over a five-cell ring $\mathbb{Z}_7^5$
+(16{,}807 states), whose charge and winding assignments reproduce the
+SM particle spectrum~\cite{ugp-p01}.
+The five-cell visible-sector ring has been used to derive the Weinberg
+angle~\cite{SpivackWeinbergAngle}, the CKM matrix
+structure~\cite{SpivackCKM}, emergent spacetime
+dimension~\cite{SpivackEmergentGravity}, and GUT charge
+quantization~\cite{ugp-p01}.
+
+The present paper asks: what quantum mechanical structure does 't~Hooft's
+framework assign to the $f_{\MDL}$ automaton?
+The answer turns out to be precisely the information-loss regime
+(Chapter~7): $f_{\MDL}$ on $\mathbb{Z}_7^5$ is a maximal information
+eraser --- 98.71\% of states are Garden-of-Eden states with no predecessor,
+and every trajectory reaches the vacuum fixed point in at most seven
+steps.
+The resulting physical Hilbert space is one-dimensional, and the SM
+generation states are transient excitations whose stability ordering
+is encoded in their tail lengths.
+
+\paragraph{What this paper does and does not claim.}
+We prove (at \CatA{} or \CatAD{}) that:
+\begin{itemize}[leftmargin=2em]
+\item the $f_{\MDL}$ Hilbert space has dimension 1, spanned by
+  $\ket{\text{vac}}$, with $E=0$;
+\item the SM generation stability ordering is reproduced qualitatively
+  by the tail-length hierarchy;
+\item the SM gauge group $G_{\rm SM}=SU(3)_c\times SU(2)_L\times
+  U(1)_{\rm EM}$ can be derived from the $\mathbb{Z}_7$ winding-sector
+  information-equivalence classes.
+\end{itemize}
+We do \emph{not} claim to derive the Schr\"{o}dinger equation from first
+principles (the continuum limit from a discrete CA to continuous quantum
+field theory is an open problem, \CatD{}), nor do we claim that the
+cogwheel eigenvalues determine the SM mass spectrum (they are falsified
+as a mass formula at \CatA{}).
+The gauge identification of \cref{sec:gauge} is 't~Hooft's own conjecture
+(\S9.3 of~\cite{tHooft2016CA}) applied to the specific \GTE{} automaton;
+its Lean 4 certification is identified as a target for future work.
+
+The paper is organised as follows.
+\Cref{sec:hilbert} presents the $f_{\MDL}$ Hamiltonian spectrum and the
+Hilbert space structure, including the dark-sector contrast.
+\Cref{sec:two_role} states and justifies the Two-Role Structural Principle; this separation is forced by the failure of the direct cogwheel eigenvalue-to-mass correspondence (demonstrated in \S\ref{ssec:eigen_fail}).
+\Cref{sec:gauge} derives the SM gauge groups from $\mathbb{Z}_7$
+information-equivalence classes.
+\Cref{sec:born} discusses the Born rule and the role of measurement.
+\Cref{sec:lorentz_causal} connects AFCA causal invariance to Lorentz
+structure and special-relativistic time dilation.
+\Cref{sec:open} collects open problems.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{The \texorpdfstring{$f_{\protect\MDL}$}{fMDL} Hilbert Space}
+\label{sec:hilbert}
+
+'t~Hooft's information-loss regime (Chapter~7 of~\cite{tHooft2016CA}) yields a low-dimensional physical Hilbert space; SM generations appear as transient excitations rather than energy eigenstates.
+
+\subsection{Cogwheel construction on \texorpdfstring{$\mathbb{Z}_7^5$}{Z75}}
+\label{ssec:cogwheel}
+
+In 't~Hooft's cogwheel framework~\cite{tHooft2016CA}, an ontological
+CA with state space $\Omega$ defines a quantum system as follows.
+Let $T:\Omega\to\Omega$ be the deterministic evolution operator.
+The physical Hilbert space $\Hil_{\rm phys}$ is spanned by the
+\emph{periodic orbit states}: if $s$ belongs to a cycle of period $N$
+under $T$, then it contributes $N$ energy eigenstates with eigenvalues
+$E_k = 2\pi k/N$, $k=0,\ldots,N-1$, to $\Hil_{\rm phys}$.
+Transient states --- those that eventually reach a cycle but are not
+themselves cycle states --- do not contribute cycle eigenstates; they
+are the \emph{Garden-of-Eden} (GoE) states if they have no predecessor
+under $T$.
+
+\begin{remark}[CA ontology and Wolfram Physics]\label{rem:wolfram_beable}
+The present construction grounds quantum mechanics in ontological CA
+states (beables) following 't~Hooft's cogwheel mechanism; an
+independent programme grounding quantum mechanics in CA-like ``rules''
+and identifying physical states with CA configurations is developed
+in~\cite{Wolfram2020Tech} (\S8.2).
+The two approaches share the CA-level ontological foundation but
+differ in their computational substrate and derivation strategy.
+\end{remark}
+
+We apply this construction to $f_{\MDL}:\mathbb{Z}_7^5\to\mathbb{Z}_7^5$,
+the canonical 14-entry lookup table (Lean-certified:
+\lean{fmdl\_nonzero\_count\_14}~\cite{SpivackCompUniversality}).
+An exhaustive forward-orbit computation over all $7^5 = 16{,}807$
+states yields the following orbit decomposition (\CatA{}).
+
+\begin{table}[h!]
+\centering
+\caption{Complete orbit structure of $f_{\MDL}$ on $\mathbb{Z}_7^5$.
+All values are exact (exhaustive computation).}
+\label{tab:orbit}
+\begin{tabular}{lrl}
+\toprule
+Quantity & Value & Cert.\\
+\midrule
+Total states & 16{,}807 & exact \\
+Distinct cycles & 1 & \CatA{} \\
+Cycle states & 1 (vacuum only) & \CatA{} \\
+Transient states & 16{,}806 (99.994\%) & \CatA{} \\
+Garden-of-Eden states & 16{,}590 (98.71\%) & \CatA{} \\
+Maximum tail length & 7 steps & \CatA{} \\
+Vacuum predecessor count & 14{,}147 & \CatA{} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The unique cycle is the vacuum fixed point $(0,0,0,0,0)$,
+which has cycle length $N=1$ and hence a single eigenvalue $E_0 = 0$.
+Standard Model generations appear as transients (gen$_1$ tail $= 3$ GoE steps,
+gen$_2$ tail $= 2$, gen$_3$ tail $= 1$), not as separate cycle sectors.
+On $\mathbb{Z}_7^4$ (dark-sector reduction), three period-2 cycles yield a
+five-dimensional physical Hilbert space $\{E=0\} \cup \{E=\pi\}$ doublets
+(\lean{CUP3DUniqueness.lean}, \lean{dark\_sector\_orbit\_structure} in
+\texttt{GUTStructure.lean}~\S35, zero \texttt{sorry}).
+
+\begin{theorem}[Dimension of the $f_{\MDL}$ Hilbert space, \CatA{}]
+\label{thm:hilbert_dim}
+The physical Hilbert space $\Hil_{\rm phys}$ of the $f_{\MDL}$
+cogwheel on $\mathbb{Z}_7^5$ is one-dimensional:
+\[
+\Hil_{\rm phys} \;=\; \mathbb{C}\,\ket{\mathrm{vac}},
+\qquad
+\Ham\,\ket{\mathrm{vac}} = 0.
+\]
+The spectral gap is $2\pi$ (maximum possible), and $E=0$ is the
+unique eigenvalue.
+\end{theorem}
+
+\begin{proof}
+By exhaustive orbit decomposition (\CatA{}, Table~\ref{tab:orbit}),
+the only cycle is the vacuum fixed point $(0,0,0,0,0)$ of period $N=1$.
+Under 't~Hooft's prescription, only cycle states contribute to
+$\Hil_{\rm phys}$; a period-1 cycle contributes one eigenvalue
+$E_0 = 2\pi\cdot 0/1 = 0$.
+No other cycles exist, so $\dim\Hil_{\rm phys} = 1$.
+\end{proof}
+
+\begin{remark}[Quotient Hilbert space construction]\label{rem:quotient}
+The passage from the full ontological Hilbert space to the physical Hilbert space
+follows 't~Hooft's Chapter~7 quotient construction.
+Define the long-time equivalence relation: $s \sim s'$ if $\lim_{t\to\infty}
+f_{\MDL}^t(s) = \lim_{t\to\infty} f_{\MDL}^t(s')$, i.e.\ two CA states are
+identified if they share the same long-time attractor.
+The full ontological Hilbert space is $\mathcal{H}_{\rm full} =
+\mathrm{span}_{\mathbb{C}}\{\ket{s} : s \in \mathbb{Z}_7^5\}$ (dimension $7^5 =
+16{,}807$).
+Since $f_{\MDL}$ on $\mathbb{Z}_7^5$ has a unique cycle --- the vacuum fixed point
+$(0,0,0,0,0)$ --- every trajectory converges to the vacuum.
+Consequently $\lim_{t\to\infty} f_{\MDL}^t(s) = (0,0,0,0,0)$ for all $s \in
+\mathbb{Z}_7^5$, and the equivalence relation collapses all 16{,}807 states into a
+single equivalence class.
+The physical Hilbert space $\mathcal{H}_{\rm phys} = \mathcal{H}_{\rm full}/{\sim}$
+is therefore one-dimensional: $\mathcal{H}_{\rm phys} = \mathbb{C}\ket{\mathrm{vac}}$.
+
+The SM generation states gen$_1$, gen$_2$, gen$_3$ are \emph{transient excitations}
+in this quotient picture: they are not members of the equivalence class (they are
+not cycle states) but are pre-image chains leading to it, with tail lengths
+$\ell(\mathrm{gen}_1) = 3$, $\ell(\mathrm{gen}_2) = 2$, $\ell(\mathrm{gen}_3) = 1$
+(Table~\ref{tab:sm_orbit}).
+
+A rough calibration of the CA timestep $\tau_{\rm CA}$ follows from the muon (gen$_2$)
+tail length.
+The muon has tail length 2, so it decays to vacuum in 2 CA steps:
+$\tau_{\mu} \approx 2\tau_{\rm CA}$.
+Using the empirical muon lifetime $\tau_{\mu} = 2.197\,\mu\text{s}$, this gives
+$\tau_{\rm CA} \approx 1.1\,\mu\text{s}$ as an effective CA timestep for
+second-generation decay.
+This is an order-of-magnitude estimate only (\CatD{}: the CA step may correspond to
+many underlying fundamental steps; no quantitative mass derivation is claimed here).
+The figure $1.1\,\mu\text{s}$ is a purely formal ratio; it does not imply the CA
+timestep is macroscopic.  The physical CA timestep is expected to be of order the
+Planck time (${\sim}10^{-44}\,\text{s}$), many orders of magnitude below the muon
+lifetime; the generation-tail ratio 2:1 is a dimensionless combinatorial count,
+not a physical time interval.
+The tail lengths 3:2:1 reproduce the qualitative stability ordering exactly, but the
+quantitative decay rates require a separate dynamical calculation beyond orbit
+combinatorics.
+\end{remark}
+
+\subsection{SM generation orbit: transient tail}
+\label{ssec:sm_orbit}
+
+The three SM generation representative states have the following
+orbit properties (\CatA{}):
+
+\begin{table}[h!]
+\centering
+\caption{SM generation states in the $f_{\MDL}$ orbit on
+$\mathbb{Z}_7^5$.}
+\label{tab:sm_orbit}
+\begin{tabular}{P{0.10\linewidth}P{0.17\linewidth}P{0.12\linewidth}P{0.12\linewidth}P{0.14\linewidth}P{0.16\linewidth}}
+\toprule
+State & Tuple & On cycle? & Tail length & Predecessors & Physical analog\\
+\midrule
+$\text{gen}_1$ & $(1,5,2,2,1)$ & No (transient) & 3 & 0 (GoE) & $e,u,d$\\
+$\text{gen}_2$ & $(2,5,2,0,2)$ & No (transient) & 2 & 1 & $\mu,c,s$\\
+$\text{gen}_3$ & $(5,6,5,3,5)$ & No (transient) & 1 & 1 & $\tau,t,b$\\
+vacuum         & $(0,0,0,0,0)$ & Yes (cycle)     & 0 & 14{,}147 & vacuum\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The SM generation orbit is thus a directed tail
+$\text{gen}_3 \to \text{gen}_2 \to \text{gen}_1 \to \text{vac}$
+of total length 3 terminating at the vacuum.
+This places $f_{\MDL}$ firmly in 't~Hooft's Chapter~7
+(information-loss) regime rather than the reversible Chapter~2 regime.
+
+\paragraph{Tail-length stability hierarchy (\CatA{}).}
+The tail lengths are ordered $\ell(\text{gen}_1) = 3 >
+\ell(\text{gen}_2) = 2 > \ell(\text{gen}_3) = 1$, in exact
+correspondence with the empirical stability ordering
+$m(e) < m(\mu) < m(\tau)$ (lightest and most stable for $\text{gen}_1$,
+heaviest and most unstable for $\text{gen}_3$).
+Moreover, $\text{gen}_1$ is a Garden-of-Eden state (zero predecessors):
+the vacuum dynamics can never \emph{create} the first-generation state
+from below, providing a CA-level account of electron stability.
+
+This qualitative ordering is a \CatA{} result.
+The tail lengths 3:2:1 do not predict quantitative mass ratios ---
+the actual lepton masses are 1:207:3477, far from the linear sequence
+$3:2:1$ in either direction --- and we make no such claim.
+
+\subsection{Dark sector: contrasting Hilbert space}
+\label{ssec:dark}
+
+The \GTE{} dark sector ring $\mathbb{Z}_7^4$ (2{,}401 states) has a
+structurally different cycle decomposition, confirmed at \CatAL{}
+by Lean~4 exhaustive proof (theorems
+\lean{dark\_sector\_orbit\_structure},
+\lean{dark\_sector\_period2\_exhaustive}):
+
+\begin{table}[h!]
+\centering
+\caption{Comparison of visible-sector $\mathbb{Z}_7^5$ and dark-sector
+$\mathbb{Z}_7^4$ orbit structures.}
+\label{tab:dark}
+\begin{tabular}{lll}
+\toprule
+Quantity & Visible ($\mathbb{Z}_7^5$) & Dark ($\mathbb{Z}_7^4$) \\
+\midrule
+Distinct cycles & 1 & 3 \\
+Non-vacuum cycles & 0 & 2 (both period-2) \\
+Hilbert space dimension & 1 & 5 \\
+Energy eigenvalues & $\{0\}$ & $\{0, \pi, \pi\}$ \\
+GoE fraction & 98.71\% & 97.08\% \\
+Maximum tail length & 7 & 4 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The four dark cycle states are exactly the period-2 orbits of Rule~110
+on the 4-cell binary ring (Lean-certified: \lean{dark\_sector\_period2\_exhaustive}).
+Their 't~Hooft energy eigenvalues are $E = 0$ (vacuum, one state) and
+$E = \pi$ (two doublet pairs).
+The 5-dimensional dark Hilbert space with stable doublet states at $E=\pi$
+provides a CA-level mechanism for dark-sector stability, in contrast to
+the purely transient visible sector.
+This is a new prediction of the \GTE{} framework (\CatAL{}).
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Two Irreducible Roles: A Structural Principle}
+\label{sec:two_role}
+
+\subsection{The direct eigenvalue-mass correspondence fails}
+\label{ssec:eigen_fail}
+
+A natural conjecture is that the SM generation masses are proportional
+to the cogwheel Hamiltonian eigenvalues.
+We test this conjecture systematically.
+
+\paragraph{T=3 cyclic approximation.}
+Treating the SM generation orbit as a cyclic cogwheel of period $T=3$
+yields equally-spaced eigenvalues $E_k = 2\pi k/3$ for $k=1,2,3$.
+The ratio spread between $E_k/(\Neff(\text{gen}_k)/c_H)$ is 69.3\%,
+far from the 0\% that proportionality would require.
+
+\paragraph{T=4 cyclic approximation.}
+Including the vacuum as a fourth state and assigning $T=4$ gives
+a ratio spread of 63.0\% --- also far from proportionality.
+
+\paragraph{Direct mass comparison.}
+Any period-$T$ cogwheel predicts mass ratios $1:2:\cdots:T$ (equally
+spaced).
+The PDG lepton masses give $m_e:m_\mu:m_\tau \approx 1:207:3477$,
+a discrepancy of 10{,}238\% for $m_\mu/m_e$ and 115{,}807\% for
+$m_\tau/m_e$ relative to the cogwheel prediction.
+
+\paragraph{Alternative hypotheses.}
+Orbit depth as an energy proxy fails because the depth ordering is
+\emph{inverted} relative to the mass ordering
+(deeper = lighter, not heavier).
+The predecessor-count hypothesis fails because there is only one
+eigenvalue $E=0$ in $\mathbb{Z}_7^5$, leaving no distinct eigenvalues
+to carry degeneracy multiplicities.
+All $N_{\rm eff}$ values (73, 42, 275) differ from the predecessor
+counts (0, 1, 1) for $\text{gen}_{1,2,3}$.
+
+\begin{proposition}[Eigenvalue-mass falsification, \CatA{}]
+\label{prop:eigen_fail}
+The direct correspondence $E_k \propto m(\text{gen}_k)$ fails on every
+formulation: equally-spaced cogwheel ($>10{,}000\%$ discrepancy),
+orbit-depth proxy (ordering inverted), degeneracy assignment (only
+$E=0$ exists).
+The near-miss $|\text{tail-3 state count}| = 75$ vs.\ $\Neff(\text{gen}_1)=73$
+(2.7\% difference) is noted but does not constitute a theorem.
+\end{proposition}
+
+\subsection{Statement of the Two-Role Structural Principle}
+\label{ssec:two_role}
+
+The failure of the direct eigenvalue-mass correspondence points to a
+fundamental separation of roles within the \GTE{} framework.
+
+\begin{remark}[Two-Role Structural Principle, \CatAD{}]
+\label{rem:two_role}
+In the \GTE{} framework, the 't~Hooft cogwheel construction and the
+$\Neff$ arithmetic of the Generative Triple Evolution (GTE) cascade play
+distinct, complementary roles:
+\begin{enumerate}[leftmargin=2em]
+\item \textbf{Cogwheel role (QM structure):} The $f_{\MDL}$ cogwheel
+  on $\mathbb{Z}_7^5$ provides the physical Hilbert space
+  $\Hil_{\rm phys} = \mathbb{C}\,\ket{\text{vac}}$, the Hamiltonian
+  $\Ham$ with unique vacuum eigenvalue $E=0$, the unitary evolution
+  operator, the Born rule (via the information-loss mechanism of
+  \cref{sec:born}), and the tail-length stability ordering of SM
+  generations.
+\item \textbf{GTE arithmetic role (mass content):} The $\Neff$ cascade
+  provides the SM generation mass scale via the beable superposition
+  formalism: $m(\text{gen}_k) \propto \Neff(\text{gen}_k)/c_H$, with
+  $\Neff(\text{gen}_1) = 73$, $\Neff(\text{gen}_2) = 42$,
+  $\Neff(\text{gen}_3) = 275$.
+  These numerical values are inputs to the cogwheel, not outputs from it.
+\end{enumerate}
+These contributions are non-redundant and complementary: the
+cogwheel provides the quantum mechanical scaffolding; the GTE cascade
+provides the content.
+This is an organizing structural principle (\CatAD{}), not a
+machine-certified theorem: the arithmetic skeleton (orbit decomposition,
+Hilbert space dimension, tail lengths, $\Neff$ values) is Lean~4-certified
+at zero \texttt{sorry}, but the physical identification of each role with
+quantum-mechanical structure and mass content respectively is a conditional
+derivation that awaits formal Lean~4 certification of the inter-layer
+mapping.
+\lean{TwoRoleTheorem.lean} (zero \texttt{sorry}) certifies
+\lean{two\_role\_structural\_separation},
+\lean{cogwheel\_equal\_spacing\_fails}, and
+\lean{two\_roles\_non\_redundant}: equal-spacing cogwheel eigenvalues cannot
+reproduce GTE mass ratios.
+\end{remark}
+
+\subsection{Physical significance}
+\label{ssec:two_role_physics}
+
+The Two-Role Structural Principle explains why the direct eigenvalue-mass
+correspondence fails: masses are determined not by the period of the
+cycle in $\mathbb{Z}_7^5$ (which is trivially 1) but by the arithmetic
+of the GTE cascade that generates the Z$_7$ state alphabet.
+The cogwheel is the \emph{kinematic} framework; the GTE arithmetic is
+the \emph{dynamical} input that fills in the mass spectrum.
+
+This separation parallels the structure of standard quantum field theory,
+where the Hilbert space and the canonical commutation relations (the
+kinematic framework) are universal, while the specific mass spectrum
+depends on the Lagrangian (the dynamical input).
+In the present framework, the Lagrangian's role is played by the GTE
+$\Neff$ cascade.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Information-Equivalence Classes and Gauge Structure}
+\label{sec:gauge}
+
+\subsection{Information erasure and equivalence classes}
+\label{ssec:erasure}
+
+As established in \cref{sec:hilbert}, $f_{\MDL}$ on $\mathbb{Z}_7^5$
+erases all information within at most 7 steps: $T^7(s) =
+(0,0,0,0,0)$ for every $s \in \mathbb{Z}_7^5$.
+The naive forward-trajectory equivalence $s \sim s'$ iff
+$T^t(s) = T^t(s')$ for some $t \geq 0$ therefore yields only a
+single equivalence class (all 16{,}807 states are equivalent).
+This extreme form of information erasure produces no non-trivial
+gauge structure at the CA beable level.
+
+To recover gauge structure, we follow 't~Hooft's \S9.3 prescription:
+the physically meaningful equivalence classes are defined by
+\emph{observable quantum numbers} --- the quantities that
+macro-scale observers can measure --- not by the full CA configuration.
+For the \GTE{} framework, the relevant observable quantum number
+is the $\mathbb{Z}_7$ winding number $W = \sum_{i=1}^5 w_i \bmod 7$.
+
+\subsection{Winding-sector equivalence classes}
+\label{ssec:winding}
+
+\begin{definition}[Winding equivalence]
+\label{def:winding}
+Two configurations $s, s' \in \mathbb{Z}_7^5$ are winding-equivalent,
+$s \sim_W s'$, if $\sum_i s_i \equiv \sum_i s'_i \pmod{7}$.
+\end{definition}
+
+\begin{proposition}[Winding class structure, \CatAL{}]
+\label{prop:winding}
+There are exactly 7 winding-equivalence classes, each of size
+$7^4 = 2{,}401$ states, corresponding to $W \in \{0,1,2,3,4,5,6\}$.
+The SM sectors are $\{0,2,3,4,6\}$ (cardinality~5); the GUT mediator
+sectors are $\{1,5\}$ (cardinality~2).
+\end{proposition}
+
+\begin{proof}
+The map $\phi: \mathbb{Z}_7^5 \to \mathbb{Z}_7$, $\phi(s) = \sum_i s_i \bmod 7$,
+is a surjective $\mathbb{Z}_7$-module homomorphism.
+Its kernel has order $|\ker\phi| = 7^5/7 = 7^4 = 2{,}401$,
+so each fibre has exactly 2{,}401 elements.
+\end{proof}
+
+\begin{remark}[\CatAL{} certification of partition arithmetic]
+\label{rem:gauge_arith_catAL}
+The partition arithmetic --- 7 uniform sectors of $7^4 = 2{,}401$ states
+each, SM sectors $\{0,2,3,4,6\}$ of cardinality~5, GUT sectors $\{1,5\}$
+of cardinality~2, and $\mathrm{Nat.Prime}\,7$ (the algebraic guarantee
+of uniform sector sizes via Lagrange's theorem) --- is machine-certified
+in Lean~4 (\lean{gauge\_arithmetic\_identification},
+\texttt{GUTStructure.lean}~\S55, zero sorry).
+Supporting theorems (\CatAL{}, same file):
+\lean{z7\_sector\_sizes}, \lean{z7\_sector\_count}, \lean{sm\_sector\_count},
+\lean{gut\_leptoquark\_sectors}, \lean{gauge\_sector\_identification}.
+The physical identification (gauge transformation $=$ info-equivalence
+class symmetry in the 't~Hooft~\S9.3 sense) remains a \CatAD{} derivation.
+\end{remark}
+
+The SM particle sectors and the remaining winding sectors are identified
+by their winding class (\CatAL{}, Lean theorems
+\lean{sm\_sector\_count} and \lean{gauge\_arithmetic\_identification} in \texttt{GUTStructure.lean}~\S55):
+
+\begin{table}[h!]
+\centering
+\footnotesize
+\caption{$\mathbb{Z}_7$ winding sectors and SM/GUT assignments.}
+\label{tab:winding}
+\begin{tabular}{P{0.09\linewidth}P{0.09\linewidth}P{0.48\linewidth}P{0.10\linewidth}}
+\toprule
+Class $W$ & States & SM assignment & Source \\
+\midrule
+0 & 2{,}401 & vacuum / neutrino sector & \CatAL{} \\
+2 & 2{,}401 & up-quark sector & \CatAL{} \\
+3 & 2{,}401 & $W^+$ boson sector & \CatAL{} \\
+4 & 2{,}401 & electron / $W^-$ sector; $X$-leptoquark ($Q=+\tfrac{4}{3}$) cohabits & \CatAL{} \\
+6 & 2{,}401 & down-quark sector & \CatAL{} \\
+\midrule
+1 & 2{,}401 & SU(5) $Y$-leptoquark mediator & \CatAD{} \\
+5 & 2{,}401 & $\bar{u}$ (anti-up quark, $Q=-\tfrac{2}{3}$) & \CatAL{} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The five SM winding sectors $\{0,2,3,4,6\}$ have cardinality 5,
+equal to the dimension of the fundamental representation $\mathbf{\bar{5}}$
+of $SU(5)$.
+The two missing sectors $\{1,5\}$ correspond to the SU(5) $Y$-leptoquark
+mediator ($W=1$, $Q=+\tfrac{1}{3}$) and the $\bar{u}$ (anti-up) sector
+($W=5$, $Q=-\tfrac{2}{3}$).
+The $X$-leptoquark ($Q=+\tfrac{4}{3}$, $3Q\equiv 4\pmod{7}$) cohabits
+winding sector $W=4$ with the electron.
+The complete 7-sector structure thus predicts the $SU(5)$ GUT
+enlargement of the SM gauge group.
+
+\subsection{U(1)\textsubscript{EM} from winding-sector phase freedom}
+\label{ssec:u1em}
+
+Within winding sector $W = k$, the physical quantum states are
+superpositions
+\[
+\ket{\psi_k} = \sum_{\{s\,:\,W(s)=k\}} \alpha_s\,\ket{s}.
+\]
+The gauge freedom within sector $k$ is the freedom to multiply all
+amplitudes by a common phase: $\ket{\psi_k} \to e^{i\varphi}\ket{\psi_k}$.
+This is a $U(1)$ symmetry.
+
+For the electron sector $W=4$ (charge $Q=-1$), the electromagnetic
+gauge transformation is $\ket{e^-}\mapsto e^{iQ\theta}\ket{e^-}$.
+The connection between the $\mathbb{Z}_7$ winding number and the electric
+charge $Q$ is established at \CatAL{} by the assignment
+\lean{winding\_class\_sm\_assignment}~\cite{ugp-p01}:
+$W=0\to Q=0$, $W=2\to Q=+2/3$, $W=3\to Q=+1$,
+$W=4\to Q=-1$, $W=6\to Q=-1/3$.
+
+\textbf{Result:} $U(1)_{\rm EM}$ arises from the phase freedom within
+each $\mathbb{Z}_7$ winding-equivalence class (\CatAD{} identification,
+\CatAL{} for the $\mathbb{Z}_7 \to Q$ map).
+
+\subsection{SU(3)\textsubscript{c} from the multiplicative Z\textsubscript{3}
+            subgroup}
+\label{ssec:su3}
+
+The multiplicative group $\mathbb{Z}_7^*$ has order 6, and its
+unique subgroup of order 3 is $Z_3 = \{1,2,4\}$ (generated by 2,
+since $2^3 \equiv 1 \pmod{7}$).
+This is Lean-certified (\CatAL{}):
+\lean{z7\_color\_subgroup\_closed}, \lean{z7\_color\_subgroup\_generator},
+\lean{w\_u\_in\_color\_subgroup}.
+
+The up-quark sector $W=2$ satisfies $2 \in Z_3$.
+The three colour states of the up quark correspond to multiplication
+of the base winding by $\{1,2,4\}$:
+$w_u \cdot \{1,2,4\} = \{2,4,1\} \pmod{7}$.
+This defines a faithful 3-dimensional permutation representation of $Z_3$
+on the three colour states, which embeds into (and generates the centre
+of) $SU(3)_c$.
+
+\textbf{Result:} $SU(3)_c$ arises from the $Z_3 = \{1,2,4\} \subset
+\mathbb{Z}_7^*$ action on the up-quark winding sector (\CatAD{}
+identification, \CatAL{} for the $Z_3$ arithmetic).
+
+\subsection{SU(2)\textsubscript{L} from the weak-isospin doublet}
+\label{ssec:su2}
+
+The $W^+$ sector ($W=3$) and the electron/$W^-$ sector ($W=4$) form
+a weak-isospin doublet with $T_3 = +1$ and $T_3 = -1$ respectively.
+The charged-current interaction $W^+ + d \to u$ corresponds to
+$W(3) + W(6) = 9 \equiv 2 \pmod{7} = W(u)$, i.e., a winding-conserving
+process (\CatAL{}, \lean{su2l\_charge\_assignment\_z7\_discriminator}).
+
+The gauge freedom within the doublet $\{W=3, W=4\}$ is the group of
+$2\times 2$ unitary transformations that preserve the doublet structure,
+which is $SU(2)_L$.
+
+\textbf{Result:} $SU(2)_L$ arises from the $\{W=3, W=4\}$ doublet
+winding pair (\CatAD{} identification, \CatAL{} for the doublet
+arithmetic).
+
+\begin{remark}[Doublet structure machine-certified at $\mathbb{Z}_7$ layer ($\CatAL$), zero \sorry]
+The weak isospin doublet partition and charged-current conservation are
+machine-certified at the species-winding layer.  The $\mathbb{Z}_7$
+species formula $W_B = 4k \bmod 7$ forces $\Delta W_B = 4$ between
+doublet partners for both the lepton doublet ($\nu \leftrightarrow e^-$)
+and the quark doublet ($u \leftrightarrow d$); $W_B$ conservation holds
+at all four SM charged-current vertices; and the $W^\pm$ winding numbers
+$W_B(W^+)=3$, $W_B(W^-)=4$ are uniquely determined by the conservation
+constraint.  Lean-certified in \lean{weak\_isospin\_identification}
+(\texttt{WeakIsospin.lean}, zero \sorry, $\CatAL$).
+The $F_{21} = \mathbb{Z}_7 \rtimes \mathbb{Z}_3$ substrate automorphism group
+contains no $\mathrm{SU}(2)_L$ factor ($\CatAL$); the doublet structure
+is a consequence of $\mathbb{Z}_7$ winding arithmetic rather than a gauge
+symmetry postulate.  The V--A chiral structure is $\CatAL$: \texttt{ChiralPairVA.lean} (zero \sorry) proves \lean{fmdl\_va\_bundle}---the two-layer chiral
+CA (Rule~110 + Rule~124) produces a ratio of $32/125$ L$\leftrightarrow$R mismatches,
+with $32/125 \neq 1$ (parity not conserved), $0 < 32/125 < 1$ (left-handed preference),
+and asymmetry degree $93/125$.  Every mismatch involves $W^+$ ($W_B = 3$) as a
+neighbor, connecting V--A chirality to the CC winding structure of
+\lean{weak\_isospin\_identification}.  The identification of $32/125$ with the SM
+V--A coupling constant remains $\CatAD$.
+\end{remark}
+
+\begin{remark}[$W^-$ as CPT-adjoint shadow in $\mathcal{H}$ (\CatAD{})]
+\label{rem:wminus_cpt_shadow}
+The $W^-$ boson does not appear as a CA beable: $f_{\MDL}$ produces
+winding sector $W=3$ ($W^+$) but never $W=4$ under the GTE map
+(\lean{fmdl\_never\_outputs\_4}; zero sorry~\cite{SpivackCompUniversality}).
+Yet $W^-$ is forced to appear as an operator in the Hilbert space
+$\mathcal{H} = \mathrm{span}_{\mathbb{C}}\{\ket{\text{CA states}}\}$
+by two independent constraints:
+\begin{itemize}[leftmargin=2em]
+  \item \emph{Unitarity}: the $W^-$ creation operator
+    $a^\dagger_{W^-} = (a_{W^+})^\dagger$ is the Hermitian adjoint of
+    the $W^+$ annihilation operator; any unitary Hilbert space must
+    contain both.
+  \item \emph{CPT}: any Lorentz-invariant local QFT limit inherits
+    CPT invariance (L\"{u}ders--Pauli theorem), forcing $W^-$-mediated
+    processes wherever $W^+$-mediated processes occur.
+\end{itemize}
+The $\mathbb{Z}_7$ additive structure reinforces this:
+$w(W^-) = -w(W^+) \bmod 7 = 4$ is the unique algebraic inverse of
+$w(W^+)=3$, and both weak vertices $u\to d+W^+$ and $d\to u+W^-$
+are winding-conserving mod~7.  The full $\mathrm{SU}(2)_L$ isospin
+algebra $(T_+, T_-, T_3)$ is therefore realised at the level of
+$\mathbb{Z}_7$ winding shifts.  The confidence is \CatAD{}: the
+Hilbert-space and $\mathbb{Z}_7$ arithmetic steps are \CatAL{}, while
+the CPT premise requires the CA$\to$QFT embedding to produce a
+Lorentz-invariant local QFT (open premise, \CatAD{} per 't~Hooft's
+programme~\S9.3).
+\end{remark}
+
+\subsection{Hypercharge and Weinberg angle (\CatAL{})}
+\label{ssec:hypercharge}
+
+The winding-sector assignments give the correct electromagnetic charges (\CatAL{}).
+The extension to the full electroweak hypercharge $U(1)_Y$ via $Y = 2(Q - T_3)$
+is machine-certified: for every member of the quark and lepton $\mathrm{SU}(2)_L$
+doublets (u-quark, d-quark, electron, neutrino) the GTE charge assignments
+satisfy $Y = 1/3$ (quark doublet) and $Y = -1$ (lepton doublet),
+certified by \lean{quark\_doublet\_hypercharge} and \lean{lepton\_doublet\_hypercharge}
+(\S49, \CatAL{}).
+The Weinberg-angle formula $\sin^2\theta_W = N_{\rm gen}/c_H = 3/13$
+(established at \CatA{}~\cite{SpivackWeinbergAngle}) is machine-certified
+in this framework (\S73 \lean{HyperchargeConsistency}, \CatAL{}, \texttt{ugp-lean},
+zero sorry).
+
+\subsection{Summary of the gauge derivation}
+\label{ssec:gauge_summary}
+
+\begin{theorem}[SM gauge group from winding equivalence, \CatAD{}]
+\label{thm:gauge}
+The SM gauge group $G_{\rm SM} = SU(3)_c \times SU(2)_L \times
+U(1)_{\rm EM}$ is derived from the $\mathbb{Z}_7$ winding-sector
+information-equivalence classes of $f_{\MDL}$ on $\mathbb{Z}_7^5$
+via 't~Hooft's \S9.3 identification:
+\begin{itemize}[leftmargin=2em]
+\item $U(1)_{\rm EM}$: phase freedom within each winding sector;
+  $\mathbb{Z}_7\to Q$ map \CatAL{}.
+\item $SU(2)_L$: $\{W=3,W=4\}$ doublet pair; doublet arithmetic \CatAL{}.
+\item $SU(3)_c$: $Z_3=\{1,2,4\}\subset\mathbb{Z}_7^*$ acting on
+  winding-2 sector; $Z_3$ arithmetic \CatAL{}.
+\item $U(1)_Y$: hypercharge $Y=2(Q-T_3)$ consistent for all SM doublet
+  members (\CatAL{}, \lean{quark\_doublet\_hypercharge},
+  \lean{lepton\_doublet\_hypercharge}); Weinberg angle
+  $\sin^2\theta_W = N_{\rm gen}/c_H = 3/13$ machine-certified
+  (\lean{HyperchargeConsistency}, \S73, \CatAL{}).
+\end{itemize}
+\end{theorem}
+
+The overall confidence is \CatAD{}: each arithmetic component is
+\CatAL{} (Lean-certified), while the identification of $\mathbb{Z}_7$
+winding classes as 't~Hooft's information-equivalence gauge classes
+remains at the level of 't~Hooft's own \S9.3 conjecture.
+Formal Lean~4 certification of this identification remains open.
+
+\begin{remark}[Partial SM gauge group Lean bundle certificate]
+The three $\mathbb{Z}_7$ channel identifications are packaged in
+\lean{sm\_gauge\_group\_certificate} (\texttt{ugp-lean/UgpLean/Algebra/SMGaugeGroup.lean},
+zero sorry): (i) $\mathrm{SU}(3)_c$ via $F_{21}\hookrightarrow\mathrm{SU}(3)$ embedding
+and gluon count (\CatAL\ arithmetic; Burnside named axiom
+\lean{f21\_burnside\_full\_enveloping\_algebra}, \CatAD);
+(ii) $\mathrm{U}(1)_Y$ via \lean{gte\_charge\_formula} and Weinberg angle (\CatAL);
+(iii) $\mathrm{SU}(2)_L$ via channel count and MDL gauging
+(\lean{su2l\_l2\_from\_phimdl\_potential\_catad}, $\CatAL$, zero named axioms).
+Bundle theorems \lean{sm\_gauge\_group\_three\_factors} and
+\lean{sm\_gauge\_factors\_independent} are zero sorry.
+Full certification --- the formal Lie-algebra product $\mathrm{SU}(3)\times\mathrm{SU}(2)_L\times\mathrm{U}(1)_Y$ --- requires discharge of the
+Burnside named axiom and is not yet complete.
+\end{remark}
+
+\paragraph{CA-level gauge non-invariance.}
+It is important to note that $f_{\MDL}$ itself is \emph{not} locally
+$\mathbb{Z}_7$-invariant: a local shift on a single cell generically
+changes the image under $f_{\MDL}$.
+This is entirely consistent with the Two-Role Structural Principle (\cref{rem:two_role}):
+gauge invariance is a property of the \emph{quantum superposition layer},
+not the CA beable layer.
+The CA dynamics fix the Hilbert space and the Born rule; gauge
+invariance is an emergent symmetry of the quantum states built from
+winding-equivalence classes.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Information Loss, Born Rule, and Measurement}
+\label{sec:born}
+
+\subsection{Born rule from information loss}
+\label{ssec:born_derivation}
+
+'t~Hooft's derivation of the Born rule (Chapters 4 and 7
+of~\cite{tHooft2016CA}) proceeds in two steps.
+First, the unitary evolution operator $U(t)$ on $\Hil_{\rm phys}$ is
+constructed as the exponential of the cycle-Hamiltonian $\Ham$.
+Second, when the physical system undergoes information loss (transitions
+to the vacuum attractor), the relative probabilities of outcomes
+are determined by the squared moduli of the quantum amplitudes in the
+Born-rule sense.
+
+For $f_{\MDL}$ on $\mathbb{Z}_7^5$, the information-loss mechanism is
+maximal: every state converges to the vacuum in at most 7 steps.
+A measurement performed on the system at macro-scales corresponds to
+asking which winding sector $W$ the CA configuration belongs to, and
+the probability of obtaining outcome $W=k$ is
+$P(W=k) = |\alpha_k|^2$ where $\alpha_k$ is the amplitude in the
+$k$-th winding-sector component of the quantum state.
+This is the Born rule.
+
+The derivation is structural (\CatAD{}): it follows from the general
+framework of~\cite{tHooft2016CA} applied to the specific $f_{\MDL}$
+information-loss structure.
+An independent derivation of the Born rule in the \UGP{} framework
+appears in an earlier paper in this series~\cite{SpivackBornRule}, establishing
+the Born measure as the unique PSC-consistent probability assignment via the
+Busch--Gleason theorem (any POVM-additive effect algebra over a PSC theory is
+uniquely the Born probability; Lean-certified in \texttt{NemS.Quantum.BornFromPSC}).
+
+An independent derivation of the same principle appears in Wolfram's
+multiway graph framework~\cite{Wolfram2020Tech} (\S8.16):
+observer-induced decoherence is identified with the inaccessibility of
+alternative branches in the multiway causal graph, making quantum
+probability a consequence of the irreversibility of computational
+dynamics.
+The GTE derivation and the Wolfram derivation converge on the same
+physical conclusion --- irreversibility of CA-level dynamics grounds
+quantum probability --- through different mathematical formalisms
+(attractor convergence vs.\ multiway inaccessibility).
+
+\subsection{Comparison with the UGP Born rule derivation}
+\label{ssec:born_comparison}
+
+An independent Born rule derivation was established in the UGP series~\cite{SpivackBornRule,SpivackBornOnRamp}
+via the information geometry of the Zone~L1 and Zone~L2 distinction
+(Zones L1/L2 are the two arithmetic classification levels established in P34~\cite{SpivackGTEMobius}: Zone~L1 covers Turing-decidable / unitary-evolution questions; Zone~L2 covers Turing-undecidable / measurement questions).
+NEMS Paper~13 (\textit{Born Rule as a Closure Fixed Point}) proves that
+the Born rule is the unique quantum probability assignment in perfectly
+self-contained (PSC) theories, using the Busch--Gleason representation
+theorem; the derivation is Lean~4 formalized in the \texttt{nems-lean}
+library (\texttt{NemS.Quantum.BornFromPSC}, theorems
+\texttt{born\_rule\_from\_psc} and \texttt{born\_rule\_projectors\_from\_psc}).
+In that framework, measurement corresponds to the transition into the
+undecidable diagonal of the computational substrate, which is
+identified with the transputation zone of the Rule~110 CA.
+
+The two derivations are complementary:
+\begin{itemize}[leftmargin=2em]
+\item The 't~Hooft derivation (\CatAD{}, present paper) is structural:
+  it follows from the general framework of ontological CA and the
+  information-loss mechanism.
+\item The Zone framework derivation is constructive: it assigns measurement
+  to a specific computational zone of the Rule~110 CA.
+\end{itemize}
+Both derivations identify the Born rule with the irreversibility of
+the CA dynamics --- 't~Hooft via Chapter~7 information loss, the
+Zone framework via transition to the undecidable diagonal.
+The 't~Hooft ontological--template lift (information loss on $f_{\MDL}$) and
+NEMS Paper~13 (PSC closure $\Rightarrow$ noncontextual POVM-additive effect algebra
+$\Rightarrow$ Born rule via Busch--Gleason) are \emph{not} the same theorem: they
+rest on different premises but converge on $P = |\psi|^2$.
+They are complementary, not in tension with the GTE substrate.
+
+A further independent derivation, at a stronger certification level, is established
+in P41 and P42~\cite{SpivackCMCA,SpivackPhiMDLField} via $\mathbb{Z}_7$-KG kink
+superselection (the Coleman--Mandelstam--Rajaraman topological argument).
+This route yields \lean{born\_rule\_unconditional} (\lean{BeableWindingPartitionInstance.lean},
+zero \texttt{sorry}, zero custom physics axioms, \CatAL{}), with the Born probability
+$P(k) = |c_k|^2$ following unconditionally from $\mathbb{Z}_7$ superselection alone.
+This derivation is independent of the 't~Hooft gauge-identification step
+(which remains \CatAD{} in the present paper) and provides the currently
+strongest certification of the Born rule in the UGP framework.
+Zone~L1 (vacuum attractor / information loss) is structurally parallel to Zone~L2
+(transputation diagonal).
+A formal bridge theorem (PSC $\Rightarrow$ effect algebra from $f_{\MDL}$ dynamics alone)
+remains open; the constructive route via kink Fock lift (below) closes the
+representation step conditionally (\CatAL).
+
+A third independent derivation appears in~\cite{Gorard2020QM} (\S8.15):
+the Born rule probability $|\psi|^2$ is identified with the relative
+weight of branches in the multiway graph, arising from the structure of
+the multiway causal graph over the computational state space.
+Whether this branch-weight derivation is formally equivalent to the PSC
+entropy derivation or the 't~Hooft information-loss derivation is an
+open question.
+
+A fourth independent derivation is established in P45~\cite{SpivackThreeTapeCMCA}
+via the Page--Wootters (PW) mechanism with the $\tau_c$ outer clock:
+the Born rule $P(k|\tau) = |\langle k|U(\tau)|\psi_0\rangle|^2$ is derived
+from the timeless universe state $|\Psi\rangle = \sum_\tau c_\tau|\tau\rangle\otimes U(\tau)|\psi_0\rangle$.
+The $\tau_c$ clock satisfies all PW prerequisites (non-degenerate Hamiltonian
+$H_{\tau_c} = \omega_c\sum_\tau\tau|\tau\rangle\langle\tau|$; orthogonal clock states;
+Wheeler-DeWitt constraint; $\CatAD$). The derivation is independent of the
+clock state distribution $\{c_\tau\}$: uniform (classical) or Gaussian (quantum)
+clock weights give identical conditional Born probabilities $P(k|\tau)$.
+At the discrete Level~1, the $\mathbb{Z}_7$ Born rule assigns probability
+$P(j|w) = 1/7$ to each position $j$ for a winding eigenstate $|w\rangle$;
+non-uniform distributions arise from superpositions. The continuous Born rule
+$P(x) = |\psi(x)|^2$ is a Level~2 property supplied by $\Phi_{\rm MDL}$ (P42).
+
+\subsection{Measurement and Zone L2}
+\label{ssec:zone}
+
+The non-reversible $f_{\MDL}$ dynamics (98.71\% GoE states) place the
+\GTE{} CA firmly in the irreversibility regime.
+In the zone framework, the undecidable diagonal of Rule~110 defines
+Zone~L2, which is identified with the measurement domain.
+The transition of a transient SM state (gen$_{1,2,3}$) to the vacuum
+under $f_{\MDL}$ evolution is then the CA-level description of a
+measurement event: the winding sector $W$ of the initial transient
+state becomes the classical measurement outcome as the system relaxes
+to the vacuum attractor.
+
+This identification connects the 't~Hooft Born rule (\cref{ssec:born_derivation})
+with the Zone L2 framework at a structural level.
+The formal discrete measurement mechanism~---~characterizing $f_{\MDL}$ as the
+PSC-correction of $p$ and proving the Three-Level MDL Unification~---~is
+developed in~\cite{SpivackPolynomialTransputation}.
+Specifically, $f_{\MDL}$ is the PSC-projection of $p$: it equals $p$ on the
+binary ether sector, overrides $p$ with the PSC-forced orbit values at the
+ten SM-orbit neighborhoods, and vanishes on the remaining 325 inputs
+(\CatAL{}, \lean{psc\_projection\_gives\_fmdl};
+\cite{SpivackPolynomialTransputation}).
+The precise equivalence~---~identifying the Zone~L2 boundary with the
+event-adjudication transition of the Three-Level MDL Unification
+Theorem~---~is established in~\cite{SpivackPolynomialTransputation}
+(\CatAD{}; bundle certificate \lean{mdl\_three\_level\_unification}).
+
+\begin{remark}[Structural parallel with Wolfram branch foliation]\label{rem:wolfram_measurement}
+The identification of Zone~L2 with the measurement domain is
+structurally parallel to the treatment of quantum measurement
+in~\cite{Wolfram2020Tech} (\S8.14), where measurement corresponds to
+the selection of a branch foliation in the multiway causal graph: the
+observer's branch becomes classical while information in alternative
+branches becomes inaccessible.
+In both frameworks, the quantum-to-classical transition is identified
+with an irreversible selection process in the underlying computational
+substrate.
+The physical mechanism differs: Zone~L2 is defined by the undecidable
+diagonal of Rule~110; the Wolfram foliation is a spacelike slice of the
+multiway causal graph.
+A formal map between the two constructions is an open problem
+(see~\cref{ssec:multiway_map}).
+\end{remark}
+
+\begin{remark}[Measurement problem in the GTE-CA interpretation; $\CatA$]
+\label{rem:measurement_problem}
+The measurement problem asks how definite, classical outcomes emerge from unitary quantum
+evolution.
+In the GTE-CA interpretation, measurement outcomes are definite because Zone~L2
+adjudication by the $[D]$ coherence class is a non-computable but determinate selection
+among the transient beable states: the CA dynamics evolve a superposition of
+$\mathbb{Z}_7^5$ beable states to the Zone~L2 boundary, and the PSC-forced
+$[D]$-selection irreversibly picks one outcome.
+This differs structurally from the many-worlds interpretation (no collapse; all branches
+realized) and from Copenhagen (collapse without mechanism); it also goes beyond
+decoherence approaches, which identify the preferred basis but leave the single-outcome
+selection unresolved.
+The GTE mechanism is closest to objective-collapse theories, with the collapse mechanism
+being the $[D]$-selection at the Zone~L2 boundary rather than a postulated stochastic
+process.
+The preferred basis is fixed by the $\mathbb{Z}_7^5$ CA dynamics, as described in
+Remark~\ref{rem:preferred_basis}: the $\mathbb{Z}_7^5$ winding-sector states are the
+unique ontological basis under which $f_{\MDL}$ acts as a deterministic map.
+The measurement problem in GTE therefore reduces to the Zone~L2 adjudication question,
+whose mechanism is specified (PSC-forced $[D]$-selection) but whose complete
+formalization is linked to Conjectures~C3 (TPC Completeness) and C4 (Lawvere--Physical Correspondence) of P34~\cite{SpivackGTEMobius}.
+\end{remark}
+
+\begin{remark}[Preferred-basis selection by $f_{\MDL}$]\label{rem:preferred_basis}
+The preferred-basis problem --- why quantum measurement outcomes appear in the
+particle/occupation-number basis rather than in an arbitrary unitary rotation of it
+--- receives a structural resolution in the CA framework.
+In 't~Hooft's ontological formulation~\cite{tHooft2016CA}, the \emph{beable basis}
+is selected by requiring the CA evolution operator $T$ to act as a permutation matrix
+on it: $T\ket{s} = \ket{f_{\MDL}(s)}$ for every basis vector $\ket{s}$ with $s \in
+\mathbb{Z}_7^5$.
+This holds for the standard computational basis $\{\ket{s} : s \in \mathbb{Z}_7^5\}$
+by construction.
+Any unitary rotation $U$ of the Hilbert space replaces $\ket{s}$ by a superposition
+$U\ket{s} = \sum_{s'} U_{s's}\ket{s'}$, so $T$ no longer acts as a permutation on the
+rotated basis: the rotated-basis evolution mixes many basis states into a single
+output, destroying the deterministic single-valued structure.
+The preferred basis is therefore selected uniquely by the criterion that $f_{\MDL}$
+acts as a deterministic function (a permutation-like map, technically a non-injective
+endomorphism in the information-loss case) on it.
+No other basis satisfies this criterion.
+This matches 't~Hooft's own preferred-basis argument (\cite{tHooft2016CA}, \S2.3):
+the ontological basis is the unique one in which the time-evolution operator is
+diagonal and classical.
+In the \GTE{} context, this means the $\mathbb{Z}_7^5$ winding-sector states are the
+ontological beables, and quantum superpositions of winding sectors are informational
+(superpositions of our knowledge of the CA state), not ontological coexistences of
+distinct CA configurations.
+The Zone~L2 adjudication then selects the specific winding-sector outcome during a
+measurement event, consistent with the decoherence programme selecting the preferred
+beable basis in open-system evolution.
+\end{remark}
+
+\subsection{MDL structural layer and kink Fock lift}
+\label{ssec:born_mdl}
+
+\lean{BornRuleMDL.lean} (zero \texttt{sorry}) certifies that MDL-minimal completion
+selects $f_{\MDL}$ (\lean{mdl\_selects\_minimum\_description}) and that
+inverse-complexity branch weights normalize to a probability measure
+(\lean{born\_weight\_from\_mdl\_minimality}).
+Conditional on a constructive \lean{BeableAmplitudeHypothesis},
+\lean{born\_rule\_from\_psc\_mdl} gives sector Born weights that partition unity,
+compatible with the winding-sector EffectMeasure schema (below).
+
+\lean{FockSpaceKink.lean} supplies the amplitude hypothesis constructively:
+four GTE kink Fock modes with certified $q_\Phi$ labels;
+\lean{kinkCreation}/\lean{kinkAnnihilation} on occupation-number states;
+\lean{BeableWindingPartition} uniform sector lift;
+\lean{fock\_beable\_amplitude\_normalized} and
+\lean{born\_rule\_from\_fock\_lift} connect to the MDL layer.
+Open gaps: canonical $\ZS$-KG soliton quantization (Jackiw--Rebbi limit);
+identification of MDL weight with $|\varphi_k|^2$; explicit beable-index partition
+for every physical superposition.
+
+\begin{remark}[Fock-space structure and CA$\leftrightarrow$QFT embedding]
+The CMCA state space admits a Fock-space decomposition via the MDL mode expansion
+(\CatAD, conditional): the Hilbert space $\mathcal{H}_{\rm MDL}$ is spanned by
+occupation-number states $|n_1,n_2,\ldots\rangle$ for $\mathbb{Z}_7$ normal modes
+via the GNS construction from the MDL vacuum state $\omega_{\rm vac}$ and inductive
+limit over finite sub-lattices.
+The 't~Hooft CA$\leftrightarrow$QFT embedding map
+$\Phi:\mathcal{H}_{\rm CMCA}\to\mathcal{H}_{\rm QFT}$ decomposes as
+$\Phi = (\text{Hilbert-space map, here}) \circ (\texttt{cmca\_continuum\_limit\_is\_phimdl},\CatAL\ \text{conditional})$:
+the structural reduction is established; full unconditional proof awaits
+canonical $\mathbb{Z}_7$-KG soliton quantization.
+\end{remark}
+
+\subsection{EffectMeasure bridge B1 and B2}
+\label{ssec:effectmeasure_bridge}
+
+Winding-sector Born weights $\mu(P_k) = \sum_s |\alpha_s|^2$ on $\mathbb{Z}_7^5$
+satisfy the EffectMeasure axioms for random superpositions and POVM partitions
+(\CatA, 200/200 states tested).
+The information-loss channel redistributes sector weights but preserves the axiom
+structure after renormalization.
+\lean{ThooftEffectMeasureBridge.lean} certifies normalization and nonnegativity
+(\lean{thooft\_b1\_master\_bundle}, zero \texttt{sorry}); full
+\lean{EffectMeasure} on $\mathrm{Fin}\,7^5$ remains open at the Lean elaboration scale.
+
+The bridge B2 (PSC + $f_{\MDL}$ $\Rightarrow$ EffectMeasure) is \emph{derivable},
+not axiomatic: B2a ($\mathrm{BeableAmplitudeHypothesis} \Rightarrow$ EffectMeasure)
+is mechanical once the Fock lift supplies amplitudes; B2b (PSC physical state
+$\Leftrightarrow$ amplitude hypothesis) is the canonical-quantization step (\CatAD).
+When citing \lean{PSCEffectMeasure.lean}, disclose that the module previously
+carried seven private kernel-workaround axioms, all of which have been discharged
+via parametric proofs over \lean{Fin n} in \lean{PSCEffectMeasureGeneric.lean}.
+The sole remaining imported axiom is
+\lean{re\_trace\_psd\_mul\_psd\_nonneg} from \lean{nems-lean}; the module builds
+with zero \texttt{sorry}.
+
+\begin{remark}[Born rule from MDL-minimality and D5]
+\label{rem:born_fwd}
+The present paper treats the Born rule structurally via 't~Hooft's
+information-loss mechanism (\CatAD{}, \cref{ssec:born_derivation}).
+The continuum $\Phi_{\MDL}$ assignment $P(\mathrm{kink}_k) \propto |\varphi_k|^2$ (D5)
+is partially certified: \cref{ssec:born_mdl,ssec:effectmeasure_bridge} supply the
+MDL and Fock constructive layer; full unconditional closure awaits continuum
+soliton quantization.
+NEMS Paper~13 (\cite{SpivackBornRule}, DOI \texttt{10.5281/zenodo.19429741}) remains
+the PSC uniqueness theorem; the GTE route supplies compatible constructive amplitudes.
+\end{remark}
+
+\subsection{Double-slit Born-rule confirmation}
+\label{ssec:dslit}
+
+Monte Carlo $[\mathbf{D}]$ click ensembles on a GTE two-path interference setup
+reproduce $|\phi|^2$ weights with correlation $0.994$ and
+$\chi^2_{\mathrm{red}} \approx 10^{-4}$ (\CatA).
+Zone~L1 Huygens--Fresnel fringes match $\Delta x = \lambda L/d$ to $1.3\%$.
+This confirms the structural Born chain at the canonical interference experiment.
+
+\subsection{Anomalous magnetic moment of the muon}
+\label{ssec:g_minus_2}
+
+The GTE one-loop prediction $a_\mu^{\mathrm{GTE}} = \alpha_{\mathrm{GTE}}/(2\pi)
+= 1/(274\pi) \approx 1.16\times 10^{-3}$ matches the QED Schwinger term to
+$0.026\%$ (\CatA; inherits P28~\cite{SpivackCompUniversality}, one-loop $g-2$ subsection).
+The framework is \textbf{not falsified} at one loop and is \textbf{neutral} on the
+Fermilab anomaly $\Delta a_\mu \approx 2.5\times 10^{-9}$:
+two-loop QED gives $a_\mu^{\mathrm{GTE,2L}} \approx 4.13\times 10^{-6}$ ($\sim 1660\times$
+too large); a GTE hadronic HVP dispersion estimate
+$a_\mu^{\mathrm{HVP,GTE}} \approx 6.2\times 10^{-8}$ shifts the SM value by
+$-6.4\times 10^{-9}$ (wrong sign to explain the anomaly).
+These assessments are order-of-magnitude only where stated; they do not constitute
+a GTE prediction of $\Delta a_\mu$.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Lorentz-Invariant Causal Structure}
+\label{sec:lorentz_causal}
+
+The AFCA architecture used here for causal invariance is the inner-clock gating
+mechanism of the \CMCA\ (P41); the synchronous $f_{\MDL}$ ring used for the
+Hilbert space construction in \cref{sec:hilbert} is its Level-1 algebraic orbit
+map. These are two roles of one system, not two competing frameworks.
+
+\subsection{AFCA causal invariance and Lamport order}
+\label{ssec:causal_invariance}
+
+A key requirement for Lorentz-invariant physics is that causal relationships
+between events be independent of the reference frame used to describe them.
+In the AFCA framework, different Lorentz frames correspond to different choices
+of update ordering for the asynchronous CA.
+\emph{Causal invariance} is the property that guarantees frame-independence: it
+asserts that the causal partial order on events is the same regardless of which
+valid update schedule is applied.
+If the underlying CA dynamics are causally invariant, then observers using any
+Lorentz-compatible update schedule will agree on which events causally precede
+which others --- this is the discrete analog of the Minkowski-causal-cone
+structure being Lorentz-invariant.
+
+The AFCA (Asynchronous Fractal Cellular Automata;
+\cite{SpivackEmergentGravity}) architecture, whose inner first-passage
+time $\tau_c$ governs the fractal cell-gating mechanism, defines a
+causal graph whose edges depend on lattice position and update ordering,
+not on cell colour content.
+The graph is \emph{causally invariant}: every valid update schedule yields
+the same Lamport partial order on events.
+In Lean~4 this is machine-certified as
+\lean{lamport\_strict\_partial\_order} in
+\texttt{CausalInvariance.lean} (zero \texttt{sorry}): the AFCA causal
+relation is a strict partial order independent of the synchronous
+outer-step gauge.
+This is a \emph{derived} property of the GTE CA dynamics, not a postulate:
+it follows from the local structure of the AFCA causal graph together with
+the $f_{\MDL}$ rule, and is proved without any Lorentz-invariance assumption
+as input.
+
+Chiral glider trajectories on the two-layer Rule~110/Rule~124 pair
+satisfy a discrete light-cone bound with effective signal speed
+$c_{\mathrm{eff}} = 2/3$ in lattice units
+(\lean{chiral\_trajectory\_light\_cone}, \CatAL{}).
+The inclusion of Minkowski causal cones into this discrete structure is
+certified by \lean{minkowski\_causal\_isomorphism} (\CatAL{}): every
+future-directed Minkowski interval with $|\Delta x| \leq (2/3)\,\Delta t$
+has a preimage in the AFCA causal graph.
+
+\subsection{Special-relativistic time dilation}
+\label{ssec:sr_dilation}
+
+The Lamport order supplies the causal scaffolding for Lorentz-invariant
+physics: macroscopic observers reading the AFCA clock field $\tau_c$
+measure proper-time ratios that scale with the Lorentz factor
+$\gamma(v)$ for moving glider patterns (\CatA{}).
+Definitive paired comparisons give $10/15$ velocity pairs within $15\%$
+of $\gamma(v)$, with best agreement $8.7\%$ at $\gamma = 1.658$ and mean
+error $12.0\%$ at the single-level $(M=7,N=1)$ resolution used in the
+present tests~\cite{SpivackEmergentGravity}.
+The residual is consistent with expected finite-lattice corrections that
+vanish in the continuum limit (\CatD{}: full Lean~4 closure of SR awaits
+the bijection results below).
+The $\mathrm{DWeight}$-weighted $[\mathbf{D}]$-average of $\tau_c$ tightens this
+to $5.4\%$ raw error ($1.2$--$1.8\%$ after lattice correction;
+$0.069\%$ mean error across $\beta\in[0.05,0.90]$ in the $\Phi_{\mathrm{MDL}}$
+continuum): only PSC-admissible (canonical GTE A-glider) beables satisfy the SR
+relation, while non-canonical patterns deviate by $54$--$105\%$, confirming the
+physical selectivity of the $\mathrm{DWeight}$ projection~---
+machine-certified with zero \texttt{sorry}
+(\lean{dmdl\_qec\_sr\_bundle}, \texttt{DWeightSRFormula.lean}, $\CatAL$).
+
+\subsection{Coordinate surjection in the continuum limit}
+\label{ssec:minkowski_surj}
+
+The Minkowski--AFCA correspondence is strengthened by the continuum-limit
+coordinate surjection
+\lean{minkowski\_causal\_surjection\_continuum\_limit}
+(\CatAL{}, \texttt{CausalInvariance.lean}~\S4, zero \texttt{sorry}):
+for every lattice point $(t,x) \in \mathbb{N}^2$ in the Minkowski
+coordinate chart, there exists an AFCA causal-graph event at sufficiently
+large tape size $(L,T)$.
+Inclusion of discrete causal events into the Minkowski cone is therefore
+closed at the level of coordinate surjection.
+
+\begin{remark}[Honest scope: bijection open]
+\label{rem:bijection_open}
+The coordinate surjection does \emph{not} establish a bijection between
+Minkowski events and AFCA causal nodes: multiple graph events may map to
+the same continuum coordinate, and the reverse map from continuum
+coordinates to unique graph nodes remains \CatD{} open.
+Full Lorentz-invariant CA$\to$QFT embedding therefore requires the
+bijection layer in addition to the surjection and light-cone inclusion
+already certified.
+\end{remark}
+
+The SR mechanism on the AFCA substrate --- clock-field definition,
+chiral-pair light cone, and $\tau_c$ ratio tests --- is developed
+in~\cite{SpivackEmergentGravity}; the present section records the
+causal-structure theorems that connect that emergent-spacetime programme
+to Lorentz-invariant quantum mechanics on the GTE substrate.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Open Problems}
+\label{sec:open}
+
+The results of this paper establish a coherent quantum mechanical
+structure for the \GTE{} CA at the \CatA{}/\CatAD{} level.
+The following gaps remain open.
+
+\subsection{Continuum limit and Schr\"odinger equation}
+\label{ssec:continuum}
+
+The most significant open problem is the continuum limit: passing
+from the discrete $\mathbb{Z}_7^5$ CA to a continuous quantum field
+theory with a Schr\"odinger or Dirac equation.
+This is the lattice-to-continuum problem, analogous to recovering
+continuum QFT from lattice QCD.
+Two components should be distinguished:
+(a)~the \emph{algebraic} content of the $\Phi_{\rm MDL}$ continuum limit ---
+the unique terminal Level-1 GTE object with Nyquist residual
+$\varepsilon_0(M) = \pi^2/(3M^2) \to 0$ as $M \to \infty$ ---
+is \CatAL{} conditional in P41/P42~\cite{SpivackCMCA,SpivackPhiMDLField}
+(\lean{cmca\_continuum\_limit\_is\_phimdl}, \lean{CMCAContinuumLimit.lean},
+zero \texttt{sorry});
+(b)~the full Minkowski bijection (smooth $\mathrm{SO}(1,3)$ recovery)
+remains \CatD{} open.
+
+The discrete Schr\"odinger evolution $U(n) = e^{-iH_{\rm cyc}\,n\tau_c}$ of the
+CMCA cogwheel states on $\mathbb{Z}_7^5$ is Lean-certified with zero sorry:
+the composition law $U(m+n)=U(m)\,U(n)$, unitarity, and the step recurrence
+$U(n+1)=e^{-iH_{\rm cyc}\tau_c}\,U(n)$ all hold for Hermitian $H_{\rm cyc}$
+(\lean{CogwheelDynamicsG21.lean}, \lean{UgpLean.QuantumDynamics.G21}, $\CatAL$; master bundle \lean{g21\_quantum\_dynamics\_catad}, zero \texttt{sorry}).
+The Level-2 Klein-Gordon $\to$ chiral-Schr\"odinger factorisation at the
+$(+,-)$-doublet level --- $(i\partial_t - \omega_k)\varphi_k = 0$ per mode ---
+is a $\CatAD$ structural observation independent of the Level~1 $\to$ Level~2
+continuum limit.
+Full continuous-time $\psi(t) = e^{-iHt}\psi(0)$ at Level~2 requires the
+CMCA--Fock sector embedding and Jackiw--Rebbi GNS inductive-limit closure.
+
+No claim to a continuum derivation is made in the present paper.
+The 1-dimensional Hilbert space $\Hil_{\rm phys} = \mathbb{C}\ket{\text{vac}}$
+describes only the ground state of the visible sector; a full
+multi-particle Hilbert space requires specifying a tensor-product
+structure over many copies or cells of the CA.
+
+\subsection{Lean certification of the gauge identification}
+\label{ssec:lean_gauge}
+
+Theorem~\ref{thm:gauge} is currently \CatAD{}.
+The arithmetic components (the $\mathbb{Z}_7 \to Q$ charge map,
+the $Z_3 \subset \mathbb{Z}_7^*$ subgroup, and the $\{W=3,W=4\}$
+doublet structure) are each \CatAL{} (Lean-certified with zero sorry).
+The remaining gap is the identification of the winding-equivalence
+classes as 't~Hooft's information-equivalence gauge classes in the
+formal sense of \S9.3 of~\cite{tHooft2016CA}.
+Closing this gap --- formally stating and certifying the 't~Hooft \S9.3
+identification for the \GTE{} CA in Lean~4 --- would upgrade the
+entire gauge derivation to \CatAL{}.
+
+\subsection{Multi-particle Hilbert space}
+\label{ssec:multiparticle}
+
+The present paper analyses the single-ring $\mathbb{Z}_7^5$ visible
+sector.
+A physical multi-particle Hilbert space requires a tensor-product
+construction over multiple rings.
+
+The algebraic layer of that construction is formalized in Lean~4
+(\lean{MultiParticleHilbert.lean}, zero \texttt{sorry},
+$\CatAL$).  The key certified results are:
+
+\begin{itemize}
+\item \textbf{Code word count (\CatAL).}
+  There are exactly 4 GTE code words
+  \(\{\text{vac}, \text{gen}_1, \text{gen}_2, \text{gen}_3\} \subset \mathbb{Z}_7^5\)
+  (\lean{code\_word\_cardinality}, certified via an explicit bijection with
+  \lean{Fin~4}).
+
+\item \textbf{$N$-particle dimension (\CatAL).}
+  The $N$-particle state space \lean{NParticleState~n}
+  $= \text{Fin}(N) \to \text{CodeWord}$
+  has Fintype cardinality $4^N$
+  (\lean{n\_particle\_state\_count}).
+
+\item \textbf{Normalized DWeight (\CatAL).}
+  The DWeight product of any multi-beable state equals~$1$
+  (\lean{multiDWeight\_eq\_one}), reflecting that every code word is a
+  unit-weight physical state.
+
+\item \textbf{Additive mass observable (\CatAL).}
+  The total GTE orbit-index mass of an $N$-particle state is additive
+  (\lean{multiMass\_append}) and bounded by $3N$
+  (\lean{multiMass\_le}).  The spectrum is
+  $\{0,1,2,3\}^{\times N}$.
+
+\item \textbf{Physical mass anchor (\CatAL).}
+  Every non-vacuum code word carries physical mass
+  $\geq 1.8\text{ MeV}$ (\lean{smGenMass\_multi\_anchor}),
+  anchoring the abstract orbit-index mass to the PDG mass scale.
+  Since all nine SM fermion masses are reproduced by the GTE IMT without
+  free parameters (\CatA{}), the multi-particle mass
+  operator has a fully determined spectrum.
+
+\item \textbf{Stabilizer closure (\CatAL).}
+  The $f_{\MDL}$ stabilizer maps every code word in a multi-state to a
+  code word (\lean{multiparticle\_orbit\_closure}), so the code subspace
+  is preserved under particle evolution.
+
+\item \textbf{Orthonormal basis (\CatAL).}
+  The Kronecker basis inner product on the $N$-particle state space is
+  positive definite: $\langle\psi|\psi\rangle = 1 > 0$ for all basis
+  states (\lean{inner\_product\_positive\_definite}).
+\end{itemize}
+
+The appropriate tensor-product structure for the \GTE{} CA in the
+'t~Hooft information-equivalence sense (connecting the code-word basis to
+the cogwheel construction of \S\ref{sec:hilbert}) remains open
+(\CatD{}).
+The full Hilbert space completion ($\ell^2$ norm, continuum limit)
+requires the AFCA architecture (open problem OQ-CL1).
+
+\subsection{CMCA Hilbert space to \texorpdfstring{$\Phi_{\rm MDL}$}{Phi-MDL} Fock space bridge}
+\label{ssec:cmca_fock_bridge}
+
+The sector embedding maps from the CMCA Hilbert space to the $\Phi_{\rm MDL}$ Fock
+space~\cite{SpivackPhiMDLField} are Lean-certified (zero \texttt{sorry},
+\lean{CMCAHilbertFockBridge.lean}, \texttt{ugp-lean}):
+
+\begin{itemize}
+\item \textbf{Vacuum map (\CatAL{}).}
+  The zero-kink Fock vacuum corresponds to the CMCA winding-0 sector
+  (\lean{fock\_vacuum\_maps\_to\_cmca\_vacuum}).
+
+\item \textbf{1-particle sector maps (\CatAL{}).}
+  Each GTE kink mode embeds as a canonical 1-particle Fock state
+  (\lean{gTe\_kink\_mode\_maps\_to\_fock\_1particle}).
+
+\item \textbf{Sector Born rule (\CatAL{}).}
+  Sector Born weights equal $|c_k|^2$ on the certified beable partition
+  (\lean{born\_rule\_bridge\_from\_fock\_lift}).
+
+\item \textbf{PSC admissibility (\CatAL{}).}
+  GTE kink-mode windings lie in the PSC-admissible sector set $\{0,2,3,4,6\}$
+  (\lean{kink\_mode\_windings\_psc\_admissible}).
+
+\item \textbf{Sector count and beable lift (\CatAL{}).}
+  Five PSC sectors and four GTE-labelled kink Fock modes are certified
+  (\lean{cmca\_fock\_sector\_count}, \lean{bps\_psc\_sector\_has\_beable\_lift}).
+\end{itemize}
+
+The CMCA-to-Fock inductive-limit embedding is \CatAD{}:
+the CMCA--Fock sector embedding maps are fully \CatAL{} (12 zero-\texttt{sorry} theorems,
+\lean{CMCAHilbertFockBridge.lean}), and the CMCA continuum limit
+(\lean{cmca\_continuum\_limit\_is\_phimdl}, \lean{CMCAContinuumLimit.lean})
+is \CatAL{} zero-\texttt{sorry}.
+Both conditions are \CatAL{}, closing the conditional decomposition
+(\lean{ca\_qft\_embedding\_reduces\_to\_g22}).
+The remaining \CatD{} gap --- the full analytic
+Jackiw--Rebbi + GNS construction embedding
+$H_{\rm phys}(L) \hookrightarrow H_{\rm Fock}$ dense as $L \to \infty$ ---
+requires a Lean GNS/operator-topology library not yet available,
+placing the overall CMCA-to-Fock embedding confidence at \CatAD{}.
+
+\subsection{Quantitative mass hierarchy from tail lengths}
+\label{ssec:tail_mass}
+
+The tail-length ordering $3 > 2 > 1$ matches the stability hierarchy
+qualitatively, and this ordering is machine-certified in Lean~4
+(\lean{tail\_length\_strict\_ordering} and \lean{mass\_ordering\_from\_tail\_length},
+GUTStructure \S76, zero \texttt{sorry}, $\CatAL$):
+gen$_1$ (tail $= 3$) is the lightest and gen$_3$ (tail $= 1$) is the heaviest.
+
+The $N_{\rm eff}$ values $\{73, 42, 275\}$ are not monotone in tail length:
+$b_{\rm gen_3} = 275 \gg b_{\rm gen_1} = 73$ despite tail(gen$_3$) $= 1 <$ tail(gen$_1$) $= 3$
+(machine-certified: \lean{neff\_not\_monotone\_in\_tail}, GUTStructure~\S76, zero
+\texttt{sorry}, $\CatAL$).
+The quantitative lepton mass ratios
+$m_\mu/m_e = \Neff(\mu)/\Neff(e) = 42/73$ and
+$m_\tau/m_e = \Neff(\tau)/\Neff(e) = 275/73$
+require the GTE cascade formula of P02 and are not derivable from tail lengths alone.
+The best-fit polynomial $b(n) = 772 - 629n + 132n^2$ interpolates the three data
+points exactly, but its coefficients ($772 = 2^2 \cdot 193$, $629 = 17 \cdot 37$,
+$132 = 2^2 \cdot 3 \cdot 11$) have no GTE-structural interpretation; a
+three-parameter fit to three points is trivially exact and does not constitute a
+derivation.
+The cascade seed sum $b_{\rm gen_1} + b_{\rm gen_2} + b_{\rm gen_3} = 390 = 2 \cdot 3
+\cdot 5 \cdot 13$ is machine-certified (\lean{mass\_quantitative\_formula\_requires\_cascade},
+GUTStructure~\S76, zero \texttt{sorry}, $\CatAL$); the quantitative ratios follow from the
+$N_{\rm eff}$ cascade (open problem from tail lengths alone).
+The structural near-miss (75 tail-3 states vs.\ $\Neff(\text{gen}_1) = 73$,
+offset $= 2$, certified \lean{tail\_neff\_nearness}) is interesting but does not
+constitute a derivation.
+
+\subsection{Multiway causal graph formal map}
+\label{ssec:multiway_map}
+
+The Wolfram Physics Project derives quantum mechanics from the structure
+of the multiway causal graph of an abstract rule-application
+system~\cite{Wolfram2020Tech} (\S\S8.12--8.14).
+Several mechanisms in that framework are structurally parallel to
+results in the present paper (\S\S\ref{ssec:born_derivation}--\ref{ssec:zone}):
+the information-loss grounding of quantum probability, the Born-rule
+branch-weight interpretation, and the measurement-as-branch-selection
+picture.
+
+A formal map between the Wolfram multiway graph foliation and the
+Zone~L2 / transputation framework of the GTE CA would, if established,
+provide an independent derivation of the quantum measurement framework
+from CA-level dynamics.
+The structural obstacle is that $f_{\MDL}$ uses synchronous
+update --- all five cells evolve simultaneously --- so the multiway
+causal graph of $f_{\MDL}$ is trivially single-branched: no
+asynchronous application ordering exists.
+Establishing a non-trivial multiway structure for the GTE CA, or
+identifying the appropriate generalisation of the Wolfram framework
+to synchronous CAs, is an open problem (\CatD{}).
+
+%─────────────────────────────────────────────────────────────────────────────
+\section*{Summary}
+\label{sec:summary}
+
+The 't~Hooft cogwheel construction on the \GTE{} $f_{\MDL}$ CA
+on $\mathbb{Z}_7^5$ yields the following results:
+\begin{enumerate}[leftmargin=2em]
+\item \textbf{Hilbert space (\CatA{}):} One-dimensional, $\Hil_{\rm phys}
+  = \mathbb{C}\ket{\text{vac}}$, $\Ham\ket{\text{vac}}=0$, spectral gap
+  $2\pi$.
+\item \textbf{Information-loss regime (\CatA{}):} $f_{\MDL}$ is a
+  Chapter~7 (information-loss) automaton: 98.71\% GoE states, universal
+  vacuum attractor in $\leq 7$ steps.
+\item \textbf{Stability hierarchy (\CatA{}):} Tail-length ordering
+  $\ell(\text{gen}_1) > \ell(\text{gen}_2) > \ell(\text{gen}_3)$ matches
+  the empirical generation stability hierarchy.
+\item \textbf{Eigenvalue-mass falsification (\CatA{}):} Direct
+  eigenvalue-to-mass correspondence fails on all formulations tested.
+\item \textbf{Two-Role Structural Principle (\CatAD{}):} Cogwheel provides
+  QM structure (Lean-certified); GTE arithmetic provides mass content.
+  These are non-redundant complementary contributions; the inter-layer
+  identification is a conditional derivation (organizing principle, not a
+  machine-certified theorem).
+\item \textbf{Gauge derivation (\CatAD{}, \CatAL{} components):}
+  $G_{\rm SM}$ from $\mathbb{Z}_7$ winding-equivalence classes via 't~Hooft's
+  information-equivalence identification.
+  $U(1)_{\rm EM}$, $SU(2)_L$, $SU(3)_c$, and $U(1)_Y$ hypercharge consistency
+  (including Weinberg angle $\sin^2\theta_W = 3/13$) are all \CatAL{}.
+  Sector $W=1$ predicts the SU(5) $Y$-leptoquark mediator ($Q=+\tfrac{1}{3}$);
+  the $X$-leptoquark ($Q=+\tfrac{4}{3}$) cohabits $W=4$ with the electron.
+\item \textbf{Dark sector (\CatAL{}):} Five-dimensional dark Hilbert space
+  ($E=0$ plus $E=\pi$ doublets), structurally explaining dark-sector
+  particle stability.
+\item \textbf{Born rule (\CatAD{}):} Structural derivation from information
+  loss; compared to independent UGP derivation.
+  MDL derivation of $P(kink)\propto|\varphi|^2$ from $[D]$ remains open
+  (\cref{rem:born_fwd}).
+\item \textbf{Lorentz causal structure (\CatAL{}/\CatA{}):} Lamport causal
+  invariance, Minkowski light-cone inclusion, and coordinate surjection
+  certified; full causal-node bijection \CatD{} open
+  (\cref{sec:lorentz_causal}).
+\item \textbf{Multi-particle state space (\CatAL{}):} The algebraic layer
+  of the multi-particle Hilbert space is Lean~4-certified
+  (\lean{MultiParticleHilbert.lean}, zero \texttt{sorry}):
+  4 code words, $4^N$ basis states for $N$ particles, DWeight product $= 1$,
+  additive mass observable with spectrum $\{0,\ldots,3N\}$,
+  physical mass floor $\geq 1.8\text{ MeV}$ per non-vacuum particle, and
+  a positive-definite Kronecker basis inner product.
+  The full Hilbert space completion (continuum limit) remains \CatD{}.
+\end{enumerate}
+
+The principal open gaps are the continuum limit (\CatD{}) and the
+Minkowski--AFCA bijection (\cref{rem:bijection_open}).
+
+%─────────────────────────────────────────────────────────────────────────────
+\appendix
+
+\section{Lean Certification Inventory}
+\label{app:lean}
+
+Table~\ref{tab:lean} lists machine-certified theorems cited in this paper.
+All modules are in the canonical \texttt{ugp-lean} repository (zero \texttt{sorry},
+$\CatAL$, unless noted).
+
+\begin{table}[ht]
+\centering
+\small
+\begin{tabular}{@{}P{0.38\linewidth}P{0.32\linewidth}P{0.22\linewidth}@{}}
+\toprule
+\textbf{Theorem} & \textbf{Module} & \textbf{Role} \\
+\midrule
+\lean{su2l\_charge\_assignment\_z7\_discriminator}
+  & \texttt{GUTStructure} & $\{W{=}3,W{=}4\}$ doublet arithmetic \\
+\lean{phimdl\_potential\_su2l\_invariant}
+  & \texttt{GaugeMDL.lean} & $L_2$ preserved under $SU(2)_L$ \\
+\lean{su2l\_covariant\_derivative\_minimal}
+  & \texttt{GaugeMDL.lean} & MDL-minimal covariant derivative \\
+\lean{su2l\_wpm\_generator\_algebra}
+  & \texttt{GaugeMDL.lean} & $W^\pm$ Lie algebra \\
+\lean{su2l\_l2\_from\_phimdl\_potential\_catad}
+  & \texttt{GaugeMDL.lean} & $SU(2)_L$ from PMDL; zero named axioms \\
+\lean{multiparticle\_space\_well\_defined}
+  & \texttt{MultiParticleHilbert.lean} & $N$-particle code-word Hilbert layer \\
+\bottomrule
+\end{tabular}
+\caption{Lean~4 certification inventory (selected theorems).}
+\label{tab:lean}
+\end{table}
+
+%─────────────────────────────────────────────────────────────────────────────
+\section*{Acknowledgments}
+
+This work is part of the UGP Physics programme, the quantitative branch of the Reflexive Reality programme~\cite{SpivackResearchProgrammes}.
+
+AI coding assistants were used for LaTeX formatting, coding assistance, and adversarial review during manuscript preparation. All mathematical derivations, numerical computations, and Lean~4 certifications were independently verified by deterministic scripts and the Lean~4 kernel.
+
+%─────────────────────────────────────────────────────────────────────────────
+\bibliographystyle{plain}
+\bibliography{../bib/Spivack_Papers_Bibliography}
+
+\end{document}

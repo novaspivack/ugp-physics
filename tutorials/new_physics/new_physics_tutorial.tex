@@ -1,0 +1,537 @@
+\documentclass[11pt,a4paper]{article}
+\PassOptionsToPackage{pdfusetitle=false}{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,array}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\usepackage{enumitem}
+\usepackage[pdfusetitle=false]{hyperref}
+\usepackage[numbers]{natbib}
+\bibliographystyle{unsrtnat}
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,urlcolor=blue!60!black,
+            citecolor=blue!60!black,
+            pdftitle={New Physics Predictions},
+            pdfauthor={Nova Spivack}}
+\setlength{\emergencystretch}{2em}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc,fit,backgrounds}
+
+%─── Color palette ───────────────────────────────────────────────────────────
+\definecolor{boxblue}{RGB}{220,235,255}
+\definecolor{boxorange}{RGB}{255,240,210}
+\definecolor{boxgreen}{RGB}{220,245,220}
+\definecolor{boxred}{RGB}{255,230,225}
+\definecolor{boxpurple}{RGB}{240,225,255}
+\definecolor{boxyellow}{RGB}{255,252,210}
+
+%─── Macros ──────────────────────────────────────────────────────────────────
+\newcommand{\term}[1]{\textbf{#1}}
+\newcommand{\lean}[1]{%
+  \penalty-100
+  \begingroup\def\_{\textunderscore\allowbreak}\texttt{#1}\endgroup}
+\newcommand{\CatAL}{\textbf{CatAL}}
+\newcommand{\CatAD}{\textbf{CatAD}}
+\newcommand{\CatA}{\textbf{CatA}}
+\newcommand{\PHIMDL}{$\Phi_{\rm MDL}$}
+\newcommand{\PhiMDL}{\Phi_{\rm MDL}}
+
+\newcommand{\TutorialDOI}{10.5281/zenodo.20669152}
+\date{2026}
+
+\title{\textbf{New Physics Predictions}\\[6pt]
+\large What GTE Predicts Will and Won't Be Found\\[8pt]
+\normalsize
+\href{https://novaspivack.com/research}{novaspivack.com/research}\texorpdfstring{\quad}{ }
+\href{https://doi.org/10.5281/zenodo.20560550}{P48 complete theory monograph}\\[4pt]
+\small\href{https://doi.org/\TutorialDOI}{doi.org/\TutorialDOI}
+  \textit{(registration pending)}\\[4pt]
+\normalsize\textit{UGP Physics Tutorial Series}}
+\author{Nova Spivack}
+
+\begin{document}
+\setcounter{tocdepth}{2}
+\maketitle
+\tableofcontents
+\newpage
+
+\begin{tcolorbox}[colback=blue!6,colframe=blue!40!black,
+  title=\textbf{UGP Physics Tutorial Series}]
+\textbf{Prerequisites (read first):}
+  \href{https://doi.org/10.5281/zenodo.20657898}%
+    {\emph{How the Standard Model Quantum Numbers Emerge}}
+  $\cdot$
+  \href{https://doi.org/10.5281/zenodo.20669144}%
+    {\emph{Forces, Interactions, and the V$-$A Structure}}
+  $\cdot$
+  \href{https://doi.org/10.5281/zenodo.20657885}%
+    {\emph{The $\Phi_{\rm MDL}$ Field: From Discrete Certificate to Continuum Physics}}\\[4pt]
+\textbf{Next tutorials:}
+  \href{https://doi.org/10.5281/zenodo.20669142}%
+    {\emph{Falsifiability: How to Test the GTE Framework}}\\[4pt]
+\textbf{See also:}
+  \href{https://doi.org/10.5281/zenodo.20657889}%
+    {\emph{The GTE Polynomial: A Step-by-Step Cheat Sheet}}
+  $\cdot$
+  \href{https://doi.org/10.5281/zenodo.20657872}%
+    {\emph{The Levels of the Theory}}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=boxgreen,colframe=green!50!black,
+  title=\textbf{Claim-Strength Taxonomy}]
+Throughout this tutorial, results are labeled with a confidence grade:
+\begin{itemize}[itemsep=2pt]
+  \item \textbf{$\mathbf{A}_{\rm Lean}$ (CatAL)} --- Machine-certified in Lean~4 with zero \texttt{sorry} and zero custom axioms.  Independently verifiable by anyone with Lean installed.
+  \item \textbf{A/D (CatAD)} --- Analytically derived with full derivation, computationally confirmed.  Not yet machine-certified.
+  \item \textbf{A (CatA)} --- Analytically derived; derivation complete but not independently machine-certified.
+  \item \textbf{A/D (conditional)} --- Derived under a named, stated premise; the premise is itself an open problem or a CatB assumption.
+  \item \textbf{B (CatB)} --- A stated working hypothesis or structural premise; not yet derived.
+\end{itemize}
+\end{tcolorbox}
+
+%══════════════════════════════════════════════════════════════════════════════
+\section{Why New Physics Predictions Matter}
+\label{sec:intro}
+%══════════════════════════════════════════════════════════════════════════════
+
+\begin{tcolorbox}[colback=boxblue,colframe=blue!40!black,
+  title=The core argument]
+With zero free parameters, every numerical output of the GTE framework is a
+\emph{genuine prediction} that the framework could have failed but did not.
+The same zero-parameter structure that derives the Standard Model's known
+physics also constrains what lies beyond it.  This tutorial catalogs what
+GTE forbids, what it predicts, and why those predictions are accessible to
+current and near-future experiments.
+\end{tcolorbox}
+
+Since the Large Hadron Collider began operation, it has confirmed the Higgs
+boson but has found no evidence of physics beyond the Standard Model (BSM):
+no supersymmetric particles, no extra dimensions, no new forces.  Many BSM
+theories predicted new particles that should already have appeared.  They have not.
+
+\term{GTE} (\term{Generative Triple Evolution}) is designed differently.  Rather
+than adding new ingredients to the Standard Model, it derives the SM from a
+single 19-bit algebraic certificate: the polynomial
+$p(L,C,R) = C + R - CR - LCR$ over $\mathrm{GF}(7)$.  This certificate has no
+free parameters.  Its zero-parameter architecture means that any structure not
+forced by the certificate is absent — and that is precisely why GTE predicts
+the LHC has found nothing.  The theory explains the null result.
+
+But GTE also makes specific predictions about what \emph{will} be found.  These
+predictions are sharp: each has a named experiment, a numerical threshold, and
+an explicit falsification criterion.  This tutorial presents each one with its
+physical mechanism, its numerical value, and what observation would confirm or
+refute it.
+
+%══════════════════════════════════════════════════════════════════════════════
+\section{What GTE Forbids: The Structural Absences}
+\label{sec:forbidden}
+%══════════════════════════════════════════════════════════════════════════════
+
+\subsection{No Supersymmetry}
+
+\term{Supersymmetry} (SUSY) introduces partner particles (squarks, gluinos,
+neutralinos) for every SM particle.  In GTE, the complete particle spectrum is
+determined by the $\mathbb{Z}_7$ winding sectors of the $\Phi_{\rm MDL}$ field.
+There are exactly five PSC-admissible winding sectors in the SM branch
+($w \in \{0,2,3,4,6\}$), plus the dark-mirror branch ($w \in \{1,5\}$).  No
+additional sectors are available.  Supersymmetric partners would require a
+doubling of the winding spectrum with no mechanism to generate it in the
+GTE certificate structure.
+
+GTE does not forbid SUSY by a theorem that explicitly names SUSY; rather, the
+complete particle ontology is derived from $\mathbb{Z}_7$ arithmetic and admits
+no room for superpartners \cite{SpivackGTECompleteFramework}.  Every null SUSY
+result from the LHC is consistent with this prediction.
+
+\subsection{No Axion}
+
+The \term{axion} is a hypothetical particle proposed by Peccei and Quinn to
+explain why the strong CP angle $\theta_{\rm QCD}$ is observed to be less than
+$10^{-10}$ despite the SM having no reason to favor $\theta = 0$.
+
+In GTE, the strong CP problem is \emph{structurally resolved} without any axion.
+The internal symmetry group $F_{21} = \mathbb{Z}_7 \rtimes \mathbb{Z}_3$ has
+abelianisation $F_{21}^{ab} = \mathbb{Z}_3$ — pure color, zero CP-odd phase.
+This group-theoretic fact forces $\theta_{\rm QCD} = 0$ exactly, with three
+independent proofs, all machine-certified (\CatAL)
+\cite{SpivackGTECompleteFramework}.
+
+\begin{tcolorbox}[colback=boxred,colframe=red!60!black,
+  title={Strong CP Prediction (\CatAL, three independent proofs)}]
+$\theta_{\rm QCD} = 0$ exactly from $F_{21}$ group theory.  No axion is
+predicted and no axion mechanism is needed.  Every null axion search (ADMX,
+CASPEr, BabyIAXO, HAYSTAC) is therefore a \textbf{positive confirmation} of
+the GTE structure, not a failure to find something.
+\end{tcolorbox}
+
+\textbf{Falsification:} A definitive axion detection at any mass and any
+coupling strength would falsify the GTE strong-CP mechanism.
+
+\subsection{No Large Extra Dimensions}
+
+Theories with large extra dimensions (e.g., Arkani-Hamed, Dimopoulos, Dvali)
+explain the hierarchy problem by diluting gravity into higher-dimensional space.
+
+In GTE, the $3{+}1$-dimensional spacetime structure is not postulated — it is
+derived.  The CMCA (\term{Chiral Minkowski Cellular Automaton}) has exactly one
+non-trivial persistent-glider sector, which lives in $1{+}1$ dimensions.
+The continuum $\Phi_{\rm MDL}$ field then lifts this to $3{+}1$ dimensions via
+the Algebraic Lifting Theorem (\CatAL).  A $2{+}1$-dimensional persistent-glider
+sector analogous to the SM is absent by theorem (the ``dimensional staircase''
+result: no canonical $2{+}1$D discrete substrate compatible with the SM orbit
+exists; \CatAD) \cite{SpivackGTECompleteFramework}.  No room is available for
+compact or large extra dimensions within the framework.
+
+\subsection[No New Light Particles Below Lambda-GTE]{No New Light Particles Below $\Lambda_{\rm GTE}$}
+
+The GTE certificate structure defines a natural energy scale:
+\begin{equation}
+  \Lambda_{\rm GTE} = 7 \times M_{\rm kink} = \frac{8}{7}\,m_\tau
+  \approx 2.03~\text{GeV}.
+  \label{eq:lambda}
+\end{equation}
+Below $\Lambda_{\rm GTE}$, the EFT (\term{effective field theory}) description
+is complete: the $\mathbb{Z}_7$ winding sectors are all accounted for, and no
+new stable structures can appear in the SM branch.  Any new light stable particle
+below $\Lambda_{\rm GTE}$ that is not in the SM spectrum would require a new
+winding sector, which the certificate structure does not permit.
+
+This does \emph{not} mean the EFT is trivial above $\Lambda_{\rm GTE}$.  The
+kink dissolution threshold at $\Lambda_{\rm GTE}$ is a new-physics scale with
+specific signatures (see \S\ref{sec:lambda_collider}).
+
+%══════════════════════════════════════════════════════════════════════════════
+\section{What GTE Predicts: The Affirmative Case}
+\label{sec:predictions}
+%══════════════════════════════════════════════════════════════════════════════
+
+\subsection{The Mirror Branch Dark Sector}
+
+The $\mathbb{Z}_7$ arithmetic that generates the SM winding sectors
+$\{0,2,3,4,6\}$ does not exhaust $\mathbb{Z}_7$.  The complementary winding
+sectors $\{1,5\}$ are as consistent with $\mathbb{Z}_7$ arithmetic as any SM
+sector.  They form the \term{mirror branch} — a dark sector forced by the same
+arithmetic that generates the SM \cite{SpivackGTECompleteFramework}.
+
+\begin{tcolorbox}[colback=boxorange,colframe=orange!60!black,
+  title={Definition: Mirror Branch (\CatAD)}]
+The \emph{mirror branch} consists of $\mathbb{Z}_7$-admissible three-tape
+configurations with primary winding number $w = 5$ (the $\mathbb{Z}_7$
+conjugate of the SM lepton sector, $w = 2$).  Mirror particles carry
+SU(3)$_{\rm dark}$ colour and \textbf{no SM gauge charges}: no electric charge,
+no SM weak charge, no SM color.  They are dark by construction — the winding
+algebra forbids SM-gauge coupling at dimension-4.
+\end{tcolorbox}
+
+The mirror branch has three generations, for the same combinatorial reason that
+the SM has three: the PSC enumeration that forces $N_{\rm gen} = 3$ applies to
+any $\mathbb{Z}_7$-admissible sector.
+
+\subsection{The Mirror-Branch Mass Spectrum}
+
+The mass spectrum of the mirror branch is computed by applying the same cascade
+formula that gives SM lepton masses, with mirror-branch winding inputs.  The
+three mirror lepton masses are \cite{SpivackGTECompleteFramework}:
+\begin{align}
+  m_{\chi_1} &= 0.54~\text{MeV} \qquad \text{(Generation 1, primary dark matter candidate)},\\
+  m_{\chi_2} &= 24.5~\text{MeV} \qquad \text{(Generation 2)},\\
+  m_{\chi_3} &= 3.60~\text{GeV} \qquad \text{(Generation 3)}.
+\end{align}
+These values are \CatAD.  The generation-2/1 mass ratio is
+$m_{\chi_2}/m_{\chi_1} = 45.4$ — a prediction: if a dark lepton signal is found
+at any one of these masses, the theory predicts where to find the other two.
+
+The dark sector has a gauge group SU(3)$_{\rm dark}$, forced by the same
+Group of Elegance mechanism that selects QCD.  There is \emph{no dark photon}:
+the absence of a U(1) factor in the Elegant Kernel for the mirror winding sector
+is Lean-certified.
+
+\begin{tcolorbox}[colback=boxred,colframe=red!60!black,
+  title={No Dark Photon (Lean-certified)}]
+GTE predicts no dark photon at any mass.  Every null result from dark-photon
+searches (NA64, BaBar, Belle~II kinematic scan, NA62) is a
+\textbf{positive confirmation} of the mirror-branch structure.  Any dark photon
+discovery at any mass would falsify the GTE dark sector model.
+\end{tcolorbox}
+
+\subsection[The Dark Matter Candidate: chi1 at 0.54 MeV]{The Dark Matter Candidate: $\chi_1$ at 0.54 MeV}
+
+The lightest mirror lepton $\chi_1$ at 0.54~MeV is the primary dark matter
+candidate.  Its spin-independent cross-section with SM nucleons is predicted
+to be $\sigma_{\rm SI} \sim 10^{-61}$~cm$^2$ (\CatAD)
+\cite{SpivackGTECompleteFramework} — approximately 30 orders of magnitude below
+any current or projected direct-detection sensitivity.  This is not a tuned
+value; it follows from the winding isolation at dimension-4.
+
+This dark matter is \term{ultra-faint interacting} (UFIDM): it interacts
+gravitationally and via SU(3)$_{\rm dark}$, but is invisible to WIMP-style
+searches.  The predicted relic density is
+$\Omega_{\rm DM} h^2 = 0.11994$ (\CatAD), matching the Planck~2018
+measurement to $-0.15\%$ without any free parameters.
+
+%══════════════════════════════════════════════════════════════════════════════
+\section{GTE-P7: The Highest-Priority New-Physics Signal}
+\label{sec:gtep7}
+%══════════════════════════════════════════════════════════════════════════════
+
+\begin{tcolorbox}[colback=boxyellow,colframe=orange!60!black,
+  title={GTE-P7 Prediction (\CatAD) --- Belle II Target}]
+A dark lepton resonance at $m_{\rm GTE\text{-}P7} = 211.9$~MeV is predicted
+by the mirror-branch winding sector of the GTE polynomial
+\cite{SpivackGTECompleteFramework}.  This is the highest-priority new-physics
+prediction accessible to running experiments.
+\end{tcolorbox}
+
+\subsection{What GTE-P7 Is}
+
+GTE-P7 is not $\chi_1$, $\chi_2$, or $\chi_3$, but rather a resonance
+appearing in the Elegant Kernel computation for the mirror branch.  Its mass
+arises from the same UCL (Universal Calibration Law) pipeline that generates the
+SM lepton masses, applied to a specific mirror-branch cascade triple.
+
+The numerical value $211.9$~MeV is \CatAD: the derivation chain is complete
+through the mirror-branch winding sector.
+
+\subsection{Where to Look}
+
+The GTE-P7 mass lies in the range accessible to Belle~II
+\cite{SpivackGTECompleteFramework}, currently taking data, in the channels:
+\begin{itemize}[itemsep=3pt]
+  \item $e^+e^- \to \chi_? + \text{invisible}$ — a single charged track with
+    missing energy, characteristic of a dark lepton coupled via a portal.
+  \item Displaced-vertex signatures — if the dark lepton decays with a
+    centimeter-scale decay length inside the detector.
+\end{itemize}
+The full Belle~II dataset (50~ab$^{-1}$, projected by 2031) will cover the
+signal window $[200, 225]$~MeV with sufficient sensitivity to confirm or exclude.
+
+\textbf{Falsification:} The GTE-P7 prediction is falsified if no resonance is
+observed in the 200--225~MeV window after the full 50~ab$^{-1}$ dataset, at
+the expected coupling scale.
+
+\subsection{Why This Mass and Not Another}
+
+The cascade formula that places GTE-P7 at 211.9~MeV has no free parameters once
+the mirror-branch winding sector is specified.  The same pipeline that correctly
+derives $m_e$, $m_\mu$, $m_\tau$ at $0.295\%$ RMS is applied to the
+mirror-branch triple.  The mass prediction is a corollary of the same arithmetic
+that governs the SM masses.  A different mass would require either a different
+winding sector or different cascade arithmetic — neither of which the framework
+permits.
+
+%══════════════════════════════════════════════════════════════════════════════
+\section{Proton Stability: Dimension-4 Absolutely Forbidden}
+\label{sec:proton}
+%══════════════════════════════════════════════════════════════════════════════
+
+\subsection{What the SM and GUTs Predict}
+
+Grand Unified Theories predict proton decay via the channel
+$p \to e^+ \pi^0$, a dimension-6 operator suppressed by $M_{\rm GUT}^{-2}$,
+giving a proton lifetime $\tau_p \sim 10^{34}$--$10^{36}$~yr.
+This is the primary target of Hyper-Kamiokande (under construction) and DUNE.
+
+\subsection{The GTE Result: Dimension-4 Forbidden, Dimension-6 Not}
+
+In GTE, baryon number is a \emph{topological charge} of the $\mathbb{Z}_7$
+winding field:
+\begin{equation}
+  B = \frac{1}{3}\sum_j \chi_q(w_j),
+\end{equation}
+where the sum is over the three constituent kink windings.  Topological charges
+are exactly conserved: they cannot change under any local deformation of the
+field.
+
+This makes dimension-4 baryon-number violation not merely suppressed but
+\emph{structurally impossible} in GTE.  Machine-certified:
+\lean{gte\_baryon\_number\_topological\_charge}
+(\CatAL, zero sorry, \texttt{Universality/GUTStructure.lean})
+\cite{SpivackGTECompleteFramework}.
+
+\begin{tcolorbox}[colback=boxgreen,colframe=green!50!black,
+  title={Proton Stability Theorem (\CatAL)}]
+Dimension-4 proton decay is structurally forbidden: baryon number is a
+topological winding invariant that cannot be violated by any local operator of
+dimension $\leq 4$.  The proton is topologically stable against dimension-4
+operators.\\[4pt]
+\textbf{Note:} Dimension-6 operators (GUT-scale suppressed, $\sim M_{\rm GUT}^{-2}$)
+are \emph{not} forbidden by this theorem.  The standard GUT-predicted channel
+$p \to e^+ \pi^0$ may exist at the dimension-6 level.
+\end{tcolorbox}
+
+This is one of GTE's sharpest predictions.  A single verified proton decay
+event identified as a dimension-4 process would falsify the framework.  Current
+experimental limits already place the proton lifetime at
+$\tau_p > 1.6 \times 10^{34}$~yr for the dominant $e^+\pi^0$ channel (Super-K).
+
+\textbf{What the Lean proof establishes:}
+The theorem \lean{gte\_baryon\_number\_topological\_charge} certifies that $B$
+is conserved as a topological charge of the $\mathbb{Z}_7$ winding field.  This
+means no perturbative operator, no SM radiative correction, and no GUT-scale
+coupling can violate $B$ at dimension-4 in the GTE EFT.
+
+%══════════════════════════════════════════════════════════════════════════════
+\section[The Lambda-GTE Scale as a Collider Target]{The $\Lambda_{\rm GTE}$ Scale as a Collider Target}
+\label{sec:lambda_collider}
+%══════════════════════════════════════════════════════════════════════════════
+
+The kink dissolution threshold
+\begin{equation}
+  \Lambda_{\rm GTE} = 7\,M_{\rm kink} = \frac{8}{7}\,m_\tau \approx 2.03~\text{GeV}
+\end{equation}
+is the energy at which the GTE EFT description starts to break down: above
+this scale, individual kinks dissolve into the $\Phi_{\rm MDL}$ substrate and
+new topological structure can form.
+
+\begin{tcolorbox}[colback=boxblue,colframe=blue!40!black,
+  title=What to look for at $\Lambda_{\rm GTE}$]
+\begin{itemize}[itemsep=3pt]
+  \item A change in the effective number of degrees of freedom in hadronic
+    cross-sections near $\sqrt{s} \approx 2$~GeV.
+  \item Anomalous energy deposition patterns characteristic of kink dissolution
+    in the $\Phi_{\rm MDL}$ field.
+  \item Lattice QCD calculations showing a transition in the kink structure
+    function around $\Lambda_{\rm GTE}$.
+\end{itemize}
+\textbf{If no structure appears:} The absence of any new hadronic feature below
+$\sim 3$~GeV would be informative but not immediately falsifying, since the
+transition may be gradual.
+\end{tcolorbox}
+
+The $\Lambda_{\rm GTE}$ scale is first-principles derived, not a tunable cutoff.
+It is fixed by $m_\tau$ and $|\mathbb{Z}_7| = 7$, both of which are themselves
+derived.  This makes it a genuine prediction, not a parameter.
+
+%══════════════════════════════════════════════════════════════════════════════
+\section{Gravitational Wave Predictions}
+\label{sec:gw}
+%══════════════════════════════════════════════════════════════════════════════
+
+\subsection[Primordial Gravitational Waves: r = 0 Exactly]{Primordial Gravitational Waves: $r = 0$ Exactly}
+
+The GTE inflationary mechanism produces scalar perturbations with spectral tilt
+$n_s = 1 - \ln 2/(2\pi^2) = 0.96488$ (\CatAL), confirmed at $-0.005\sigma$
+by Planck~2018 \cite{SpivackGTECosmology}.
+
+For the tensor-to-scalar ratio $r$, GTE predicts:
+\begin{equation}
+  r = 0 \qquad \text{(exactly, } \CatA\text{).}
+\end{equation}
+Primordial gravitational waves are absent because the inflationary mechanism in
+GTE does not involve an inflaton field with large-field excursions — the perturbation
+spectrum is generated by $\mathbb{Z}_7$ defect formation, not by a slow-roll
+inflaton.
+
+\textbf{Current sensitivity:} Planck+BICEP/Keck place $r < 0.036$ (95\% CL).
+CMB-S4 (projected $\sim$2028) will reach $\sigma(r) \approx 0.002$.  A detection
+of $r > 0.01$ at $>3\sigma$ would falsify the GTE inflationary mechanism.
+
+\subsection[The Z7 Phase Transition Gravitational Wave Signal]{The $\mathbb{Z}_7$ Phase Transition Gravitational Wave Signal}
+
+The $\mathbb{Z}_7$ symmetry breaking at temperature $T_G \approx 0.7$~GeV
+(the domain-wall ordering crossover) produces a network of domain walls that
+annihilates by $T_{\rm ann} \approx T_G$ (wall lifetime $\sim 5 \times 10^{-24}$~s).
+This rapid annihilation generates a gravitational wave background peaked near
+the frequency corresponding to $T_G$ \cite{SpivackGTECompleteFramework}.
+
+\begin{tcolorbox}[colback=boxorange,colframe=orange!60!black,
+  title=GW Background from $\mathbb{Z}_7$ Phase Transition (\CatAD)]
+A gravitational wave background from the $\mathbb{Z}_7$ domain-wall network is
+predicted in the frequency band accessible to the Einstein Telescope and LISA.
+The zero-relic prediction (complete annihilation before BBN) is a structural
+GTE result; any detection of a wall relic density above the $T_G$ level would
+falsify the annihilation mechanism.
+\end{tcolorbox}
+
+%══════════════════════════════════════════════════════════════════════════════
+\section{The Zero-Free-Parameter Principle: Every Output Is a Prediction}
+\label{sec:zfp}
+%══════════════════════════════════════════════════════════════════════════════
+
+\begin{tcolorbox}[colback=boxpurple,colframe=blue!40!black,
+  title=The key insight about falsifiability]
+In a theory with free parameters, a measurement that disagrees with a prediction
+can always be accommodated by retuning the parameters.  In GTE, there are no
+free parameters to retune.  Every output — the nine charged-fermion masses, the
+Weinberg angle, the dark matter mass, the proton lifetime, $r$, $n_s$ — is
+derived, not fitted.  A single confirmed disagreement at $>3\sigma$ precision
+would refute the theory as currently formulated, with no escape route.
+\end{tcolorbox}
+
+This makes GTE \emph{more} falsifiable than the Standard Model, not less.  The
+SM has 19 free parameters (plus at least 3 for neutrinos) that can absorb any
+discrepancy.  GTE has zero.  The absence of new LHC physics is not a negative
+result for GTE — it is a confirmed prediction.
+
+\textbf{The spirit of GTE predictions:} Every new measurement by Belle~II, DUNE,
+CMB-S4, Hyper-Kamiokande, the Einstein Telescope, or Euclid is simultaneously a
+test of GTE.  The framework does not hide in parameter space; it makes a
+commitment at each observable.  The complete falsification register is presented
+in the \emph{Falsifiability} tutorial~\cite{SpivackTutorialFalsifiability}.
+
+%══════════════════════════════════════════════════════════════════════════════
+\section{Summary: The Complete New-Physics Picture}
+\label{sec:summary}
+%══════════════════════════════════════════════════════════════════════════════
+
+\begin{table}[htbp]
+\centering
+\caption{New-physics predictions and structural absences of GTE.  ``Absence'' means
+structurally forbidden by the certificate; ``Prediction'' means explicitly derived.}
+\label{tab:newphys}
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{lp{5.0cm}p{4.2cm}}
+\toprule
+Item & GTE position & Key experiment \\
+\midrule
+Supersymmetric particles & Absent (no winding sector) & LHC (confirmed null) \\
+Axion & Absent ($\theta_{\rm QCD}=0$ from $F_{21}$) & ADMX, CASPEr (confirmed null) \\
+Dark photon & Absent (no U(1) in dark sector) & NA64, Belle II (confirmed null) \\
+Large extra dimensions & Absent ($3{+}1$D forced) & LHC (confirmed null) \\
+\midrule
+GTE-P7 at 211.9 MeV & Predicted (\CatAD) & \textbf{Belle II} \\
+$\chi_1$ dark matter at 0.54 MeV & Predicted (\CatAD) & Sub-MeV DM experiments \\
+$\chi_3$ at 3.60 GeV & Predicted (\CatAD) & LHC mono-jet, Higgs invisible \\
+Dim-4 proton decay: none & Predicted (\CatAL) & Hyper-K, DUNE \\
+$r = 0$ primordial tensors & Predicted (\CatA) & CMB-S4 ($\sim$2028) \\
+$\mathbb{Z}_7$ GW background & Predicted (\CatAD) & Einstein Telescope \\
+$\Omega_{\rm DM} h^2 = 0.11994$ & Predicted (\CatAD) & Planck ($-0.15\%$) \\
+$\Sigma m_\nu = 59.4$~meV & Predicted (\CatA) & CMB-S4, Euclid \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The new-physics picture from GTE is internally consistent and makes a clear
+experimental commitment: a dark sector with specific masses (the mirror branch),
+proton stability at dimension-4, no axion, no SUSY, and a specific GW background.
+Each prediction carries a named falsification criterion.
+
+\section*{Further Reading}
+\begin{tcolorbox}[colback=orange!8,colframe=orange!50!black,
+  title=\textbf{Primary Sources}]
+The results in this tutorial are derived in the following papers,
+all available open-access on Zenodo and at
+\href{https://novaspivack.com/research}{novaspivack.com/research}:
+\begin{itemize}[itemsep=2pt]
+  \item \textbf{P48 --- The Complete GTE Framework} (main synthesis monograph):\\
+        \href{https://doi.org/10.5281/zenodo.20560550}{doi.org/10.5281/zenodo.20560550}
+  \item \textbf{P47 --- Cosmological Predictions of the GTE/$\Phi_{\rm MDL}$ Framework}
+        (cosmological predictions including $n_s$, $r$, and the GW background):\\
+        \href{https://doi.org/10.5281/zenodo.20465803}{doi.org/10.5281/zenodo.20465803}
+  \item \textbf{P08 --- From UGP to GTE: Prime-Locked Universes}
+        (mirror-branch dark sector derivation):\\
+        \href{https://doi.org/10.5281/zenodo.20171002}{doi.org/10.5281/zenodo.20171002}
+  \item \textbf{P28 --- Computational Universality and the Standard Model}
+        (no-CA-replica theorem, dimensional derivation):\\
+        \href{https://doi.org/10.5281/zenodo.20259513}{doi.org/10.5281/zenodo.20259513}
+\end{itemize}
+Lean~4 machine proofs:
+\href{https://github.com/novaspivack/ugp-lean}{github.com/novaspivack/ugp-lean}
+\end{tcolorbox}
+
+\bibliography{../../papers/bib/Spivack_Papers_Bibliography}
+\end{document}

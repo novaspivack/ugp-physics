@@ -1,0 +1,500 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\usepackage{hyperref}
+\usepackage[numbers,sort&compress]{natbib}
+\bibliographystyle{unsrtnat}
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,urlcolor=blue!60!black}
+
+\definecolor{boxblue}{RGB}{220,235,255}
+\definecolor{boxorange}{RGB}{255,240,210}
+\definecolor{boxgreen}{RGB}{220,245,220}
+
+\newcommand{\term}[1]{\textbf{#1}}
+\newcommand{\poly}{p}
+
+\title{\textbf{The GTE Polynomial: A Step-by-Step Cheat Sheet}\\[6pt]
+\large From Cellular Automata to the Standard Model\\[4pt]\normalsize\textit{UGP Physics Tutorial Series}
+\\[2pt]\small\href{https://doi.org/\TutorialDOI}{doi.org/\TutorialDOI}}
+\author{Nova Spivack\\[4pt]
+\normalsize
+\href{https://novaspivack.com/research}{novaspivack.com/research}\\[2pt]
+\small Full monograph (P48):
+\href{https://doi.org/10.5281/zenodo.20560550}{doi.org/10.5281/zenodo.20560550}
+}
+\newcommand{\TutorialDOI}{10.5281/zenodo.20657889}
+\date{2026}
+
+\begin{document}
+\setcounter{tocdepth}{2}
+\maketitle
+\tableofcontents
+\newpage
+
+\begin{tcolorbox}[colback=blue!6,colframe=blue!40!black,
+  title=\textbf{UGP Physics Tutorial Series}]
+\textbf{Prerequisites (read first):} None — this is the first tutorial in the series.\\[4pt]
+\textbf{Next tutorials:} \href{https://doi.org/10.5281/zenodo.20657919}{\emph{How the UWCA Works}} $\cdot$ \href{https://doi.org/10.5281/zenodo.20657895}{\emph{Perfect Self-Containment and MDL}} $\cdot$ \href{https://doi.org/10.5281/zenodo.20657876}{\emph{How MDL Selects the 19-Bit Polynomial}}\\[4pt]
+\textbf{See also:} \href{https://doi.org/10.5281/zenodo.20657913}{\emph{From the Arithmetic Substrate to Particle Masses}}
+\end{tcolorbox}
+
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{The Basics: What Kind of Object Is This?}
+%─────────────────────────────────────────────────────────────────────────────
+
+\begin{tcolorbox}[colback=boxblue,colframe=blue!40!black,title=The one-line answer]
+$p$ is a cellular automaton rule that tells you the new state of a cell from
+its two neighbours and its own current state.  All arithmetic is done on a
+clock with 7 positions instead of 10.
+\end{tcolorbox}
+
+\subsection{Cellular automata in one sentence}
+
+A cellular automaton is a row of cells, each holding a value.  At every
+time step, \emph{every} cell simultaneously updates its value using a fixed
+rule that looks only at the cell itself and its nearest neighbours.
+Stephen Wolfram's Rule 110 is a well-known example with 2 possible cell
+states (0 or 1).
+
+\subsection{The GTE polynomial has 7 states}
+
+In the GTE framework, each cell holds one of \textbf{7} possible states:
+$\{0, 1, 2, 3, 4, 5, 6\}$.  This makes it a \emph{k\,=\,7}, \emph{r\,=\,1}
+rule in Wolfram's notation:
+\begin{itemize}
+  \item $k = 7$: seven possible states per cell.
+  \item $r = 1$: the rule looks one neighbour to each side (Left and Right).
+\end{itemize}
+
+\subsection{The truth table}
+
+Because each of the three inputs (Left, Center, Right) can be any of
+7 values, there are $7^3 = 343$ possible input combinations.  A complete
+specification of the rule is a table with 343 rows, one output per row.
+
+The GTE polynomial is a compact algebraic formula that reproduces all
+343 rows of this truth table in a single expression.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{The Arithmetic: What Is GF(7)?}
+%─────────────────────────────────────────────────────────────────────────────
+
+\begin{tcolorbox}[colback=boxorange,colframe=orange!60!black,title=Key idea]
+GF(7) is \emph{clock arithmetic} with 7 positions instead of 12.
+After every calculation you wrap around: if the result reaches 7, it
+becomes 0; if it goes to 8, it becomes 1; and so on.
+\end{tcolorbox}
+
+\subsection{Clock arithmetic (modular arithmetic)}
+
+On a 12-hour clock, $11 + 3 = 2$ (not 14).  In GF(7), the same idea applies
+but with 7 positions.  Formally: take any integer result and compute its
+\term{remainder when divided by 7}.
+
+\bigskip
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Ordinary result & Divided by 7 & Remainder (mod 7) \\
+\midrule
+$6$  & $7 \times 0 + 6$ & $6$ \\
+$7$  & $7 \times 1 + 0$ & $0$ \\
+$8$  & $7 \times 1 + 1$ & $1$ \\
+$15$ & $7 \times 2 + 1$ & $1$ \\
+$-1$ & $7 \times (-1) + 6$ & $6$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+\bigskip
+
+So $-1$ and $6$ are the \emph{same element} in GF(7) — they differ by a
+multiple of 7, which disappears under mod 7.
+
+\subsection{Why it is called a ``field''}
+
+A \term{field} is any collection of numbers where you can add, subtract,
+multiply, and divide (except by zero) and the usual rules of algebra hold
+(commutativity, associativity, distributivity).  The rational numbers are a
+field; the real numbers are a field; GF(7) is a field.
+
+The crucial property: every nonzero element in GF(7) has a
+\term{multiplicative inverse} — a number you can multiply it by to get~1.
+
+\begin{center}
+\begin{tabular}{ccc}
+\toprule
+Element $x$ & Its inverse $x^{-1}$ & Check: $x \times x^{-1} \bmod 7$ \\
+\midrule
+1 & 1 & $1\times1=1$ \\
+2 & 4 & $2\times4=8\equiv1$ \\
+3 & 5 & $3\times5=15\equiv1$ \\
+4 & 2 & $4\times2=8\equiv1$ \\
+5 & 3 & $5\times3=15\equiv1$ \\
+6 & 6 & $6\times6=36\equiv1$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+This means you can always ``divide'' in GF(7) by multiplying by the
+inverse — so all of standard polynomial algebra carries over.
+
+The name \emph{Galois Field} honours Évariste Galois, the 19th-century
+mathematician who proved that such finite fields exist for every prime
+(7 is prime) and for prime powers, and for nothing else.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{The Polynomial}
+%─────────────────────────────────────────────────────────────────────────────
+
+\begin{tcolorbox}[colback=boxgreen,colframe=green!50!black,
+  title=The GTE master polynomial]
+\[
+  p(L,\,C,\,R) \;=\; C + R - CR - LCR \pmod{7}
+\]
+\begin{center}
+$L$ = Left neighbour,\quad $C$ = Center cell,\quad $R$ = Right neighbour\\
+All values in $\{0,1,2,3,4,5,6\}$;\quad all arithmetic mod 7.
+\end{center}
+\end{tcolorbox}
+
+\subsection{Reading the expression term by term}
+
+Written out in plain English, the output equals:
+\[
+  \underbrace{C}_{\text{center value}}
+  +\;\underbrace{R}_{\text{right value}}
+  -\;\underbrace{C \times R}_{\text{centre--right product}}
+  -\;\underbrace{L \times C \times R}_{\text{three-body product}}
+\]
+then reduce mod 7.
+
+\bigskip
+\begin{center}
+\begin{tabular}{clll}
+\toprule
+Term & Plain English & Coefficient & Effect \\
+\midrule
+$C$   & center cell value & $+1$ & carries the center forward \\
+$R$   & right cell value  & $+1$ & adds the right neighbour \\
+$CR$  & center $\times$ right & $-1\equiv 6$ & pairwise interaction, subtracted \\
+$LCR$ & left $\times$ center $\times$ right & $-1\equiv 6$ & three-body interaction, subtracted \\
+\midrule
+$L$   & left cell value   & $0$  & absent: left alone has no direct effect \\
+$LC$  & left $\times$ center & $0$ & absent \\
+$LR$  & left $\times$ right  & $0$ & absent \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\bigskip
+\noindent
+The notation $-CR$ means ``subtract $C$ times $R$''; equivalently, add
+$6 \times CR$ (since $-1 \equiv 6$ in GF(7)).  Both forms are correct; the
+signed form is the conventional mathematical shorthand.
+
+\subsection{Why ``multilinear'' and ``degree 3''}
+
+The polynomial is \term{multilinear}: each input variable ($L$, $C$, $R$)
+appears at most to the first power — no $C^2$ or $L^3$ terms.  This is a
+special property of this particular rule.  It means the polynomial is
+completely determined by its values at the $2^3 = 8$ binary input points
+$\{0,1\}^3$ — which is the key to the uniqueness theorem.
+
+The \term{degree} of the polynomial is 3 (the highest-degree term is $LCR$,
+which has degree $1+1+1=3$).  A degree-$\leq 3$ multilinear polynomial
+over three variables has at most $2^3 = 8$ independent coefficients
+(one per subset of $\{L,C,R\}$, including the empty set).  The GTE polynomial
+uses 4 of those 8 slots; the other 4 have coefficient 0.
+
+\subsection{Computing a value: worked example}
+
+\textbf{Inputs:} $L = 1$, $C = 3$, $R = 2$.
+
+\[
+  p(1,3,2) = 3 + 2 - (3\times2) - (1\times3\times2)
+           = 3 + 2 - 6 - 6
+           = -7
+           \equiv 0 \pmod{7}
+\]
+
+The new center-cell value is \textbf{0}.
+
+\bigskip
+\textbf{Inputs:} $L = 0$, $C = 1$, $R = 1$.
+
+\[
+  p(0,1,1) = 1 + 1 - (1\times1) - (0\times1\times1)
+           = 1 + 1 - 1 - 0
+           = 1
+\]
+
+The new center-cell value is \textbf{1}.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{The Connection to Rule 110}
+%─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Restricting to binary inputs}
+
+If you only ever feed the polynomial inputs from $\{0,1\}$ — ignoring states
+2 through 6 — then the output is also always in $\{0,1\}$ (you can verify
+this by checking all 8 cases).  This binary restriction is a standard
+2-state, 3-neighbour cellular automaton rule.
+
+\begin{center}
+\begin{tabular}{ccc|cc}
+\toprule
+$L$ & $C$ & $R$ & $p(L,C,R)$ & Rule 110? \\
+\midrule
+0 & 0 & 0 & 0 & 0 \\
+0 & 0 & 1 & 1 & 1 \\
+0 & 1 & 0 & 1 & 1 \\
+0 & 1 & 1 & 1 & 1 \\
+1 & 0 & 0 & 0 & 0 \\
+1 & 0 & 1 & 1 & 1 \\
+1 & 1 & 0 & 1 & 1 \\
+1 & 1 & 1 & 0 & 0 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Reading the output column from bottom to top gives the binary number
+$01101110_2 = 110_{10}$ — the Wolfram number of \textbf{Rule 110}.  The
+binary restriction of $p$ is Rule 110 exactly.  This is a theorem, not a
+coincidence.
+
+\subsection{Why Rule 110 matters}
+
+Rule 110 is the simplest known cellular automaton that is
+\term{computationally universal}: given the right initial pattern, it can
+simulate any Turing machine.  Matthew Cook proved this in 1994 (published
+2004).  Wolfram championed it as evidence that simple rules can produce
+arbitrarily complex behaviour.
+
+Because $p$ restricts to Rule 110, the GTE framework~\cite{SpivackGTECompleteFramework} inherits that
+universality: the GTE substrate can simulate any computation.
+
+\subsection{Why GF(7) and not just Rule 110?}
+
+Rule 110 alone costs 8 bits and certifies exactly one thing: Turing universality.
+It cannot certify particle generations, charge quantization, color symmetry,
+chirality, or baryon number, because a 2-state binary field has no structure to
+express them.
+The GTE polynomial is a $\mathrm{GF}(7)$ rule whose binary restriction happens to
+be Rule 110 --- Rule 110 is the \emph{shadow} of $p$ on binary inputs, not its
+source.
+The additional 11 bits (over the 8-bit Rule 110 floor) encode the $\mathrm{GF}(7)$
+field structure that makes five further physical certifications possible:
+\begin{enumerate}
+  \item \textbf{Generation arithmetic.} The GTE orbit $\{73, 42, 275\}$ requires
+    7 distinct states to track distinct winding numbers; a binary field collapses
+    all three orbit types to a single class.
+  \item \textbf{Fractional electric charge.} Charges $\tfrac{1}{3}$ and
+    $\tfrac{2}{3}$ arise from $\mathbb{Z}_7$ winding ratios in
+    $\mathrm{GF}(7)^*$; binary fields produce only integer charges mod 2.
+  \item \textbf{Colour charge ($\mathbb{Z}_3$).} The Sylow-3 subgroup of
+    $\mathrm{GF}(7)^* \cong \mathbb{Z}_6$ provides the $\mathrm{SU}(3)$ colour
+    symmetry.  No $\mathbb{Z}_3$ subgroup exists in any binary field.
+  \item \textbf{Chirality (V$-$A).} The chiral $\mathbb{Z}_2$ subgroup
+    $\{1, 6\} \subset \mathrm{GF}(7)^*$ distinguishes forward from mirror orbits.
+    Binary systems are symmetric under all reflections.
+  \item \textbf{Baryon number.} Baryon number is conserved from a $\mathbb{Z}_7$
+    winding conservation law on the GTE orbit; it is not definable in a 2-state
+    field.
+\end{enumerate}
+More compact does not mean more powerful: a 19-bit $\mathrm{GF}(7)$ polynomial
+does strictly more physics than any 8-bit binary rule.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{The Uniqueness Theorem}
+%─────────────────────────────────────────────────────────────────────────────
+
+\subsection{The question}
+
+There are $7^{343} \approx 10^{290}$ possible k=7, r=1 cellular automaton
+rules.  Why is $p$ the right one?
+
+\subsection{Two independent selection paths}
+
+\textbf{Path A (spectrum arm): how the orbit pins the coefficients.}
+
+\medskip
+\noindent\textit{Step 1 — The GTE orbit.}
+The UGP arithmetic starts from the Lepton Seed $(1, 73, 823)$ and applies
+the map $T$ twice, producing the three $N_{\mathrm{eff}}$ values
+$\{73, 42, 275\}$.  These together with intermediate triples form the
+\term{GTE orbit}: a specific sequence of integer triples over $\mathbb{Z}$.
+
+\medskip
+\noindent\textit{Step 2 — The parity shadow.}
+Reduce every coordinate of every orbit triple mod 2 — keep only whether each
+value is even (0) or odd (1).  This produces a sequence of binary triples.
+Collecting the unique ones gives 7 distinct binary $(L, C, R)$ patterns,
+each paired with an output bit also read from the orbit.  These are 7 rows
+of a binary truth table, filled in by the orbit's own arithmetic — no choice
+involved.
+
+\medskip
+\noindent\textit{Step 3 — The 8th row.}
+One binary input pattern is not covered by the parity shadow: $(1, 1, 1)$
+(all three neighbours odd).  This is filled in by the
+\term{vacuum-transparency condition}: the all-zeros state $(0,0,0)$ must be
+a fixed point of the dynamics (the vacuum stays vacuum).  Evaluating $p(0,0,0)=0$
+and propagating this constraint forces the $(1,1,1)$ output to be 0.
+Now all 8 binary rows are specified.
+
+\medskip
+\noindent\textit{Step 4 — Polynomial interpolation.}
+A multilinear polynomial of degree $\leq 3$ over three binary variables has
+exactly $2^3 = 8$ basis monomials:
+\[
+  1,\; L,\; C,\; R,\; LC,\; LR,\; CR,\; LCR.
+\]
+With 8 known input--output pairs and 8 unknown coefficients, this is a
+standard linear system $\mathbf{V}\,\mathbf{c} = \mathbf{y}$, where
+$\mathbf{V}$ is the $8\times8$ matrix of monomial evaluations at the binary
+points.  This matrix is a Vandermonde-type matrix that is invertible over
+$\mathrm{GF}(7)$ (confirmed by the theorem).  Solving the system over
+$\mathrm{GF}(7)$ gives a unique coefficient vector $\mathbf{c}$.
+
+\medskip
+\noindent\textit{Step 5 — The result.}
+The unique solution is:
+\[
+  (c_1,\, c_L,\, c_C,\, c_R,\, c_{LC},\, c_{LR},\, c_{CR},\, c_{LCR})
+  \;=\; (0,\; 0,\; 1,\; 1,\; 0,\; 0,\; 6,\; 6)
+\]
+which — remembering that $6 \equiv -1$ in $\mathrm{GF}(7)$ — gives:
+\[
+  p(L,C,R) \;=\; C + R - CR - LCR \pmod{7}.
+\]
+The polynomial is not chosen; it is the \emph{unique} solution to the linear
+system imposed by the orbit's parity shadow.  Different orbit $\Rightarrow$
+different right-hand side $\Rightarrow$ different (or no valid) polynomial.
+The GTE orbit happens to produce exactly the Rule-110 truth table on the
+right-hand side — and that is the content of the theorem.
+
+\textbf{Path B (MDL arm).}
+Among all k=7, r=1 rules consistent with the physical constraints (the
+Standard Model derivability criterion), which has the shortest description?
+Specifying $p$ as a polynomial requires only \textbf{19 bits}:
+\begin{itemize}
+  \item 8 bits — the Rule 110 truth table (the binary restriction)
+  \item 3 bits — the prime modulus ($\lceil\log_2 7\rceil = 3$)
+  \item 5 bits — the monomial selector (which of the 8 basis terms are
+    nonzero)
+  \item 1 bit — chirality (left--right orientation)
+  \item 2 bits — the $-1$ coefficient signs
+\end{itemize}
+A naive lookup table for the same rule requires $343 \times \log_2 7 \approx
+963$ bits — about 50 times larger.  The MDL uniqueness theorem (machine-certified
+in Lean 4, zero sorry, zero custom axioms) proves no shorter valid
+specification exists.
+
+\textbf{The closing edge.}
+Paths A and B converge on the same polynomial.  The
+\term{Direct-Interpolation Lift Theorem} (machine-certified) proves that the
+orbit's parity shadow, combined with MDL minimality, uniquely interpolates
+$p$ from among all $10^{290}$ candidates.  The circuit is closed.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{What the Polynomial Produces}
+%─────────────────────────────────────────────────────────────────────────────
+
+Starting from $p$ as the algebraic certificate, with zero free parameters and
+no fitting to experimental data, the GTE framework derives:
+
+\begin{itemize}
+  \item All 9 charged-fermion masses (0.295\% RMS vs PDG 2022~\cite{SpivackSM})
+  \item The electroweak mixing angle (Weinberg angle)
+  \item The strong CP angle $\theta_{QCD} = 0$ exactly (three independent proofs)
+  \item The fine-structure constant $\alpha^{-1} = 2^7 + 3^2 = 137$ at tree level
+  \item 3+1 spacetime dimensions (forced, machine-certified)
+  \item Einstein's equations from a variational principle
+  \item Newton's constant $G_N$ to 0.040\% from orbit arithmetic
+  \item The Born rule (four independent derivations, two machine-certified)
+  \item The cosmological constant bracket (enclosing the Planck 2018 value)
+  \item $40+$ further observables across all Standard Model sectors
+\end{itemize}
+
+The derivation chain: $p$ is the algebraic certificate; it certifies what the
+continuum physical field $\Phi_{\rm MDL}$ (the actual universe) must contain.
+The Algebraic Lifting Theorem bridges the two: every algebraic fact proved in the
+certificate holds in the physical field.  Physical predictions --- masses, forces,
+constants --- live in the field; the polynomial certifies them.
+The full derivation machinery is documented in 52 papers, with over 300 Lean~4
+modules (all zero sorry, zero custom axioms), all publicly available at
+\url{https://zenodo.org/records/20560550}.
+
+\bigskip
+\begin{tcolorbox}[colback=boxorange,colframe=orange!60!black,
+  title=Special numbers: cyclotomic identities]
+The GTE Higgs coefficient $c_H = 13$ satisfies a triple identity:
+\[
+  c_H \;=\; \Phi_{12}(2) \;=\; F_7 \;=\; 13,
+\]
+where $\Phi_{12}(n) = n^4 - n^2 + 1$ is the twelfth cyclotomic polynomial
+and $F_7 = 13$ is the 7th Fibonacci number
+$(F_1=1,\,F_2=1,\,F_3=2,\,F_4=3,\,F_5=5,\,F_6=8,\,F_7=13)$.
+
+The same cyclotomic polynomial at $n = 3$ gives the Lepton Seed entry:
+$\Phi_{12}(3) = 3^4 - 3^2 + 1 = 81 - 9 + 1 = 73$.
+
+As a consequence, the tau-lepton $N$-value is
+$b_3 = b_2 + F_{c_H} = 42 + F_{13} = 42 + 233 = 275$,
+recovering the GTE orbit triple $\{73, 42, 275\}$.
+Furthermore, $F_{13} \bmod 7 = 233 \bmod 7 = 2$, the up-quark winding class.
+
+The appearance of $F_7 = 13$ as the quotient gap is not merely a numerical
+coincidence: $|q_2 - q_1| = F_{\mathrm{ord}_7(2) + N_c + 1} = F_7$ is the
+\emph{quotient gap theorem}, proved from the $\mathbb{Z}_7 \times \mathbb{Z}_3$
+structure (machine-certified in Lean~4, zero sorry, zero custom axioms,
+\texttt{gt012\_gap\_from\_z7\_z3}).
+Fibonacci numbers enter the GTE arithmetic because the algebraic structure of
+the theory forces them.
+\end{tcolorbox}
+
+\bigskip
+\begin{tcolorbox}[colback=boxblue,colframe=blue!40!black,
+  title=One-paragraph summary]
+\textbf{$p(L,C,R) = C + R - CR - LCR$} is a 7-state, radius-1 cellular
+automaton update rule.  All arithmetic is mod 7 (clock arithmetic with 7
+positions).  Its inputs are three integers from 0 to 6 (the cell's left
+neighbour, itself, and its right neighbour); its output is an integer from 0
+to 6 (the new center value).  Restricted to binary inputs, it is Rule 110
+exactly.  It is selected by minimum description length from $10^{290}$
+candidates, and this selection is forced — the Standard Model's own algebraic
+structure, when asked ``what is the shortest complete description of the GTE
+orbit?'', hands back this polynomial.  It is the algebraic certificate for
+the continuum field $\Phi_{\rm MDL}$ (the physical universe), certifying via
+the Algebraic Lifting Theorem that $\Phi_{\rm MDL}$ must contain the masses,
+forces, geometry, and measurement structure of the Standard Model --- derived,
+not fitted.
+\end{tcolorbox}
+
+
+\section*{Further Reading}
+\begin{tcolorbox}[colback=orange!8,colframe=orange!50!black,
+  title=\textbf{Primary Sources}]
+The results in this tutorial are derived in the following papers,
+all available open-access on Zenodo and at
+\href{https://novaspivack.com/research}{novaspivack.com/research}:
+\begin{itemize}
+  \item \textbf{P48 --- The Complete GTE Framework} (main synthesis monograph):\\
+        \href{https://doi.org/10.5281/zenodo.20560550}{doi.org/10.5281/zenodo.20560550}
+  \item \textbf{P01 --- Standard Model Parameters from the UGP} (first-principles derivation):\\
+        \href{https://doi.org/10.5281/zenodo.20168787}{doi.org/10.5281/zenodo.20168787}
+  \item \textbf{P40 --- GF(7) Polynomial Universality} (uniqueness theorem):\\
+        \href{https://doi.org/10.5281/zenodo.20417566}{doi.org/10.5281/zenodo.20417566}
+\end{itemize}
+Lean~4 machine proofs: \href{https://github.com/novaspivack/ugp-lean}{github.com/novaspivack/ugp-lean}
+\end{tcolorbox}
+
+\bibliography{../../papers/bib/Spivack_Papers_Bibliography}
+\end{document}
