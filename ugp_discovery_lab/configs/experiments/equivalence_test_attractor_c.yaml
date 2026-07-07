@@ -1,0 +1,92 @@
+experiment:
+  name: equivalence_test_attractor_c
+  description: "Equivalence testing for Attractor C against trigonometric and rational candidates"
+  inputs:
+    runs:
+      - "UGP_discovery_lab_runs/exp_20250917_171219/results/reports/experiment_results.json"
+  equivalence:
+    target: 0.2644176695649741
+    candidates:
+      # cos(π/n) - 1 candidates for small n
+      - expression: "cos(π/12) - 1"
+        value: -0.133974596215561
+        description: "cos(π/12) - 1 (dodecagon)"
+      - expression: "cos(π/8) - 1"
+        value: -0.292893218813452
+        description: "cos(π/8) - 1 (octagon)"
+      - expression: "cos(π/6) - 1"
+        value: -0.133974596215561
+        description: "cos(π/6) - 1 (hexagon)"
+      
+      # sin(π/n) candidates for n ≈ 12-24
+      - expression: "sin(π/12)"
+        value: 0.258819045102521
+        description: "sin(π/12) (dodecagon)"
+      - expression: "sin(π/13)"
+        value: 0.239315664287558
+        description: "sin(π/13)"
+      - expression: "sin(π/14)"
+        value: 0.222520933956314
+        description: "sin(π/14)"
+      - expression: "sin(π/15)"
+        value: 0.207911690817759
+        description: "sin(π/15)"
+      - expression: "sin(π/16)"
+        value: 0.195090322016128
+        description: "sin(π/16)"
+      - expression: "sin(π/18)"
+        value: 0.173648177666930
+        description: "sin(π/18)"
+      - expression: "sin(π/20)"
+        value: 0.156434465040231
+        description: "sin(π/20)"
+      - expression: "sin(π/22)"
+        value: 0.142314838273285
+        description: "sin(π/22)"
+      - expression: "sin(π/24)"
+        value: 0.130526192220052
+        description: "sin(π/24)"
+      
+      # Rational multiples of π
+      - expression: "π/12"
+        value: 0.261799387799149
+        description: "π/12"
+      - expression: "π/13"
+        value: 0.241660973353061
+        description: "π/13"
+      - expression: "π/14"
+        value: 0.224399475256414
+        description: "π/14"
+      - expression: "π/15"
+        value: 0.209439510239319
+        description: "π/15"
+      
+      # Other trigonometric candidates
+      - expression: "1/(2*cos(π/12))"
+        value: 0.517638090205042
+        description: "1/(2*cos(π/12))"
+      - expression: "tan(π/12)"
+        value: 0.267949192431123
+        description: "tan(π/12)"
+      - expression: "1/tan(π/12)"
+        value: 3.732050807568877
+        description: "1/tan(π/12)"
+      
+      # Close rational approximations
+      - expression: "17/64"
+        value: 0.265625
+        description: "17/64 rational approximation"
+      - expression: "27/102"
+        value: 0.264705882352941
+        description: "27/102 rational approximation"
+  tost:
+    delta: 1.0e-4
+    alpha: 0.05
+    n_bootstrap: 1000
+    fdr_correction: true
+  integrity:
+    fail_on_warning: true
+    require_real_data: true
+  report:
+    export_md: true
+    export_json: true

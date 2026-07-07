@@ -1,0 +1,26 @@
+experiment:
+  name: derivation_consistency
+  description: "Triple-check agreement between RG, variational, and the algebraic proof."
+
+inputs:
+  sourceA:  # RG-derived alpha summaries
+    - "UGP_discovery_lab_runs/**/experiment_results.json"
+  sourceB:  # Variational alpha summaries
+    - "UGP_discovery_lab_runs/**/experiment_results.json"
+
+theoretical_value:
+  name: "Algebraic Proof"
+  value: "16/125"
+  description: "Direct derivation: g₁² = 1/((k_a k_b k_c)² · 5³) = 16/125"
+
+fit:
+  tol_abs: 1.0e-8  # We expect very tight agreement
+  min_pairs: 20
+
+integrity:
+  fail_on_warning: true
+  require_real_data: true
+
+report:
+  export_md: true
+  export_json: true

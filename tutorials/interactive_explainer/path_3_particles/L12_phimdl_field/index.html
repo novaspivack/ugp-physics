@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L12: The Φ_MDL Field — UGP Physics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="../../common/style.css">
+  <style>
+    /* ── Two-level architecture diagram ──────────────────────────────── */
+    .two-level {
+      display: grid;
+      grid-template-columns: 1fr 60px 1fr;
+      gap: 0;
+      align-items: center;
+      margin: 1.5rem 0;
+    }
+    .tl-box {
+      border-radius: var(--r-lg);
+      padding: 1.25rem;
+      text-align: center;
+    }
+    .tl-cert {
+      background: rgba(59,130,246,0.08);
+      border: 2px solid rgba(59,130,246,0.4);
+    }
+    .tl-field {
+      background: rgba(16,185,129,0.08);
+      border: 2px solid rgba(16,185,129,0.4);
+    }
+    .tl-box .tl-label {
+      font-size: 0.68rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; margin-bottom: 0.4rem;
+      color: var(--text-tertiary);
+    }
+    .tl-box .tl-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .tl-box .tl-desc { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; }
+    .tl-cert .tl-name { color: #3B82F6; }
+    .tl-field .tl-name { color: #10B981; }
+    .tl-arrow {
+      text-align: center;
+      font-size: 1.5rem;
+      color: var(--text-tertiary);
+    }
+
+    /* ── Analogy cards ───────────────────────────────────────────────── */
+    .analogy-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+    .analogy-card {
+      background: var(--bg-elevated);
+      border: 1.5px solid var(--stroke-primary);
+      border-radius: var(--r-md);
+      padding: 0.9rem;
+    }
+    .ac-icon { font-size: 1.6rem; margin-bottom: 0.4rem; }
+    .ac-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 0.3rem; }
+    .ac-cert { font-size: 0.78rem; color: #3B82F6; margin-bottom: 0.1rem; }
+    .ac-phys { font-size: 0.78rem; color: #10B981; margin-bottom: 0.1rem; }
+    .ac-note { font-size: 0.72rem; color: var(--text-tertiary); margin-top: 0.3rem; }
+
+    /* ── V(Φ) potential visualization ───────────────────────────────── */
+    .potential-vis {
+      background: var(--bg-elevated);
+      border: 1.5px solid var(--stroke-primary);
+      border-radius: var(--r-lg);
+      padding: 1.25rem;
+      margin: 1.25rem 0;
+      text-align: center;
+    }
+    .vacuum-ring {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 1rem 0;
+    }
+    .vac-node {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700; font-size: 1rem;
+      border: 2px solid var(--stroke-primary);
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+    .vac-node.vn-active {
+      border-color: #10B981;
+      background: rgba(16,185,129,0.15);
+      color: #10B981;
+    }
+    .vac-node.vn-ground {
+      border-color: #3B82F6;
+      background: rgba(59,130,246,0.15);
+      color: #3B82F6;
+    }
+
+    /* ── What CMCA certifies list ────────────────────────────────────── */
+    .cert-list {
+      list-style: none;
+      padding: 0;
+      margin: 0.75rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .cert-list li {
+      display: flex;
+      gap: 0.6rem;
+      align-items: flex-start;
+      font-size: 0.88rem;
+    }
+    .cert-list li::before {
+      content: "✓";
+      color: #10B981;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 0.05rem;
+    }
+
+    /* ── Level badge ─────────────────────────────────────────────────── */
+    .level-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 3px 10px;
+      border-radius: var(--r-full);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .lb-0 { background: rgba(249,115,22,0.12); color: #F97316; }
+    .lb-1 { background: rgba(59,130,246,0.12); color: #3B82F6; }
+    .lb-2 { background: rgba(16,185,129,0.12); color: #10B981; }
+    .lb-3 { background: rgba(139,92,246,0.12); color: #8B5CF6; }
+  </style>
+</head>
+<body style="--path-current: var(--path-3)" data-path="3" data-lesson="1" data-total="6">
+
+  <header class="site-header">
+    <a href="../../index.html" class="site-logo">UGP Physics</a>
+    <nav class="breadcrumb">
+      <a href="../../index.html">Tutorial Series</a>
+      <span class="bc-sep">›</span>
+      <a href="../index.html">Path 3: Particles</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">L12: The Φ_MDL Field</span>
+    </nav>
+  </header>
+
+  <main class="page-wrapper">
+
+    <div class="lesson-header">
+      <div class="path-label">Path 3 — Particles · Lesson 12 of 17</div>
+      <h1>The Φ_MDL Field</h1>
+      <p class="lesson-subtitle">
+        The cellular automaton is not the universe. It is the blueprint.
+        The universe is Φ_MDL — a Z₇-symmetric quantum field that the CMCA certifies but does not replace.
+      </p>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:17%"></div>
+      </div>
+    </div>
+
+    <!-- ═══ Section 1: The Puzzle ═══ -->
+    <section class="lesson-section" id="the-puzzle">
+      <h2>The Puzzle</h2>
+      <p>
+        We have a 19-bit polynomial — <code>p(L,C,R) = C+R−CR−LCR mod 7</code> — 
+        that drives a simple cellular automaton over seven states. From this single rule, 
+        the masses of all elementary particles, the structure of spacetime, and the laws 
+        of quantum mechanics can all be derived with zero free parameters and over 300 
+        machine-certified proofs.
+      </p>
+      <p>
+        <strong>How?</strong> The cellular automaton is not the universe. 
+        It is an <em>algebraic certificate</em> for a continuum quantum field, Φ_MDL, 
+        which is what the universe is made of. This lesson explains what that distinction 
+        means and why it matters.
+      </p>
+      <div class="callout callout--neutral">
+        <div class="callout-title">The one-sentence answer</div>
+        <p>
+          The CMCA specifies <em>what structures the universe must contain</em>. 
+          The field Φ_MDL <em>is</em> the universe. The cellular automaton does not run 
+          the universe; it proves theorems about it.
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══ Section 2: The Two-Level Architecture ═══ -->
+    <section class="lesson-section" id="two-levels">
+      <h2>The Two-Level Architecture</h2>
+
+      <div class="two-level">
+        <div class="tl-box tl-cert">
+          <div class="tl-label">Level 2 — Algebraic Certificate</div>
+          <div class="tl-name">The CMCA</div>
+          <div class="tl-desc">
+            The discrete cellular automaton with polynomial <code>p</code> over GF(7). 
+            Finite, exact, machine-checkable in Lean 4. Certifies what structures the 
+            universe must contain. Not itself the physical universe.
+          </div>
+          <div style="margin-top:0.75rem"><span class="level-badge lb-2">Level 2</span></div>
+        </div>
+        <div class="tl-arrow">→</div>
+        <div class="tl-box tl-field">
+          <div class="tl-label">Level 3 — Physical Substrate</div>
+          <div class="tl-name">Φ_MDL</div>
+          <div class="tl-desc">
+            The Z₇-symmetric Klein-Gordon quantum field on ℝ³⁺¹. 
+            This is what the universe actually is. Particles, forces, and spacetime 
+            geometry emerge from its dynamics.
+          </div>
+          <div style="margin-top:0.75rem"><span class="level-badge lb-3">Level 3</span></div>
+        </div>
+      </div>
+
+      <p>
+        The arrow between them is the <strong>Algebraic Lifting Theorem</strong>: 
+        any algebraic fact proved in the CMCA is automatically inherited by Φ_MDL, 
+        because the CMCA is the unique minimal-description certificate for the field.
+      </p>
+
+      <h3>Three analogies</h3>
+      <div class="analogy-grid">
+        <div class="analogy-card">
+          <div class="ac-icon">🏗️</div>
+          <div class="ac-title">Blueprint and Building</div>
+          <div class="ac-cert">Certificate: 2D drawing on paper</div>
+          <div class="ac-phys">Physical: 3D glass and steel building</div>
+          <div class="ac-note">The blueprint encodes everything about the building. You cannot live in the blueprint, but it certifies the building's structure exactly.</div>
+        </div>
+        <div class="analogy-card">
+          <div class="ac-icon">💻</div>
+          <div class="ac-title">Program and Computation</div>
+          <div class="ac-cert">Certificate: text file of instructions</div>
+          <div class="ac-phys">Physical: running computation, energy, time</div>
+          <div class="ac-note">The program can be machine-checked for correctness. The running computation is what actually happens in the world.</div>
+        </div>
+        <div class="analogy-card">
+          <div class="ac-icon">🌡️</div>
+          <div class="ac-title">Thermometer and Gas</div>
+          <div class="ac-cert">Certificate: thermometer reading</div>
+          <div class="ac-phys">Physical: the gas whose temperature it measures</div>
+          <div class="ac-note">The thermometer does not contain the gas — it certifies a property of it. The CMCA certifies properties of Φ_MDL.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 3: The Z₇ Potential ═══ -->
+    <section class="lesson-section" id="potential">
+      <h2>The Z₇-Symmetric Potential</h2>
+      <p>
+        Φ_MDL is a quantum field with a potential V(Φ) that has exactly seven degenerate 
+        minima — one for each element of ℤ₇ = {0, 1, 2, 3, 4, 5, 6}. 
+        This is not a model choice. The Z₇ symmetry is forced by MDL selection, 
+        which identifies F₂₁ = ℤ₇ ⋊ ℤ₃ as the uniquely shortest description 
+        consistent with the Standard Model derivability criterion.
+      </p>
+
+      <div class="potential-vis">
+        <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:0.75rem">
+          The seven degenerate vacuum states of V(Φ). Each represents a ground-state 
+          field value. The vacuum of the universe sits at w = 0 (blue).
+          Kinks connect neighboring vacua.
+        </p>
+        <div class="vacuum-ring">
+          <div class="vac-node vn-ground">0</div>
+          <div class="vac-node vn-active">1</div>
+          <div class="vac-node vn-active">2</div>
+          <div class="vac-node vn-active">3</div>
+          <div class="vac-node vn-active">4</div>
+          <div class="vac-node vn-active">5</div>
+          <div class="vac-node vn-active">6</div>
+        </div>
+        <p style="font-size:0.78rem;color:var(--text-tertiary)">
+          The seven vacua form a ring — a circular arrangement under Z₇ addition mod 7. 
+          A "kink" is a field configuration that transitions from one vacuum to another 
+          and cannot unwind — it is topologically trapped.
+        </p>
+      </div>
+
+      <p>
+        At any point in space, the field Φ_MDL lives in one of these seven minima. 
+        The vacuum of the universe sits uniformly at w = 0. 
+        Any departure from the vacuum — any region where the field transitions from 
+        one minimum to another — is a <strong>particle</strong>. 
+        This is explained in detail in 
+        <a href="../L14_particles_as_kinks/index.html">L14: Particles as Topological Kinks</a>.
+      </p>
+    </section>
+
+    <!-- ═══ Section 4: What the CMCA Certifies ═══ -->
+    <section class="lesson-section" id="what-certifies">
+      <h2>What the CMCA Certifies</h2>
+      <p>
+        The CMCA can certify, in a completely rigorous, machine-checkable way, all of the 
+        following algebraic properties of the physical universe — properties that hold 
+        regardless of spatial resolution or scale:
+      </p>
+      <ul class="cert-list">
+        <li>
+          <strong>Which particle types exist.</strong> There are exactly five PSC-admissible 
+          winding sectors: {0, 2, 3, 4, 6} ⊂ ℤ₇, corresponding to the Standard Model 
+          particle classes.
+        </li>
+        <li>
+          <strong>Which gauge symmetry the theory has.</strong> The gauge group is 
+          SU(3) × SU(2) × U(1) — derived from the subgroup structure of F₂₁, 
+          not assumed as an input.
+        </li>
+        <li>
+          <strong>The number of fermion generations.</strong> Exactly three generations — 
+          forced by the three ground-state configurations of p(x,x,x) = 0.
+        </li>
+        <li>
+          <strong>Particle masses.</strong> The N-values {73, 42, 275} are machine-proved 
+          to be the unique outputs of the cascade at ridge level n = 10.
+        </li>
+        <li>
+          <strong>Conservation laws.</strong> Topological winding-number conservation is 
+          machine-certified (<span class="cert-badge">CatAL</span>), making it as rigorous 
+          as a mathematical theorem.
+        </li>
+      </ul>
+    </section>
+
+    <!-- ═══ Section 5: The No-CA-Replica Theorem ═══ -->
+    <section class="lesson-section" id="no-ca-replica">
+      <h2>Why the Universe Cannot Be a Cellular Automaton</h2>
+      <p>
+        A natural question: if the CMCA describes the universe so well, why isn't the 
+        cellular automaton literally the universe? The answer is a theorem.
+      </p>
+
+      <div class="card">
+        <div class="card-header">
+          The No-CA-Replica Theorem
+          <span data-lean="no_finite_ca_exact_lorentz_replica" class="lean-badge">CatAL</span>
+        </div>
+        <div class="card-body">
+          <p>
+            For any finite 1D cellular automaton of size M, the angular resolution error 
+            in the Lorentz group is at least π²/(3M²) > 0. 
+          </p>
+          <p style="margin-top:0.5rem;font-size:0.88rem;color:var(--text-secondary)">
+            In other words: no matter how large you make the CA, it cannot achieve 
+            <em>exact</em> Lorentz invariance. The rotation subgroup of the Lorentz group 
+            requires at least two spatial dimensions to represent exactly. A 1D CA cannot 
+            provide this. The error never reaches zero.
+          </p>
+          <p style="margin-top:0.5rem;font-size:0.88rem;color:var(--text-secondary)">
+            Therefore, the CA is not the physical substrate — the continuum field Φ_MDL is. 
+            The CA certifies; the field realizes.
+          </p>
+        </div>
+      </div>
+
+      <p>
+        This is why the three-tape construction 
+        (<a href="../L13_three_tape_cmca/index.html">L13</a>) is needed: three tapes 
+        provide three spatial dimensions, and the continuum limit of the field removes 
+        the remaining angular error entirely.
+      </p>
+    </section>
+
+    <!-- ═══ Section 6: The Algebraic Lifting Theorem ═══ -->
+    <section class="lesson-section" id="lifting">
+      <h2>The Algebraic Lifting Theorem</h2>
+      <p>
+        If the CMCA is not the universe, how do we trust CMCA-derived results about 
+        the universe? The formal answer is the Algebraic Lifting Theorem.
+      </p>
+
+      <div class="card">
+        <div class="card-header">
+          Algebraic Lifting Theorem (informal statement)
+        </div>
+        <div class="card-body">
+          <p>
+            Any algebraic fact proved in the CMCA (at Level 2) that depends only on 
+            the winding-number structure of the polynomial — and not on the specific 
+            discrete lattice spacing — holds identically in Φ_MDL (at Level 3).
+          </p>
+          <p style="margin-top:0.5rem;font-size:0.88rem;color:var(--text-secondary)">
+            The CMCA is the <em>unique minimal-description certificate</em> for Φ_MDL. 
+            Any algebraic fact that is certified there is automatically inherited, 
+            because the field is uniquely determined by its certificate.
+          </p>
+        </div>
+      </div>
+
+      <p>
+        This theorem is what makes the entire enterprise rigorous: Lean-certified results 
+        about the CMCA are not just numerical coincidences — they are theorems about the 
+        physical field. The proof chain from GF(7) arithmetic to actual particle masses 
+        is unbroken.
+      </p>
+
+      <div class="callout callout--neutral">
+        <div class="callout-title">The level vocabulary (from <a href="../../path_2_selection/L11_levels_of_theory/index.html" class="xref">L11</a>)</div>
+        <p>
+          <span class="level-badge lb-0">Level 0</span> Raw polynomial p over GF(7) &nbsp;·&nbsp;
+          <span class="level-badge lb-1">Level 1</span> f_MDL orbit map &nbsp;·&nbsp;
+          <span class="level-badge lb-2">Level 2</span> CMCA tape (algebraic certificate) &nbsp;·&nbsp;
+          <span class="level-badge lb-3">Level 3</span> Φ_MDL continuum field (physically real)
+        </p>
+        <p style="margin-top:0.4rem;font-size:0.85rem">
+          Results proved at Level 2 lift to Level 3 via the Algebraic Lifting Theorem. 
+          Conflating a Level 2 (discrete, algebraic) claim with a Level 3 (continuum, physical) 
+          claim is a precision error — like claiming the blueprint is the building.
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══ Section 7: The Worked Example ═══ -->
+    <section class="lesson-section" id="worked-example">
+      <h2>Worked Example: The Electron at Both Levels</h2>
+      <p>
+        To make the two-level architecture concrete, trace the electron through both levels.
+      </p>
+
+      <div class="steps" id="steps-electron">
+        <div class="steps-nav">
+          <button class="step-pill">Level 2: The Certificate</button>
+          <button class="step-pill">Level 3: The Field</button>
+          <button class="step-pill">The Lifting</button>
+        </div>
+
+        <div class="steps-body">
+
+          <div class="step-panel">
+            <div class="step-panel-content">
+              <h4>Level 2 — What the CMCA says about the electron</h4>
+              <p>
+                At Level 2, the CMCA certifies that there exists a PSC-admissible winding sector 
+                at w = 1 (the electron winding sector). The GTE cascade at ridge n = 10 produces 
+                the unique triple (1, 73, 823; g=1). The N-value b = 73 is machine-proved to be 
+                the only output of the cascade at generation 1.
+              </p>
+              <div style="background:var(--bg-elevated);border-radius:var(--r-md);padding:0.75rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.9rem;margin-top:0.75rem">
+                CMCA output: winding sector w=1, triple (a=1, b=73, c=823)
+              </div>
+              <p style="margin-top:0.6rem;font-size:0.85rem;color:var(--text-secondary)">
+                This is a discrete, algebraic fact. It can be verified by running the polynomial 
+                rules on paper or in Lean.
+              </p>
+            </div>
+          </div>
+
+          <div class="step-panel">
+            <div class="step-panel-content">
+              <h4>Level 3 — What Φ_MDL says about the electron</h4>
+              <p>
+                At Level 3, the electron is a BPS kink soliton in the Φ_MDL field — 
+                a stable domain wall where the field transitions from vacuum w=0 to vacuum w=1. 
+                This kink has:
+              </p>
+              <ul style="margin-top:0.5rem;font-size:0.88rem;color:var(--text-secondary)">
+                <li>A definite rest mass (the BPS energy of the kink)</li>
+                <li>A definite electric charge (−e, from the w=1 winding structure)</li>
+                <li>A definite spin-½ (from the Fermi statistics of the kink)</li>
+              </ul>
+              <p style="margin-top:0.6rem;font-size:0.88rem">
+                The electron is not a point object inserted separately — it is a topological 
+                feature of the field itself.
+              </p>
+            </div>
+          </div>
+
+          <div class="step-panel">
+            <div class="step-panel-content">
+              <h4>The Lifting: from N = 73 to m = 0.511 MeV</h4>
+              <p>
+                The Algebraic Lifting Theorem authorizes treating the CMCA's N-value b = 73 
+                as the information-theoretic address of the electron kink in Φ_MDL. 
+                The InformationMassTransformer then converts this N-value into a physical mass:
+              </p>
+              <div style="background:var(--bg-elevated);border-radius:var(--r-md);padding:0.75rem 1rem;font-family:'JetBrains Mono',monospace;font-size:0.88rem;margin-top:0.75rem">
+                N = 73 → m_electron = 0.510990 MeV<br>
+                PDG measured: 0.510999 MeV<br>
+                Relative error: −0.0018%
+              </div>
+              <p style="margin-top:0.6rem;font-size:0.85rem;color:var(--text-secondary)">
+                This step is explained fully in 
+                <a href="../L16_masses_from_arithmetic/index.html">L16: Masses from Arithmetic</a>.
+              </p>
+            </div>
+          </div>
+
+        </div>
+        <div class="steps-footer">
+          <button class="step-nav-btn" data-action="prev" disabled>← Prev</button>
+          <span class="steps-counter">Step 1 of 3</span>
+          <button class="step-nav-btn" data-action="next">Next →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Nav -->
+    <nav class="lesson-nav">
+      <a href="../index.html" class="lesson-nav-btn lesson-nav-prev">← Path 3 Overview</a>
+      <a href="../L13_three_tape_cmca/index.html" class="lesson-nav-btn lesson-nav-next">L13: The Three-Tape CMCA →</a>
+    </nav>
+
+  </main>
+
+  <footer class="site-footer">
+    UGP Physics Tutorial Series · Nova Spivack · 
+    <a href="https://novaspivack.com/research">novaspivack.com/research</a>
+  </footer>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script src="../../common/interactive.js"></script>
+  <script src="../../common/nav.js"></script>
+  <script>
+    const LEAN_REFS = {
+      "no_finite_ca_exact_lorentz_replica": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Framework/CMCAContinuumLimit.lean"
+      }
+    };
+    document.addEventListener('DOMContentLoaded', () => {
+      initSteps('steps-electron');
+      autoRenderLeanBadges(LEAN_REFS);
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left:'$$',right:'$$',display:true},
+          {left:'$',right:'$',display:false}
+        ]
+      });
+    });
+  </script>
+</body>
+</html>

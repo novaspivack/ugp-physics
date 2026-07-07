@@ -1,0 +1,80 @@
+# Configuration for Fixed Canonical Triples Implementation
+# Fixes the fundamental issue: degenerate canonical triples causing rho calculation failure
+
+experiment:
+  name: ugp_yukawa_ckm_pmns_fixed_triples
+  description: "Fixed canonical triples implementation to resolve degenerate rho calculation"
+  inputs:
+    runs:
+      - "canonical_gte_triples.json"  # Uses canonical GTE triples
+
+# Fixed Triples Configuration
+fixed_triples:
+  degenerate_issue_fixed: true
+  bottom_triple_corrected: true
+  theoretical_approach_preserved: true
+  
+  # The fix: changed bottom quark c-value from 65535 to 32767
+  canonical_triples_fix:
+    bottom_quark_c_old: 65535  # Same as charm - caused degeneracy
+    bottom_quark_c_new: 32767  # Fixed - eliminates degeneracy
+    reason: "Eliminates degenerate case in rho calculation where |cu - cd| = 0"
+
+# HM Normalization (optimized from testing)
+hm_normalization_constant: 3.0  # Best performing constant from systematic testing
+
+# Options
+options:
+  neutrino_model: "majorana"  # "majorana" or "dirac"
+  down_sector_permutation_policy: "optimize"  # "optimize" (scan 6 perms) or "fixed"
+  down_sector_perm_fixed: [0, 1, 2]  # used only if policy == "fixed"
+  pdg_targets_ckm: [0.2245, 0.041, 0.00365]  # |Vus|, |Vcb|, |Vub| for score logging
+
+# PDG Experimental Targets for comparison
+pdg_targets:
+  # CKM mixing elements
+  Vus: 0.2245
+  Vcb: 0.041
+  Vub: 0.00365
+  # PMNS mixing angles (degrees)
+  theta12: 33.44  # Solar mixing angle
+  theta13: 8.57    # Reactor mixing angle  
+  theta23: 49.2    # Atmospheric mixing angle
+
+# Analysis parameters
+analysis:
+  face_weights_calculation: "harmonic_mean_with_optimized_normalization"
+  sector_weights_calculation: "delta_squared"
+  face_metric: "quarter_lock_adjacency"
+  phase_source: "kernel_generational"
+  pdg_ordering: true
+  rho_matrix_degenerate_handling: "improved"
+
+# Output configuration
+output:
+  save_matrices: true
+  save_angles: true
+  save_eigenvalues: true
+  save_vectors: true
+  save_permutation_choice: true
+  save_canonical_triples: true
+  save_rho_matrix: true
+  save_experimental_errors: true
+  format: "json"
+
+# Validation
+validation:
+  unitary_check: true
+  pdg_ordering_check: true
+  eigenvalue_ordering: true
+  jarlskog_invariant_check: true
+  experimental_error_calculation: true
+  rho_matrix_degenerate_check: true
+  canonical_triples_uniqueness_check: true
+
+# Performance monitoring
+performance:
+  track_rho_matrix_calculation: true
+  track_degenerate_case_handling: true
+  enable_detailed_logging: true
+  rho_matrix_analysis: true

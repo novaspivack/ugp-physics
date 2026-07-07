@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L15: Standard Model Quantum Numbers — UGP Physics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="../../common/style.css">
+  <style>
+    /* ── SM barcode visualization ────────────────────────────────── */
+    .barcode-grid {
+      display: grid;
+      gap: 3px;
+      margin: 1rem 0;
+    }
+    .bc-row {
+      display: grid;
+      grid-template-columns: 120px repeat(5, 1fr);
+      gap: 3px;
+      align-items: center;
+    }
+    .bc-cell {
+      background: var(--bg-elevated);
+      border: 1px solid var(--stroke-secondary);
+      border-radius: var(--r-sm);
+      padding: 0.35rem 0.4rem;
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+    }
+    .bc-header { font-weight: 700; background: var(--bg-card); font-family: inherit; font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; }
+    .bc-particle { font-weight: 700; text-align: left; font-family: inherit; font-size: 0.88rem; background: var(--bg-card); border: none; padding: 0.35rem 0.5rem; }
+    .bc-val-q  { color: #F59E0B; }
+    .bc-val-c  { color: #10B981; }
+    .bc-val-i  { color: #3B82F6; }
+    .bc-val-b  { color: #8B5CF6; }
+    .bc-val-l  { color: #EC4899; }
+    .bc-pos    { background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.2); }
+    .bc-neg    { background: rgba(239,68,68,0.06); border-color: rgba(239,68,68,0.15); }
+    .bc-zero   { background: var(--bg-elevated); }
+    .bc-frac   { color: var(--text-secondary); }
+
+    /* ── Ground state derivation ────────────────────────────────── */
+    .ring-display {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 0.75rem 0;
+    }
+    .rd-cell {
+      width: 38px; height: 38px;
+      border-radius: var(--r-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700; font-size: 0.85rem;
+      border: 2px solid var(--stroke-primary);
+      background: var(--bg-elevated);
+    }
+    .rd-ground { border-color: #10B981; background: rgba(16,185,129,0.12); color: #10B981; }
+    .rd-other  { color: var(--text-tertiary); }
+
+    /* ── Z₃ color explanation ───────────────────────────────────── */
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+    .color-card {
+      background: var(--bg-elevated);
+      border: 2px solid var(--stroke-primary);
+      border-radius: var(--r-md);
+      padding: 0.9rem;
+      text-align: center;
+    }
+    .color-card.cc-r { border-color: rgba(239,68,68,0.4); background: rgba(239,68,68,0.06); }
+    .color-card.cc-g { border-color: rgba(34,197,94,0.4); background: rgba(34,197,94,0.06); }
+    .color-card.cc-b { border-color: rgba(59,130,246,0.4); background: rgba(59,130,246,0.06); }
+    .color-card .cc-sym { font-weight: 700; font-size: 1.2rem; font-family: 'JetBrains Mono', monospace; margin-bottom: 0.3rem; }
+    .cc-r .cc-sym { color: #EF4444; }
+    .cc-g .cc-sym { color: #22C55E; }
+    .cc-b .cc-sym { color: #3B82F6; }
+    .color-card .cc-desc { font-size: 0.8rem; color: var(--text-secondary); }
+
+    /* ── Charge derivation box ──────────────────────────────────── */
+    .charge-steps {
+      background: var(--bg-elevated);
+      border-left: 3px solid #F59E0B;
+      border-radius: var(--r-md);
+      padding: 0.9rem 1rem;
+      margin: 0.75rem 0;
+      font-size: 0.88rem;
+    }
+
+    /* ── No-go theorem badge ────────────────────────────────────── */
+    .nogo-box {
+      background: rgba(139,92,246,0.06);
+      border: 2px solid rgba(139,92,246,0.3);
+      border-radius: var(--r-lg);
+      padding: 1rem 1.25rem;
+      margin: 1rem 0;
+    }
+    .nogo-box .nb-title { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.5rem; color: #8B5CF6; }
+  </style>
+</head>
+<body style="--path-current: var(--path-3)" data-path="3" data-lesson="4" data-total="6">
+
+  <header class="site-header">
+    <a href="../../index.html" class="site-logo">UGP Physics</a>
+    <nav class="breadcrumb">
+      <a href="../../index.html">Tutorial Series</a>
+      <span class="bc-sep">›</span>
+      <a href="../index.html">Path 3: Particles</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">L15: Standard Model Quantum Numbers</span>
+    </nav>
+  </header>
+
+  <main class="page-wrapper">
+
+    <div class="lesson-header">
+      <div class="path-label">Path 3 — Particles · Lesson 15 of 17</div>
+      <h1>Standard Model Quantum Numbers</h1>
+      <p class="lesson-subtitle">
+        Why do particles have these specific charges, colors, and isospins? 
+        In GTE, all SM quantum numbers emerge from the Z₇ winding structure of Φ_MDL — 
+        derived, not assumed.
+      </p>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:67%"></div>
+      </div>
+    </div>
+
+    <!-- ═══ Section 1: The Mystery ═══ -->
+    <section class="lesson-section" id="mystery">
+      <h2>The Mystery of Quantum Numbers</h2>
+      <p>
+        Every elementary particle carries a set of permanent labels — <strong>quantum numbers</strong> — 
+        that no physical process can change. Electric charge, color charge, weak isospin, 
+        baryon number, lepton number: these are measured, conserved quantities that the 
+        Standard Model takes as given.
+      </p>
+
+      <div class="barcode-grid">
+        <div class="bc-row">
+          <div class="bc-cell bc-header">Particle</div>
+          <div class="bc-cell bc-header">Charge Q</div>
+          <div class="bc-cell bc-header">Color</div>
+          <div class="bc-cell bc-header">Isospin I₃</div>
+          <div class="bc-cell bc-header">Baryon B</div>
+          <div class="bc-cell bc-header">Lepton L</div>
+        </div>
+        <div class="bc-row">
+          <div class="bc-cell bc-particle">Electron e⁻</div>
+          <div class="bc-cell bc-neg bc-val-q">−1</div>
+          <div class="bc-cell bc-zero">—</div>
+          <div class="bc-cell bc-neg bc-val-i">−½</div>
+          <div class="bc-cell bc-zero">0</div>
+          <div class="bc-cell bc-pos bc-val-l">+1</div>
+        </div>
+        <div class="bc-row">
+          <div class="bc-cell bc-particle">Up quark u</div>
+          <div class="bc-cell bc-pos bc-val-q">+⅔</div>
+          <div class="bc-cell bc-pos bc-val-c">r/g/b</div>
+          <div class="bc-cell bc-pos bc-val-i">+½</div>
+          <div class="bc-cell bc-pos bc-val-b">+⅓</div>
+          <div class="bc-cell bc-zero">0</div>
+        </div>
+        <div class="bc-row">
+          <div class="bc-cell bc-particle">Down quark d</div>
+          <div class="bc-cell bc-neg bc-val-q">−⅓</div>
+          <div class="bc-cell bc-pos bc-val-c">r/g/b</div>
+          <div class="bc-cell bc-neg bc-val-i">−½</div>
+          <div class="bc-cell bc-pos bc-val-b">+⅓</div>
+          <div class="bc-cell bc-zero">0</div>
+        </div>
+        <div class="bc-row">
+          <div class="bc-cell bc-particle">Neutrino ν_e</div>
+          <div class="bc-cell bc-zero bc-val-q">0</div>
+          <div class="bc-cell bc-zero">—</div>
+          <div class="bc-cell bc-pos bc-val-i">+½</div>
+          <div class="bc-cell bc-zero">0</div>
+          <div class="bc-cell bc-pos bc-val-l">+1</div>
+        </div>
+        <div class="bc-row">
+          <div class="bc-cell bc-particle">Photon γ</div>
+          <div class="bc-cell bc-zero bc-val-q">0</div>
+          <div class="bc-cell bc-zero">—</div>
+          <div class="bc-cell bc-zero">0</div>
+          <div class="bc-cell bc-zero">0</div>
+          <div class="bc-cell bc-zero">0</div>
+        </div>
+      </div>
+
+      <p>
+        The Standard Model has no explanation for why these specific values and not others. 
+        Why charge +⅔ for the up quark? Why exactly three color charges? Why these specific 
+        fractions? They were measured over decades and built into the theory as inputs.
+      </p>
+      <p>
+        GTE derives all of them from the ℤ₇ winding structure.
+      </p>
+    </section>
+
+    <!-- ═══ Section 2: Ground States of the Spin-7 Ring ═══ -->
+    <section class="lesson-section" id="ground-states">
+      <h2>Ground States of the GTE Ring</h2>
+      <p>
+        The key insight: ask a very simple question about the polynomial 
+        <code>p(L,C,R) = C+R−CR−LCR mod 7</code>. 
+        Which uniform ring configurations produce zero output? A configuration is "zero energy" 
+        if every cell, when updated by p, outputs the vacuum value 0 — not necessarily its 
+        own current value (that would be a fixed point; there is only one, x=0).
+      </p>
+      <p>
+        The equation p(x, x, x) = 0 (mod 7) has exactly three solutions:
+      </p>
+
+      <div class="ring-display">
+        <div class="rd-cell rd-ground">0</div>
+        <div class="rd-cell rd-ground">1</div>
+        <div class="rd-cell rd-other">2</div>
+        <div class="rd-cell rd-other">3</div>
+        <div class="rd-cell rd-other">4</div>
+        <div class="rd-cell rd-ground">5</div>
+        <div class="rd-cell rd-other">6</div>
+      </div>
+
+      <div class="callout callout--neutral">
+        <div class="callout-title">The three zero-energy ground states</div>
+        <p>
+          The equation p(x,x,x) = x + x − x·x − x·x·x = 0 (mod 7) has exactly three solutions: 
+          <strong>x = 0, x = 1, and x = 5</strong> (highlighted above).
+        </p>
+        <p style="margin-top:0.4rem;font-size:0.85rem;color:var(--text-secondary)">
+          Verification: p(0,0,0) = 0. p(1,1,1) = 1+1−1−1 = 0. p(5,5,5) = 5+5−25−125 = 10−150 = −140 ≡ 0 (mod 7). ✓
+          Note: x=0 is the unique <em>true fixed point</em> (where p(x,x,x)=x); x=1 and x=5 are 
+          zero-energy states (where p(x,x,x)=0, so a uniform tape collapses to the vacuum in one step).
+        </p>
+        <p style="margin-top:0.4rem;font-size:0.85rem">
+          <strong>Three distinct zero-energy states → three generations of matter.</strong> 
+          The uniqueness of exactly three generations is machine-certified in Lean 4
+          <span data-lean="ngen_eight_mechanism_master" class="lean-badge">CatAL</span>.
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══ Section 3: Z₃ Color Charge ═══ -->
+    <section class="lesson-section" id="color">
+      <h2>ℤ₃ Color Charge from Three Ground States</h2>
+      <p>
+        The three ground states {0, 1, 5} are not just an arithmetic curiosity — they are 
+        the structural origin of color charge. Here is the identification:
+      </p>
+
+      <div class="color-grid">
+        <div class="color-card cc-r">
+          <div class="cc-sym">x = 0</div>
+          <div class="cc-desc">Red color charge. The trivial ground state — the actual vacuum value.</div>
+        </div>
+        <div class="color-card cc-g">
+          <div class="cc-sym">x = 1</div>
+          <div class="cc-desc">Green color charge. The unit ground state — 1 is the multiplicative identity in GF(7).</div>
+        </div>
+        <div class="color-card cc-b">
+          <div class="cc-sym">x = 5</div>
+          <div class="cc-desc">Blue color charge. The inverse ground state — 5 = −1 (mod 7), the additive inverse of 6.</div>
+        </div>
+      </div>
+
+      <p>
+        The three ground states form a ℤ₃ symmetry group under the F₂₁ Sylow-3 subgroup 
+        of the polynomial's symmetry group. This ℤ₃ symmetry is exactly what QCD (quantum 
+        chromodynamics) calls "color charge" — with the corresponding confinement property 
+        that only color-neutral combinations (summing to 0 in ℤ₃) are observable as free particles.
+      </p>
+
+      <div class="card">
+        <div class="card-header">Color charge from the F₂₁ Sylow-3 subgroup</div>
+        <div class="card-body">
+          <p>
+            The symmetry group of the GTE polynomial is F₂₁ = ℤ₇ ⋊ ℤ₃ (the Frobenius group 
+            of order 21). Its unique Sylow-3 subgroup is ℤ₃ — a cyclic group of order 3. 
+            This ℤ₃ acts on the three ground states {0, 1, 5} and is exactly the color-charge 
+            symmetry group of QCD.
+          </p>
+          <p style="margin-top:0.5rem;font-size:0.85rem;color:var(--text-secondary)">
+            Hadrons (protons, neutrons, etc.) are color-neutral combinations: three quarks 
+            in one of each color-charge state sum to 0 in ℤ₃. This is confinement: only 
+            the zero-element of ℤ₃ (color-neutral) can propagate freely.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 4: Electric Charge ═══ -->
+    <section class="lesson-section" id="electric-charge">
+      <h2>Electric Charge from Winding Number</h2>
+      <p>
+        Electric charge Q is identified with the ℤ₇ winding number, projected through 
+        the polynomial's charge-assignment map. The derivation uses the 
+        Gell-Mann–Nishijima relation, which in GTE becomes:
+      </p>
+
+      <div class="charge-steps">
+        <strong>Electric charge formula from winding:</strong><br>
+        Q = I₃ + Y/2, where Y (hypercharge) is determined by the winding sector.<br><br>
+        <strong>Winding sector → Q assignment:</strong><br>
+        • Sector w=2 (charged leptons): Q = −1 (charge −e)<br>
+        • Sector w=3 (neutrinos): Q = 0<br>
+        • Sector w=4 (quarks): Q = +2/3 or −1/3 (depending on isospin)<br>
+        • Sector w=0 (vacuum/photon): Q = 0<br>
+        • Sector w=6 (Higgs): Q = 0 or ±1
+      </div>
+
+      <p>
+        The fractional charge of quarks (+2/3 and −1/3) emerges naturally from the 
+        combination of the ℤ₇ winding number and the weak isospin doublet structure. 
+        This is the same calculation as the Standard Model, but with the group structure 
+        <em>derived</em> rather than assumed.
+      </p>
+    </section>
+
+    <!-- ═══ Section 5: The No-Go Theorem ═══ -->
+    <section class="lesson-section" id="no-go">
+      <h2>The SM Gauge Group Is Unique</h2>
+      <p>
+        From 
+        <a href="../../path_2_selection/L09_gf7_selection/index.html" class="xref">L09</a>, 
+        we know that GF(7) is the smallest prime field where chirality (ℤ₂) and color (ℤ₃) 
+        are simultaneously algebraically derivable at zero extra cost. This has an important 
+        corollary for quantum numbers:
+      </p>
+
+      <div class="nogo-box">
+        <div class="nb-title">The SM Gauge Group Is PSC-Forced (CatA)</div>
+        <p style="font-size:0.88rem">
+          The gauge group SU(3) × SU(2) × U(1) is the unique group that:
+        </p>
+        <ol style="font-size:0.85rem;margin-top:0.5rem;padding-left:1.25rem;display:flex;flex-direction:column;gap:0.3rem">
+          <li>Contains the ℤ₃ color structure (from the three GTE ground states)</li>
+          <li>Contains the ℤ₂ chirality structure (from the Rule 110/Rule 124 pair)</li>
+          <li>Satisfies the PSC self-containment criterion</li>
+          <li>Fits within the MDL-selected GF(7) field structure</li>
+        </ol>
+        <p style="font-size:0.85rem;margin-top:0.5rem;color:var(--text-secondary)">
+          Any group that is either larger or smaller fails one of these four conditions. 
+          The SM gauge group is not a choice — it is the unique algebraically consistent option.
+        </p>
+      </div>
+
+      <p>
+        This means the 25 "free parameters" of the Standard Model are not truly free — 
+        they are constrained by the algebraic structure of the Z₇ polynomial. The charge 
+        assignments, the number of generations, and the gauge group are all forced by 
+        the topology of the field and the MDL selection principle.
+      </p>
+
+      <div class="callout callout--neutral">
+        <div class="callout-title">Cross-link</div>
+        <p>
+          The gauge group derivation from PSC is treated in depth in Path 4 (Forces), 
+          starting with the lesson on the Weinberg angle. The current lesson focuses only 
+          on how the winding-number structure generates the particle labels themselves.
+        </p>
+      </div>
+    </section>
+
+    <!-- Nav -->
+    <nav class="lesson-nav">
+      <a href="../L14_particles_as_kinks/index.html" class="lesson-nav-btn lesson-nav-prev">← L14: Particles as Kinks</a>
+      <a href="../L16_masses_from_arithmetic/index.html" class="lesson-nav-btn lesson-nav-next">L16: Masses from Arithmetic →</a>
+    </nav>
+
+  </main>
+
+  <footer class="site-footer">
+    UGP Physics Tutorial Series · Nova Spivack · 
+    <a href="https://novaspivack.com/research">novaspivack.com/research</a>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script src="../../common/interactive.js"></script>
+  <script src="../../common/nav.js"></script>
+  <script>
+    const LEAN_REFS = {
+      "ngen_eight_mechanism_master": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Classification/NgenUniqueness.lean"
+      }
+    };
+    document.addEventListener('DOMContentLoaded', () => {
+      autoRenderLeanBadges(LEAN_REFS);
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left:'$$',right:'$$',display:true},
+          {left:'$',right:'$',display:false}
+        ]
+      });
+    });
+  </script>
+</body>
+</html>

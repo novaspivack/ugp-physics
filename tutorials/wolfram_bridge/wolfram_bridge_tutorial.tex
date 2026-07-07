@@ -1,0 +1,571 @@
+\documentclass[11pt,a4paper]{article}
+\PassOptionsToPackage{pdfusetitle=false}{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,array}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\usepackage{enumitem}
+\usepackage[pdfusetitle=false]{hyperref}
+\usepackage[numbers]{natbib}
+\bibliographystyle{unsrtnat}
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,urlcolor=blue!60!black,
+            citecolor=blue!60!black,
+            pdftitle={The GTE--Wolfram Bridge},
+            pdfauthor={Nova Spivack}}
+\setlength{\emergencystretch}{2em}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc,fit,backgrounds}
+
+%─── Color palette ───────────────────────────────────────────────────────────
+\definecolor{boxblue}{RGB}{220,235,255}
+\definecolor{boxorange}{RGB}{255,240,210}
+\definecolor{boxgreen}{RGB}{220,245,220}
+\definecolor{boxpurple}{RGB}{240,225,255}
+\definecolor{boxtan}{RGB}{255,245,220}
+\definecolor{boxteal}{RGB}{210,240,238}
+
+%─── Macros ──────────────────────────────────────────────────────────────────
+\newcommand{\term}[1]{\textbf{#1}}
+\newcommand{\lean}[1]{%
+  \penalty-100
+  \begingroup\def\_{\textunderscore\allowbreak}\texttt{#1}\endgroup}
+\newcommand{\CatAL}{\textbf{CatAL}}
+\newcommand{\CatAD}{\textbf{CatAD}}
+\newcommand{\CatA}{\textbf{CatA}}
+\newcommand{\PHIMDL}{$\Phi_{\rm MDL}$}
+\newcommand{\PhiMDL}{\Phi_{\rm MDL}}
+\newcommand{\poly}{p}
+
+\newcommand{\TutorialDOI}{10.5281/zenodo.20669164}
+\date{2026}
+
+\title{\textbf{The GTE--Wolfram Bridge}\\[6pt]
+\large Rule~110, the Causal Graph, and the Selection Principle\\[8pt]
+\normalsize
+\href{https://novaspivack.com/research}{novaspivack.com/research}\texorpdfstring{\quad}{ }
+\href{https://doi.org/10.5281/zenodo.20560550}{P48 complete theory monograph}\\[4pt]
+\small\href{https://doi.org/\TutorialDOI}{doi.org/\TutorialDOI}
+  \textit{(registration pending)}\\[4pt]
+\normalsize\textit{UGP Physics Tutorial Series}}
+\author{Nova Spivack}
+
+\begin{document}
+\setcounter{tocdepth}{2}
+\maketitle
+\tableofcontents
+\newpage
+
+\begin{tcolorbox}[colback=blue!6,colframe=blue!40!black,
+  title=\textbf{UGP Physics Tutorial Series}]
+\textbf{Prerequisites (read first):}
+  \href{https://doi.org/10.5281/zenodo.20657889}%
+    {\emph{The GTE Polynomial: A Step-by-Step Cheat Sheet}}
+  $\cdot$
+  \href{https://doi.org/10.5281/zenodo.20657919}%
+    {\emph{How the UWCA Works}}
+  $\cdot$
+  \href{https://doi.org/10.5281/zenodo.20657906}%
+    {\emph{The Three-Tape CMCA}}\\[4pt]
+\textbf{Next tutorials:}
+  \href{https://doi.org/10.5281/zenodo.20669142}%
+    {\emph{Falsifiability: How to Test the GTE Framework}}\\[4pt]
+\textbf{See also:}
+  \href{https://doi.org/10.5281/zenodo.20657872}%
+    {\emph{The Levels of the Theory}}
+  $\cdot$
+  \href{https://doi.org/10.5281/zenodo.20657876}%
+    {\emph{How MDL Selects the 19-Bit Polynomial}}
+  $\cdot$
+  \href{https://doi.org/10.5281/zenodo.20657895}%
+    {\emph{Perfect Self-Containment and MDL}}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=boxgreen,colframe=green!50!black,
+  title=\textbf{Claim-Strength Taxonomy}]
+Throughout this tutorial, results are labeled with a confidence grade:
+\begin{itemize}[itemsep=2pt]
+  \item \textbf{$\mathbf{A}_{\rm Lean}$ (CatAL)} --- Machine-certified in Lean~4 with zero \texttt{sorry} and zero custom axioms.  Independently verifiable by anyone with Lean installed.
+  \item \textbf{A/D (CatAD)} --- Analytically derived with full derivation, computationally confirmed.  Not yet machine-certified.
+  \item \textbf{A (CatA)} --- Analytically derived; derivation complete but not independently machine-certified.
+  \item \textbf{A/D (conditional)} --- Derived under a named, stated premise; the premise is itself an open problem or a CatB assumption.
+  \item \textbf{B (CatB)} --- A stated working hypothesis or structural premise; not yet derived.
+\end{itemize}
+\end{tcolorbox}
+
+%══════════════════════════════════════════════════════════════════════════════
+\section{The Wolfram Physics Programme}
+\label{sec:wolfram_programme}
+%══════════════════════════════════════════════════════════════════════════════
+
+\begin{tcolorbox}[colback=boxblue,colframe=blue!40!black,
+  title=What this tutorial addresses]
+The Wolfram Physics Project seeks a fundamental computational rule that generates
+spacetime and matter.  GTE provides what Wolfram Physics lacks: a \emph{selection
+principle} that identifies the unique such rule from first principles, and
+machine-certifies it.  This tutorial explains the bridge between the two programmes.
+\end{tcolorbox}
+
+\subsection{The Wolfram Physics Approach}
+
+The \term{Wolfram Physics Project} (Stephen Wolfram and Jonathan Gorard, 2020) is
+the most recent systematic attempt to derive physics from a discrete computational
+rule.  Its three key components are:
+
+\begin{enumerate}[itemsep=4pt]
+  \item \textbf{The hypergraph rule.}  The universe is modeled as a hypergraph
+    (a collection of points with multi-way connections) that evolves by a local
+    rewriting rule.  Each application of the rule creates new connections and
+    deletes old ones.
+
+  \item \textbf{The causal graph.}  The \term{causal graph} records which rule
+    applications causally depend on which others — essentially, which events
+    produce the inputs for which later events.  In the continuum limit, the
+    causal graph encodes a Lorentzian metric on spacetime.
+
+  \item \textbf{Multiway systems.}  When multiple rule applications are possible,
+    the \term{multiway system} tracks all of them simultaneously.  Quantum
+    mechanics is proposed to emerge from the structure of paths through the
+    multiway graph.
+\end{enumerate}
+
+The programme has produced a consistent framework for how spacetime geometry and
+general relativity can emerge from a discrete computational rule.  Gorard and
+Wolfram have shown that Einstein's equations appear in the continuum limit of
+appropriate causal graphs \cite{SpivackGTECompleteFramework}.
+
+\subsection{The Central Gap: Which Rule?}
+
+The Wolfram Physics programme is maximally inclusive: it defines the
+\term{Ruliad} as the union of all possible computations.  The physical universe
+is somewhere in the Ruliad; the question is \emph{where} — which specific rule?
+
+The Wolfram approach provides no answer to this.  The universe is not in the
+Ruliad because of some meta-selection process; it simply is where it is.
+This leaves the selection question open, which is the same open question that
+all of digital physics has faced since Konrad Zuse first proposed computational
+physics in 1969.
+
+GTE addresses this gap directly.
+
+%══════════════════════════════════════════════════════════════════════════════
+\section{What GTE Adds: The Selection Principle}
+\label{sec:selection}
+%══════════════════════════════════════════════════════════════════════════════
+
+\begin{tcolorbox}[colback=boxorange,colframe=orange!60!black,
+  title=GTE's answer to ``which rule?'']
+The unique MDL-minimal computational rule consistent with the PSC constraints
+is $p(L,C,R) = C + R - CR - LCR$ over $\mathrm{GF}(7)$.  This rule is selected
+not by the observer's location in a Ruliad, but by an objective mathematical
+criterion: Minimum Description Length.
+\end{tcolorbox}
+
+\term{GTE} (\term{Generative Triple Evolution}) applies two
+interacting selection criteria:
+
+\textbf{PSC} (\term{Perfect Self-Containment}):  The candidate rule must be
+the unique rule that can self-referentially justify its own selection from
+all possible rules.  PSC is a set of five axioms about which theories can be
+considered complete without external input.  It eliminates all but a vanishing
+fraction of possible rules.
+
+\textbf{MDL} (\term{Minimum Description Length}):  Among all PSC-admissible
+rules, the one with the shortest complete description is selected.  MDL is the
+operational expression of \term{PI} (Presentation Invariance), the fifth PSC
+axiom.
+
+Together, PSC and MDL uniquely identify the GTE polynomial $p(L,C,R)$ over
+$\mathrm{GF}(7)$ as the rule governing our universe.  This is not a heuristic
+argument — it is a derivation chain, with the key steps certified in Lean~4.
+
+\textbf{What this gives Wolfram Physics:} A derivation, not a search.  Instead
+of exploring the space of rules and comparing to observation, GTE proves which
+rule is unique and then verifies it matches observation.
+
+%══════════════════════════════════════════════════════════════════════════════
+\section{The Triangle: Two Paths to Rule 110}
+\label{sec:triangle}
+%══════════════════════════════════════════════════════════════════════════════
+
+The structure of GTE contains a remarkable internal triangle connecting three
+objects through two independent paths, both converging on Rule~110.
+
+\subsection{The Two Objects}
+
+\begin{itemize}[itemsep=4pt]
+  \item \textbf{The UGP arithmetic cascade.}  The GTE framework starts from the
+    UGP (\term{Universe Generating Polynomial}) arithmetic — a specific sequence
+    of integer triples generated by the cascade map $T$, starting from the
+    Lepton Seed $(1,73,823)$.  This cascade is derived from the
+    $N_{\rm gen} = 3$ and $N_{\rm fam} = 5$ generation/family counts.
+
+  \item \textbf{The GTE polynomial $p$.}  The polynomial
+    $p(L,C,R) = C + R - CR - LCR$ over $\mathrm{GF}(7)$ — the algebraic
+    certificate of the GTE framework.
+\end{itemize}
+
+These look like independent objects.  But they are not: there are two distinct
+paths from UGP to $p$, both ending at exactly Rule~110.
+
+\subsection{Path A: Direct-Interpolation Lift}
+
+\begin{tcolorbox}[colback=boxteal,colframe=blue!40!black,
+  title={Direct-Interpolation Lift Theorem (\CatAL)}]
+\textbf{Statement:} The total-parity shadow of the canonical cascade triples
+constrains all 8 binary input-output pairs of the GTE polynomial.
+Combined with MDL minimality (which enforces the vacuum-transparency condition),
+the unique multilinear rule consistent with these constraints is exactly
+$p(L,C,R) = C + R - CR - LCR$ over $\mathrm{GF}(7)$.  Rule~110 is a corollary
+(the binary restriction of $p$).\\[4pt]
+Machine-certified: LT-088-65--69 (\CatAL, zero sorry, zero custom axioms).
+\end{tcolorbox}
+
+The derivation in four steps:
+
+\textbf{Step 1 — The parity shadow.}  Reduce every coordinate of every cascade
+triple modulo 2 — keep only whether each value is even (0) or odd (1).
+This produces a sequence of binary triples.  Collecting the unique ones from the
+ten canonical cascade triples gives 7 distinct binary $(L,C,R)$ patterns,
+each paired with an output bit also read from the cascade.
+
+\textbf{Step 2 — The 8th row.}  One binary input pattern is not covered by the
+parity shadow: $(1,1,1)$ (all three neighbors odd).  The vacuum-transparency
+condition — $p(0,0,0) = 0$ (the all-zeros state is a fixed point) — forces this
+remaining output to be 0.  Now all 8 binary rows are specified.
+
+\textbf{Step 3 — Polynomial interpolation.}  A multilinear polynomial of
+degree $\leq 3$ over three binary variables has exactly $2^3 = 8$ basis
+monomials: $\{1, L, C, R, LC, LR, CR, LCR\}$.  With 8 known input-output
+pairs and 8 unknowns, the linear system
+$\mathbf{V}\,\mathbf{c} = \mathbf{y}$ over $\mathrm{GF}(7)$ has a unique
+solution (the Vandermonde-type matrix is full rank).
+
+\textbf{Step 4 — The result.}  The unique solution is exactly
+$p(L,C,R) = C + R - CR - LCR$ over $\mathrm{GF}(7)$,
+and the binary restriction $p|_{\{0,1\}^3}$ produces the Rule~110 truth table.
+
+\textbf{Worked numerical check:}
+For input $(L,C,R) = (0,1,1)$: $p = 1+1-1\cdot1-0\cdot1\cdot1 = 1$.
+Rule~110 for input $011_2 = 3$: output bit is $1$. $\checkmark$
+
+\subsection{Path B: MDL Direct Selection}
+
+Path B is the standard MDL derivation.  Among all $k=7$, $r=1$ cellular
+automaton rules consistent with the PSC constraints (Standard Model
+derivability criterion), the shortest description is the GTE polynomial,
+requiring exactly 19 bits:
+
+\begin{itemize}[itemsep=2pt]
+  \item 8 bits — the Rule~110 truth table (binary restriction)
+  \item 3 bits — the prime modulus ($\lceil\log_2 7\rceil = 3$)
+  \item 5 bits — the monomial selector (which 4 of 8 basis terms are nonzero)
+  \item 1 bit — chirality
+  \item 2 bits — the $-1$ coefficient signs
+\end{itemize}
+
+A naive lookup table requires $343 \times \lceil\log_2 7\rceil \approx 963$
+bits — about 50 times larger.  The MDL Uniqueness Theorem proves no shorter
+valid specification exists (\CatAL) \cite{SpivackGTEPolynomialWolfram}.
+
+\subsection{Convergence: Both Paths Identify Rule 110}
+
+The Direct-Interpolation Lift (Path A) shows that the UGP orbit's arithmetic
+structure forces the Rule~110 truth table on the polynomial's 8 binary rows.
+MDL selection (Path B) then forces the unique multilinear extension to all
+343 GF(7) inputs.  \emph{Rule~110 is a theorem of GTE, not a postulate.}
+
+This is the triangle: UGP arithmetic $\to$ orbit parity shadow $\to$ 8 binary
+rows $\to$ (by MDL interpolation) $\to$ unique polynomial $p$ $\to$ (binary
+restriction) $\to$ Rule~110.  The path is sequential and fully derived.
+
+%══════════════════════════════════════════════════════════════════════════════
+\section{The Chirality Census: \{Rule 110, Rule 124\}}
+\label{sec:chirality}
+%══════════════════════════════════════════════════════════════════════════════
+
+\begin{tcolorbox}[colback=boxpurple,colframe=blue!40!black,
+  title={Chirality Census Theorem (\CatAL)}]
+Over all 120 orderings of the three SM fermion generations, the survivor set
+of rules consistent with the GTE orbit parity shadow is exactly
+$\{\text{Rule~110},\; \text{Rule~124}\}$ — the chiral pair related by
+left-right reflection.  The choice of generation ordering convention is the
+\emph{chirality gauge}: it selects one of the two chiral orientations but does
+not change any physical observable.
+\end{tcolorbox}
+
+Rule~110 and Rule~124 are related by the AGL(1,7) reflection symmetry of the
+$\mathrm{GF}(7)$ alphabet (the map $x \mapsto -x \pmod{7}$).  Machine-certified:
+\lean{orbit\_chirality\_census} (\CatAL) \cite{SpivackGTECompleteFramework}.
+
+\textbf{Why this matters for Wolfram Physics:} The Wolfram Physics programme
+works with causal graphs that are directional.  The left-right orientation of
+a CA rule is precisely the chirality that GTE identifies as a gauge degree of
+freedom.  The fact that GTE derives exactly two chiral orientations (not one,
+not many) connects naturally to the chiral structure of the Standard Model's
+weak interactions.
+
+\textbf{Worked example.}  Rule~110 has the bit pattern $01101110_2 = 110_{10}$
+(reading binary outputs from $(1,1,1)$ to $(0,0,0)$ in order).  Rule~124 has
+the bit pattern $01111100_2 = 124_{10}$.  One is the left-right reflection of
+the other over the $\{0,1\}$ alphabet.  Both are derived from the UGP orbit;
+neither is independently postulated.
+
+%══════════════════════════════════════════════════════════════════════════════
+\section{The Causal Graph: 1023 Nodes and Queen Anne's Lace}
+\label{sec:causal}
+%══════════════════════════════════════════════════════════════════════════════
+
+\subsection{Generating the Causal Graph}
+
+The Wolfram Physics Project provides a framework for computing the causal graph
+of a hypergraph rule.  For GTE, the relevant rule is \texttt{ruleGTE}: a
+WolframModel hyperedge rule encoding two overlapping CA triplet neighborhoods:
+\begin{equation}
+  \{a,b,c\},\{c,d,e\} \;\to\; \{a,b,f\},\{f,c,d\},\{e,b,g\},\{g,d,h\}.
+  \label{eq:rulegte}
+\end{equation}
+
+Running WolframModel for 10 generations produces a causal graph with
+\textbf{1023 nodes and 2044 edges} — a perfect binary tree of depth 10
+\cite{SpivackGTECompleteFramework}.  Machine-certified:
+\begin{itemize}[itemsep=2pt]
+  \item \lean{perfectTree\_numNodes}: $2^n - 1$ nodes by induction (\CatAL).
+  \item \lean{gte\_rulegte\_ten\_generations}: 1023 events at depth 10 (\CatAL).
+  \item \lean{perfectTree\_horton\_ratio}: Horton ratio $r_B = 2$ at all levels (\CatAL).
+\end{itemize}
+
+\subsection{The Queen Anne's Lace Structural Equivalence}
+
+The GTE causal graph (10 generations, 1023 nodes) is structurally equivalent to
+the Lindenmayer system $F \to F[+F][-F]$ at $\theta \approx 25^\circ$, $r \approx 0.70$
+— the canonical L-system model of \emph{Daucus carota} (Queen Anne's lace, a
+flowering plant in the Apiaceae family) \cite{SpivackGTECompleteFramework}.
+
+Five independent metrics agree:
+\begin{itemize}[itemsep=2pt]
+  \item Horton branching ratio $r_B = 2$ (\CatAL)
+  \item Strahler number 10
+  \item Fractal dimension $D \approx 1.943$
+  \item Depth 10
+  \item Bilateral symmetry
+\end{itemize}
+
+The shared computational primitive: \texttt{ruleGTE} creates 2 overlapping pairs
+from 1 (binary branching), exactly as meristematic apical cell division creates
+2 daughter cells.  This is a structural equivalence (\CatA) — a shared graph
+topology — not a formal isomorphism between cellular automaton dynamics and
+plant growth.  The physical significance is that the GTE causal graph's fractal
+structure has the Horton ratio $r_B = 2$ machine-certified as a theorem of the
+rule's combinatorics, not as a measured fit.
+
+%══════════════════════════════════════════════════════════════════════════════
+\section{Three Key Distinctions for Wolfram Physics Readers}
+\label{sec:distinctions}
+%══════════════════════════════════════════════════════════════════════════════
+
+Readers familiar with the Wolfram Physics Project should note three precise
+differences between GTE and the Wolfram approach.
+
+\subsection{Distinction 1: The CA Is the Certificate, Not the Substrate}
+
+The most important difference.  The Wolfram Physics Project proposes that the
+universe \emph{is} a hypergraph rule evolving on a hypergraph.
+
+GTE proves this cannot be exactly right: no finite cellular automaton can be the
+exact physical substrate of our universe.\\
+Machine-certified: \lean{no\_finite\_ca\_exact\_lorentz\_replica}
+(\CatAL, zero sorry) \cite{SpivackCompUniversality}.
+
+The reason: every CA with a finite lattice spacing has Lorentz-violating
+artifacts at that spacing.  The physical substrate must recover exact Lorentz
+invariance, which no lattice CA achieves.
+
+The GTE resolution is the two-level architecture:
+\begin{itemize}[itemsep=3pt]
+  \item \textbf{Level 1 (certificate):} The CMCA (the discrete CA) encodes the
+    structural constraints of the physical field via the Algebraic Lifting
+    Theorem (\CatAL).  It is an algebraic certificate, not the substrate.
+  \item \textbf{Level 2 (substrate):} The $\Phi_{\rm MDL}$ field is the actual
+    physical substrate — a continuous $\mathbb{Z}_7$-symmetric Klein-Gordon
+    field on $\mathbb{R}^{3+1}$.
+\end{itemize}
+GTE does not claim the universe IS a CA.  It proves the universe's physics has an
+algebraic certificate that IS a CA.  These are different claims, and the
+distinction matters enormously for Lorentz invariance and quantum mechanics.
+
+\subsection{Distinction 2: MDL Uniquely Selects the GTE Polynomial}
+
+The Wolfram Physics Project explores the space of rules computationally and
+compares to observation.  GTE selects the rule analytically.
+
+The polynomial $\poly = C + R - CR - LCR$ over $\mathrm{GF}(7)$ is the unique
+MDL-minimal description consistent with the PSC constraints — machine-certified
+in Lean~4, zero sorry \cite{SpivackGTEPolynomialWolfram}.  Every
+$\mathbb{Z}_N \times \mathbb{Z}_M$ competitor has been enumerated and
+eliminated.  MDL is the selection principle that digital physics has lacked.
+
+This means GTE does not search for rules; it derives the rule.
+
+\subsection{Distinction 3: Rule 110 Is a Theorem, Not a Postulate}
+
+In Wolfram's programme, Rule~110 was discovered by computational enumeration and
+its Turing universality proved by Matthew Cook (1994, published 2004).  It is an
+empirical discovery about which simple CA is computationally interesting.
+
+In GTE, Rule~110 is a theorem:
+\begin{equation*}
+  p\big|_{\{0,1\}^3} = \text{Rule~110},
+\end{equation*}
+machine-certified: \lean{rule110\_z7\_poly\_rep} (\CatAL, zero sorry,
+\texttt{native\_decide}) \cite{SpivackGTEPolynomialWolfram}.  Rule~110 is the
+binary restriction of the GTE polynomial, derived from the UGP orbit arithmetic.
+Since Rule~110 itself is Turing-universal by Cook's proof~\cite{Cook2004}, the
+substrate's Turing-universality follows as a structural consequence of this
+identity (\lean{phimdl\_turing\_universal}, \CatAL)
+\cite{SpivackCompUniversality}.
+
+%══════════════════════════════════════════════════════════════════════════════
+\section{The 19-Bit Program: Connecting MDL to Wolfram Language}
+\label{sec:19bit}
+%══════════════════════════════════════════════════════════════════════════════
+
+A central claim of GTE is that the universe's complete algorithmic description
+requires \textbf{19 bits}.  This is not an approximation; it is the MDL complexity
+of the GTE polynomial in its natural description class.
+
+\subsection{The 19-Bit Decomposition}
+
+\begin{table}[htbp]
+\centering
+\caption{The 19-bit decomposition of the GTE polynomial description.
+Each bit count is exact and follows from the structure of the polynomial
+representation class.}
+\label{tab:19bits}
+\begin{tabular}{lll}
+\toprule
+Component & Bits & What it encodes \\
+\midrule
+Rule~110 truth table & 8 & Binary outputs for all 8 binary inputs \\
+Prime modulus & 3 & $\lceil\log_2 7\rceil$ — selects the GF(7) alphabet \\
+Monomial selector & 5 & Which 4 of 8 basis monomials are nonzero \\
+Chirality & 1 & Left-right orientation (the chirality gauge) \\
+Coefficient signs & 2 & The $-1$ coefficients on $CR$ and $LCR$ \\
+\midrule
+\textbf{Total} & \textbf{19} & The complete GTE polynomial \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+For comparison, specifying the rule as a lookup table requires
+$343 \times \lceil\log_2 7\rceil = 343 \times 3 \approx 963$ bits.
+The polynomial representation is $963/19 \approx 50\times$ more compressed.
+
+\subsection{Wolfram Language Implementation}
+
+The three-tape CMCA that implements the GTE polynomial can be written directly
+in Wolfram Language using \texttt{CellularAutomaton} and \texttt{WolframModel}.
+The rule \texttt{ruleGTE} produces the causal graph discussed in
+\S\ref{sec:causal}.  The polynomial's 343 outputs can be verified by:
+
+\begin{center}
+\texttt{Table[Mod[C + R - C*R - L*C*R, 7], \{L,0,6\}, \{C,0,6\}, \{R,0,6\}]}
+\end{center}
+
+This generates the complete GTE update table from the polynomial formula.  The
+Rule~110 connection is verified by restricting to $\{L,C,R\} \in \{0,1\}^3$:
+the resulting 8 outputs match the Rule~110 truth table exactly.
+
+%══════════════════════════════════════════════════════════════════════════════
+\section{Open Questions at the Bridge}
+\label{sec:open}
+%══════════════════════════════════════════════════════════════════════════════
+
+Several questions at the GTE--Wolfram interface remain open.  Presenting them
+honestly is essential to the scientific record.
+
+\subsection{The Causal-Graph / Gorard Chain Correspondence}
+
+The Wolfram Physics programme identifies the emergent spacetime metric with the
+limiting structure of the causal graph.  Gorard's result shows that Einstein's
+equations appear in the continuum limit of appropriate causal graphs.
+
+GTE uses a related object: the \term{Gorard chain} (defined in P48) is a
+sequence of causal events in the $\Phi_{\rm MDL}$ field.  The \emph{precise
+correspondence} between the P48 Gorard-chain limit and the Wolfram Physics
+causal graph is stated as an open question in the GTE framework.  Both
+directions — GTE's and Wolfram's — point toward the same Einstein equations;
+whether they can be formally identified as the same limiting structure is not
+yet proven \cite{SpivackGTECompleteFramework}.
+
+\subsection{Quantum Mechanics from the Multiway System}
+
+The Wolfram Physics programme proposes that quantum mechanics emerges from paths
+through the multiway evolution graph.  GTE derives quantum mechanics — including
+the Born rule (\CatAL, \lean{born\_rule\_unconditional}) — from the
+$[D]$-weighted path integral over kink configurations.
+
+Whether the GTE $[D]$-weighting is the same mathematical object as the
+Wolfram-Gorard branch weights in the multiway graph is a precise open question
+at the interface of the two frameworks.
+
+%══════════════════════════════════════════════════════════════════════════════
+\section{Summary: What GTE Offers Wolfram Physics}
+\label{sec:summary}
+%══════════════════════════════════════════════════════════════════════════════
+
+\begin{tcolorbox}[colback=boxgreen,colframe=green!50!black,
+  title=The five contributions]
+\begin{enumerate}[itemsep=4pt]
+  \item \textbf{A derivation, not a search.}  GTE identifies the unique rule
+    (the GTE polynomial over GF(7)) from first principles, via PSC and MDL.
+    No exploration of rule space is required.
+
+  \item \textbf{Machine certification.}  The key steps — MDL uniqueness, Rule~110
+    as a theorem, the chirality census — are Lean~4 certified, zero sorry.
+    The derivation chain is formally verified.
+
+  \item \textbf{A 19-bit description.}  The GTE polynomial is the minimum
+    description of the universe's computational rule.  This connects Wolfram's
+    emphasis on simple rules to a precise bit-count theorem.
+
+  \item \textbf{The CA as certificate, not substrate.}  GTE resolves the
+    Lorentz-invariance tension in discrete physics by separating the algebraic
+    certificate (the CMCA) from the physical substrate (the $\Phi_{\rm MDL}$
+    field).
+
+  \item \textbf{A causal graph with certified structure.}  The GTE causal graph
+    from \texttt{ruleGTE} has machine-certified tree structure, Horton ratio, and
+    an explicit structural equivalence to a botanical branching system.
+\end{enumerate}
+\end{tcolorbox}
+
+\section*{Further Reading}
+\begin{tcolorbox}[colback=orange!8,colframe=orange!50!black,
+  title=\textbf{Primary Sources}]
+The results in this tutorial are derived in the following papers,
+all available open-access on Zenodo and at
+\href{https://novaspivack.com/research}{novaspivack.com/research}:
+\begin{itemize}[itemsep=2pt]
+  \item \textbf{P48 --- The Complete GTE Framework} (main synthesis monograph,
+    including the Wolfram Physics context chapter):\\
+        \href{https://doi.org/10.5281/zenodo.20560550}{doi.org/10.5281/zenodo.20560550}
+  \item \textbf{P49 --- MDL Selects the Wolfram Rule: $\mathbb{Z}_7$ Dynamics}
+        (the GTE--Wolfram bridge and the Direct-Interpolation Lift Theorem):\\
+        \href{https://doi.org/10.5281/zenodo.20572656}{doi.org/10.5281/zenodo.20572656}
+  \item \textbf{P28 --- Computational Universality and the Standard Model}
+        (no-CA-replica theorem; Turing universality from GTE):\\
+        \href{https://doi.org/10.5281/zenodo.20259513}{doi.org/10.5281/zenodo.20259513}
+  \item \textbf{P45 --- The Three-Tape Chiral Minkowski Cellular Automaton}
+        (the CMCA as the Level-1 algebraic certificate):\\
+        \href{https://doi.org/10.5281/zenodo.20465805}{doi.org/10.5281/zenodo.20465805}
+\end{itemize}
+Lean~4 machine proofs:
+\href{https://github.com/novaspivack/ugp-lean}{github.com/novaspivack/ugp-lean}
+\end{tcolorbox}
+
+\bibliography{../../papers/bib/Spivack_Papers_Bibliography}
+\end{document}

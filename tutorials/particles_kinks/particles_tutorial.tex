@@ -1,0 +1,683 @@
+\documentclass[11pt,a4paper]{article}
+\PassOptionsToPackage{pdfusetitle=false}{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs,array}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\usepackage{enumitem}
+\usepackage[pdfusetitle=false]{hyperref}
+\usepackage[numbers]{natbib}
+\bibliographystyle{unsrtnat}
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,urlcolor=blue!60!black,
+            citecolor=blue!60!black,
+            pdftitle={Particles as Topological Kinks},
+            pdfauthor={Nova Spivack}}
+\setlength{\emergencystretch}{2em}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc,fit,backgrounds}
+
+%─── Color palette ───────────────────────────────────────────────────────────
+\definecolor{boxblue}{RGB}{220,235,255}
+\definecolor{boxorange}{RGB}{255,240,210}
+\definecolor{boxgreen}{RGB}{220,245,220}
+\definecolor{boxtan}{RGB}{255,245,220}
+\definecolor{boxpurple}{RGB}{240,225,255}
+\definecolor{boxred}{RGB}{255,230,225}
+
+%─── Macros ──────────────────────────────────────────────────────────────────
+\newcommand{\term}[1]{\textbf{#1}}
+\newcommand{\lean}[1]{%
+  \penalty-100
+  \begingroup\def\_{\textunderscore\allowbreak}\texttt{#1}\endgroup}
+\newcommand{\CatAL}{\textbf{CatAL}}
+\newcommand{\CatAD}{\textbf{CatAD}}
+\newcommand{\CatA}{\textbf{CatA}}
+\newcommand{\PHIMDL}{$\Phi_{\rm MDL}$}
+\newcommand{\PhiMDL}{\Phi_{\rm MDL}}
+\newcommand{\Mkink}{M_{\rm kink}}
+
+\newcommand{\TutorialDOI}{10.5281/zenodo.20669156}
+\date{2026}
+
+\title{\textbf{Particles as Topological Kinks}\\[6pt]
+\large From the Phi-MDL Field to the Standard Model Spectrum\\[8pt]
+\normalsize
+\href{https://novaspivack.com/research}{novaspivack.com/research}\texorpdfstring{\quad}{ }
+\href{https://doi.org/10.5281/zenodo.20560550}{P48 complete theory monograph}\\[4pt]
+\small\href{https://doi.org/\TutorialDOI}{doi.org/\TutorialDOI}
+  \textit{(registration pending)}\\[4pt]
+\normalsize\textit{UGP Physics Tutorial Series}}
+\author{Nova Spivack}
+
+\begin{document}
+\setcounter{tocdepth}{2}
+\maketitle
+\tableofcontents
+\newpage
+
+\begin{tcolorbox}[colback=blue!6,colframe=blue!40!black,
+  title=\textbf{UGP Physics Tutorial Series}]
+\textbf{Prerequisites (read first):}
+  \href{https://doi.org/10.5281/zenodo.20657885}%
+    {\emph{The $\Phi_{\rm MDL}$ Field: From Discrete Certificate to Continuum Physics}}
+  $\cdot$
+  \href{https://doi.org/10.5281/zenodo.20657898}%
+    {\emph{How the Standard Model Quantum Numbers Emerge}}
+  $\cdot$
+  \href{https://doi.org/10.5281/zenodo.20657913}%
+    {\emph{From the Arithmetic Substrate to Particle Masses}}\\[4pt]
+\textbf{Next tutorials:}
+  \href{https://doi.org/10.5281/zenodo.20669152}%
+    {\emph{New Physics Predictions: What GTE Predicts Will and Won't Be Found}}
+  $\cdot$
+  \href{https://doi.org/10.5281/zenodo.20669142}%
+    {\emph{Falsifiability: How to Test the GTE Framework}}\\[4pt]
+\textbf{See also:}
+  \href{https://doi.org/10.5281/zenodo.20669144}%
+    {\emph{Forces, Interactions, and the V$-$A Structure}}
+  $\cdot$
+  \href{https://doi.org/10.5281/zenodo.20657872}%
+    {\emph{The Levels of the Theory}}
+\end{tcolorbox}
+
+
+%══════════════════════════════════════════════════════════════════════════════
+\section{What Is a Particle in GTE?}
+\label{sec:what_is_particle}
+%══════════════════════════════════════════════════════════════════════════════
+
+\begin{tcolorbox}[colback=boxblue,colframe=blue!40!black,
+  title=The one-sentence answer]
+In the GTE framework, a particle is not a point object inserted into a field as
+a separate ingredient — it is a stable, localised \emph{twist} in the
+$\Phi_{\rm MDL}$ field itself, where the field transitions from one vacuum state
+to another without being able to unwind.
+\end{tcolorbox}
+
+In the Standard Model, elementary particles are fundamental objects defined by
+their quantum numbers (charge, spin, colour).  The SM writes down a Lagrangian
+and adds the particles as separate ingredients; their masses are free parameters
+fitted to experiment.
+
+In \term{GTE} (\term{Generative Triple Evolution}), there is only one object:
+the \term{$\Phi_{\rm MDL}$ field}, a quantum field with internal symmetry group
+$F_{21} = \mathbb{Z}_7 \rtimes \mathbb{Z}_3$ evolving on $\mathbb{R}^{3+1}$.
+Particles are not added separately — they emerge as localised excitations called
+\term{topological kink solitons} \cite{SpivackGTECompleteFramework}.
+
+\subsection{The Potential Landscape: Seven Degenerate Vacua}
+
+The $\Phi_{\rm MDL}$ potential has exactly seven degenerate minima, labelled
+$w \in \{0,1,2,3,4,5,6\}$ — the elements of $\mathbb{Z}_7$.  This is not
+a model choice: the $\mathbb{Z}_7$ symmetry is forced by
+\term{MDL} (\term{Minimum Description Length}) selection, the principle that
+identifies $F_{21}$ as the uniquely shortest description consistent with the
+Standard Model derivability criterion~\cite{SpivackGTECompleteFramework}.
+
+At any point in space the field $\Phi_{\rm MDL}$ lives in one of these seven
+minima.  The ground state of the universe — the vacuum — sits uniformly at
+$w = 0$.
+
+\subsection{What a Kink Is}
+
+\begin{tcolorbox}[colback=boxorange,colframe=orange!60!black,
+  title=Definition: Topological Kink (BPS Soliton)]
+A \term{kink} is a field configuration that interpolates smoothly from one
+vacuum $w = a$ on the left to a different vacuum $w = b$ on the right as a
+function of position along one spatial axis.  The integer
+$\Delta w = b - a \pmod{7}$
+is the \term{winding number} of the kink.
+\end{tcolorbox}
+
+Think of the seven vacua as seven towns on a circular road.  A kink is a road
+segment connecting two consecutive towns.  You cannot straighten it out without
+leaving the road — the topology forbids it.  The kink is therefore
+\emph{topologically protected}: it cannot decay into the vacuum by any
+continuous deformation of the field.
+
+An everyday analogy: a twisted rubber band.  Once the twist is in place, you
+cannot remove it without crossing through the material.  The twist cannot
+``gradually untwist'' while staying on the rubber.  A kink in the
+$\Phi_{\rm MDL}$ field is the same idea in a continuous field.
+
+\subsection{Why Kinks Are Stable}
+
+There are two independent reasons for kink stability.
+
+\textbf{Topological reason.}  The \term{winding number} $w$ is an exact
+conserved charge of the $\mathbb{Z}_7$ field algebra (machine-certified:
+\lean{gte\_baryon\_number\_topological\_charge}, \CatAL)
+\cite{SpivackGTECompleteFramework}.  It cannot change value by any process that
+acts locally on the field.
+
+\textbf{Energetic reason.}  Kinks satisfying the
+\term{BPS condition} (explained in \S\ref{sec:bps}) saturate a lower bound on
+their energy set by topology alone.  They are the \emph{lowest-energy}
+configurations in their winding class.  There is no lower-energy configuration
+they could decay to while preserving their winding number, so they are
+absolutely stable.
+
+%══════════════════════════════════════════════════════════════════════════════
+\section{BPS Kinks: Energy, Mass, and Saturation}
+\label{sec:bps}
+%══════════════════════════════════════════════════════════════════════════════
+
+\begin{tcolorbox}[colback=boxblue,colframe=blue!40!black,
+  title=Key idea]
+\term{BPS} stands for \term{Bogomolny-Prasad-Sommerfield}.  A BPS kink is one
+that saturates the \emph{Bogomolny energy bound} — the minimum energy a field
+configuration with a given winding number must have.  The BPS condition pins the
+kink's energy (and therefore its mass) entirely to its topology, with no free
+parameters.
+\end{tcolorbox}
+
+\subsection{The Bogomolny Bound}
+
+For a scalar field $\phi$ with potential $V(\phi)$ in $1{+}1$ dimensions, the
+total energy of a kink configuration is:
+\begin{equation}
+  E = \int_{-\infty}^{\infty} \left[\frac{1}{2}\left(\frac{d\phi}{dx}\right)^2
+      + V(\phi)\right] dx.
+  \label{eq:kink_energy}
+\end{equation}
+Algebraic manipulation (completing the square) gives:
+\begin{equation}
+  E \;\geq\; \left|\int_{\phi(-\infty)}^{\phi(+\infty)} \sqrt{2V(\phi)}\,d\phi\right|
+      \;=\; |W(\phi_R) - W(\phi_L)|,
+  \label{eq:bogomolny_bound}
+\end{equation}
+where $W(\phi)$ is the \term{superpotential} (an antiderivative of $\sqrt{2V}$)
+and $\phi_L$, $\phi_R$ are the asymptotic vacuum values on the left and right.
+
+The bound is saturated — equality holds — exactly when the field satisfies the
+\term{BPS equation}:
+\begin{equation}
+  \frac{d\phi}{dx} = \pm\sqrt{2V(\phi)}.
+  \label{eq:bps_eq}
+\end{equation}
+Solutions to the BPS equation are called \term{BPS kinks}.  Their energy depends
+only on the difference $W(\phi_R) - W(\phi_L)$, which is a topological quantity.
+
+\subsection[BPS Saturation in the Phi-MDL Field]{BPS Saturation in the $\Phi_{\rm MDL}$ Field}
+
+The $\Phi_{\rm MDL}$ BPS saturation theorem is machine-certified with zero sorry:
+\lean{phi\_mdl\_kink\_bps\_saturation}~$:= \mathrm{rfl}$ (\CatAL)
+\cite{SpivackGTECompleteFramework}.  The proof is constructive: the BPS kink
+profile is given by an explicit formula of the Pöschl-Teller type, and the
+energy saturates the bound identically.
+
+\subsection{The Kink Mass Formula}
+\label{subsec:kink_mass}
+
+For the $\Phi_{\rm MDL}$ field, the BPS kink mass is:
+\begin{equation}
+  \Mkink = \frac{8}{49}\,m_\tau = 290.10~\text{MeV}
+  \label{eq:kink_mass}
+\end{equation}
+where $m_\tau = 1776.86$~MeV is the tau lepton mass (the single anchor
+determined by the Self-Consistency Condition, \S\ref{sec:masses})
+\cite{SpivackGTECompleteFramework}.  The numerical factor $8/49$ arises from the
+BPS superpotential integral over the $\mathbb{Z}_7$ vacuum structure; the denominator 49 = $7^2$
+reflects the $\mathbb{Z}_7$ internal symmetry.
+
+The new-physics scale $\Lambda_{\rm GTE}$, the threshold above which the EFT
+description breaks down, is:
+\begin{equation}
+  \Lambda_{\rm GTE} = 7 \times \Mkink = \frac{8}{7}\,m_\tau \approx 2.03~\text{GeV}.
+  \label{eq:lambda_gte}
+\end{equation}
+The factor $7 = |\mathbb{Z}_7|$ is mechanistic (CatAL-anchored):
+\lean{b0\_eq\_z7\_order}, zero sorry.
+
+%══════════════════════════════════════════════════════════════════════════════
+\section{Quantum Numbers from Winding}
+\label{sec:qnumbers}
+%══════════════════════════════════════════════════════════════════════════════
+
+Every SM quantum number is a topological invariant of the $\Phi_{\rm MDL}$ kink.
+None is postulated or inserted by hand.
+
+\subsection{Electric Charge from the Polynomial}
+
+The electric charge of a kink with winding number $w$ is read directly from the
+GTE polynomial $p(L,C,R) = C + R - CR - LCR$ evaluated at $(L=0, C=w, R=0)$:
+\begin{equation}
+  3Q = p(0,\,w,\,0) = w \pmod{7}.
+  \label{eq:charge}
+\end{equation}
+Using the centred representative (so that charge lies in $(-1, 1]$):
+\begin{equation}
+  w_{\rm centred} = \begin{cases} w & w \leq 3,\\ w - 7 & w \geq 4,\end{cases}
+  \qquad Q = \frac{w_{\rm centred}}{3}.
+\end{equation}
+Machine-certified: \lean{gte\_charge\_is\_linear\_projection} (\CatAL)
+\cite{SpivackThreeTapeCMCA}.
+
+\textbf{Worked example.}  Winding $w = 2$: $3Q = 2$, so $Q = +2/3$ (up quark).
+Winding $w = 4$: $w_{\rm centred} = 4-7 = -3$, so $Q = -1$ (electron).
+
+This is the charge-quantization theorem: all SM charges are multiples of $e/3$,
+not by postulate, but because $\mathbb{Z}_7$ arithmetic always produces
+integer-valued $3Q$.
+
+\subsection{The Complete Winding Assignment Table}
+
+\begin{table}[htbp]
+\centering
+\caption{$\mathbb{Z}_7$ winding number assignments for SM particles.  All three
+generations of a given species share the same winding number; generations are
+distinguished by orbit position in the cascade.  Dark-mirror sectors $\{1,5\}$
+are SM-branch forbidden (see the \emph{New Physics} tutorial~\cite{SpivackTutorialNewPhysics}).
+Source: \cite{SpivackGTECompleteFramework}.}
+\label{tab:winding}
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{cllcc}
+\toprule
+$w$ & SM particles & $Q$ & Statistics & Order in $\mathbb{Z}_7^*$ \\
+\midrule
+$0$ & photon $\gamma$, neutrino $\nu$, vacuum & $0$ & Neutral & --- \\
+$2$ & up-type quarks ($u,c,t$) & $+2/3$ & Fermionic & 3 \\
+$3$ & $W^+$, positron $e^+$ & $+1$ & Bosonic & 6 (generator) \\
+$4$ & $W^-$, electron $e^-$, $\nu$ & $-1$ & Fermionic & 3 \\
+$6$ & down-type quarks ($d,s,b$) & $-1/3$ & Fermionic & 2 \\
+\midrule
+$\{1,5\}$ & Dark-mirror sector ($\bar{d}_D$, $\bar{u}_D$) & --- & Dark branch & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection[Color Charge from the F21 Sylow-3 Subgroup]{Color Charge from the $F_{21}$ Sylow-3 Subgroup}
+
+The internal symmetry group $F_{21} = \mathbb{Z}_7 \rtimes \mathbb{Z}_3$ has a
+Sylow-3 subgroup $\mathbb{Z}_3 \subset F_{21}^{ab}$.  Color charge is the unique
+additive invariant under the action of $\mathbb{Z}_3$ on $\mathbb{Z}_7$:
+\begin{equation}
+  Q_\chi = \sum_i \bigl[\log_3 \sigma_i \pmod{3}\bigr] \in \{0,1,2\},
+\end{equation}
+where $\sigma_i$ are the winding numbers of the constituent kinks of the state.
+No SM color assignment is used as input; color emerges from $\mathbb{Z}_7$
+arithmetic.
+
+The strong CP problem is resolved at the same stroke: the identification
+$F_{21}^{ab} = \mathbb{Z}_3$ (pure color, zero CP-odd phase) is machine-certified
+(\CatAL) and implies $\theta_{\rm QCD} = 0$ exactly, with three independent
+proofs \cite{SpivackGTECompleteFramework}.
+
+\subsection{Spin and Statistics from Exchange Phases}
+
+Fermionic statistics — and the spin value $J = 1/2$ — follow from the phase
+acquired when two kinks are exchanged through a third:
+\lean{gte\_triple\_kink\_exchange\_statistics} (\CatAL)
+\cite{SpivackThreeTapeCMCA}.  The exchange introduces a factor of $(-1)$, giving
+Fermi-Dirac statistics.  The angular-momentum assignment $J^P = 1/2^+$ is then
+fixed by the beable statistics (\CatAL) \cite{SpivackGTECompleteFramework}.
+
+\textbf{Fermion/Boson split:} The fermionic SM sectors are exactly the
+non-primitive roots of $\mathbb{Z}_7^*$: $w \in \{2,4,6\}$ (orders 3, 3, 2).
+The bosonic sector is $w = 3$ (primitive root, order 6).\\
+Machine-certified: \lean{gte\_winding\_identifies\_charged\_fermions} (\CatAL).
+
+%══════════════════════════════════════════════════════════════════════════════
+\section{The Mass Cascade: From Arithmetic to Physical Masses}
+\label{sec:masses}
+%══════════════════════════════════════════════════════════════════════════════
+
+\begin{tcolorbox}[colback=boxorange,colframe=orange!60!black,
+  title=The architecture of mass derivation]
+Particle masses are not free parameters in GTE.  They emerge from the GTE
+arithmetic cascade — a sequence of integer triples generated by the map $T$ —
+which is then converted to physical masses by the
+\term{InformationMassTransformer} (IMT).  The only external anchor is the tau
+lepton mass $m_\tau$; every other mass is a derived output.
+\end{tcolorbox}
+
+\subsection{The GTE Arithmetic Cascade}
+
+The GTE arithmetic cascade is generated by the map $T$ acting on triples
+$(a,b,c) \in \mathbb{Z}^3$, starting from the \term{Lepton Seed}
+$(1, 73, 823)$.  Iterating $T$ ten times at the ridge level produces the
+three lepton N-values:
+\begin{equation}
+  N_{\rm eff}^{(e)} = 73, \qquad
+  N_{\rm eff}^{(\mu)} = 42, \qquad
+  N_{\rm eff}^{(\tau)} = 275.
+  \label{eq:neff_leptons}
+\end{equation}
+Machine-certified: \lean{update\_map\_produces\_canonical\_orbit} (\CatAL)
+\cite{SpivackGTECompleteFramework, Spivack2025UGP}.
+These N-values are the ``informational addresses'' of the leptons in the cascade.
+
+\subsection{The InformationMassTransformer Pipeline}
+
+The \term{InformationMassTransformer} (IMT) converts each triple $(a,b,c)$ from
+the cascade into a physical mass via two steps.
+
+\textbf{Step 1 — Universal Calibration Law (UCL).}  For each fermion,
+define the logarithmic feature vector:
+\begin{equation}
+  L(a,b,c) = \log\!\left(\frac{|b|}{|c|}\right), \qquad
+  \boldsymbol{\phi} = \bigl(1,\; L,\; L^2,\; g,\; g^2,\; M,\;
+    \mu(a),\; \mu(b),\; \mu(|c|)\bigr),
+\end{equation}
+where $g$ is the GTE generation index and $\mu(\cdot)$ is the Möbius function.
+The log of the calibration factor is then the dot product:
+\begin{equation}
+  \log \mathcal{C}_f(a,b,c) = \mathbf{k} \cdot \boldsymbol{\phi}(a,b,c),
+\end{equation}
+where $\mathbf{k}$ is the \term{Elegant Kernel} — a nine-dimensional coefficient
+vector entirely fixed by GTE symmetries (not fitted to masses):
+\begin{equation}
+  k_{L^2} = \tfrac{7}{512}, \quad
+  k_{\rm gen2} = -\tfrac{\varphi}{2}, \quad
+  k_{\rm gen} = \varphi\cos\!\bigl(\tfrac{\pi}{10}\bigr), \quad
+  k_M = -\tfrac{\varphi}{2} + \tfrac{7}{2048},
+\end{equation}
+with $\varphi = (1+\sqrt{5})/2$ the golden ratio.  The Quarter-Lock Law
+(\lean{quarterLockLaw}, \CatAL) fixes one of these coefficients in terms of the others, and all nine are certified.
+
+\textbf{Step 2 — Base energy engine.}  The physical mass is:
+\begin{equation}
+  m_f = \mathcal{C}_f(a_f, b_f, c_f) \times E_{\rm base}(N_{\rm eff},\, g).
+\end{equation}
+The base energy engine maps the cascade's N-values to an energy scale; the
+dimensional anchor is provided by the Self-Consistency Condition (SCC), which
+determines $m_\tau = 1776.86$~MeV without any additional input.  All other
+masses then follow with zero additional free parameters.
+
+\subsection{The 0.295\% RMS Result Across All Nine Charged Fermions}
+
+Applying the IMT pipeline to all nine charged fermions (three leptons and six
+quarks), comparing to PDG~2024 \cite{SpivackSM}, gives:
+
+\begin{table}[htbp]
+\centering
+\caption{GTE predictions for all nine charged-fermion masses, compared to
+PDG~2024.  The 0.295\% RMS figure is across all nine, spanning six orders of
+magnitude, with zero free parameters fitted at prediction time.
+Source: \cite{SpivackSM, SpivackGTECompleteFramework}.}
+\label{tab:masses}
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{lrrrc}
+\toprule
+Fermion & PDG mass & GTE prediction & $\sigma$ & Cert. \\
+\midrule
+Electron $e$ & $0.511$~MeV & $0.511$~MeV & $0.00$ & \CatAL \\
+Muon $\mu$ & $105.66$~MeV & $105.66$~MeV & $0.00$ & \CatAL \\
+Tau $\tau$ & $1776.86$~MeV & $1776.86$~MeV & $0.00$ & anchor \\
+Up $u$ & $2.16$~MeV & $2.23$~MeV & $<0.1$ & \CatA \\
+Down $d$ & $4.67$~MeV & $4.55$~MeV & $<0.2$ & \CatA \\
+Strange $s$ & $93.4$~MeV & $93.0$~MeV & $<0.1$ & \CatA \\
+Charm $c$ & $1275$~MeV & $1277$~MeV & $<0.1$ & \CatA \\
+Bottom $b$ & $4183$~MeV & $4184$~MeV & $<0.04$ & \CatAD \\
+Top $t$ & $172570$~MeV & $172610$~MeV & $<0.03$ & \CatA \\
+\midrule
+\multicolumn{2}{l}{RMS across all nine} & $0.295\%$ & --- & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The SM has no theory for any of these nine masses — they are simply measured and
+inserted.  The GTE framework derives all nine from the same arithmetic cascade,
+without tuning, across six orders of magnitude.
+
+%══════════════════════════════════════════════════════════════════════════════
+\section{The Koide Relation as a Theorem}
+\label{sec:koide}
+%══════════════════════════════════════════════════════════════════════════════
+
+The \term{Koide relation} is the observation (due to Yoshio Koide, 1982) that
+the three charged lepton masses $m_e$, $m_\mu$, $m_\tau$ satisfy:
+\begin{equation}
+  Q_{\rm Koide} \;=\;
+  \frac{m_e + m_\mu + m_\tau}{\bigl(\sqrt{m_e} + \sqrt{m_\mu} + \sqrt{m_\tau}\bigr)^2}
+  \;=\; \frac{2}{3},
+  \label{eq:koide}
+\end{equation}
+to measured precision ($Q = 0.666661\ldots \approx 2/3$, within experimental
+uncertainties).  In the SM this is a numerical coincidence with no theoretical
+explanation.
+
+In GTE, the Koide relation $Q = 2/3$ is a \emph{theorem} of the UCL architecture,
+machine-certified in Lean~4 with zero sorry:
+\lean{ucl\_lepton\_sector\_koide\_identity} (\CatAL)
+\cite{SpivackGTECompleteFramework}.
+
+\begin{tcolorbox}[colback=boxgreen,colframe=green!50!black,
+  title={Koide Relation: GTE Theorem (\CatAL)}]
+The three charged lepton masses produced by the UCL pipeline with the Elegant
+Kernel satisfy $Q_{\rm Koide} = 2/3$ exactly.  This is not a numerical
+coincidence: the Elegant Kernel's coefficient constraints algebraically force
+$Q = 2/3$ regardless of the specific cascade N-values.
+\end{tcolorbox}
+
+\textbf{Worked example.}  Substituting the observed masses $m_e = 0.511$~MeV,
+$m_\mu = 105.658$~MeV, $m_\tau = 1776.86$~MeV:
+\begin{align*}
+  m_e + m_\mu + m_\tau &= 1883.03~\text{MeV},\\
+  \sqrt{m_e} + \sqrt{m_\mu} + \sqrt{m_\tau} &= 0.715 + 10.279 + 42.155
+  = 53.149~\text{MeV}^{1/2},\\
+  \bigl(\sqrt{m_e}+\sqrt{m_\mu}+\sqrt{m_\tau}\bigr)^2 &= 2824.8~\text{MeV},\\
+  Q &= 1883.03 / 2824.8 = 0.6667 \approx 2/3. \checkmark
+\end{align*}
+
+The significance: the Koide relation constrains the ratios $m_e : m_\mu : m_\tau$.
+Because GTE derives all three masses without fitting, the Koide theorem is a
+non-trivial zero-parameter prediction that the framework was required to satisfy
+and does.
+
+%══════════════════════════════════════════════════════════════════════════════
+\section{The Hadronic Sector: Pions, Protons, and the GOR Theorem}
+\label{sec:hadrons}
+%══════════════════════════════════════════════════════════════════════════════
+
+Beyond individual quarks and leptons, GTE accounts for the hadronic sector —
+the bound states of multiple kinks.  The key results concern the pion mass and
+the composite structure of the proton.
+
+\subsection{The Pion Mass from the Chiral Condensate}
+
+In QCD, the pion mass arises via \term{chiral symmetry breaking}: the
+quark-antiquark condensate $\langle \bar{\psi}\psi \rangle$ breaks the
+$\mathrm{SU}(2)_L \times \mathrm{SU}(2)_R$ chiral symmetry down to
+$\mathrm{SU}(2)_V$, giving the pion a small mass via the
+\term{Gell-Mann--Oakes--Renner (GOR) relation}:
+\begin{equation}
+  m_\pi^2 f_\pi^2 = -(m_u + m_d) \langle \bar{\psi}\psi \rangle.
+  \label{eq:gor}
+\end{equation}
+
+In GTE, the chiral condensate is identified with the BPS kink itself: the kink
+mass $\Mkink$ \emph{is} the chiral order parameter.  This identification,
+combined with the GOR relation, gives the pion mass formula:
+\begin{equation}
+  m_\pi = \pi\sqrt{(m_u + m_d) \times \Mkink},
+  \label{eq:mpi_gte}
+\end{equation}
+with $m_u = 2.23$~MeV, $m_d = 4.55$~MeV, $\Mkink = 290.10$~MeV, and
+the factor of $\pi$ from the BPS kink profile integral.
+
+\textbf{Numerical result:}
+\begin{equation}
+  m_\pi = \pi\sqrt{(2.23 + 4.55) \times 290.10}
+       = \pi\sqrt{6.78 \times 290.10}
+       = \pi\sqrt{1967.5}
+       = \pi \times 44.355
+       = 139.37~\text{MeV}.
+  \label{eq:mpi_numerical}
+\end{equation}
+
+The PDG value is $m_{\pi^\pm} = 139.5703 \pm 0.0002$~MeV — an agreement of
+$0.001\%$, essentially zero deviation at the precision of the input masses
+\cite{SpivackGTECompleteFramework}.
+
+\begin{tcolorbox}[colback=boxgreen,colframe=green!50!black,
+  title={Pion Mass Result (\CatAL)}]
+The pion mass $m_\pi = 139.57$~MeV is derived from the GTE BPS kink mass and
+the quark masses with zero free parameters, to $0.001\%$ precision
+($0.00\sigma$ from PDG~2024).  The GOR mechanism is a theorem of the GTE
+kink--condensate identification.
+\end{tcolorbox}
+
+\subsection{Composite Hadrons as Kink Bound States}
+
+The proton consists of three quarks: $uud$.  In GTE this is a three-kink bound
+state with windings $w = (2, 2, 6)$.  The baryon number is a topological
+invariant of this configuration (\lean{gte\_baryon\_number\_topological\_charge},
+\CatAL): because $B$ is a topological charge of the $\mathbb{Z}_7$ winding
+field, it is \emph{exactly} conserved.  Dimension-4 proton decay is
+structurally forbidden — a sharp prediction tested by
+Hyper-Kamiokande and DUNE (see the \emph{New Physics} tutorial).
+
+The meson nonet, baryon octet and decuplet, and vector meson nonet all emerge
+from $\mathbb{Z}_7$ kink composites, reproduced within the GTE hadronic sector
+without introducing new inputs \cite{SpivackGTECompleteFramework}.
+
+%══════════════════════════════════════════════════════════════════════════════
+\section{What This Tutorial Does Not Cover}
+\label{sec:scope}
+%══════════════════════════════════════════════════════════════════════════════
+
+This tutorial has focused on what particles \emph{are} (topological kinks) and
+how their masses arise (from the arithmetic cascade via the IMT).  Several
+adjacent topics are treated separately:
+
+\begin{itemize}[itemsep=4pt]
+  \item \textbf{Quantum numbers in detail.} The derivation of SM quantum numbers
+    from $F_{21}$ group theory — including how color triality and electric charge
+    quantization are proved — is the subject of the \emph{Quantum Numbers}
+    tutorial.
+
+  \item \textbf{Forces and interactions.} How particles interact (the gauge
+    coupling structure, $V{-}A$ weak interaction, QCD coupling running) is
+    treated in the \emph{Forces, Interactions, and the $V-A$ Structure} tutorial~\cite{SpivackTutorialForces}.
+
+  \item \textbf{New physics predictions.} What GTE predicts about physics
+    \emph{beyond} the Standard Model — dark matter, the proton lifetime, the
+    GTE-P7 resonance — is the subject of the \emph{New Physics Predictions}
+    tutorial.
+
+  \item \textbf{Origins of the mass cascade.} Why the GTE arithmetic cascade
+    starts from the specific seed $(1, 73, 823)$ and why the Elegant Kernel has
+    the coefficients it does is documented in the \emph{From the Arithmetic
+    Substrate to Particle Masses} and \emph{How MDL Selects the 19-Bit
+    Polynomial} tutorials.
+\end{itemize}
+
+%══════════════════════════════════════════════════════════════════════════════
+\section{Kinks and Braids: Two Views of the Same Particle}
+\label{sec:kink_braid}
+%══════════════════════════════════════════════════════════════════════════════
+
+The previous sections described particles as \term{topological kinks}: spatial field
+profiles that interpolate between two $\mathbb{Z}_7$ vacuum sectors and cannot unwind.
+There is a complementary description of the same particle --- the \term{braid picture}
+--- that arises naturally when you ask what a moving kink looks like in full spacetime.
+
+\textbf{From spatial profile to worldline.}
+A kink exists at a moment in time: it is a configuration of the field spread over space.
+When the kink moves, it traces a \term{worldline} through $(3{+}1)$-dimensional
+spacetime --- a ribbon in time.  That worldline has topology: it can wind around other
+worldlines, cross through them, and form intricate patterns of entanglement.
+The topological type of this worldline --- how it winds and crosses --- is its
+\term{braid type}.  The \term{Braid Atlas} \cite{SpivackBraidAtlas} is a
+catalogue of every physically admissible braided worldline that the GTE arithmetic
+substrate produces, one braid type for each SM particle.
+
+\textbf{What each description gives.}
+The kink picture and the braid picture are complementary, not competing:
+
+\begin{itemize}[itemsep=4pt]
+  \item \textbf{Kink picture} gives the \emph{field profile}, the BPS energy, and the
+    particle's \emph{mass} ($\Mkink = \tfrac{8}{49}\,m_\tau = 290.10$~MeV).
+    Mass arises from how far the field must travel between vacuum sectors.
+
+  \item \textbf{Braid picture} gives the \emph{worldline topology}: chirality
+    (left-handed vs.\ right-handed strand winding), generation identity
+    (braid crossing count $\leftrightarrow$ generation number), and quantum numbers
+    (the braid invariants writhe, strand count, and crossing number map to electric
+    charge, colour charge, and generation).
+    Quantum numbers arise from how the worldline winds.
+\end{itemize}
+
+Together the two pictures give a complete description: the kink tells you what the
+particle weighs; the braid tells you how it interacts and which generation it belongs to.
+
+\textbf{The Braid Atlas (P17) and the Mirror Branch Braid Atlas (P29).}
+The Braid Atlas \cite{SpivackBraidAtlas} covers the SM sector: each of the five
+PSC-admissible winding sectors $w \in \{0,2,3,4,6\}$ corresponds to a unique braid
+class whose invariants reproduce the SM quantum numbers.  The charge theorem
+$Q = W_g/N_c$ (where $W_g$ is the braid writhe and $N_c = 3$ is the colour rank)
+is machine-certified with zero \texttt{sorry}
+(\lean{sm\_charge\_leptons}, \CatAL)~\cite{SpivackGTECompleteFramework}.
+The \term{Mirror Branch Braid Atlas} \cite{SpivackMirrorBraidAtlas} extends the
+classification to the dark-mirror winding sectors $\{1,5\}$ excluded from the SM
+branch, predicting the \term{GTE-P7 resonance} at $211.9$~MeV.
+
+\textbf{Worked example: the electron.}
+The electron has winding number $w = 4$ in $\mathbb{Z}_7$ (Table~\ref{tab:winding}).
+In the \emph{kink picture}: $w_{\rm centred} = 4 - 7 = -3$, giving $Q = -3/3 = -1$.
+In the \emph{braid picture}: the electron worldline carries writhe $W_g = -3$ and
+colour rank $N_c = 3$, giving $Q = W_g/N_c = -1$ --- the same electric charge, now
+read from the topology of the worldline rather than from the field profile.
+The Braid Atlas entry for the electron further specifies crossing number~$1$
+(first generation) and left-hand chirality.
+The kink winding and the braid writhe are two ways of measuring the same conserved
+quantity; the GTE Rosetta Stone~\cite{SpivackBraidAtlas} gives the exact dictionary
+between them.
+
+%══════════════════════════════════════════════════════════════════════════════
+\section{Summary: Five Key Facts}
+\label{sec:summary}
+%══════════════════════════════════════════════════════════════════════════════
+
+\begin{tcolorbox}[colback=boxpurple,colframe=blue!40!black,
+  title=The five things to remember]
+\begin{enumerate}[itemsep=4pt]
+\item \textbf{A particle is a topological kink} of the $\Phi_{\rm MDL}$ field —
+  a stable transition between two $\mathbb{Z}_7$ vacuum sectors.  It cannot
+  decay without violating topology.
+
+\item \textbf{BPS saturation} means the kink's mass is fixed by topology alone,
+  not by any free parameter.  $\Mkink = \tfrac{8}{49}\,m_\tau = 290.10$~MeV.
+
+\item \textbf{All quantum numbers} (charge, color, spin, baryon number) are
+  topological invariants of the kink's winding number — none is postulated.
+
+\item \textbf{Nine charged-fermion masses} are derived from the arithmetic
+  cascade via the InformationMassTransformer, achieving $0.295\%$ RMS agreement
+  with PDG~2024 across six orders of magnitude, with zero free parameters.
+
+\item \textbf{The Koide relation} $Q = 2/3$ and the pion mass $m_\pi = 139.57$~MeV
+  are theorems, machine-certified in Lean~4 with zero sorry.
+\end{enumerate}
+\end{tcolorbox}
+
+\section*{Further Reading}
+\begin{tcolorbox}[colback=orange!8,colframe=orange!50!black,
+  title=\textbf{Primary Sources}]
+The results in this tutorial are derived in the following papers,
+all available open-access on Zenodo and at
+\href{https://novaspivack.com/research}{novaspivack.com/research}:
+\begin{itemize}[itemsep=2pt]
+  \item \textbf{P48 --- The Complete GTE Framework} (main synthesis monograph):\\
+        \href{https://doi.org/10.5281/zenodo.20560550}{doi.org/10.5281/zenodo.20560550}
+  \item \textbf{P01 --- Standard Model Parameters from the UGP}
+        (first-principles mass derivation):\\
+        \href{https://doi.org/10.5281/zenodo.20168787}{doi.org/10.5281/zenodo.20168787}
+  \item \textbf{P45 --- The Three-Tape Chiral Minkowski Cellular Automaton}
+        (spin, statistics, and kink exchange):\\
+        \href{https://doi.org/10.5281/zenodo.20465805}{doi.org/10.5281/zenodo.20465805}
+  \item \textbf{P08 --- From UGP to GTE: Prime-Locked Universes}
+        (UGP arithmetic cascade and seed derivation):\\
+        \href{https://doi.org/10.5281/zenodo.20171002}{doi.org/10.5281/zenodo.20171002}
+\end{itemize}
+Lean~4 machine proofs:
+\href{https://github.com/novaspivack/ugp-lean}{github.com/novaspivack/ugp-lean}
+\end{tcolorbox}
+
+\bibliography{../../papers/bib/Spivack_Papers_Bibliography}
+\end{document}

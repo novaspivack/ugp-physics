@@ -1,0 +1,136 @@
+# Configuration for Normalized Flow Theoretical Implementation
+# Based on expert analysis: Unit-consistent scaling with generator normalization
+
+experiment:
+  name: ugp_yukawa_ckm_pmns_flow_normalized
+  description: "Normalized flow theoretical implementation with unit-consistent scaling"
+  inputs:
+    runs:
+      - "canonical_gte_triples.json"  # Uses canonical GTE triples
+
+# Normalized Flow Theoretical Framework
+theoretical_framework:
+  theory_consistent_time_nats: true
+  generator_spectral_normalization: true
+  exact_closed_form_flow: true
+  unit_consistent_hierarchy_scaling: true
+  projective_normalization: true
+
+# Flow Parameters (Kernel-Locked)
+flow_parameters:
+  epsilon: "k_L"  # Flow strength from kernel
+  epsilon_prime: "k_L/φ"  # Antisymmetric flow strength
+  tau0: "(ln 2) * L_residual"  # Theory-consistent time in nats
+  
+# Residual Kraft Length (from Lambda derivation)
+residual_kraft_length: 9.382  # Theory-fixed from Lambda work
+
+# Generator Normalization
+generator_normalization:
+  method: "spectral_radius_2norm"
+  description: "Normalize generators by spectral radius (2-norm) for unit consistency"
+  tauE: "tau0 / rho(E_op)"
+  tauA: "tau0 / rho(A_op)"
+  purpose: "Remove generator scale dependence from flow time"
+
+# Exact Closed-Form Flow
+exact_flow:
+  description: "Factorized exponential flow without ODE discretization"
+  E_flow: "M_E(τ_E) = exp(ε*τ_E*Ê) * M0 * exp(ε*τ_E*Ê^T)"
+  A_flow: "U_A(τ_A) = exp(i*ε'*τ_A*Â)"
+  combined_flow: "M(τ) = U_A(τ_A) * M_E(τ_E) * U_A(τ_A)^†"
+  majorana_flow: "S(τ) = U_A(τ_A)^T * S_E(τ_E) * U_A(τ_A)"
+
+# Hierarchy Mechanism (Unit-Consistent)
+hierarchy_mechanism:
+  Vus_growth: "~ ε * τ_E * ||Ê_12|| (first order)"
+  Vcb_growth: "~ ε * τ_E * ||Ê_23|| (first order, smaller ||Ê_23||)"
+  Vub_growth: "~ ε' * τ_A and/or (ε * τ_E)^2 (second order + antisymmetric)"
+  wolfenstein_scaling: "Natural λ, Aλ², Aλ³ from unit-consistent flow order"
+  time_consistency: "Same τ₀ for all sectors, normalized generators per sector"
+
+# Kernel Constants (Elegant Kernel)
+kernel_constants:
+  phi: 1.618033988749895  # golden ratio
+  k_L2: 0.013671875  # 7/512
+  k_gen2: -0.8090169943749475 # -phi/2
+  k_gen: 1.5707963267948966 # pi/2
+  k_a: 0.125 # 1/8
+  k_b: -1.5 # -3/2
+  k_c: 1.3333333333333333 # 4/3
+  k_M: -0.8056640625 # k_gen2 + 0.25*k_L2
+
+# Derived Flow Constants
+derived_constants:
+  k_L: "3 * k_L2 * ln(φ) ≈ 0.019744"  # From kernel
+  epsilon: "k_L"  # Flow strength
+  epsilon_prime: "k_L / φ"  # Antisymmetric strength
+  tau0: "(ln 2) * L_residual ≈ 6.50 nats"  # Theory-consistent time
+
+# Expected Results (Unit-Consistent)
+expected_results:
+  Vus_range: "0.18-0.28 (from ε*τ₀ ≈ 0.128 with normalized generators)"
+  Vcb_range: "0.02-0.06 (controlled by (23) content of normalized Ê)"
+  Vub_range: "few ×10⁻³ (from antisymmetric channel and second-order)"
+  J_magnitude: "~10⁻⁵ (nonzero from Â commutator channel)"
+  hierarchy_source: "Order-by-order growth from unit-consistent flow"
+
+# Options
+options:
+  neutrino_model: "majorana"  # "majorana" (Takagi) or "dirac" (Hermitian Gram)
+  down_sector_permutation_policy: "optimize"  # "optimize" (scan 6 perms) or "fixed"
+  down_sector_perm_fixed: [0, 1, 2]  # used only if policy == "fixed"
+  pdg_targets_ckm: [0.2245, 0.041, 0.00365]  # |Vus|, |Vcb|, |Vub| for score logging
+
+# PDG Experimental Targets for comparison
+pdg_targets:
+  # CKM mixing elements
+  Vus: 0.2245
+  Vcb: 0.041
+  Vub: 0.00365
+  # PMNS mixing angles (degrees)
+  theta12: 33.44  # Solar mixing angle
+  theta13: 8.57    # Reactor mixing angle  
+  theta23: 49.2    # Atmospheric mixing angle
+
+# Analysis parameters
+analysis:
+  projective_normalization: "Remove local scale from triples"
+  irrep_feature_extraction: "A1_E_A2_decomposition_with_generation_phases"
+  generator_construction: "Fixed E_op and A_op from irrep features"
+  generator_normalization: "Spectral radius normalization for unit consistency"
+  exact_flow_evolution: "Closed-form exponential factorization"
+  hierarchy_validation: "Unit-consistent Wolfenstein scaling"
+
+# Output configuration
+output:
+  save_matrices: true
+  save_angles: true
+  save_eigenvalues: true
+  save_vectors: true
+  save_permutation_choice: true
+  save_flow_parameters: true
+  save_generator_normalization: true
+  save_evolution_analysis: true
+  save_experimental_errors: true
+  format: "json"
+
+# Validation
+validation:
+  unitary_check: true
+  pdg_ordering_check: true
+  eigenvalue_ordering: true
+  jarlskog_invariant_check: true
+  experimental_error_calculation: true
+  flow_parameter_validation: true
+  generator_normalization_validation: true
+  unit_consistency_validation: true
+
+# Performance monitoring
+performance:
+  track_flow_evolution: true
+  track_generator_normalization: true
+  track_hierarchy_growth: true
+  enable_detailed_logging: true
+  flow_analysis: true
+  unit_consistency_analysis: true

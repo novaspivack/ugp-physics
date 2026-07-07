@@ -1,0 +1,2529 @@
+%% ugp_master_index.tex — UGP Physics Master Index
+%% Shared include: P00 (ugp_survey_readers_guide.tex), P48 (gte_complete_theory_paper.tex), P53 (gte_framework_assessment.tex).
+%% Last updated: 2026-06-16
+%%
+%% This file contains no \documentclass — it is \input{}'d from the main document.
+%% Relies on: longtable, booktabs, amsmath, amssymb, \lean{}, \CatAL, \Ngen, \Nfam, \bt, \bb macros from the host paper.
+
+\clearpage
+\section{Master Index: Inputs, Axioms, and Physical Predictions}
+\label{app:master_index}
+
+{\small
+Complete index of framework inputs, axioms, and physical predictions across P00--P55,
+with Lean~4 certification status. Claim levels: \CatAL{} = machine-verified (zero sorry);
+A/D = analytically derived; CatAD = derived, conditional on open axiom; B = bridge claim;
+D = speculative or open. External measured inputs are marked separately from derived inputs.
+A derivation chain (\S\ref{sec:mi-structural-inputs}) and discrepancy register
+(\S\ref{sec:mi-discrepancies}) follow the prediction tables.}
+
+% ─── Part 1: Framework Inputs ──────────────────────────────────────────────
+\subsection{Framework Inputs}
+\label{sec:mi-inputs}
+
+\subsubsection{Structural and Arithmetic Quantities (all derived — zero free parameters)}
+\label{sec:mi-structural-inputs}
+
+These quantities are derived from the three UGP axioms and the GTE construction.
+They are foundational within the cascade but are not free parameters.
+
+\medskip
+\noindent\textbf{Derivation chain for $N_{\rm fam} = 5$:}
+\begin{quote}\small\texttt{%
+fMDL structure (MDL axiom A3)\\
+$\;\to$ GoE orbit depth forces $N_{\rm gen} = 3$
+  (\lean{fmdl\_gen1\_is\_garden\_of\_eden}, \CatAL)\\
+$\;\to$ $N_{\rm fam} = 2^{N_{\rm gen}} - N_{\rm gen} = 2^3 - 3 = 5$
+  (\lean{gte\_master\_formula\_complete}, \lean{z5\_transitivity\_uniqueness}, \CatAL)\\
+$\;\to$ $N_{\rm gen} + N_{\rm fam} = 2^{N_{\rm gen}} = 8$
+  (\lean{ngen\_plus\_nfam\_eq\_pow2}, \CatAL)}
+\end{quote}
+
+$N_{\rm fam}$ counts the five SM fermion family types
+[$e^-$, $u$, $d$, $\nu_R$, $\nu_L$] — not the same as $N_{\rm gen}$.
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.10\linewidth}P{0.10\linewidth}P{0.17\linewidth}P{0.23\linewidth}P{0.10\linewidth}P{0.16\linewidth}@{}}
+\caption{Structural and arithmetic derived inputs (all zero free parameters).}
+\label{tab:mi-structural-inputs}\\
+\toprule
+\textbf{Symbol} & \textbf{Value} & \textbf{Physical Meaning} &
+  \textbf{Derivation / Source} & \textbf{Papers} & \textbf{Lean Cert} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{Symbol} & \textbf{Value} & \textbf{Physical Meaning} &
+  \textbf{Derivation / Source} & \textbf{Papers} & \textbf{Lean Cert} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+$n$ (ridge) & 10 & GTE ridge level; $R_{10}=1008$ &
+  Four independent certificates: ridge minimality, global asymptotic sparsity,
+  divisor-count CKM cert, seed-$b_1=73$ uniqueness &
+  P01 \S2.2, P05 &
+  \lean{n10\_is\_minimal\_admissible\_ridge}, \lean{asymptotic\_sparsity\_universal} (\CatAL) \\
+$N_{\rm gen}$ & 3 & Number of particle generations &
+  GoE orbit depth $= 3$; $b_0 = 7N_{\rm gen}/3 \in \mathbb{Z}$;
+  Layer~I enumeration: all 12 PSC survivors have $N_{\rm gen}=3$
+  (\lean{psc\_enumeration\_forces\_ngen\_3}, \CatAL);
+  PSC Layer~II PI selects $N_{\rm gen}=3$ from 12 survivors.
+  \emph{Additional:} $N_{\rm gen}=3$ is the unique integer for which both structural
+  $\Omega_\Lambda$ routes fall within $5\sigma$ of Planck~2018 (CatAD) &
+  P01, P28, P43, P47 &
+  \lean{fmdl\_gen1\_is\_garden\_of\_eden},
+  \lean{psc\_enumeration\_forces\_ngen\_3} (\CatAL) \\
+$N_{\rm fam}$ & 5 & SM fermion family types &
+  $N_{\rm fam} = 2^{N_{\rm gen}} - N_{\rm gen} = 5$; $Z_5$ ring structure &
+  P01, P28, P35 &
+  \lean{gte\_master\_formula\_complete}, \lean{z5\_transitivity\_uniqueness} (\CatAL) \\
+$N_c$ & 3 & QCD colour rank &
+  Anomaly cancellation in $Z_7$ winding; $N_c = N_{\rm gen}$ forced by GTE &
+  P01, P28, P43 &
+  \lean{anomaly\_cancellation\_forces\_Nc\_3} (\CatAL) \\
+$c_H$ & 13 & Higgs boundary parameter &
+  $c_H = 2^{N_{\rm gen}+1} - N_{\rm gen} = 13$;
+  gives $\sin^2\theta_W = N_{\rm gen}/c_H = 3/13$ &
+  P01, P31, P35, P43 &
+  CatAL (orbit arithmetic) \\
+$|Z_7|$ & 7 & Order of winding group; $b_0 = |Z_7|$ &
+  Mod-7 ring at core of $f_{\rm MDL}$; $b_0 = 7$ &
+  P01, P28 &
+  \lean{b0\_eq\_z7\_order}, \lean{f21\_substrate\_beta\_coefficient} (\CatAL) \\
+$F_{21} = Z_7 \rtimes Z_3$ & 21 elements & Substrate group: winding $\times$ colour &
+  $F_{21}^{\rm ab} = Z_3$ (colour); identified from MDL minimality &
+  P28, P34, P39 &
+  CatAL (14 theorems in \texttt{Sylow\allowbreak{}Index\allowbreak{}Coupling\allowbreak{}Hierarchy}) \\
+Rule~110 & (8-bit CA rule \#110) & Binary CA rule governing SM generation orbit &
+  Forced by MDL minimality on SM orbit (CUP-4) &
+  P28, P30 &
+  CUP-4, CatAL \\
+$f_{\rm MDL}$ & ($Z_7$ truth table) & MDL-minimal mod-7 CA rule &
+  $=$ Rule~110's truth table (CUP-4); unique Class-4 outer-totalistic $Z_7$ CA &
+  P01, P28, P35 &
+  CUP-4, CatAL conditional \\
+Lepton Seed & $(1, 73, 823)$ & Lex-/MDL-minimal GTE triple at $n=10$ &
+  Uniquely selected by RSUC &
+  P01 &
+  \lean{rsuc\_theorem}, \lean{mdl\_selects\_LeptonSeed} (\CatAL) \\
+$b_1 = 73$ & 73 & Primary ladder index; $N_{\rm eff}$(electron) &
+  $b_1 = b_2 + q_2 + 7 = 42 + 24 + 7 = 73$; mirror-dual prime-locked divisor pair &
+  P01 &
+  CatAL \\
+FGCI: $b_{L_1}=73$ doubly determined & 73 & Frobenius-Generation Coincidence:
+  Frobenius chain $F(N_c)=N_c^4-N_c^2+1$ and GTE cascade $G(N_c)=N_c^4-(N_c^2+1)/2-N_c$
+  agree iff $N_c = 3$; witnesses algebraic/dynamical consistency at physical $N_c$ &
+  $F(3) = G(3) = 73$ uniquely at $N_c=3$; $b_{L_2}=42=2N_c|Z_7|$ &
+  P01 &
+  \lean{Frobenius\allowbreak{}Chain.lean} (17 theorems, \CatAL) \\
+$F_{13} = 233$ & 233 & 13th Fibonacci number; EW boson even-step increment &
+  $|q_2 - q_1| = 13$ locks even-step evolution to $F_{13}$ &
+  P01 &
+  --- \\
+$b_0 = 7$ & 7 & One-loop QCD $\beta$-function coefficient &
+  $(11N_c - 2N_f)/3 = 7 = |Z_7|$, $N_c=3$, $N_f=6$ &
+  P28, P35, P43 &
+  \lean{f21\_substrate\_beta\_coefficient} (\CatAL) \\
+$b_1 = 26$ & 26 & Two-loop QCD $\beta$-function coefficient &
+  $F_{21}$ substrate; $N_c=3$, $N_f=6$, zero free parameters &
+  P28, P35, P39 &
+  \lean{f21\_substrate\_two\_loop\_beta\_b1} (zero sorry; axioms: \{propext\}) \\
+$\alpha_{\rm EM}^{-1} = 137$ & 137 & Fine structure constant inverse &
+  $(N_{\rm eff}(\mu) + F_{c_H} - 1)/2 = (275-1)/2 = 137$ &
+  P01, P43 &
+  \lean{alpha\_inv\_master} (\CatAL) \\
+$1/\alpha_{\rm EM}(0) = 2^{|Z_7|}+\Ngen^2$ & $128+9=137$ & Cross-sector identity &
+  $2^7 + 3^2 = 137$ (exact) &
+  P31 &
+  \lean{alpha\_em\_inverse\_gte\_bundle} (\CatAL) \\
+$b_0 = \Nfam + \Ngen - 1$ & $5+3-1=7$ & Casimir relation &
+  Connects $b_0$, $N_{\rm fam}$, $N_{\rm gen}$; Lean cert &
+  P31, P34 &
+  \lean{b0\_casimir\_relation} (\CatAL) \\
+IPT & $\approx 1.1309$ & Information Processing Threshold (EW scale factor) &
+  $1 + \ln\varphi/(2\ln 2\pi)$; derived from SRRG axioms A1--A3 &
+  P27, P43 &
+  \lean{IPT\_theorem} (\CatAL) \\
+\end{longtable}
+\endgroup
+
+\paragraph{Notes on structural inputs.}
+\textbf{$\lambda$ (Wolfenstein) is a derived output, not an input:}
+$\lambda(\text{CKM}) = N_{\rm gen}^2/(2^{N_{\rm gen}} \cdot N_{\rm fam}) = 9/40 = 0.225$
+(exact, $0.0\sigma$ from PDG), proved \CatAL{} in P32/P35.
+\textbf{$N_c = N_{\rm gen} = 3$:} $N_c = N_{\rm gen}$ is forced by the CA structure (P43); conceptually distinct but derived to be equal.
+\textbf{``Zero free parameters''} (P43, P35): all structural inputs are derivable from the three UGP axioms and $n=10$.
+
+\subsubsection{External Measured Inputs}
+\label{sec:mi-external-inputs}
+
+Not derived within the UGP framework; taken from experiment as scale anchors.
+These are the only true ``inputs'' in the traditional sense.
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.10\linewidth}P{0.21\linewidth}P{0.18\linewidth}P{0.10\linewidth}P{0.29\linewidth}@{}}
+\caption{External measured inputs (scale anchors only).}
+\label{tab:mi-external-inputs}\\
+\toprule
+\textbf{Symbol} & \textbf{Physical Meaning} & \textbf{PDG Value} &
+  \textbf{Papers} & \textbf{Notes} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{Symbol} & \textbf{Physical Meaning} & \textbf{PDG Value} &
+  \textbf{Papers} & \textbf{Notes} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+$m_e$ & Electron mass & 0.511~MeV & P19, P01 &
+  First of two scalar inputs for Koide chain.
+  All 9 charged-fermion masses derived from $(m_e, m_\mu)$ at 61~ppm. \\
+$m_\mu$ & Muon mass & 105.658~MeV & P19, P01 &
+  Second scalar input; $m_\tau$ predicted at 61~ppm. \\
+$G_F$ & Fermi constant (EW energy scale) & $1.1664\times10^{-5}$~GeV$^{-2}$ & P01 &
+  External EW-scale anchor for W/Z mass predictions. \\
+$H_0$ & Hubble parameter & $67.95$~km/s/Mpc (GTE, Path D) & P47 &
+  Derived non-circularly from $T_{\rm CMB}^{\rm GTE}=2.7265$~K, $\Omega_\Lambda$,
+  $\Omega_{\rm DM}h^2$, and FKTT $\eta_B$ (CatAD, $+0.7\sigma$ vs Planck 2018).
+  P01 used $H_0$ only as an external anchor for $\Lambda$. \\
+$\Delta m^2_{21},$\newline$\Delta m^2_{31}$ & Neutrino mass-squared splittings & NuFIT~6.0 IC24 NH & P01 &
+  Used only for Type-I seesaw realisation; not needed for structural ratio prediction. \\
+\end{longtable}
+\endgroup
+
+\subsubsection{Calibrated Parameters (Category~B)}
+\label{sec:mi-calibrated}
+
+Non-perturbative; not derivable from first principles within the current framework.
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.37\linewidth}P{0.08\linewidth}P{0.10\linewidth}P{0.35\linewidth}@{}}
+\caption{Calibrated parameters (Category~B).}
+\label{tab:mi-calibrated}\\
+\toprule
+\textbf{Description} & \textbf{Count} & \textbf{Papers} & \textbf{Notes} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{Description} & \textbf{Count} & \textbf{Papers} & \textbf{Notes} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+QCD binding-model parameters (hadronic / baryon sector, non-perturbative confinement) &
+  15 & P01 \S baryon &
+  Encode strong confinement physics beyond one-loop perturbative QCD.
+  Total inputs: 0 (Cat~A core) + 5 (scale anchors) + 15 (Cat~B) = 20. \\
+Higgs quartic $\lambda_H$ &
+  1 (MDL-selected + SRRG-corrected) & P01 \S Higgs, P27, P35 &
+  \CatAL: $\lambda = \varphi/(4\pi)\times(1+\ln\varphi/(54\ln 2\pi))$;
+  $2c_H+1=27=N_{\rm gen}^3$; certs \lean{higgs\_quartic\_corrected},
+  \lean{two\_cH\_plus\_one\_eq\_ngen\_cubed} (zero sorry).
+  Gives $m_H = 125.2499$~GeV ($-0.0003\sigma$). \\
+URC correction layer parameters &
+  $\sim\!3$ & P01 \S URC &
+  Category~A/D correction layer for sub-percent fermion mass spectrum;
+  derived from ridge divisor count, third-generation capacity, Fibonacci structure. \\
+\end{longtable}
+\endgroup
+
+% ─── Part 2: Axioms Index ──────────────────────────────────────────────────
+\subsection{Axioms Index}
+\label{sec:mi-axioms}
+
+Axioms are assumptions not derived from deeper principles within the current framework.
+Items marked ``Proved'' or \CatAL{} are theorems — included because they were
+originally conjectured or are sometimes referred to as axioms.
+
+\subsubsection{Core UGP Axioms (3 axioms — truly assumed)}
+\label{sec:mi-core-axioms}
+
+Source: P01~\S2.1. These three axioms generate the entire framework.
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.05\linewidth}P{0.13\linewidth}P{0.37\linewidth}P{0.17\linewidth}P{0.16\linewidth}@{}}
+\caption{The three core UGP axioms (A1--A3).}
+\label{tab:mi-core-axioms}\\
+\toprule
+\textbf{ID} & \textbf{Name} & \textbf{Formal Statement} &
+  \textbf{Source} & \textbf{Lean / Status} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{ID} & \textbf{Name} & \textbf{Formal Statement} &
+  \textbf{Source} & \textbf{Lean / Status} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+A1 & Locality & All fundamental interactions are local in the substrate's causal graph. &
+  P01 \S2.1 & No dedicated Lean axiom; standard Mathlib only. Assumed. \\
+A2 & Symmetry & Fundamental laws are invariant under gauge symmetry transformations;
+  redundancies give rise to gauge principles. &
+  P01 \S2.1 & No dedicated Lean axiom. Assumed. \\
+A3 & Compression (MDL) & The universe evolves according to rules that minimise the total
+  description length of its history (Rissanen MDL), consistent with A1--A2. &
+  P01 \S2.1, P06 &
+  MDL minimality used in CUP-4 proof chain. Assumed. \\
+\end{longtable}
+\endgroup
+
+\noindent\textit{Lean axiom closure:} All Category~A physics theorems in ugp-lean have
+axiom closure exactly \{propext, Classical.choice, Quot.sound\} — the standard Mathlib
+signature. No UGP-specific axioms appear in the closure of any Category~A physics theorem.
+
+\subsubsection{PSC Layer~I Axioms (5 axioms — AC is proved)}
+\label{sec:mi-psc-layer1}
+
+Source: P14~\S2.1, NEMS Paper~05. The five hard PSC consistency conditions.
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.05\linewidth}P{0.18\linewidth}P{0.33\linewidth}P{0.11\linewidth}P{0.21\linewidth}@{}}
+\caption{PSC Layer~I axioms (RC, NM*, AC, TV, SA). AC is a proved theorem.}
+\label{tab:mi-psc1}\\
+\toprule
+\textbf{ID} & \textbf{Name} & \textbf{Formal Statement} &
+  \textbf{Source} & \textbf{Status} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{ID} & \textbf{Name} & \textbf{Formal Statement} &
+  \textbf{Source} & \textbf{Status} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+RC & Renormalisability & $T$ is a renormalisable gauge theory in $d=4$. &
+  P14 \S2.1; NEMS P05 & Assumed \\
+NM* & Structural Stability (No-Miracles) & $T$ is structurally stable against small
+  deformations; no external tuning required. &
+  P14 \S2.1; NEMS P05 & Assumed \\
+AC & Anomaly Cancellation & All gauge and mixed gravitational anomalies cancel. &
+  P14 \S2.1; P28 &
+  \textbf{Proved} from PSC+RC (\CatAL, zero sorry, zero axioms).
+  \lean{anomaly\_cancellation\_psc\_forced}. \\
+TV & Topological / Thermodynamic Viability & Gauge bundle admits consistent instanton
+  sectors. &
+  P14 \S2.1; NEMS P05 & Assumed \\
+SA & Spectral / Semantic Admissibility & Dirac spectrum distinguishes matter from
+  anti-matter. &
+  P14 \S2.1; NEMS P05 & Assumed \\
+\end{longtable}
+\endgroup
+
+\noindent\textit{Note on TV/SA naming:} In physics (P14): ``Topological Viability'' (TV) and
+``Spectral Asymmetry'' (SA). In the Lean formalisation (\lean{NemS/Physics/Rigidity.lean}):
+``Thermodynamic Viability'' and ``Semantic Admissibility''. Same axioms, different physical
+realisations.
+
+\subsubsection{PSC Layer~II Conditions (2 conditions — PI is proved)}
+\label{sec:mi-psc-layer2}
+
+Source: P14~\S2.2, NEMS Paper~05. Information-theoretic conditions selecting $N_{\rm gen}=3$.
+Layer~II selects $N_{\rm gen}=3$ uniquely from 12 Layer~I survivors
+(0.03\% of 34,560 candidates pass Layer~I;
+\lean{psc\_12\_survivors\_card}, \CatAL).
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.08\linewidth}P{0.16\linewidth}P{0.36\linewidth}P{0.10\linewidth}P{0.18\linewidth}@{}}
+\caption{PSC Layer~II conditions.}
+\label{tab:mi-psc2}\\
+\toprule
+\textbf{ID} & \textbf{Name} & \textbf{Statement} & \textbf{Source} & \textbf{Status} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{ID} & \textbf{Name} & \textbf{Statement} & \textbf{Source} & \textbf{Status} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+PI & Presentation Invariance & Physical predictions invariant under change of theory
+  presentation; selects $N_{\rm gen}=3$ as unique minimal solution.
+  \emph{Note:} PI is operationally equivalent to MDL minimality (axiom A3) at the
+  universe-selection level: `Why MDL?' terminates at PSC/PI.  MDL is therefore not
+  an independent foundational axiom; it is the operational form of PI. &
+  P14 \S2.2; NEMS P05 &
+  \textbf{Proved} from DWeight + LawvereZone infrastructure (\CatAL).
+  \lean{d2\_axiom}, \lean{d2\_universal}. \\
+MDL-II & MDL Minimality (Layer~II) & Among PSC-admissible universes, the minimum
+  description-length one is selected. Equivalent to A3 applied to universe selection. &
+  P14 \S2.2; P01, P06 &
+  Embodied in CUP-4 proof chain (\CatAL). \\
+\end{longtable}
+\endgroup
+
+\subsubsection{GTE Construction Principles (all proved)}
+\label{sec:mi-gte-principles}
+
+Source: P01 \S2.2--2.3, P05.
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.07\linewidth}P{0.14\linewidth}P{0.34\linewidth}P{0.10\linewidth}P{0.23\linewidth}@{}}
+\caption{GTE construction principles (all are proved theorems, not assumed axioms).}
+\label{tab:mi-gte-principles}\\
+\toprule
+\textbf{ID} & \textbf{Name} & \textbf{Statement} & \textbf{Source} & \textbf{Status} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{ID} & \textbf{Name} & \textbf{Statement} & \textbf{Source} & \textbf{Status} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+PL & Prime-Lock & Initial GTE state admissible only if first-generation capacity
+  $c_1 = b_1 q_1 + 20$ is prime. &
+  P01 \S2.2 & \textbf{Proved.} \lean{rsuc\_theorem} (\CatAL). \\
+MD & Mirror Duality & If $(b_2, q_2)$ is admissible, so is $(q_2, b_2)$;
+  admissible solutions come in mirror pairs. &
+  P01 \S2.2 & \textbf{Proved.} \lean{rsuc\_theorem} (\CatAL). \\
+RSUC & Residual Seed Uniqueness & Lepton Seed $(1,73,823)$ is the unique
+  lex-/MDL-minimal survivor at $n=10$. &
+  P01, P05 &
+  \textbf{Proved.} \lean{rsuc\_theorem}, \lean{mdl\_selects\_LeptonSeed} (\CatAL, zero sorry). \\
+GoE & Garden-of-Eden & Gen$_1$ has no $f_{\rm MDL}$ predecessor; forces $N_{\rm gen}=3$
+  from orbit depth. &
+  P28 &
+  \textbf{Proved.} \lean{fmdl\_gen1\_is\_garden\_of\_eden} (\CatAL, zero sorry). \\
+QLL & Quarter-Lock Law & Algebraic identity: orbit spatial curvature $k_{L^2}$ and
+  generational curvature $k_{\rm gen2} = -\varphi/2$. Preserves gauge coupling
+  rationals across instantiation. &
+  P01, P05 &
+  \textbf{Proved.} \lean{quarterLockLaw} (\CatAL, zero sorry). \\
+CUP-4 & Computational Universality 4 & SM generation orbit forces Rule~110 on a 5-cell
+  periodic ring ($f_{\rm MDL}$ truth table $=$ Rule~110 truth table). &
+  P28 &
+  \textbf{Proved.} \lean{cup11b\_z7\_sum\_conservation} (\CatAL, zero sorry). \\
+\end{longtable}
+\endgroup
+
+\subsubsection{GTE--M\"{o}bius Substrate Constraints D1--D5}
+\label{sec:mi-d-constraints}
+
+Source: P34~\S6.  The five constraints define the $[D]$-coherence measure class on
+the Möbius triple $(A,e,[D])$.  Component~$A$ is the $\mathbb{Z}_7$ arithmetic
+carrier (Level-1: $f_{\rm MDL}$/CMCA; Level-2: PSC-admissible kink sector of
+$\Phi_{\rm MDL}$).  The physical substrate is $\Phi_{\rm MDL}$; discrete CAs
+certify the arithmetic but are not the universe (P43 no-CA-replica theorem).
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.05\linewidth}P{0.14\linewidth}P{0.33\linewidth}P{0.10\linewidth}P{0.26\linewidth}@{}}
+\caption{GTE--Möbius $[D]$-constraints D1--D5.}
+\label{tab:mi-d-constraints}\\
+\toprule
+\textbf{ID} & \textbf{Name} & \textbf{Statement} & \textbf{Source} & \textbf{Status} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{ID} & \textbf{Name} & \textbf{Statement} & \textbf{Source} & \textbf{Status} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+D1 & Non-negativity & $D \geq 0$ for all configurations. &
+  P34 \S6 & Structural (definition). \\
+D2 & PSC Invariance & $D$ is invariant under the five PSC axioms, incl.\ Lorentz
+  boosts on $\Phi_{\rm MDL}$. &
+  P34 \S6; P42 &
+  \textbf{Proved} from DWeight + LawvereZone (\CatAL).
+  \lean{d2\_axiom}, \lean{d2\_universal}, \lean{algebraic\_lifting\_theorem}. \\
+D3 & Non-computability & Individual kink actualisation is non-computable. &
+  P34 \S6 &
+  \textbf{Proved} (forced by NEMS~P09 diagonal barrier; CatAL conditional). \\
+D4 & Selection Completeness & $D$ selects uniquely among realisations even in
+  non-categorical settings. &
+  P34 \S6 & Assumed / open formalisation. \\
+D5 & Born-Rule Consistency & $P(\text{outcome}~n) = |c_n|^2$; Born rule for
+  $[D]$-selected physical states. &
+  P34 \S6; P37; P42 &
+  \textbf{Proved.} \lean{born\_rule\_unconditional} (\CatAL, zero sorry, zero custom axioms). \\
+\end{longtable}
+\endgroup
+
+\subsubsection{SRRG Axioms}
+\label{sec:mi-srrg}
+
+Source: P27. Governing the Self-Referential Renormalisation Group fixed point.
+
+\noindent\textit{Core SRRG axioms A1--A3 (all three proved):}
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.10\linewidth}P{0.14\linewidth}P{0.30\linewidth}P{0.12\linewidth}P{0.22\linewidth}@{}}
+\caption{SRRG core axioms A1--A3 (all proved from structural principles).}
+\label{tab:mi-srrg-core}\\
+\toprule
+\textbf{ID} & \textbf{Name} & \textbf{Statement} & \textbf{Source} & \textbf{Status} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{ID} & \textbf{Name} & \textbf{Statement} & \textbf{Source} & \textbf{Status} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+A1-SRRG & PSC Contraction & PSC self-model update contraction rate $= 1/\varphi$. &
+  P27 \S SRRG &
+  \textbf{Proved.} \lean{abs\_psi\_eq\_inv\_phi} (zero sorry). \\
+A2-SRRG & PSC Entropy & PSC adjudication entropy $H_{\rm adj} = \ln(2\pi)$
+  (Haar measure on $U(1)$). &
+  P27 \S SRRG &
+  \textbf{Proved.} \lean{entropy\_formula\_U1} (zero sorry). \\
+A3-SRRG & Symmetry Splitting & PSC overhead splits equally between forward and backward
+  self-model: factor $1/2$. &
+  P27 \S SRRG &
+  \textbf{Proved.} \lean{A3\_half\_factor} (zero sorry). \\
+\end{longtable}
+\endgroup
+
+\noindent\textit{Consequence:} $\mathrm{IPT} = 1 + \ln\varphi/(2\ln 2\pi) \approx 1.1309$ follows as a
+theorem from A1--A3 (\lean{IPT\_theorem}, \CatAL).
+
+\medskip\noindent\textit{SRRG B-axioms (5 named open axioms):}
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.11\linewidth}P{0.29\linewidth}P{0.32\linewidth}P{0.18\linewidth}@{}}
+\caption{SRRG B-axioms (named Lean axioms, not yet derived).}
+\label{tab:mi-srrg-b}\\
+\toprule
+\textbf{ID} & \textbf{Lean Name} & \textbf{Statement} & \textbf{Status} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{ID} & \textbf{Lean Name} & \textbf{Statement} & \textbf{Status} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+B1 & \lean{srrg\_physical\_fp\_sustainable} &
+  Every physical SRRG fixed point satisfies $\eta(S^*) \geq \mathrm{IPT}$. &
+  Named Lean axiom; not yet derived. \\
+B2 & \lean{srrg\_physical\_fp\_bounded\_above} &
+  Every physical SRRG fixed point satisfies $\eta(S^*) \leq 2$. &
+  Named Lean axiom. \\
+B3 & \lean{srrg\_beta\_polynomial\_leading\_order} &
+  SRRG projected $\beta$-function is a degree-2 polynomial. &
+  Named Lean axiom. \\
+B4 & \lean{srrg\_physical\_is\_ir\_stable} &
+  Physical SRRG fixed points are IR attractors under RG flow. &
+  Named Lean axiom. \\
+B5 & \lean{psc\_ew\_entropy\_maximization} &
+  PSC entropy maximised at EW fixed point; used in VEV derivation
+  ($v_{\rm PSC} = 246.16$~GeV). &
+  \textbf{Proved} (zero sorry, zero new axioms) ---
+  \lean{Goldstone\allowbreak{}Entropy\allowbreak{}Correction.lean} \S5, \texttt{srrg-lean}.
+  VEV derivation is unconditional (B5 proved). \\
+\end{longtable}
+\endgroup
+
+\subsubsection{P44 Quantum Gravity Axioms (architecture restrictions)}
+\label{sec:mi-p44-axioms}
+
+\noindent\textit{Three named architecture restrictions used in P44 derivations
+(not truly independent assumptions; follow from MDL minimality in each case):}
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.10\linewidth}P{0.24\linewidth}P{0.34\linewidth}P{0.22\linewidth}@{}}
+\caption{P44 architecture restrictions (quantum gravity sector).}
+\label{tab:mi-p44-axioms}\\
+\toprule
+\textbf{ID} & \textbf{Statement} & \textbf{Use} & \textbf{Status} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{ID} & \textbf{Statement} & \textbf{Use} & \textbf{Status} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+AR1 & Graviton Fock space $\mathcal{H}_{\rm grav}$ is separable and spanned by graviton
+  excitations of $\Phi_{\rm MDL}$ on a curved background. &
+  Full nonlinear EFE derivation (P44 \S3); required for
+  perturbative expansion. &
+  Structural; follows from $\xi=0$ and $\mathbb{Z}_7$ separability ($\CatAL$: $\xi=0$);
+  Fock construction analytical ($\mathbf{A/D}$). \\
+AR2 & Thermal coherence: pre-measurement $\Phi_{\rm MDL}$ state is
+  the Hamiltonian thermal ensemble restricted to PSC-admissible sectors. &
+  Derivation of MDL IC from thermal prior (P44 \S5). &
+  Follows from \lean{phimdl\_thermal\_state\_master} (P42/P43, $\CatAL$). \\
+AR3 & EFE-bridge: the MDL variational principle on $\Phi_{\rm MDL}$ in 3+1D
+  produces the same $n_s$ derivation as the classical EFE route. &
+  Step 5/7 of $n_s$ derivation chain; conditional on this step. &
+  \textbf{Open} (CatOpen); closure upgrades $n_s$ to fully unconditional. \\
+\end{longtable}
+\endgroup
+
+\subsubsection{Cook Bridge Axioms (P30) and GTE Universality Bridge Axioms (P28)}
+\label{sec:mi-bridge-axioms}
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.11\linewidth}P{0.25\linewidth}P{0.35\linewidth}P{0.19\linewidth}@{}}
+\caption{Cook bridge axioms (P30) and GTE universality bridge axioms (P28).}
+\label{tab:mi-bridge}\\
+\toprule
+\textbf{ID} & \textbf{Lean Name} & \textbf{Statement} & \textbf{Status} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{ID} & \textbf{Lean Name} & \textbf{Statement} & \textbf{Status} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\multicolumn{4}{@{}l}{\itshape Cook bridge axioms (P30)} \\[2pt]
+C1 & \lean{cook\_c2\_tape\_bit\_ax} &
+  After 30 Rule~110 steps, decoder reads CTS-encoded bit correctly. &
+  Partial \CatAL{} (words $\leq 7$, slots $\leq 20$); global: \textbf{CatOpen}. \\
+C2 & \lean{cook\_cts\_step\_sim\_ax} &
+  After $M$ steps, regions outside word-glider range remain ether. &
+  \textbf{Discharged} (\CatAL) $\checkmark$ \\
+C3--five & (5 named bridge axioms) &
+  Full CookCtsEvalSim for all positive-step nontrivial inputs (Cook~2004 \S4). &
+  \textbf{CatOpen} \\
+\midrule
+\multicolumn{4}{@{}l}{\itshape GTE universality bridge axioms (P28)} \\[2pt]
+INF-TAPE & \lean{rule110\_simulates\_computable} &
+  GTE embeds on a single Boolean infinite tape with Rule~110 dynamics. &
+  Named axiom (one bridge); CatAL conditional. \\
+DUAL-TAPE & \lean{simultaneous\_dual\_tape\_ax} &
+  Single InfTape simultaneously realises both SM sector and Rule~110 binary layer. &
+  Named axiom. \\
+CUP3D-six & (6 named bridge axioms) &
+  Cook--Wolfram--APS encoding chain for 3D physical incompleteness (CUP3D). &
+  Named bridge axioms. \\
+\end{longtable}
+\endgroup
+
+\noindent\textit{Note:} The C1/C2/C3 Cook axiom dependency is bypassed by an independent
+algebraic route (P40/P35, \CatAL): Rule~110 update $= p(L,C,R) = C+R-CR-LCR$ over
+$\mathrm{GF}(7)$; with $C=1$, $p(L,1,R) = \mathrm{NAND}(L,R)$ (zero sorry).
+Universality follows from Sheffer (1913) NAND completeness
+(\lean{boolean\_nand\_complete}).
+
+\subsubsection{Axiom Summary Counts}
+\label{sec:mi-axiom-counts}
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.65\linewidth}P{0.25\linewidth}@{}}
+\caption{Axiom count summary across all UGP axiom classes.}
+\label{tab:mi-axiom-counts}\\
+\toprule
+\textbf{Category} & \textbf{Count} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{Category} & \textbf{Count} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+UGP core axioms (A1--A3: locality, symmetry, MDL) & \textbf{3} \\
+PSC Layer~I axioms (RC, NM*, AC, TV, SA) — AC is proved & \textbf{5 (1 proved)} \\
+PSC Layer~II conditions (PI, MDL-II) — PI is proved & \textbf{2 (1 proved)} \\
+GTE construction principles (PL, MD, RSUC, GoE, QLL, CUP-4) — all proved &
+  \textbf{6 (all proved)} \\
+$[D]$-constraints (D1--D5) — D2, D3, D5 proved & \textbf{5 (3 proved)} \\
+SRRG axioms (A1--A3 proved; B5 proved; B1--B4 named open) & \textbf{8 (4 proved, 4 open)} \\
+Cook bridge axioms (C2 discharged, C1 partial, 5 general CatOpen) &
+  \textbf{7 (1 discharged, 6 open)} \\
+GTE universality bridge axioms (P28; INF-TAPE, DUAL-TAPE, CUP3D-six) &
+  \textbf{8 (all named/open)} \\
+P44 architecture restrictions (AR1--AR3; AR1/AR2 proved, AR3 open) & \textbf{3 (2 proved, 1 open)} \\
+Analytic number theory axioms (Dickman, CRT; not in Cat~A closure) & \textbf{2} \\
+\midrule
+\textbf{Total true open axioms (assumed, not derived)} & $\approx\mathbf{28}$--$\mathbf{31}$ \\
+\textbf{Total proved theorems (once called axioms)} & $\approx\mathbf{17}$--$\mathbf{20}$ \\
+\end{longtable}
+\endgroup
+
+\noindent The three UGP axioms (A1--A3) are the only truly foundational assumptions.
+GTE construction principles are all proved theorems. The remaining open axioms are:
+(1) PSC Layer~I structural conditions defining framework scope; (2) SRRG B-axioms;
+(3) Cook bridge axioms for arbitrary CTS generality; (4) P28 bridge axioms for GTE
+tape embedding.
+
+% ─── Part 3: Physical Quantity Outputs ────────────────────────────────────
+\subsection{Physical Quantity Outputs}
+\label{sec:mi-outputs}
+
+Tables~\ref{tab:mi-ew}--\ref{tab:mi-combinatorial} list the primary predictions
+with the canonical GTE formula, comparison to PDG / experiment, and Lean certification
+status; Tables~\ref{tab:mi-novel-particles} and~\ref{tab:mi-dark-sector} register
+beyond-SM particle predictions from P02 and P29.
+Sequential refinements of the same derivation (e.g., the three sin$^2\theta_W$
+values) are listed in the discrepancy register, \S\ref{sec:mi-discrepancies}.
+
+\subsubsection{Electroweak Sector}
+\label{sec:mi-ew}
+
+\textbf{sin$^2\theta_W$ progression (sequential refinements):}
+$3456/15101 \approx 0.22886$ (P01/P31, tree-level) $\to$
+$3/13 = 0.23077$ (P31/P35, best tree-level, \CatAL) $\to$
+$384729/1664000 \approx 0.231207$ (P41/P42, threshold-corrected, \CatAL) $\to$
+$0.23129154$ (P31/P35, SM Higgs threshold + GTE $\alpha_{\rm em}=1/128$, CatB;
+$+0.038\sigma$ vs PDG 2024; canonical for electroweak comparisons).
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.11\linewidth}P{0.10\linewidth}P{0.20\linewidth}P{0.15\linewidth}P{0.10\linewidth}P{0.08\linewidth}P{0.08\linewidth}@{}}
+\caption{Electroweak sector predictions.}
+\label{tab:mi-ew}\\
+\toprule
+\textbf{Quantity} & \textbf{Symbol} & \textbf{GTE Value / Formula} &
+  \textbf{PDG Value} & \textbf{Error} & \textbf{Level} & \textbf{Source} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{Quantity} & \textbf{Symbol} & \textbf{GTE Value / Formula} &
+  \textbf{PDG Value} & \textbf{Error} & \textbf{Level} & \textbf{Source} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Weinberg angle (orbit) & $\sin^2\theta_W$ &
+  $N_{\rm gen}/c_H = 3/13 = 0.23077$ &
+  $0.23129\pm0.00004$ (PDG 2024) & $-0.195\%$ (13.0$\sigma$) & \CatAL\ (tree-level) & P31, P33, P35 \\
+Weinberg angle (threshold) & $\sin^2\theta_W$ &
+  $3/13 + \lambda^3/(2c_H) = 384729/1664000 \approx 0.23121$ &
+  $0.23122\pm0.00003$ (PDG 2022) & $-0.42\sigma$ & \CatAL & P41, P42 \\
+Weinberg angle (2-loop + Higgs) & $\sin^2\theta_W$ &
+  $384729/1664000 + (1/128)/(12\pi \times 10/13)\times\ln(125.2499/91.629)
+  = 0.23129154$ &
+  $0.23129\pm0.00004$ (PDG 2024) & $+0.038\sigma$ & CatB & P31, P35 \\
+Weinberg angle (GUT scale) & $\sin^2\theta_W^{\rm GUT}$ &
+  $N_{\rm gen}/2^{N_{\rm gen}} = 3/8 = 0.375$ &
+  $0.375$ (SU(5)) & $0.0\%$ & \CatAL & P31, P32,\newline P35 \\
+$(M_W/M_Z)^2$ & --- &
+  $1-\sin^2\theta_W = 10/13 \approx 0.7692$ &
+  $0.7736$ & $+0.57\%$ & \CatAL & P41, P42 \\
+$W$ mass (2-loop) & $m_W$ &
+  2-loop + threshold: \textbf{80.364}~GeV &
+  $80.3692\pm0.0133$~GeV (PDG 2024) & $-0.39\sigma$ & \CatAL & P01, P22 \\
+$W$ mass (P35 chain) & $m_W$ &
+  PSC energy scale $E_0 \sin^2\theta_W^{1/2}$: $80.614$~GeV &
+  $80.3692$~GeV & $+0.30\%$ & CatAD & P35, P41, P42 \\
+$Z$ mass & $m_Z$ &
+  $\cos\theta_W$ chain: $91.914$~GeV &
+  $91.188$~GeV & $+0.80\%$ & CatAD & P35, P41, P42 \\
+Higgs VEV (SRRG) & $v_{\rm PSC}$ &
+  SRRG fixed point: \textbf{246.16}~GeV &
+  $246.22$~GeV & $-0.024\%$ & A$^-$ (conditional) & P27, P35 \\
+Higgs VEV (self-consistent) & $v_{\rm self}$ &
+  $2M_W/g_2(M_W)$: \textbf{246.27}~GeV &
+  $246.22$~GeV & $+0.02\%$ & A/D & P01 \\
+Higgs mass & $m_H$ &
+  SRRG-corrected: $\mathbf{125.2499}$~GeV
+  ($\lambda = \varphi/(4\pi)\times(1 + \ln\varphi/(54\ln 2\pi))$;
+  $2c_H+1 = 27 = N_{\rm gen}^3$) &
+  $125.20\pm0.11$~GeV & $\mathbf{-0.0003\sigma}$ & \CatAL\ (P27, P35) & P01, P27, P35 \\
+Bare gauge couplings & $g_1^2, g_2^2, g_3^2$ &
+  GTE cascade: $16/125$, $2329/5400$, $41\,075\,281/27\,648\,000$ &
+  --- & $\leq\!1.6\%$ all & \CatAL & P01 \\
+$\alpha_{\rm EM}^{-1}$ & --- &
+  $(N_{\rm eff}(\mu) + F_{c_H} - 1)/2 = \mathbf{137}$ &
+  $137.036$ & $\sim\!0.03\%$ & \CatAL & P01, P28 \\
+EW boson $c$-values & $c(W,\!Z,\!H)$ &
+  Ridge factorisation: $\{11,12,13\}$ &
+  --- & --- & \CatAL & P01 \\
+Tau Yukawa coupling & $y_\tau$ &
+  $1/(2\times 7^2) = 1/98$; $m_\tau = v_H y_\tau/\sqrt{2}$ &
+  --- & $0.016\%$ ($m_\tau$) & CatA & P18 \\
+All 3 charged lepton masses & $m_e,$\newline$m_\mu,$\newline$m_\tau$ &
+  Koide $+ y_\tau = 1/98$: $0.511$, $105.635$, $1776.57$~MeV &
+  $0.511$,\newline$105.658$,\newline$1776.86$~MeV & $0.02$--$0.016\%$ & CatA & P18 \\
+Gauge couplings $(g, g')$ & $g, g'$ &
+  $\sin^2\theta_W = 3/13 + \alpha_{\rm EM}$ at $M_Z$:
+  $g = 0.6500$, $g' = 0.3560$ &
+  PDG $M_Z$ scale & CatAD & CatAD & P35 \\
+$W$ mass (1-loop oblique) & $m_W$ &
+  1-loop oblique correction: $\mathbf{80.372}$~GeV
+  (closes $98.8\%$ of tree-level gap) &
+  $80.3692\pm0.0133$~GeV & $-0.006\%$ & CatAD & P27 \\
+Bare $g_1^2/g_2^2$ ratio & --- &
+  $86400/291125 \approx \mathbf{0.2969}$ (ugp-lean bare triple) &
+  $0.3008$ at $M_Z$ & $-1.34\%$ & \CatAL & P14 \\
+Bare $g_3^2/g_2^2$ ratio & --- &
+  $\approx \mathbf{3.444}$ (ugp-lean bare triple) &
+  $3.510$ at $M_Z$ & $-1.90\%$ & \CatAL & P14 \\
+\end{longtable}
+\endgroup
+
+\subsubsection{CKM Matrix}
+\label{sec:mi-ckm}
+
+\textbf{Key note: $\lambda = 9/40 = N_{\rm gen}^2/(2^{N_{\rm gen}} \times N_{\rm fam})$ is a derived output, not an input.}
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.15\linewidth}P{0.08\linewidth}P{0.20\linewidth}P{0.12\linewidth}P{0.10\linewidth}P{0.08\linewidth}P{0.09\linewidth}@{}}
+\caption{CKM matrix predictions.}
+\label{tab:mi-ckm}\\
+\toprule
+\textbf{Quantity} & \textbf{Symbol} & \textbf{GTE Value / Formula} &
+  \textbf{PDG Value} & \textbf{Error} & \textbf{Level} & \textbf{Source} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{Quantity} & \textbf{Symbol} & \textbf{GTE Value / Formula} &
+  \textbf{PDG Value} & \textbf{Error} & \textbf{Level} & \textbf{Source} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Wolfenstein $\lambda$ & $\lambda$ &
+  $N_{\rm gen}^2/(2^{N_{\rm gen}}N_{\rm fam}) = \mathbf{9/40 = 0.22500}$ &
+  $0.22500\pm0.00037$ & $\mathbf{0.000\sigma}$ & \CatAL & P01, P32, P35 \\
+Wolfenstein $A$ & $A$ &
+  $\sqrt{N_{\rm eff}(s)/N_{\rm eff}(c)} = \sqrt{186/275} \approx 0.8224$ &
+  $\sim\!0.814\pm0.013$ & $0.65\sigma$ & CatA & P01, P32 \\
+CKM UT radius & $R_b$ &
+  $N_{\rm gen}/2^{N_{\rm gen}} = 3/8 = 0.375$ &
+  --- & --- & \CatAL & P32 \\
+CP angle $\gamma$ & $\gamma$ &
+  $\arctan\!\sqrt{b_b/b_s}/N_{\rm gen} = 65.67^\circ$ &
+  $65.68^\circ\pm0.67^\circ$ & $\mathbf{-0.023\sigma}$ & CatA & P32 \\
+$b_b$ (Mersenne prime) & $b_b$ &
+  $2^{c_H} - 1 = \mathbf{8191}$ &
+  --- & --- & \CatAL & P32 \\
+Jarlskog invariant & $J$ &
+  Structural CKM (P32 preferred): $\mathbf{2.999\times10^{-5}}$ &
+  $3.08\times10^{-5}$ & $-1.81\sigma$ & A/D & P32 \\
+Strong CP phase & $\theta_{\rm QCD}$ &
+  $F_{21}$ discrete group theory: $\mathbf{0}$ (exact) &
+  $< 10^{-10}$ (exp.\ bound) & Consistent & \CatAL & P33, P35, P39 \\
+All 9 CKM elements & $|V_{ij}|$ &
+  Wolfenstein $\mathcal{O}(\lambda^4)$ expansion &
+  PDG table & $< 1\sigma$ all & CatA & P32 \\
+\end{longtable}
+\endgroup
+
+\subsubsection{Strong Sector / QCD}
+\label{sec:mi-qcd}
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.15\linewidth}P{0.08\linewidth}P{0.20\linewidth}P{0.12\linewidth}P{0.10\linewidth}P{0.08\linewidth}P{0.09\linewidth}@{}}
+\caption{Strong sector / QCD predictions.}
+\label{tab:mi-qcd}\\
+\toprule
+\textbf{Quantity} & \textbf{Symbol} & \textbf{GTE Value} &
+  \textbf{PDG / QCD} & \textbf{Error} & \textbf{Level} & \textbf{Source} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{Quantity} & \textbf{Symbol} & \textbf{GTE Value} &
+  \textbf{PDG / QCD} & \textbf{Error} & \textbf{Level} & \textbf{Source} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+$\alpha_s(M_Z)$ (bare) & $\alpha_s$ &
+  $g_3^2/(4\pi) = \mathbf{0.11822}$ &
+  $0.1179\pm0.0010$ & $+0.24\sigma$ & \CatAL & P01 \\
+$\alpha_s(M_Z)$ (2-loop) & $\alpha_s$ &
+  SC-ZZ 2-loop: $\mathbf{0.11790}$ &
+  $0.1179\pm0.0010$ & $\mathbf{0.00\sigma}$ & CatA+D & P22 \\
+$\alpha_s(M_Z)$ (3-loop, $F_{21}$) & $\alpha_s$ &
+  $N_f=5$ running: $\mathbf{0.1193}$ &
+  $0.1180\pm0.0009$ & $+1.10\%$ & CatA & P35, P39 \\
+$\beta$-function $b_0$ & $b_0$ &
+  $(11N_c - 2N_f)/3 = \mathbf{7}$ &
+  7 & exact & \CatAL & P35, P39 \\
+$\beta$-function $b_1$ & $b_1$ &
+  $F_{21}$ substrate: $\mathbf{26}$ &
+  26 & exact & \CatAL & P35, P39 \\
+EFT boundary scale & $\Lambda_{\rm GTE}$ &
+  $7\,M_{\rm kink}$ (seven-kink full-period unwinding threshold):
+  tree $(8/7)m_\tau = \mathbf{2030.70}$~MeV;
+  pole $7M^Q = 1.970\pm0.146$~GeV;
+  envelope $\mathbf{1.96\pm0.15}$~GeV &
+  --- & band $<10\%$ & CatAD / CatA & P39, P42 \\
+Colour coupling at $\Lambda_{\rm GTE}$ & $e^2(\Lambda_{\rm GTE})$ &
+  Sylow rational: $\mathbf{7/2}$ &
+  $3.74\pm0.08$ ($\overline{\rm MS}$, run from PDG 2024 $\alpha_s(M_Z)$) &
+  $+7.4\%$; $+1.3$--$1.5\sigma$ broadening-corrected & CatA & P42, P39 \\
+\multicolumn{7}{p{0.92\linewidth}}{\footnotesize\itshape The $e^2(\Lambda_{\rm GTE}) = 7/2$ identification is a scheme-aware consistency, not an exact-grade match: the $+7.4\%$ one-loop matching offset against PDG-run $\alpha_s$ reduces to $+1.5\sigma$ (tree reading) / $+1.3\sigma$ (pole reading) once the non-perturbatively measured kink charge-form-factor broadening $b = 1.189 \pm 0.049$ is included; the residual is consistent with the uncomputed two-loop matching term plus the coset threshold constant. $\Lambda_{\rm GTE}$: mechanism and tree identity CatAD; pole envelope CatA.} \\
+Casimir $C_F$ & $C_F$ &
+  $F_{21}$ reps: $\mathbf{4/3}$ &
+  $4/3$ & $0\%$ & \CatAL & P35, P39 \\
+Casimir $C_A$ & $C_A$ &
+  $F_{21}$ reps: $\mathbf{3}$ &
+  3 & $0\%$ & \CatAL & P35, P39 \\
+Pion decay constant & $f_\pi^{\rm SCC}$ &
+  $M_{\rm kink}^{\rm SCC}/\pi = \mathbf{92.34}$~MeV &
+  $92.07$~MeV & $+0.30\%$ & \CatAL & P35, P39 \\
+Pion mass & $m_\pi$ &
+  GOR + $\langle\bar\psi\psi\rangle_{\rm GTE}$: $\mathbf{139.57}$~MeV &
+  $139.5703$~MeV (PDG 2024) & $-0.001\%$ ($0.00\sigma$) & \CatAL & P35, P39 \\
+$\omega$ meson mass & $m_\omega$ &
+  $\sqrt{72}\,f_\pi^{\rm SCC} = \mathbf{783.55}$~MeV &
+  $782.65$~MeV (PDG) & $+0.11\%$ & \CatAL & P34, P35 \\
+$\rho$ meson mass & $m_\rho$ &
+  $\sqrt{70}\,f_\pi^{\rm SCC} = \mathbf{772.57}$~MeV &
+  $775.26$~MeV (PDG) & $-0.35\%$ & \CatAL & P34, P35 \\
+\multicolumn{7}{p{0.92\linewidth}}{\footnotesize\itshape Arithmetic (\lean{g\_rho\_sq\_eq\_casimir\_orbit}, \lean{m\_rho\_ksrf\_formula}): \CatAL; physical SU(2)$_I$ mechanism: \CatB. KSRF is leading-order $\mathcal{O}(p^2)$; $\Gamma_\rho=149\,\text{MeV}$ makes bare-mass vs.\ PDG pole-mass comparison unreliable. The $0.35\%$ deviation is the physically meaningful metric.} \\
+$\phi$ meson mass & $m_\phi$ &
+  $\sqrt{84}\,f_K = \mathbf{1011.3}$~MeV &
+  $1019.46$~MeV (PDG) & $-0.80\%$ & \CatB & P34, P35 \\
+Kaon decay const. & $f_K$ &
+  GOR NLO Casimir: $\mathbf{110.34}$~MeV (NR) &
+  $110.4$~MeV (PDG NR) & $-0.05\%$ & \CatB & P34, P35 \\
+\multicolumn{7}{p{0.92\linewidth}}{\footnotesize\itshape $f_K^{\rm GTE}{\times}\sqrt{2}=156.0\,\text{MeV}$ is within $0.9\sigma$ of the PDG relativistic value $155.7\,\text{MeV}$.} \\
+$\eta$--$\eta'$ mixing & $\theta_P$ &
+  Full GTE chain: $-13.08^\circ\pm3.74^\circ$ &
+  $[-14.3^\circ,$\allowbreak$-10.7^\circ]$ & In range & CatA & P35, P39 \\
+Baryon $J^P$ & $J^P$ &
+  $[D]$-weight/MDL: $1/2^+$ &
+  $1/2^+$ & exact & \CatAL & P39 \\
+Mass gap & $\Delta$ &
+  Kink BPS energy: $\Delta > 0$ &
+  Positive (obs.) & --- & \CatAL & P39 \\
+4D string tension & $\sqrt{\sigma_{4D}}$ &
+  $(N_3/N_7)\sigma_{2D}$: $440.6$~MeV &
+  $440$--$475$~MeV & In range & CatA & P35, P39 \\
+$\alpha_s(M_Z)$ ($f_{\rm quant}$ route) & $\alpha_s$ &
+  GTE + $f_{\rm quant} = 2^{-2/3}$: $\mathbf{0.1896}$ &
+  $0.1179\pm0.0010$ & $\sim\!60\%$ (open) & CatA & P39 \\
+$Z_7$ kink S-matrix & $S_{kk}(\theta)$ &
+  $S_{kk}(\theta) = -1$ (all $\theta$; repulsive; $\beta^2 = 49 > 8\pi$);
+  tree amplitude $i\mathcal{M} = -im^2 \times 49$ ($Z_7$ fingerprint) &
+  Za\-mo\-lod\-chi\-kov--\allowbreak{}Za\-mo\-lod\-chi\-kov 1979 & --- & CatAD & P35, P39 \\
+L\"uscher / $f_{\rm quant}$ gap & $f_{\rm quant}$ &
+  $f_{\rm quant}(C\text{-ratio}) = 0.6289$ vs $f_{\rm quant}(\sigma\text{-ratio}) = 0.6747$ (7.28\% gap);
+  L\"uscher $\pi/(12R^2) = 8.26\%$ at $R = 1/m_{\rm kink}$;
+  $R^* = 0.913$~fm vs $0.680$~fm (34\% off); open &
+  --- & OPEN & CatA & P39 \\
+\end{longtable}
+\endgroup
+
+\subsubsection{Lepton Masses}
+\label{sec:mi-leptons}
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.15\linewidth}P{0.08\linewidth}P{0.20\linewidth}P{0.12\linewidth}P{0.10\linewidth}P{0.08\linewidth}P{0.09\linewidth}@{}}
+\caption{Lepton mass predictions.}
+\label{tab:mi-leptons}\\
+\toprule
+\textbf{Quantity} & \textbf{Symbol} & \textbf{GTE Value} &
+  \textbf{PDG Value} & \textbf{Error} & \textbf{Level} & \textbf{Source} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{Quantity} & \textbf{Symbol} & \textbf{GTE Value} &
+  \textbf{PDG Value} & \textbf{Error} & \textbf{Level} & \textbf{Source} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Tau mass (Koide) & $m_\tau$ &
+  From $(m_e, m_\mu)$: $\mathbf{1776.969}$~MeV &
+  $1776.860$~MeV & $\mathbf{0.91\sigma}$ \textit{(61~ppm)} & \CatAL & P01, P18 \\
+Koide relation & $Q$ &
+  $Q = 2/3$ (Koide formula) &
+  $Q_{\rm PDG} = 2/3$ & $\sim\!0$ & \CatAL & P18 \\
+Koide phase & $\theta$ &
+  $(N_c^2 - 1)/(4N_c^2) = \mathbf{2/9}$ &
+  --- & exact & \CatAL & P18 \\
+All 9 charged-fermion masses & --- &
+  Dual-path verifier benchmark (locked UCL + theoretical renormalisation + URC,
+  nine fermions + W--$\rho$): $0.295\%$ RMS vs PDG~2022 targets;
+  $0.261\%$ vs PDG~2024 &
+  PDG 2022 / 2024 & $0.295\%$ / $0.261\%$ RMS & A/D & P01 \\
+Tau mass (VEV route) & $m_\tau$ &
+  $y_\tau = 1/98$: $m_\tau = v_H/(98\sqrt{2}) = \mathbf{1776.57}$~MeV &
+  $1776.86$~MeV & $\mathbf{0.016\%}$ & CatA & P18 \\
+\end{longtable}
+\endgroup
+
+\subsubsection{Quark Masses}
+\label{sec:mi-quarks}
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.15\linewidth}P{0.08\linewidth}P{0.17\linewidth}P{0.12\linewidth}P{0.10\linewidth}P{0.11\linewidth}P{0.09\linewidth}@{}}
+\caption{Quark mass predictions.}
+\label{tab:mi-quarks}\\
+\toprule
+\textbf{Quantity} & \textbf{Symbol} & \textbf{GTE Value} &
+  \textbf{PDG Value (2024)} & \textbf{Error} & \textbf{Level} & \textbf{Source} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{Quantity} & \textbf{Symbol} & \textbf{GTE Value} &
+  \textbf{PDG Value (2024)} & \textbf{Error} & \textbf{Level} & \textbf{Source} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Up quark & $m_u$ & $2.157$~MeV & $2.16^{+0.49}_{-0.26}$~MeV (PDG 2024) & $-0.009\sigma$ & \CatAD\ (\lean{m\_u\_pdg\_interval}) & P39 \\
+Down quark & $m_d$ & $4.647$~MeV & $4.70^{+0.50}_{-0.17}$~MeV (PDG 2024) & $-0.156\sigma$ & \CatAD\ (\lean{m\_d\_pdg\_interval}) & P39 \\
+Strange quark & $m_s$ & $92.74$~MeV & $93.5^{+8.6}_{-3.1}$~MeV (PDG 2024) & $-0.129\sigma$ & \CatAD\ (\lean{m\_s\_pdg\_interval}) & P39 \\
+Charm quark & $m_c$ & $1270.7$~MeV & $1273\pm9$~MeV (PDG 2024) & $-0.26\sigma$ & \CatAD\ (\lean{m\_c\_pdg\_interval}) & P39 \\
+Bottom quark (VV) & $m_b$ & $4184.2$~MeV & $4183\pm8$~MeV (PDG 2024) & $+0.16\sigma$ & \CatAD & P32 \\
+Top quark (VV) & $m_t$ & $172\,610$~MeV & $172\,570\pm290$~MeV (PDG 2024) & $+0.14\sigma$ & \CatAD & P32 \\
+$m_t/m_b$ ratio & $\bt/\bb$ & $337920/8191=41.255$ & $41.257$ (PDG 2024) & $0.072\%$ & \CatAL & P32 \\
+Nucleon $b$-values & $b_p, b_n$ & $b_p = 11459$, $b_n = 11441$ & --- & exact & \CatAL & P01, P23 \\
+\end{longtable}
+\endgroup
+
+\subsubsection{Neutrino Sector}
+\label{sec:mi-neutrinos}
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.15\linewidth}P{0.11\linewidth}P{0.17\linewidth}P{0.15\linewidth}P{0.10\linewidth}P{0.07\linewidth}P{0.07\linewidth}@{}}
+\caption{Neutrino sector predictions.}
+\label{tab:mi-neutrinos}\\
+\toprule
+\textbf{Quantity} & \textbf{Symbol} & \textbf{GTE Value} &
+  \textbf{PDG / NuFIT} & \textbf{Error} & \textbf{Level} & \textbf{Source} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{Quantity} & \textbf{Symbol} & \textbf{GTE Value} &
+  \textbf{PDG / NuFIT} & \textbf{Error} & \textbf{Level} & \textbf{Source} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Mass-squared ratio & $\Delta m^2_{21}/\Delta m^2_{31}$ &
+  $b$-values $\{5,11,19\}$ with seesaw exp.\ $29/9$: $\mathbf{0.02936}$ &
+  $0.02951\pm0.00098$ & $\mathbf{0.16\sigma}$ & \CatAL & P21, P01 \\
+Mass ordering & --- & Normal (from $b^{29/9}$ structure) &
+  Preferred at $2.5\sigma$ & Consistent & \CatAL & P21 \\
+Mass ordering (triality) & --- &
+  Octonionic triality: $b_{R,1}{<}b_{R,2}{<}b_{R,3}$ forces Normal Ordering
+  (\lean{seesaw\_normal\_ordering\_from\_seed\_ordering}, \CatAL);
+  corroborates P21 via independent route;
+  JUNO-falsifiable &
+  NH preferred $\Delta\chi^2{=}6.1$ & Corroborates P21 & \CatAL & P55 \\
+Seesaw exponent & $29/9 = N_c + \theta$ &
+  $N_c + \theta$ topological &
+  --- & Three independent decompositions & \CatAL & P01, P21 \\
+Sum $\Sigma m_\nu$ & $\Sigma m_\nu$ &
+  $\mathbf{59.4}$~meV (GTE seesaw + three-tape winding) &
+  $< 120$~meV (Planck) & Within bound & CatAD & P01, P47 \\
+$\Delta m^2_{21}$ (absolute) & $\Delta m^2_{21}$ &
+  Orbit-ratio formula: $\mathbf{7.370\times10^{-5}}$~eV$^2$
+  (\lean{gte\_delta\_m21\_sq\_bounds}) &
+  $(7.49\pm0.19)\times10^{-5}$~eV$^2$ (NuFIT~6.0 IC24 NH) &
+  $0.63\sigma$ & \CatAD & P21 \\
+$\Delta m^2_{31}$ (absolute) & $\Delta m^2_{31}$ &
+  Orbit-ratio formula: $\mathbf{2.511\times10^{-3}}$~eV$^2$
+  (\lean{gte\_delta\_m31\_sq\_bounds}) &
+  $(2.515\pm0.027)\times10^{-3}$~eV$^2$ (NuFIT~6.0 IC24 NH) &
+  $-0.2\%$ ($< 1\sigma$) & \CatAD & P21 \\
+RHN mass scale (GUT) & $M_{R}$ &
+  GTE orbit + EW: $\mathbf{1.90\times10^{16}}$~GeV
+  (${\approx}0.90\,M_{\rm GUT}$) &
+  $M_{\rm GUT}(\text{unif.})\approx2.1\times10^{16}$~GeV &
+  $-10\%$ & CatAD & P21 \\
+RHN leptogenesis scale & $M_{R,1}$ &
+  BPS instanton suppression: $\mathbf{1.11\times10^{13}}$~GeV
+  ($M_R e^{-\pi}/(19/5)^{29/9}$;
+  \lean{mr1\_mr\_gut\_ratio\_bounds}) &
+  Calibrated from oscillations: $1.11\times10^{13}$~GeV &
+  $0.04\%$ & CatAD & P21, P47 \\
+$m_3(\nu)$ (P33) & $m_3$ &
+  $\alpha_{\rm em}^{N_{\rm fam}} \times E_{\rm ether} \approx 0.059$~eV &
+  $> 0.050$~eV & In range & CatAD & P33, P35 \\
+RHN $b$-values & $\{b_{\nu R}\}$ &
+  Braid Atlas: $\{5, 11, 19\}$ &
+  --- & exact & \CatAL & P17, P21 \\
+PMNS $\sin^2\theta_{12}$ & $\sin^2\theta_{12}$ &
+  Orbit ratio $b_{\rm strand}^2/c_H = 4/13 = \mathbf{0.3077}$ &
+  $0.308\pm0.011$ (NuFIT~6.0 IC24 NH) & $+0.01\sigma$ & \CatAL & P21 \\
+PMNS $\sin^2\theta_{23}$ & $\sin^2\theta_{23}$ &
+  Orbit ratio $b_{R_3}/b_{L_2} = 19/42 = \mathbf{0.4524}$ &
+  $0.470\pm0.013$ (NuFIT~6.0 IC24 NH) & $-1.35\sigma$; within $3\sigma$ & \CatAL & P21 \\
+$\sin^2\theta_{23}$ (NLO) & $\sin^2\theta_{23}^{\rm NLO}$ &
+  NLO candidate $209/441 = \mathbf{0.4739}$
+  (\lean{pmns\_atm\_nlo\_candidate},
+   \lean{two\_b\_R2\_eq\_F21\_succ}) &
+  $0.470\pm0.013$ (NuFIT~6.0 IC24 NH) &
+  $+0.23\sigma$ (within $1\sigma$) &
+  CatB (phys); \CatAL{} (arith) & P35 \\
+PMNS $\sin\theta_{13}$ & $\sin\theta_{13}$ &
+  Orbit ratio $b_{R_2}/b_{L_1} = 11/73 = \mathbf{0.1507}$ &
+  $0.1489\pm0.0007$ (NuFIT~6.0 IC24 NH) & $+1.0\sigma$ & \CatAL & P21 \\
+Jarlskog $J_{\rm GTE}$ & $J$ &
+  $-(8184\sqrt{437}/$\newline
+  $5057221)\sin(\pi/7)$\newline
+  ${}= \mathbf{-1.47\times10^{-2}}$;
+  $5057221 = 13\times73^3$ &
+  $1.78\times10^{-2}$ (NuFIT~6.0 IC24 NH) & see P21 & \CatAL & P21 \\
+PMNS Dirac CP phase & $\delta_{CP}$ &
+  $\mathbb{Z}_7$ winding arithmetic: $\mathbf{205.71^\circ}$ &
+  $212^\circ$ (NuFIT~6.0 IC24 NH) & $\mathbf{-0.15\sigma}$ & CatA & P45 \\
+Neutrino fund.\ coupling & $g_{\rm fund}$ &
+  $7^2/2^{N_c^2} = 49/512 \approx \mathbf{0.0957}$ (provisional) &
+  --- & --- & CatAD & P35, P46 \\
+Dark-ring ratio & $\Gamma_{\rm dark}$ &
+  $g_{\rm fund}^2 = 7^4/2^{18}$ &
+  --- & --- & CatAD & P35, P46 \\
+Neutrino spectrum & $\{m_{\nu_i}\}$ &
+  $g_{\rm fund}$ cascade: $\{0.68, 8.6, 50.1\}$~meV; $\Sigma = 59.4$~meV &
+  $\Sigma < 120$~meV (Planck) & Within bound & CatAD & P35, P46, P47 \\
+CKM CP phase ($S_3$ chain) & $\delta_{CP}^{\rm CKM}$ &
+  $\pi/2 - 3/8 = \mathbf{68.51^\circ}$ (P47 $S_3$ subgroup chain) &
+  $68.517^\circ$ (CKMfitter/PDG) & $\mathbf{0.017\%}$ & CatAD & P47 \\
+\end{longtable}
+\endgroup
+
+\subsubsection{Gravitational and Cosmological}
+\label{sec:mi-gravity}
+
+\textbf{CatAL upgrade (P43):} The Planck/$\tau$ hierarchy was CatAD in P35/P38.
+P43 upgrades to \CatAL{} via \lean{z3\_invariant\_entropy\_closes\_hierarchy} (zero sorry).
+The formula and value (0.040\% error) are identical across P35, P38, and P43.
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.13\linewidth}P{0.12\linewidth}P{0.21\linewidth}P{0.12\linewidth}P{0.09\linewidth}P{0.08\linewidth}P{0.07\linewidth}@{}}
+\caption{Gravitational and cosmological predictions.}
+\label{tab:mi-gravity}\\
+\toprule
+\textbf{Quantity} & \textbf{Symbol} & \textbf{GTE Value} &
+  \textbf{PDG / Exp} & \textbf{Error} & \textbf{Level} & \textbf{Src.} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{Quantity} & \textbf{Symbol} & \textbf{GTE Value} &
+  \textbf{PDG / Exp} & \textbf{Error} & \textbf{Level} & \textbf{Src.} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Planck/$\tau$ hierarchy & $M_{\rm Pl}/m_\tau$ &
+  $|F_{21}|^{10}\times|Z_7|^{7/2} = \mathbf{6.868\times10^{18}}$ &
+  $6.871\times10^{18}$ & $\mathbf{0.040\%}$ & \CatAL\ (P43) & P43, P38, P35 \\
+Spacetime dimension & $D$ &
+  $N_{\rm gen} + 1 = \mathbf{4}$ &
+  4 & exact & \CatAL$^\dagger$ & P34, P35, P36, P43 \\
+Spectral dimension & $d_s$ &
+  Thermodynamic limit: $\mathbf{4}$ &
+  4 & exact & \CatAL & P35, P36, P43 \\
+Cosmological constant & $\Lambda$ &
+  $(\ln 2/\pi)\cdot L_{\rm model}\cdot H_0^2/c^2 = 1.097\times10^{-52}$~m$^{-2}$ &
+  $1.088\times10^{-52}$~m$^{-2}$ & $\mathbf{0.31\sigma}$ & A/D & P01, P36 \\
+$\Lambda$ (classical, tree) & $\Lambda$ &
+  $V(\Phi_k)$ at $Z_7$ vacua: $\mathbf{0}$ (exact) &
+  $< 10^{-47}$~GeV$^4$ (tree) & 0 (tree) & \CatAL & P38, P42, P43 \\
+$\Lambda$ quantum corrections (pure-$\varphi$) & $\delta\Lambda$ &
+  All computable loop corrections vanish identically in the pure-$\varphi$ sector:
+  $\delta\Lambda = 0$ exact
+  (\lean{lambda\_all\_order\_zero\_pure\_phi}, zero sorry) &
+  $< 10^{-47}$~GeV$^4$ & 0 & \CatAL & P48 \\
+Strong CP & $\theta_{\rm QCD}$ &
+  $F_{21}$ group theory: $\mathbf{0}$ (exact) &
+  $< 10^{-10}$ & Consistent & \CatAL & P33, P35, P39 \\
+Baryon-to-photon ratio & $\eta_B$ &
+  $\sin^2\theta_W \times \alpha_{\rm em}^4 = \mathbf{6.54\times10^{-10}}$ &
+  $(6.10\pm0.06)\times10^{-10}$ & $+7.2\%$ & CatA & P33, P35 \\
+$\eta_B$ (kink-overlap, sech upper bound) & $\eta_B$ &
+  Kink overlap suppression $\alpha = N_c-1=2$:
+  $\mathbf{6.36\times10^{-10}}$ (asymptotic sech upper bound) &
+  $(6.10\pm0.06)\times10^{-10}$ &
+  $+4.3\sigma$ (bracket; superseded) & \CatAL\ cond.\ & P47 \\
+$\eta_B$ (FKTT: $g_{\rm kink\text{-}top}=\varepsilon_{\rm FN}$) & $\eta_B$ &
+  BPS instanton + FN coupling identity:
+  $\mathbf{6.109\times10^{-10}}$
+  (\lean{kink\_top\_coupling\_eq\_eps\_FN},
+   \lean{phi\_mdl\_kink\_bps\_saturation}; zero axioms) &
+  $(6.10\pm0.06)\times10^{-10}$ & $\mathbf{+0.15\sigma}$ & \CatAL & P47, P42 \\
+Einstein field equations & $G_{\mu\nu} = 8\pi G_N T_{\mu\nu}$ &
+  MDL-Lovelock + variational (linearised) &
+  (GR) & --- & CatAD & P36, P38, P43 \\
+Curved-background Lagrangian & $\mathcal{L}[\Phi_{\rm MDL};\,g_{\mu\nu}]$ &
+  $\xi = 0$ forced: $\tfrac{1}{2}g^{\mu\nu}\partial_\mu\Phi\,\partial_\nu\Phi - V(\Phi)$ &
+  (GR minimal coupling) & --- & CatAD (\CatAL: $\xi{=}0$) & P38, P43 \\
+Holographic entropy & $S(A)$ &
+  $\mathrm{Area}[\Gamma_{\rm min}]/(4G)$ (Wald + RS-QEC routes) &
+  Ryu--Takayanagi & --- & CatAD & P38, P43 \\
+Hawking temperature & $T_H$ &
+  $M_{\rm Pl}^2/(8\pi M_{\rm BH})$; unchanged by $m_\phi = m_\tau$ &
+  (Hawking 1975) & --- & CatAD & P38, P43 \\
+Critical BH mass & $M_{\rm crit}$ &
+  $M_{\rm Pl}^2/(8\pi m_\tau) = \mathbf{3.34\times10^{39}}$~MeV &
+  --- & --- & CatAD & P38, P43 \\
+MDL cosmological IC & $k, \Phi_0, \dot\Phi_0$ &
+  $k{=}0$, $\Phi_0{=}0$, $\dot\Phi_0{=}M_{\rm Pl}$; uniform; $K{=}1.585$~bits &
+  (flat universe) & consistent & CatAD & P38, P43 \\
+GTE bounce & $\rho_{\rm max}$ &
+  $\rho_{\rm Pl}$; Friedmann correction $f_C(\rho/\rho_{\rm Pl})$ &
+  --- & --- & CatA & P38, P43 \\
+CMB spectral index & $n_s$ &
+  $1 - \ln(2)/(2\pi^2) = \mathbf{0.96488}$; algebraic chain 5/7 certified;
+  gate OQ-QG-1-$Z_2$-EFT (weaker than full OQ-QG-1) &
+  $0.9649 \pm 0.0042$ (Planck~2018) & $\mathbf{-0.005\sigma}$ & CatAD & P44 \\
+Tensor-to-scalar ratio & $r$ &
+  $\mathbf{0}$ (exact; no primordial GWs) &
+  unmeasured ($\sigma_r \approx 0.001$, LiteBIRD) & primary falsifiable & \CatAL/A & P44, P45 \\
+UV finiteness (curved background) & $C_i$ &
+  DeWitt--Schwinger: $C_i \sim 10^{-5}\ln(M_{\rm Pl}/m) \approx 41.76$ &
+  --- & no residual UV problem & A/D & P44 \\
+Dark-energy fraction & $\Omega_\Lambda$ &
+  R1~(PSC): $(\ln 2/3\pi)\log_2(2000/3) = 0.6899$ (CatAD);
+  R2~(holo): $3\pi/14 = 0.6732$; bracket obs.\ $0.6889$;
+  $\rho_\Lambda = (9/112)M_{\rm Pl}^2 H_0^2$; $w{=}-1$; loop suppression $\sim 10^{-42}$ &
+  $0.689\pm0.006$ Pl18 & $+0.18\sigma$/ bracket & CatAD & P44, P47 \\
+PSC-Adj.\ Theorem & $\Omega_\Lambda \in [3\pi/14,\;0.690]$ &
+  PSC + SRRG + MFRR[T] + DPP + gauge spectrum $\Rightarrow$ bracket,
+  no free params; $N_{\rm gen}{=}3$ unique ($<5\sigma$ both routes;
+  all other $N{:}\,{>}35\sigma$); spread 2.4\% &
+  $0.689\pm0.006$ Pl18 & bracket ($+0.18\sigma$) & CatAD & P47 \\
+Grav.\ $D^2$ unification & $D^2=16$ &
+  $D^2{=}(N_{\rm gen}{+}1)^2{=}16$: CC epoch, CC magnitude, Gorard (\CatAL),
+  E--H normalization ($D$ from DPP, \CatAL);
+  absent from $\Omega_\Lambda^{\rm holo}$, $F_{21}$, $\sin^2\theta_W$ &
+  --- & structural & CatAD & P47 \\
+3+1D spacetime from DPP & $D = 3{+}1$ &
+  Shared clock $\tau_c^{\rm out}$ necessary and sufficient (DPP, $\CatAL$) &
+  observed & exact & \CatAL & P45 \\
+Lorentz algebra (3+1D) & $\mathfrak{so}(1,3)$ &
+  All 12 commutation relations machine-certified &
+  (GR/QFT) & exact & \CatAL & P45 \\
+Gravity (3-tape, continuum limit) & $F = G_{\rm eff}M/(4\pi b^2)$ &
+  Physical Minimum Description Length (PMDL) Poisson $\nabla^2\Phi = G_{\rm eff}\,p(w_x,w_y,w_z)$ ($\CatAL$);
+  3D Poisson Green's function + multipole expansion gives exactly $F\propto r^{-2}$ in
+  the continuum limit ($b\gg\sigma_{\rm AL}$) ($\CatAD$);
+  prior discrete deviations ($F\propto b^{-2.19\ldots-2.30}$) are finite-source artifacts:
+  correction $O(\sigma_{\rm AL}/b)^2 \to 0$ as $b/\sigma_{\rm AL}\to\infty$ &
+  $F\propto r^{-2}$ (Newton) & exact in continuum limit & CatAD & P45 \\
+$Z_7$ field potential cap & $V_{\rm max}$ &
+  $2M_{\rm kink}^2/49 = \mathbf{3.44\times10^{-3}}$~GeV$^4$;
+  79 orders of magnitude below $M_{\rm Pl}^4$ &
+  --- & structural suppression & CatAD & P44 \\
+Kink emission threshold & $M_{\rm kink}^{\rm crit}$ &
+  $(49/8)M_{\rm crit}$: $\mathbf{2.04\times10^{40}}$~MeV;
+  $T_H = m_{\rm kink}$ (Hawking--kink duality) &
+  --- & --- & CatAD & P44 \\
+FKTT structural identity & $g_{\rm kink\text{-}top} = \varepsilon_{\rm FN}$ &
+  Top-kink Yukawa $= $ FN suppression: $g_{\rm kink\text{-}top} = \varepsilon_{\rm FN}$
+  (\lean{kink\_top\_coupling\_eq\_eps\_FN}, zero sorry, zero axioms);
+  closes $\eta_B$ leptogenesis chain at $+0.15\sigma$ &
+  --- & Structural & \CatAL & P42, P47 \\
+Gorard bridge coefficient & $C_{\rm Gorard}$ &
+  \textbf{Exact formula:} $C_{\rm Gorard} = N_{\rm spatial}/(2D^2) = 3/(2{\times}16) = \mathbf{3/32}$;
+  $N_{\rm spatial}=N_{\rm gen}=3$ (DPP, \CatAL), $D=N_{\rm gen}+1=4$ (DPP, \CatAL) &
+  --- & exact & \CatAL{} & P47 \\
+Gorard discrete-smooth bridge ($G$ normalisation) & $k_{\rm SD}$ &
+  Ollivier--Ricci curvature chain: $k_{\rm SD} = 10/13$ &
+  --- & --- & CatAD & P47 \\
+Neutrino mass sum & $\Sigma m_\nu$ &
+  $59.4$~meV (from GTE seesaw + three-tape winding) &
+  $< 120$~meV (Planck CMB) & Within bound & CatAD & P21, P47 \\
+$H_0$ (non-circular from $T_{\rm CMB}$) & $H_0$ &
+  $H_0(T_{\rm CMB}; \Omega_\Lambda, \eta_B,$\newline
+  $\Omega_{\rm DM}h^2, G_N) = \mathbf{67.95}$~km/s/Mpc;
+  $T_{\rm CMB}=2.7255$~K one external input;
+  Path~D fully first-principles: $T_{\rm CMB}$, $\Omega_\Lambda$, $\eta_B$,
+  $\Omega_{\rm DM}h^2$ all GTE-derived $\to$ $H_0$ without circular anchor (CatAD) &
+  $67.66\pm0.42$ km/s/Mpc (Planck~2018) & $+0.7\sigma$ & CatAD & P47 \\
+$\Omega_{\rm DM} h^2$ (topological dilution) & $\Omega_{\rm DM}h^2$ &
+  ADM raw $0.167$ $\to$ $\times D_{\rm top}=e^{-1/N_c}$ (\CatAL; \lean{d\_top\_derivation\_chain\_catal}) $= \mathbf{0.11994}$;
+  $D_{\rm top}$ exponent: $q_{\rm dark}/(|Z_7|-1) = 2/6 = 1/N_c$ (\CatAL);
+  full chain machine-certified in Lean~4, zero sorry &
+  $0.1200\pm0.0012$ (Planck~2018) & $\mathbf{-0.044\%}$ & CatAD & P29, P47 \\
+CMB temperature & $T_{\rm CMB}$ &
+  $T_{\rm CMB}^{\rm GTE} = 2.7265$~K (P47 radiation-equation route) &
+  $2.72548\pm0.00057$~K & $0.037\%$ & CatB & P47 \\
+\end{longtable}
+\endgroup
+
+\subsubsection{Novel GTE Particle Predictions (Beyond SM)}
+\label{sec:mi-novel-particles}
+
+{\small
+Pre-registered discovery run (P02): 1,000,035 candidates in
+\texttt{papers/02\_GTE\_spectrum/candidates.csv}.
+Nine genuinely novel stable candidates (GTE-P1, P2, P3, P6--P11);
+GTE-P4 and GTE-P5 are trajectory-path variants of canonical SM triples and are
+excluded from this register (P02 trajectory-path multiplicity; GTE-P4, GTE-P5).
+All listed masses are PCHIP-calibrated; confidence from the canonical v4 run.}
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.10\linewidth}P{0.09\linewidth}P{0.14\linewidth}P{0.08\linewidth}P{0.10\linewidth}P{0.07\linewidth}P{0.06\linewidth}@{}}
+\caption{Novel GTE particle predictions (P02 register; 9 candidates).}
+\label{tab:mi-novel-particles}\\
+\toprule
+\textbf{Label} & \textbf{$n$} & \textbf{Mass (MeV)} &
+  \textbf{Conf.} & \textbf{Test status} & \textbf{Level} & \textbf{Src.} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{Label} & \textbf{$n$} & \textbf{Mass (MeV)} &
+  \textbf{Conf.} & \textbf{Test status} & \textbf{Level} & \textbf{Src.} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+GTE-P1 & 4,935 & $\mathbf{2.97}$ & 0.860 & $\circ$~Open & B & P02 \\
+GTE-P2 & 4,702 & $\mathbf{107.4}$ & 0.859 & $\circ$~Open & B & P02 \\
+GTE-P3 & $\sim$8K & $\mathbf{801}$ (band) & 0.856 & $\circ$~Open & B & P02 \\
+GTE-P6 & 6,333 & $\mathbf{30.9}$ & 0.860 & $\circ$~Open & B & P02 \\
+GTE-P7 & 5,383 & $\mathbf{211.9}$ & 0.859 & $\circ$~Open & B/A$_{\rm Lean}$ & P02, P29 \\
+GTE-P8 & 5,867 & $\mathbf{298.0}$ & 0.858 & $\circ$~Open & B & P02 \\
+GTE-P9 & 275 & $\mathbf{561.0}$ & 0.857 & $\circ$~Open & B & P02 \\
+GTE-P10 & $\sim$496K & $\mathbf{1100}$ (band) & 0.855 & $\circ$~Open & B & P02 \\
+GTE-P11 & $\sim$1.6M & $\mathbf{1600}$ (band) & 0.853 & $\circ$~Open & B & P02 \\
+\end{longtable}
+\endgroup
+
+\subsubsection{Dark Sector Predictions}
+\label{sec:mi-dark-sector}
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.14\linewidth}P{0.16\linewidth}P{0.10\linewidth}P{0.18\linewidth}P{0.07\linewidth}P{0.10\linewidth}P{0.06\linewidth}@{}}
+\caption{Mirror-branch dark sector predictions (P29; GTE-P7 cross-listed with P02).}
+\label{tab:mi-dark-sector}\\
+\toprule
+\textbf{State} & \textbf{Mass / value} & \textbf{$Q_{\rm EM}$} &
+  \textbf{Comparison / venue} & \textbf{Status} & \textbf{Level} & \textbf{Src.} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{State} & \textbf{Mass / value} & \textbf{$Q_{\rm EM}$} &
+  \textbf{Comparison / venue} & \textbf{Status} & \textbf{Level} & \textbf{Src.} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+GTE-P7 (DM cand.) & $211.9$~MeV & $0$ &
+  Mono-photon / missing energy (Belle~II) & $\circ$~Open & A$_{\rm Lean}$/B & P02, P29 \\
+Dark lepton G1 ($\chi_1$) & $0.541$~MeV & $0$ &
+  Sub-MeV DM; CMB spectral distortion & $\circ$~Open & CatA & P29 \\
+Dark lepton G2 ($\chi_2$) & $24.47$~MeV & $0$ &
+  MeV-scale Higgs-portal DM & $\circ$~Open & CatA & P29 \\
+Dark lepton G3 ($\chi_3$) & $3604.7$~MeV & $0$ &
+  LHC invisible Higgs / mono-jet & $\circ$~Open & CatA & P29 \\
+Dark photon $A'$ & \textbf{Does not exist} & --- &
+  NA64/\allowbreak{}BaBar/\allowbreak{}Belle~II null = consistent & $\circ$~Open & \CatAL & P29 \\
+$Q=0$ (all dark states) & exact & $0$ &
+  Lean-certified (mirror branch) & $\circ$~Open & \CatAL & P29 \\
+$m_{G2}/m_{G1}$ & $\approx 45.4$ & --- &
+  Two-peak direct-detection signature & $\circ$~Open & CatA & P29 \\
+$R_{\rm dark}$ & $0.2080$ & --- &
+  Dark radiation (precision cosmology) & $\circ$~Open & CatAD & P29 \\
+$\Lambda_{\rm dark}$ & $210$--$1700$~MeV &
+  --- & Dark hadron searches ($N_{f,\mathrm{dark}}$ range) & $\circ$~Open & \CatAL/B & P29 \\
+$\eta_\chi$ (asym.\ DM) & $(2/7)\,\eta_{B+L,\mathrm{pre}}$ &
+  --- & $\approx 1.13\times10^{-6}$ (structural) & $\circ$~Open & CatA & P29 \\
+$\sin^2\theta_W^{\rm dark}$ & $2/7 \approx 0.286$ &
+  --- & vs.\ SM $3/13$; dark EW mixing & $\circ$~Open & CatAD & P29, P35 \\
+\end{longtable}
+\endgroup
+
+\subsubsection{Nuclear and Hadronic}
+\label{sec:mi-nuclear}
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.15\linewidth}P{0.08\linewidth}P{0.18\linewidth}P{0.20\linewidth}P{0.08\linewidth}P{0.07\linewidth}P{0.06\linewidth}@{}}
+\caption{Nuclear and hadronic predictions.}
+\label{tab:mi-nuclear}\\
+\toprule
+\textbf{Quantity} & \textbf{Symbol} & \textbf{GTE Value} &
+  \textbf{Experimental} & \textbf{Error} & \textbf{Level} & \textbf{Src.} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{Quantity} & \textbf{Symbol} & \textbf{GTE Value} &
+  \textbf{Experimental} & \textbf{Error} & \textbf{Level} & \textbf{Src.} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Nuclear pairing constant & $\Delta_{\rm pair}$ &
+  $a_{\rm seed}^{g/2} = 5^{3/2} = \mathbf{11.18}$~MeV &
+  $\sim\!11.18$~MeV & $\mathbf{0.003\%}$ & B (bridge) & P03 \\
+Nuclear magic numbers & --- &
+  GTE $f_\pi + m_\pi \to$ spin-orbit: all 7 reproduced &
+  $\{2,8,20,28,50,82,126\}$ & Matches & B (bridge) & P03 \\
+Nilsson $\kappa$ / IPT match & $\kappa_{\rm emp}/\kappa_{\rm min}$ $(N{=}50)$ &
+  $\mathbf{1.149} \approx \mathrm{IPT}{=}1.1309$ &
+  IPT & $1.6\%$ & B (bridge) & P03 \\
+Predicted magic number & $N$ &
+  $\mathbf{184}$ (shell-gap extrapolation) &
+  unconfirmed & $\circ$~Open & B (bridge) & P03 \\
+$F_{10}$ parity feature & --- &
+  $(Z \bmod 2)\,\delta_{\rm pair}\,A^{-3/4}$; motivated by odd $b_p = 11459$ (\CatAL) &
+  --- & structural input & B (empirical fit) & P03 \\
+Binding energy (ML) & BE/A &
+  50 GTE features: $3.17$~MeV MAE &
+  AME2020 & 3.17~MeV MAE & A (features) & P03 \\
+Nuclear stability classifier & --- &
+  6-term GTE law vs.\ NUBASE2020 labels: $\mathbf{94.5\%}$ 5-fold CV &
+  NUBASE2020 & $+19.5\%$ above baseline & A (empirical) & P03 \\
+Proton mass & $M_p$ &
+  $3M_{\rm kink} + G_{\rm inter}\times|p(2,2,6)|/6 = 870.3 + 14.57\times4.67 = \mathbf{938.27}$~MeV;
+  $G_{\rm inter} = 14.57$~MeV (empirical; analytic derivation open) &
+  $938.272$~MeV & $\mathbf{0.000\%}$ & CatA & P03, P35, P39 \\
+\end{longtable}
+\endgroup
+
+\subsubsection{Quantum Mechanics and Information}
+\label{sec:mi-qm}
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.15\linewidth}P{0.12\linewidth}P{0.20\linewidth}P{0.12\linewidth}P{0.09\linewidth}P{0.07\linewidth}P{0.07\linewidth}@{}}
+\caption{Quantum mechanics and information-theoretic predictions.}
+\label{tab:mi-qm}\\
+\toprule
+\textbf{Quantity} & \textbf{Symbol} & \textbf{GTE Value} &
+  \textbf{Reference} & \textbf{Error} & \textbf{Level} & \textbf{Src.} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{Quantity} & \textbf{Symbol} & \textbf{GTE Value} &
+  \textbf{Reference} & \textbf{Error} & \textbf{Level} & \textbf{Src.} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Physical Hilbert space dim & $\dim\mathcal{H}_{\rm phys}$ &
+  $f_{\rm MDL}$ orbit: \textbf{1} (vacuum only, $E_0=0$) &
+  --- & --- & CatA & P37 \\
+Born rule & $P(k) = |c_k|^2$ &
+  $Z_7$-KG kink superselection: derived &
+  QM postulate & --- & \CatAL & P37, P41--P43 \\
+Born rule (PW/$\tau_c$) & $P(k|\tau)$ &
+  $\tau_c$ (diagonal-Hamiltonian clock) satisfies all Page--Wootters prerequisites;
+  PW derivation yields Born rule at each $\tau$ independently of clock state
+  distribution (classical or quantum $\tau_c$ give identical conditional probabilities) &
+  QM postulate & --- & CatAD & P45 \\
+$K_{\rm CA}$ lower bound (CMCA) & $K_{\rm CA}$ &
+  6-channel description length: $\mathbf{19}$~bits &
+  --- & --- & \CatAL & P41 \\
+SR time dilation (CMCA) & $\tau_{\rm glider}/\tau_{\rm ether}$ &
+  CMCA inner clock: $1.563$ at $M=7$ &
+  $1/\sqrt{1-v^2/c^2}$ & $5.79\%$ (Nyquist floor at $M=7$; $\to 0$ as $M\to\infty$) & CatA & P41 \\
+Lorentz invariance (KG) & $\omega^2 = k^2+m^2$ &
+  KG equation: Lorentz-invariant &
+  (GR/QFT) & --- & \CatAL & P41, P42, P43 \\
+No finite CA Lorentz replica & $\varepsilon_0(M) = \pi^2/(3M^2) > 0$ &
+  Unique at $M\to\infty$ &
+  --- & --- & \CatAL & P43 \\
+Geodesic theorem & --- &
+  PSC orbit curvature: $\tau_c$ prefers geodesic &
+  (GR) & --- & \CatAL & P43 \\
+Bell nonlocality (3-tape) & $S$ &
+  Cross-tape coupling: $\mathbf{S = 2.4459}$ ($86.5\%$ Tsirelson $2\sqrt{2}$) &
+  Tsirelson bound $2\sqrt{2} \approx 2.828$ & CatA & CatA & P45, P46 \\
+Entanglement negativity & $\mathcal{N}$ &
+  Three-tape: $\mathcal{N} = \mathbf{0.38}$ &
+  --- & --- & CatA & P45, P46 \\
+SR time dilation (3-tape) & $\tau_{\rm inner}/\tau_{\rm outer}$ &
+  $3/7 \approx \mathbf{0.4286}$ &
+  $1/\sqrt{1-v^2/c^2}$ & CatA (clock ratio) & CatA & P45 \\
+CGLMP $d{=}7$ inequality & $I_7$ &
+  Full $\mathbb{Z}_7^3$ diagonal $H_{\rm grav}$: $I_7 \leq \mathbf{1.97}$
+  (PPT-entangled but classically bounded; $\mathcal{N}\leq 0.32$; CHSH $\leq 2$) &
+  Classical bound $I_7^{\rm cl} = 2$ & Honest negative & CatA & P45, P46 \\
+Gorard normalization gap & $\log_{10}\Delta_{\rm Gorard}$ &
+  $\mathbf{77.46}$; target $77.5$ (GTE holographic) &
+  77.5 (target) & $0.05$ & CatAD & P45 \\
+Discrete Schr\"odinger & $U(n)$ &
+  $U(n) = e^{-iH_{\rm cyc}\,n\tau_c}$; composition, unitarity, step recurrence certified
+  (\lean{Cogwheel\allowbreak{}Dynamics\allowbreak{}G21.lean}, zero sorry) &
+  QM (continuous) & struct. & \CatAL & P45, P37 \\
+NEMS--GTE Bell bridge & --- &
+  NEMS semantic nonlocality (\CatAL) and GTE Bell nonlocality (CatA) both arise from
+  PSC-forced global-to-local information loss (structural CatAD) &
+  --- & --- & CatAD & P45, P46 \\
+\end{longtable}
+\endgroup
+
+\subsubsection{Computational Universality}
+\label{sec:mi-computational}
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.20\linewidth}P{0.27\linewidth}P{0.09\linewidth}P{0.12\linewidth}P{0.20\linewidth}@{}}
+\caption{Computational universality results.}
+\label{tab:mi-computational}\\
+\toprule
+\textbf{Result} & \textbf{Statement} & \textbf{Level} & \textbf{Source} &
+  \textbf{Lean Cert} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{Result} & \textbf{Statement} & \textbf{Level} & \textbf{Source} &
+  \textbf{Lean Cert} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+CUP-4: SM orbit $\to$ Rule~110 & SM orbit + vacuum-transparency forces Rule~110 &
+  \CatAL & P28 & Exhaustive proof \\
+Rule~110 GF(7) polynomial & $p(L,C,R) = C+R-CR-LCR$ over $\mathrm{GF}(7)$ &
+  \CatAL & P40 & \lean{rule110\_z7\_poly\_rep} (native\_decide) \\
+Rule~110 NAND identity & $p(L,1,R) = 1-LR = \mathrm{NAND}(L,R)$ &
+  \CatAL & P40 & \lean{rule110\_center1\_is\_nand} \\
+Finite NAND functional completeness & Rule~110 at center cell realizes any finite
+  two-input Boolean function (Cook-independent; distinct from Turing universality) &
+  \CatAL & P40 & \lean{z7\_bool3\_finite\_functional\_completeness} (one axiom: \lean{boolean\_nand\_complete}) \\
+$f_{\rm MDL}$ uniqueness & MDL-unique among $7^{325}$ completions &
+  \CatAL & P28 & \lean{fmdl\_mdl\_uniqueness} (76-bit certificate) \\
+Algebraic Lifting Theorem & Every PSC-admissible SM config algebraically realised in
+  $f_{\rm MDL}$ &
+  \CatAL & P41, P42, P43 & \lean{LiftingTheorem.lean} (zero sorry) \\
+Unified physical exclusion & Any $[D]$-weighted state: confined, massive, anomaly-free,
+  PSC-admissible &
+  \CatAL & ugp-lean & Zero axioms \\
+TPC strict containment & Decidable $\subsetneq$ TPC $\subsetneq$ Hypercomputation;
+  $N_{\rm gen}=3$ levels &
+  \CatAL & P34 & Diagonal argument \\
+Polynomial MDL uniqueness & $p(L,C,R) = C+R-CR-LCR$ is the unique degree-3 multilinear
+  $\mathrm{GF}(7)$ object satisfying $\mathbb{Z}_7$, Rule~110, 19-bit MDL &
+  \CatAL & P46 & All five roles have zero extra specification cost \\
+$\mathbb{Z}_7{\times}\mathbb{Z}_3$ MDL uniqueness (unconditional) &
+  Non-circular MDL derivation selects $\mathbb{Z}_7{\times}\mathbb{Z}_3$ with zero SM input;
+  GTE polynomial over GF(5) has 0 PSC kink orbits; total MDL gap $3{+}0 < 5{+}6$ &
+  \CatAL & ugp-lean & \lean{mdl\_ca\_rule\_coding\_closed}, \lean{z5\_fmdl\_no\_psc\_kink\_orbits}, \lean{mdl\_total\_z7z3\_strictly\_beats\_z5z3}; all zero sorry \\
+Direct-Interpolation Lift (UGP--$p$ triangle spine) &
+  Total-parity shadow of the canonical generation-orbit triples + MDL-equivalent
+  vacuum transparency is full-rank over $\mathrm{GF}(7)$: exactly one multilinear
+  rule among all $7^8$ survives --- $p$ itself; Rule~110 = binary restriction
+  (corollary); sparsity floor $\geq 4$ monomials, equality realized by $p$;
+  chirality census over all 120 family orderings: survivor set exactly
+  $\{$Rule~110, Rule~124$\}$; consilience $\delta(N_c) = q_{\min}(N_c)$ uniquely
+  at $N_c = 3$ &
+  \CatAL & P49, P48 & \lean{gte\_orbit\_parity\_provenance},
+  \lean{ugp\_orbit\_interpolation\_lift} (+ structural route),
+  \lean{interpolation\_lift\_binary\_corollary},
+  \lean{gf7\_rule110\_sparsity\_floor}, \lean{orbit\_chirality\_census},
+  \lean{delta\_qmin\_coincidence\_at\_three}; all zero sorry \\
+Color confinement (MDL) & $\Delta K = \log_2(N_c^2) = \log_2 9 \approx 3.17$~bits
+  gap forbids free quarks &
+  \CatAL & P45, P46 & From MDL description-length argument \\
+Baryon number topological & $B = (1/3)\sum_j\chi_q(w_j)$; $B=1/3$ per quark from
+  $N_{\rm tapes}=3$ &
+  \CatAL & P45, P46 & Three-tape architecture \\
+Holographic 3-tape scaling & $3L/L^3 \to 0$ (area/volume); Bekenstein--Hawking realized &
+  \CatAL & P45 & Three-tape holographic area scaling \\
+Fermionic statistics & From $\mathbb{Z}_7^*$ non-primitive roots (fermion/boson split) &
+  \CatAL & P45, P46 & Algebraic root structure of $\mathbb{Z}_7^*$ \\
+\end{longtable}
+\endgroup
+
+\subsubsection{PhiMDL Field Structure}
+\label{sec:mi-phimdl}
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.14\linewidth}P{0.12\linewidth}P{0.19\linewidth}P{0.11\linewidth}P{0.11\linewidth}P{0.07\linewidth}P{0.08\linewidth}@{}}
+\caption{$\Phi_{\rm MDL}$ field structure predictions.}
+\label{tab:mi-phimdl}\\
+\toprule
+\textbf{Quantity} & \textbf{Symbol} & \textbf{GTE Value} &
+  \textbf{PDG / Exp} & \textbf{Error} & \textbf{Level} & \textbf{Source} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{Quantity} & \textbf{Symbol} & \textbf{GTE Value} &
+  \textbf{PDG / Exp} & \textbf{Error} & \textbf{Level} & \textbf{Source} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+$\Phi_{\rm MDL}$ mass (SCC) & $m_\varphi$ &
+  Self-Consistency: $m_\tau = \mathbf{1776.86}$~MeV &
+  $1776.86$~MeV & $0.0\%$ & \CatAL & P34, P35, P38, P42, P43 \\
+BPS kink mass & $M_{\rm kink}$ &
+  $(8/49)m_\tau = \mathbf{290.10}$~MeV &
+  $287$~MeV (calib.) & $+1.1\%$ & \CatAL & P35, P38, P42, P43, P45 \\
+Quantum kink mass (one-loop) & $M^Q$ &
+  GJQW interface dim-reg, two routes:
+  $\mathbf{281 \pm 21}$~MeV ($\Delta M = -7$ to $-10$~MeV,
+  on-shell\,/\,$\overline{\rm MS}$@$m_\varphi$) &
+  --- (no PDG counterpart) & scheme envelope & CatA & P38, P42 \\
+PSC admissible sectors & $\{0,2,3,4,6\}$ &
+  PSC sieve: 5 sectors; $\{1,5\}$ forbidden &
+  --- & --- & \CatAL & P42 \\
+Vacuum stress-energy & $T_{\mu\nu}|_{\rm vac}$ &
+  At all 7 $Z_7$ vacua: $\mathbf{0}$ (exact) &
+  --- & --- & \CatAL & P38, P42, P43 \\
+Vacuum stability (polynomial) & $p(0,0,0) = 0$ &
+  $w=0$ unique fixed point of $p(x,x,x) \equiv x \pmod{7}$ ($\CatAL$) &
+  --- & gravitational attraction = restoring force to vacuum & \CatAL & P45, P46 \\
+SRRG golden-ratio bridge & $1/\varphi$ &
+  Unique positive root of $p(x,x,x) = x$ over $\mathbb{R}$ ($\CatAL$) &
+  --- & connects MDL polynomial to SRRG fixed point & \CatAL & P46 \\
+$W$-boson propagator & $G_W(r)$ &
+  $e^{-m_W r}/(4\pi r)$ from universal propagator $(-\Delta)^{-1} = 1/(4\pi r)$ &
+  (massive Yukawa) & A/D & A/D & P46 \\
+Chiral gap law (spin-7 chain) & $\Delta(\beta)$ &
+  $e^{-3\beta/2}(1 + O(e^{-\beta/2}))$, exact correction tower; slope $3/2$ =
+  geometric mean of directed wall energies
+  (\lean{spin7\_directed\_wall\_energies}, \CatAL); half-integer slope =
+  parity-violation signature of substrate chirality; amplitude exactly 1
+  (doubly derived) &
+  --- & exact & \CatAD & P50 \\
+Substrate tape spacing (matter-sector reading) & $a$ &
+  $\hbar c/\Lambda_{\rm GTE} = \mathbf{0.0972}$~fm (tree) /
+  $0.1007 \pm 0.0077$~fm (envelope); Tape Saturation Theorem
+  (\lean{tape\_saturation\_theorem}), conditional on the named Compton-Support
+  Criterion, proven minimal (Boundary Equivalence Theorem); lattice dictionary
+  $aM_{\rm kink} = 1/7$, $am_\varphi = 7/8$ &
+  --- & derived (cond.) & \CatAD & P50, P42, P39 \\
+Kink correlation length at physical point & $\xi_{\rm kink}$ &
+  $|\mathbb{Z}_7| = \mathbf{7}$ cells exactly (saturation $\kappa = 1$);
+  substrate-MC falsifiable target, band $6.78$--$7.23 \pm 0.54$; a measurement
+  outside the band falsifies the MDL-saturation selection &
+  --- (in-silico target) & falsifiable & \CatAD & P50, P42 \\
+\end{longtable}
+\endgroup
+
+\subsubsection{Structural and Combinatorial Quantities}
+\label{sec:mi-combinatorial}
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.22\linewidth}P{0.16\linewidth}P{0.10\linewidth}P{0.13\linewidth}P{0.27\linewidth}@{}}
+\caption{Key structural and combinatorial quantities.}
+\label{tab:mi-combinatorial}\\
+\toprule
+\textbf{Quantity} & \textbf{Value} & \textbf{Level} & \textbf{Source} & \textbf{Notes} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{Quantity} & \textbf{Value} & \textbf{Level} & \textbf{Source} & \textbf{Notes} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Ridge $n$ & 10 & \CatAL & P01 & \lean{n10\_is\_minimal\_admissible\_ridge} \\
+Ridge $R_{10}$ & $2^{10}-16 = 1008$ & \CatAL & P01 & $\tau(1008)=30$ used in CKM $\theta_{23}$ \\
+Lepton Seed & $(1, 73, 823)$ & \CatAL & P01 & \lean{rsuc\_theorem} \\
+$N_{\rm gen}$ & 3 (PSC Layer~I/II) & \CatAL & P01, P05 &
+  \lean{psc\_enumeration\_forces\_ngen\_3} \\
+$N_{\rm fam}$ & 5 ($Z_5$ ring) & \CatAL & P01 & \\
+Higgs $c$-value & $c_H = 13$ & \CatAL & P01 & EW boson set $\{11,12,13\}$ \\
+Strange baryon $c$-values & $c = \pm1023$ & \CatAL & P01 &
+  \lean{ugp\_strange\_baryon\_c\_values} (zero sorry) \\
+Wolfenstein $\lambda$ & $9/40 = 0.225$ & \CatAL & P32, P35 & Derived output; $0.000\sigma$ \\
+Orbit depth = ether period & 7 steps max & \CatAL & P41 &
+  \lean{OrbitDepthEtherPeriod.lean} \\
+\end{longtable}
+\endgroup
+
+% ─── Part 3b: Experimental Programme ──────────────────────────────────────
+\subsubsection{Experimental Programme and Falsifiable Predictions}
+\label{sec:mi-experimental}
+
+{\small
+The following six predictions are directly testable by currently running or
+near-term precision experiments.  Each entry specifies a prediction, the
+responsible experiment(s), the approximate timeline, and the falsifying
+condition.  Any confirmed falsification would require structural revision of
+the GTE framework.  Proton stability provides the sharpest topological test:
+a single confirmed \emph{dimension-4} baryon-number-violating decay event
+would falsify the $\mathbb{Z}_7$ winding conservation law.  Standard GUT
+\emph{dimension-6} proton decay (e.g.\ $p\!\to\!e^+\pi^0$, the primary mode
+searched at Hyper-Kamiokande) is \textbf{not} forbidden by this framework
+and, if observed, would be fully consistent with the programme's predictions.
+Cross-references to the relevant prediction tables above: GTE-P7 is
+cross-listed in Table~\ref{tab:mi-dark-sector}; $r{=}0$ and $\Sigma m_\nu$
+appear in Table~\ref{tab:mi-gravity}; $\delta_{CP}^{\rm PMNS}$ appears in
+Table~\ref{tab:mi-neutrinos}.}
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.35}
+\begin{longtable}{@{}P{0.13\linewidth}P{0.17\linewidth}P{0.13\linewidth}P{0.08\linewidth}P{0.16\linewidth}P{0.09\linewidth}P{0.06\linewidth}@{}}
+\caption{Experimental programme: falsifiable predictions indexed to active or
+  near-term experiments.  Any confirmed falsifying condition requires structural
+  revision of the framework.}
+\label{tab:mi-experimental}\\
+\toprule
+\textbf{Observable} & \textbf{GTE Prediction} & \textbf{Experiment(s)} &
+  \textbf{Timeline} & \textbf{Falsifying Condition} & \textbf{Level} & \textbf{Src.} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{Observable} & \textbf{GTE Prediction} & \textbf{Experiment(s)} &
+  \textbf{Timeline} & \textbf{Falsifying Condition} & \textbf{Level} & \textbf{Src.} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Proton stability (dim-4) &
+  No \emph{dimension-4} baryon-number-violating decay; $\mathbb{Z}_7$ winding
+  conservation forbids all dim-4 SU(5) vertices
+  (\lean{proton\_decay\_dim4\_forbidden}, \CatAL).
+  \textit{Note:} dim-6 modes ($p\!\to\!e^+\pi^0$, $p\!\to\!\bar\nu K^+$) are
+  \textbf{not forbidden} and would be consistent with this framework &
+  Hyper-Kamiokande, DUNE &
+  2027$^+$ &
+  Any confirmed \emph{dimension-4} baryon-violating event (not dim-6 GUT modes
+  such as $p\!\to\!e^+\pi^0$, which are not forbidden by this framework) &
+  \CatAL & P22, P33 \\
+GTE-P7 dark particle &
+  Neutral pseudoscalar at $\mathbf{211.9}$~MeV, $Q{=}0$;
+  mirror-branch machine-certified prediction &
+  Belle~II (mono-photon / missing energy) &
+  Running &
+  Non-observation at $50\,\mathrm{ab}^{-1}$ &
+  A$_{\rm Lean}$/B & P02, P29 \\
+PMNS Dirac CP phase &
+  $\delta_{CP}^{\rm PMNS} = \mathbf{205.71^\circ} = (4/7)\times360^\circ$;
+  $\mathbb{Z}_7$ winding arithmetic ($-0.15\sigma$ from NuFIT~6.0 IC24 NH) &
+  DUNE, Hyper-Kamiokande &
+  2027$^+$ &
+  Measurement outside $205^\circ \pm 15^\circ$ &
+  CatA & P45 \\
+Tensor-to-scalar ratio &
+  $r = \mathbf{0}$ exactly; no primordial gravitational waves
+  in GTE inflation-free cosmology &
+  LiteBIRD &
+  ${\sim}2028$ &
+  $r > 0.01$ at ${>}3\sigma$ &
+  \CatAL/A & P44, P45 \\
+Neutrino mass sum &
+  $\Sigma m_\nu = \mathbf{59.4}$~meV; normal mass ordering;
+  spectrum $\{0.68, 8.6, 50.1\}$~meV &
+  EUCLID, CMB-S4 &
+  2026$^+$ &
+  $\Sigma m_\nu < 40$~meV or $> 80$~meV &
+  CatAD & P21, P47 \\
+Neutrino mass ordering &
+  Normal Ordering (NH) forced by seed ordering $b_{R,1}{<}b_{R,2}{<}b_{R,3}$
+  via GTE seesaw $m_{\nu,k} = C\cdot b_{R,k}^{29/9}$;
+  $\Delta m^2_{21} = 7.37\times10^{-5}$~eV$^2$ ($0.63\sigma$ below NuFIT),
+  $\Delta m^2_{31} = 2.51\times10^{-3}$~eV$^2$ ($<1\sigma$)
+  (\lean{seesaw\_normal\_ordering\_from\_seed\_ordering}, \CatAL) &
+  JUNO; NuFIT global fits &
+  Running ($2025+$) &
+  Confirmed IH at ${>}3\sigma$ &
+  \CatAL & P21, P55 \\
+Dark-energy EOS &
+  $w_0 = \mathbf{-1}$, $w_a = \mathbf{0}$ exactly; cosmological-constant
+  behavior forced by PSC boundary condition; Weinberg no-go evaded.
+  DESI Y1: $w_a = -0.4\pm0.3$ ($1.33\sigma$, not yet a challenge) &
+  DESI, EUCLID &
+  Ongoing &
+  $|w_0+1|>0.040$ at $5\sigma$ or $|w_a|>0.45$ at $5\sigma$
+  (Euclid projected: $\sigma(w_0)\approx0.008$, $\sigma(w_a)\approx0.09$) &
+  CatAD & P47 \\
+\end{longtable}
+\endgroup
+
+% ─── Part 3b: Falsifiable Predictions Registry ─────────────────────────────
+\subsection{Falsifiable Predictions Registry}
+\label{sec:mi-registry}
+
+The pre-registered, SHA-256-committed canonical list of corpus falsifiable
+predictions (quantities not yet measured or decided at 2026-07-04) is maintained
+in:
+
+\begin{quote}
+\texttt{papers/common/predictions/ugp\_falsifiable\_predictions\_v1.md}\\
+SHA-256: \texttt{d9ae2ebf2185862c7d56a5b662af35892bf3cb5f2ef262b147b2241ab2c53f25}\\
+Registry date: 2026-07-04
+\end{quote}
+
+The registry covers 18 entries across three sectors: (1)~physics-sector predictions
+(neutrino mass ordering CatAL; neutrino mass sum and individual masses CatA;
+PMNS $\delta_{CP}^{\rm PMNS} = 205.71^\circ$ CatA; tensor-to-scalar ratio $r=0$ CatAL;
+proton stability at dimension~4 CatAL); (2)~novel visible-sector particle candidates
+GTE-P1, P2, P3, P6, P7, P8, P9, P10, P11 from P02 (CatAD masses); and
+(3)~mirror-branch dark-sector particles $\chi_1$, $\chi_2$, $\chi_3$ from P29
+(CatA masses; CatAL $Q_{\rm EM}=0$). The registry file is immutable once committed;
+corrections produce a new version file. Verify with:
+
+\begin{quote}
+\texttt{python3 papers/common/predictions/verify\_predictions\_hash.py}
+\end{quote}
+
+The registry is deposited on Zenodo with SHA-256 companion and OpenTimestamps
+notarization; the concept DOI is
+\href{https://doi.org/10.5281/zenodo.21200551}{\texttt{doi:10.5281/zenodo.21200551}}.
+
+% ─── Part 4: Known Discrepancies and Resolutions ──────────────────────────
+\subsection{Known Discrepancies and Resolutions}
+\label{sec:mi-discrepancies}
+
+The following register documents known numerical discrepancies between
+different derivation routes or between GTE predictions and PDG values, together
+with their resolutions. In no case listed here is the discrepancy indicative of
+an error; each has a documented structural explanation.
+
+\subsubsection*{D1: $\sin^2\theta_W$ — three derivation routes at different precision levels}
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.28\linewidth}P{0.19\linewidth}P{0.16\linewidth}P{0.12\linewidth}P{0.13\linewidth}@{}}
+\caption{$\sin^2\theta_W$ sequential refinements.}\label{tab:disc-sw}\\
+\toprule
+\textbf{Route} & \textbf{Value} & \textbf{Source} & \textbf{Error vs PDG} & \textbf{Status} \\
+\midrule \endfirsthead \midrule
+\textbf{Route} & \textbf{Value} & \textbf{Source} & \textbf{Error vs PDG} & \textbf{Status} \\
+\midrule \endhead \bottomrule \endfoot
+Bare $g_1/g_2$ ratio (tree-level) & $3456/15101 \approx 0.22886$ & P01 & $-1.02\%$ & \CatAL\ (tree-level) \\
+$N_{\rm gen}/c_H = 3/13$ & $\mathbf{0.2308}$ & P31, P33, P35 & $-0.195\%$ ($13.0\sigma$ PDG 2024) & \CatAL\ (tree-level) \\
+$3/13 + \lambda^3/(2c_H)$ threshold & $384729/1664000 \approx 0.23121$ & P31, P41 & $-0.42\sigma$ (PDG 2022) & \CatAL \\
+$+$ SM Higgs threshold, GTE $\alpha_{\rm em}$ & $0.23129154$ & P31, P35 & $+0.038\sigma$ (PDG 2024) & \CatB\ (canonical) \\
+\end{longtable}
+\endgroup
+
+\noindent\textit{Resolution:} Sequential refinements of the same derivation.
+The tree-level ratio $3/13$ is a scheme-independent integer: it is derived from a
+discrete orbit count with no continuous scale parameter, and is not an $\overline{\rm MS}$,
+on-shell, or Wilsonian quantity.
+The 13$\sigma$ deviation of the tree-level value from the PDG~2024 $\overline{\rm MS}$
+measurement reflects standard SM electroweak radiative corrections ($+0.22\%$ fractional
+shift); the two-loop GTE computation closes the full gap to $+0.038\sigma$.
+The dark sector value $2/7 \approx 0.286$ (P29) uses entirely distinct dark inputs
+($N_{\rm gen}^{\rm dark}=4$, $c_H^{\rm dark}=14$); it is not the same quantity and
+there is no discrepancy between P29 and P35.
+
+\subsubsection*{D2: $m_W$ — two distinct derivation chains}
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.32\linewidth}P{0.18\linewidth}P{0.15\linewidth}P{0.25\linewidth}@{}}
+\caption{$m_W$ derivation routes.}\label{tab:disc-mw}\\
+\toprule
+\textbf{Chain} & \textbf{Value} & \textbf{Error} & \textbf{Source} \\
+\midrule \endfirsthead \midrule
+\textbf{Chain} & \textbf{Value} & \textbf{Error} & \textbf{Source} \\
+\midrule \endhead \bottomrule \endfoot
+Tree-level (bare $g_2$) & $\sim\!109$~GeV & $+36\sigma$ & P01 (disclosed blind falsification) \\
+1-loop & $80.314$~GeV & $-4.88\sigma$ & P01 \\
+1-loop oblique correction & $\mathbf{80.372}$~GeV & $\mathbf{-0.006\%}$ & P27 (closes 98.8\% of tree-level gap; CatAD) \\
+2-loop + threshold & $\mathbf{80.364}$~GeV & $\mathbf{-0.42\sigma}$ & P01, P22 \\
+Schwinger mechanism (P33) & $80.405$--$80.456$~GeV & $\sim\!-0.002\%$ & P33 \\
+PSC energy scale $E_0$ (P35/P41/P42) & $80.614$~GeV & $+0.30\%$ & P35, P41, P42 \\
+\end{longtable}
+\endgroup
+
+\noindent\textit{Resolution:} P33 (Schwinger mechanism) and P35/P41/P42 (PSC scale $E_0$)
+are distinct chains at different physics hierarchy levels, not errors.
+The 2-loop P22 result ($-0.42\sigma$) is the best precision result.
+
+\subsubsection*{D3: $f_\pi$ — two values within P35}
+
+\noindent$m_{\rm kink}/\pi = 91.35$~MeV ($-0.81\%$, CatA; uncalibrated);
+\textbf{$M_{\rm kink}^{\rm SCC}/\pi = 92.34$~MeV ($+0.30\%$, \CatAL; SCC-calibrated, preferred)}.
+Editorial inconsistency within P35, not a cross-paper discrepancy.
+
+\subsubsection*{D4: $\alpha_s$ — same bare coupling at three loop orders}
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.35\linewidth}P{0.20\linewidth}P{0.16\linewidth}P{0.19\linewidth}@{}}
+\caption{$\alpha_s(M_Z)$ loop-level refinements.}\label{tab:disc-alphas}\\
+\toprule
+\textbf{Version} & \textbf{Value} & \textbf{Error} & \textbf{Source} \\
+\midrule \endfirsthead \midrule
+\textbf{Version} & \textbf{Value} & \textbf{Error} & \textbf{Source} \\
+\midrule \endhead \bottomrule \endfoot
+Bare $g_3^2/(4\pi)$ & $0.11822$ & $+0.24\sigma$ & P01 \\
+2-loop SC-ZZ running & $\mathbf{0.11790}$ & $\mathbf{0.00\sigma}$ & P22 \\
+3-loop $F_{21}$ chain & $0.1193$ & $+1.10\%$ & P35, P39 \\
+\end{longtable}
+\endgroup
+
+\noindent\textit{Resolution:} Progressive refinements.
+The 2-loop P22 result ($0.00\sigma$) is the best precision result.
+
+\subsubsection*{D5: Higgs VEV — three mutually consistent determinations}
+
+\noindent
+Bare VEV $v_{\rm bare} = 244.8$~GeV ($-0.6\%$, tree-level) $|$
+Self-consistent $v_{\rm self} = \mathbf{246.27}$~GeV ($\mathbf{+0.02\%}$, anchors on PDG $m_W$) $|$
+SRRG PSC $v_{\rm PSC} = \mathbf{246.16}$~GeV ($\mathbf{-0.024\%}$, more fundamental; B5-SRRG proved --- conditional on B1--B4 only).
+The two refined values agree with PDG at $<0.1\%$.
+
+\subsubsection*{D6: Jarlskog $J$ — two CKM methods}
+
+\noindent Texture-zero QLC ansatz (P01): $J = 2.75\times10^{-5}$ ($10.8\%$, A/D).
+\textbf{Structural CKM $N_{\rm eff}$ approach (P32): $J = 2.999\times10^{-5}$ ($-1.81\sigma$, A/D; canonical}.
+
+\subsubsection*{D7: Gravitational hierarchy CatAL upgrade}
+
+\noindent P35 and P38 label $M_{\rm Pl}/m_\tau$ as CatAD.
+P43 upgrades to \CatAL{} via \lean{z3\_invariant\_entropy\_closes\_hierarchy} (zero sorry).
+Formula and numerical value (0.040\%) identical throughout. Canonical status: \CatAL{} (P43).
+
+\subsubsection*{D8: Neutrino mass notation (P33 vs P35)}
+
+\noindent P33 writes $\alpha_{\rm em}^5 E_{\rm ether}$ in one place,
+$\alpha_{\rm em}^{N_{\rm fam}}$ in another. Since $N_{\rm fam} = 5$, these are identical.
+No discrepancy.
+
+\subsubsection*{D9: $n_s$ value (P44)}
+
+\noindent P44 derives $n_s = 1 - \ln(2)/(2\pi^2) = 0.96488$ (to 5 significant figures).
+Any appearance of $n_s = 0.96489$ in earlier versions is a rounding artefact;
+the canonical value is $\mathbf{0.96488}$.  The derivation is conditional: 5 of 7 steps
+are closed; the EFE-bridge step (AR3) remains open.  Planck~2018 gives
+$n_s = 0.9649 \pm 0.0042$; the GTE value sits at $-0.005\sigma$ from this central value (essentially zero, with the GTE value just below the Planck~2018 central value).
+
+\subsubsection*{D10: $\eta_B$ — sech bracket vs.\ FKTT canonical value}
+
+\noindent The asymptotic sech-overlap upper bound $\eta_B = 6.36\times10^{-10}$
+lies $+4.3\sigma$ above Planck CMB+BBN ($(6.10\pm0.06)\times10^{-10}$).
+The exact-sech lower bound gives $5.72\times10^{-10}$ ($-6.4\sigma$).
+Planck sits between these bracket endpoints.
+The \textbf{canonical GTE headline prediction} is the FKTT mechanism:
+$\eta_B = 6.109\times10^{-10}$ ($+0.15\sigma$; \CatAL, \lean{kink\_top\_coupling\_eq\_eps\_FN},
+zero axioms).
+
+% ─── Part 5: Particle Ontology Summary ────────────────────────────────────
+\subsection{Particle Ontology Summary}
+\label{sec:mi-ontology}
+
+\subsubsection{Foundational Clarifications}
+\label{sec:mi-ontology-clarifications}
+
+\noindent\textbf{Two distinct $Z_7$ quantities (must not be conflated):}
+\begin{itemize}
+\item $W_B$ (Level~B SM winding): interaction charge from winding-conservation (\CatAL, P28).
+  Constant per SM species: $W_B(\text{lepton}) = 4$ for all three generations.
+\item $W_A$ (Level~A orbit-sum): $\sum(\text{orbit cell values}) \bmod 7$.
+  Level~A beable charge: $W_A(\text{gen}_1) = 4$, $W_A(\text{gen}_2) = 4$,
+  $W_A(\text{gen}_3) = 3$, $W_A(\text{vac}) = 0$.
+\end{itemize}
+
+\noindent The ``gen$_3$ anomaly'' ($W_A = 3 \neq 4$) is resolved: $W_A(\text{gen}_3) = 3$
+and $W_B(\tau) = 4$ are distinct quantities (P28 line~1137 explicitly treats
+gen$_3$ orbit-sum $\neq 4$ as a feature).
+
+\subsubsection{Particle Identification Table}
+\label{sec:mi-ontology-table}
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.16\linewidth}P{0.16\linewidth}P{0.11\linewidth}P{0.11\linewidth}P{0.16\linewidth}P{0.16\linewidth}@{}}
+\caption{GTE particle identification: beable orbits, winding charges, and confidence.}
+\label{tab:mi-particles}\\
+\toprule
+\textbf{Species} & \textbf{Beable (orbit)} & \textbf{$W_B$} & \textbf{$W_A$} &
+  \textbf{$\Phi_{\rm MDL}$ kink $Q$} & \textbf{Confidence} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{Species} & \textbf{Beable (orbit)} & \textbf{$W_B$} & \textbf{$W_A$} &
+  \textbf{$\Phi_{\rm MDL}$ kink $Q$} & \textbf{Confidence} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+$e^-/\mu/\tau$ (gen$_1$/gen$_2$/gen$_3$) &
+  gen$_1=[1,5,2,2,1]$ / gen$_2=[2,5,2,0,2]$ / gen$_3=[5,6,5,3,5]$ &
+  4 & 4/4/3 & $(4,1)/(4,2)/(4,1)$ &
+  \CatAL\ (charges); glider map open \\
+$\nu_e/\nu_\mu/\nu_\tau$ & Orbit by generation & 0 & --- & $Q=0$ + triple &
+  \CatAL\ (discrimination); masses CatD \\
+$u, c, t$ & By generation & 2 & --- & Kink cascade gen-linked & \CatAL\ (winding) \\
+$d, s, b$ & By generation & 6 & --- & Same & \CatAL \\
+$\gamma$ (photon) & $[0,0,0,0,0]$ (vacuum) & 0 & 0 & $Q=0$; null modes &
+  \CatAL: $f_{\rm MDL}(0,0,0)=0$; is ether \\
+$W^+$ & Orbit vertex & 3 & --- & $Z_3$ emission (gauge) &
+  \CatAL\ (vertex); propagation CatA \\
+$W^-$ & Hilbert shadow & 4 & --- & Open & \CatAL\ + CatAD \\
+$Z$ boson & Excitation above vac & 0 & --- & $Q=0$ + massive excitation &
+  \CatAL\ (GTE triple $\neq\gamma$); mass CatAD \\
+Gluons & Colour $Z_3$ & 0 & --- & Colourful kinks / flux tubes &
+  CatAD; full QCD open \\
+Higgs & Scalar boundary $c_H=13$ & 0 & --- & Kink/Higgs as boundary &
+  Triple \CatAL; mass/VEV CatAD \\
+\end{longtable}
+\endgroup
+
+\subsubsection{Level A/B Species Map}
+\label{sec:mi-ontology-species-map}
+
+Species formula: $W_B = 4k \bmod 7$ for a $k$-occupation wavepacket of gen$_1$ beables.
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.18\linewidth}P{0.22\linewidth}P{0.25\linewidth}P{0.25\linewidth}@{}}
+\caption{Level~A/B species map (provisional).}
+\label{tab:mi-species-map}\\
+\toprule
+\textbf{$k$ (occupation)} & \textbf{$W_B = 4k \bmod 7$} &
+  \textbf{SM species} & \textbf{Colour} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{$k$ (occupation)} & \textbf{$W_B = 4k \bmod 7$} &
+  \textbf{SM species} & \textbf{Colour} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+1 & 4 & $e/\mu/\tau$ (charged lepton) & Singlet (0) \\
+4 & 2 & $u/c/t$ (up-quark) & R/G/B \\
+5 & 6 & $d/s/b$ (down-quark) & R/G/B \\
+$7 \equiv 0$ & 0 & $\nu$ (neutrino) & Singlet \\
+6 & 3 & $W^+$ (gauge boson) & --- \\
+2, 3 & 1, 5 & --- (no SM fermion) & --- \\
+\end{longtable}
+\endgroup
+
+\subsubsection{Open Questions in Particle Ontology}
+\label{sec:mi-ontology-open}
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.10\linewidth}P{0.80\linewidth}@{}}
+\caption{Open problems and resolved items in particle ontology.}
+\label{tab:mi-ontology-open}\\
+\toprule
+\textbf{Status} & \textbf{Item} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{Status} & \textbf{Item} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Open & Which specific Rule~110 / $\Phi_{\rm MDL}$ pattern corresponds to
+  which SM fermion? \\
+Open & $\nu/\gamma/Z$ discrimination: $Z_7 = 0$ alone insufficient; GTE triple required. \\
+Open & $\Phi_{\rm MDL}$ gauge structure: upgrade to $U(1)\times Z_3$ gauge theory. \\
+$\checkmark$ & SU(2)$_L$: MDL gauging machine-certified ($\CatAL$, zero named axioms:
+  \lean{phimdl\_potential\_su2l\_invariant},
+  \lean{su2l\_covariant\_derivative\_minimal},
+  \lean{su2l\_wpm\_generator\_algebra};
+  master bundle \lean{su2l\_l2\_from\_phimdl\_potential\_catad}, P46).
+  Lepton-$W$ universality from shared $\mathbb{Z}_7$ winding sectors (P45/P46).
+  Weak-force propagator $G_W(r) = e^{-m_W r}/(4\pi r)$ derived (P46, A/D). \\
+$\checkmark$ & Unified physical exclusion (\CatAL, zero axioms). \\
+$\checkmark$ & Strong CP: $\theta_{\rm QCD} = 0$ (\CatAL). \\
+$\checkmark$ & Vector meson nonet (CatA; \textit{note: CatA only, not \CatAL}). \\
+$\checkmark$ & Causal path axiom (\CatAL). \\
+$\checkmark$ & gen$_3$ winding anomaly resolved (ROBUST). \\
+\end{longtable}
+\endgroup
+
+% ─── Appendix A: Lean Certifications Index ────────────────────────────────
+\subsection{Index of Lean Certifications (\texorpdfstring{\CatAL}{A\_Lean})}
+\label{sec:mi-lean-index}
+
+All results below are Lean~4, zero sorry. Grouped by sector.
+
+\noindent\textit{Caveat: Claimed \CatAL{} results not in repo.}
+\lean{vector\_meson\_nonet\_jp1} (CatAL for vector meson nonet) is
+\textbf{not in repo --- CatA only}.
+The \CatAL{} certification for the vector meson nonet is not present in the Lean repo; CatA only.
+
+\subsubsection*{A.1 Arithmetic / Structural Core}
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.33\linewidth}P{0.33\linewidth}P{0.13\linewidth}P{0.10\linewidth}@{}}
+\toprule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \textbf{Notes} \\
+\midrule \endfirsthead \midrule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \textbf{Notes} \\
+\midrule \endhead \bottomrule \endfoot
+\lean{n10\_is\_minimal\_admissible\_ridge} & $n=10$ minimal admissible ridge & ugp-lean & Zero sorry \\
+\lean{rsuc\_theorem} & Lepton Seed $(1,73,823)$ unique at $n=10$ & ugp-lean & Zero sorry \\
+\lean{mdl\_selects\_LeptonSeed} & MDL uniquely selects Lepton Seed & ugp-lean & Zero sorry \\
+\lean{fmdl\_gen1\_is\_garden\_of\_eden} & Gen$_1$ has no $f_{\rm MDL}$ predecessor & ugp-lean & Zero sorry \\
+\lean{gte\_master\_formula\_complete} & $N_{\rm fam} = 2^{N_{\rm gen}} - N_{\rm gen} = 5$ & ugp-lean & \\
+\lean{quarterLockLaw} & Quarter-Lock Law (algebraic identity) & ugp-lean & Zero sorry \\
+\lean{asymptotic\_sparsity\_universal} & Global asymptotic sparsity at $n=10$ & ugp-lean & \\
+\end{longtable}
+\endgroup
+
+\subsubsection*{A.2 QCD / Strong Sector}
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.33\linewidth}P{0.33\linewidth}P{0.17\linewidth}P{0.09\linewidth}@{}}
+\toprule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \textbf{Notes} \\
+\midrule \endfirsthead \midrule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \textbf{Notes} \\
+\midrule \endhead \bottomrule \endfoot
+\lean{b0\_eq\_z7\_order} & $b_0 = 7 = |Z_7|$ & ugp-lean & \\
+\lean{f21\_substrate\_beta\_coefficient} & $F_{21}$ determines $b_0, C_F, C_A, T_F$ & ugp-lean & 14 theorems \\
+\lean{f21\_substrate\_two\_loop\_beta\_b1} & $b_1 = 26$ from $F_{21}$ & ugp-lean & Zero sorry \\
+\lean{anomaly\_cancellation\_psc\_forced} & AC proved from PSC+RC & ugp-lean & Zero axioms \\
+\lean{psc\_layer\_i\_certificate} & Two-Layer PSC Layer~I filter certificate & \lean{ScanCertificate} & native\_\allowbreak{}decide \\
+\lean{psc\_12\_survivors\_card} & Exactly 12 universes pass Layer~I PSC filters & \lean{ScanCertificate} & native\_\allowbreak{}decide \\
+\lean{psc\_enumeration\_forces\_ngen\_3} & Every Layer~I PSC survivor has $N_{\rm gen}=3$ & \lean{ScanCertificate} & native\_\allowbreak{}decide \\
+\lean{psc\_12\_survivors\_have\_ngen\_3} & All 12 Layer~I survivors have $N_{\rm gen}=3$ (explicit cert) & \lean{ScanCertificate} & native\_\allowbreak{}decide \\
+\lean{psc\_admissible\_forces\_sm\_gauge} & All Layer~I survivors carry $\mathrm{SU}(3){\times}\mathrm{SU}(2){\times}\mathrm{U}(1)$ in $d{=}4$ & \lean{ScanCertificate} & native\_\allowbreak{}decide \\
+\lean{universe\_params\_card} & Full $34{,}560$-universe parameter space is a \texttt{Fintype} instance & \lean{ScanCertificate} & native\_\allowbreak{}decide \\
+\lean{no\_psc\_admissible\_single\_quark} & No single-quark PSC state & ugp-lean & native\_\allowbreak{}decide \\
+\lean{mass\_gap\_positive} & Mass gap $\Delta > 0$ & ugp-lean & Zero sorry \\
+\lean{baryon\_jp\_from\_gte} & Baryon $J^P = 1/2^+$ derived & ugp-lean & \\
+\end{longtable}
+\endgroup
+
+\subsubsection*{A.3 Electroweak Sector}
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.27\linewidth}P{0.25\linewidth}P{0.24\linewidth}P{0.12\linewidth}@{}}
+\toprule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \\
+\midrule \endfirsthead \midrule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \\
+\midrule \endhead \bottomrule \endfoot
+\lean{weinberg\_angle\_closure} & $\sin^2\theta_W = 3/13$ & ugp-lean & \\
+\lean{weinberg\_two\_term\_prediction} & $\sin^2\theta_W = 384729/1664000$ & P41/P42 & \\
+\lean{gut\_weinberg\_angle\_pow2} & $\sin^2\theta_W^{\rm GUT} = 3/8$ & ugp-lean & \\
+\lean{alpha\_inv\_master} & $\alpha_{\rm EM}^{-1} = 137$ & ugp-lean & \\
+\lean{BraidAtlas.EWBosons} & EW boson $c$-values $\{11,12,13\}$ & ugp-lean & \\
+\lean{IPT\_theorem} & $\mathrm{IPT} = 1 + \ln\varphi/(2\ln 2\pi)$ & ugp-lean & \\
+\lean{sm\_gauge\_group\_certificate} & SM gauge bundle $\mathrm{SU}(3)\times\mathrm{SU}(2)_L\times\mathrm{U}(1)_Y$ via three $Z_7$ channel identifications & \lean{SMGaugeGroup} & Zero sorry (CatAD: Burnside axiom) \\
+\lean{phimdl\_angular\_momentum\_conserved} & SO(3) Noether angular momentum conserved & \lean{NoetherAngularMomentum} & CatAD \\
+\lean{delta\_rho\_positive} & $\delta\rho > 0$ from top-bottom doublet oblique correction & \lean{GaugeMDL} & Zero sorry \\
+\lean{m\_W\_one\_loop\_larger} & $m_W^{\rm 1\text{-}loop} > m_W^{\rm tree}$ & \lean{GaugeMDL} & Zero sorry \\
+\lean{m\_W\_gap\_fraction\_certified} & Oblique correction closes 98.8\% of $m_W$ gap; 4.7~MeV residual & \lean{GaugeMDL} & Zero sorry \\
+\end{longtable}
+\endgroup
+
+\subsubsection*{A.4 CKM / Flavor}
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.34\linewidth}P{0.34\linewidth}P{0.13\linewidth}P{0.09\linewidth}@{}}
+\toprule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \\
+\midrule \endfirsthead \midrule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \\
+\midrule \endhead \bottomrule \endfoot
+\lean{wolfenstein\_lambda\_formula} & $\lambda = 9/40$ derived & ugp-lean & \\
+\lean{ckm\_theta23\_ratio\_uniqueness} & CKM $\theta_{23}$ scaling ratio $= 15/8$ & ugp-lean & Zero sorry \\
+\lean{ckm\_unitarity\_triangle\_radius\_eq\_gut\_weinberg} & $R_b = \sin^2\theta_W^{\rm GUT} = 3/8$ & ugp-lean & \\
+\lean{bb\_bs\_product\_not\_square} & $b_b \times b_s$ non-square $\Rightarrow$ $\tan\gamma$ irrational & ugp-lean & \\
+\lean{neff\_b\_eq\_mersenne} & $b_b = 8191$ (Mersenne prime) certified & ugp-lean & \\
+\lean{neff\_u\_eq\_ngen\_sq} & $b_u = N_{\rm gen}^2 = 9$ & ugp-lean & \\
+\end{longtable}
+\endgroup
+
+\subsubsection*{A.5 Lepton / Quark Masses}
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.27\linewidth}P{0.25\linewidth}P{0.24\linewidth}P{0.12\linewidth}@{}}
+\toprule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \\
+\midrule \endfirsthead \midrule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \\
+\midrule \endhead \bottomrule \endfoot
+\lean{koide\_angle\_from\_N\_c\_pure} & Koide phase $\theta = 2/9$ from $N_c = 3$ & ugp-lean & Zero sorry \\
+\lean{two\_plus\_sqrt3\_eq} & $2+\sqrt{3} = 4\cos^2(\pi/12)$ & ugp-lean & Zero sorry \\
+\lean{proton\_b\_correction\_agreement} & $b_p = 11459$, $b_n = 11441$ & ugp-lean & Zero sorry \\
+\lean{ugp\_strange\_baryon\_c\_values} & Strange baryon $c$-values $= \pm 1023$ & ugp-lean & Zero sorry \\
+\lean{UgpLean.GTE.NuclearPairing} & Nuclear pairing $\Delta = 5^{3/2}$ & ugp-lean & Zero sorry \\
+\lean{koide\_Q\_iff\_amplitude} & $Q = 2/3 \Leftrightarrow b = \sqrt{2}$ (Yukawa amplitude) & \lean{KoideYukawaAmplitude} & Zero sorry \\
+\lean{koide\_cv\_one\_iff\_amplitude} & $\mathrm{CV}(\sqrt{m}) = 1 \Leftrightarrow Q = 2/3$ & \lean{Koide\allowbreak{}Equal\allowbreak{}Norm\allowbreak{}Reformulation} & Zero sorry \\
+\end{longtable}
+\endgroup
+
+\subsubsection*{A.6 Neutrino Sector}
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.33\linewidth}P{0.33\linewidth}P{0.16\linewidth}P{0.08\linewidth}@{}}
+\toprule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \\
+\midrule \endfirsthead \midrule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \\
+\midrule \endhead \bottomrule \endfoot
+Seesaw exponent & $29/9 = N_c + \theta$ (three independent decompositions) & ugp-lean & Zero sorry \\
+Normal hierarchy & Falls out of $b^{29/9}$ structure & ugp-lean & \\
+\lean{z7\_no\_bion\_criterion} & No $Z_7$ bion state satisfies PSC dark-ring sector constraints (rules out bion mass mechanism) & \lean{NeutrinoL2} & Zero sorry \\
+\lean{dark\_ring\_fourth\_qn\_count} & $Z_7^4 = (w_x, w_y, w_z, w_\tau)$ dark-ring sector has exactly 4 quantum numbers & \lean{NeutrinoL2} & Zero sorry \\
+\end{longtable}
+\endgroup
+
+\subsubsection*{A.7 Quantum Mechanics / Born Rule}
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.33\linewidth}P{0.33\linewidth}P{0.16\linewidth}P{0.08\linewidth}@{}}
+\toprule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \\
+\midrule \endfirsthead \midrule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \\
+\midrule \endhead \bottomrule \endfoot
+\lean{born\_rule\_unconditional} & Born rule $P(k)=|c_k|^2$ unconditionally &
+  \lean{Beable\allowbreak{}Winding\allowbreak{}Partition\allowbreak{}Instance.lean} & Zero custom axioms \\
+\lean{phimdl\_thermal\_state\_master} & Thermal state PSC-admissible & P42/P43 & \\
+\lean{dark\_sector\_orbit\_structure} & Dark sector dim$=5$ (three period-2 cycles) & ugp-lean & \\
+\lean{CMCAMDLMinimality.lean} & $K_{\rm CA}$ lower bound $= 19$~bits & P41 & \\
+\end{longtable}
+\endgroup
+
+\subsubsection*{A.8 Computational Universality}
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.28\linewidth}P{0.24\linewidth}P{0.20\linewidth}P{0.16\linewidth}@{}}
+\toprule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \\
+\midrule \endfirsthead \midrule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \\
+\midrule \endhead \bottomrule \endfoot
+\lean{rule110\_z7\_poly\_rep} & $p(L,C,R) = C+R-CR-LCR$ over $\mathrm{GF}(7)$ & P40 & native\_decide \\
+\lean{rule110\_center1\_is\_nand} & $p(L,1,R) = \mathrm{NAND}(L,R)$ & P40 & \\
+\lean{z7\_bool3\_finite\_functional\_completeness} & Rule~110 finite NAND functional completeness (Cook-independent; not Turing universality) & P40 & 1 axiom \\
+\lean{fmdl\_mdl\_uniqueness} & $f_{\rm MDL}$ unique among $7^{325}$ completions & ugp-lean & 76-bit cert \\
+\lean{LiftingTheorem.lean} & Every PSC-admissible SM config in $f_{\rm MDL}$ & P28/P43 & Zero sorry \\
+\lean{Algebraic\allowbreak{}DescentTheorem.lean} & $F_{21}$ conservation holds at all resolutions & P41/P42 & \\
+\lean{unified\_physical\_exclusion} & $[D]$-weighted state: confined, massive, anomaly-free & ugp-lean & Zero axioms \\
+\lean{gte\_orbit\_vectors\_are\_rs\_codewords} & Gen$_{1,2,3}$ orbit vectors are $[5,3,3]_7$ RS codewords over $\mathrm{GF}(7)$ & \lean{RSCodeOrbit.lean} & Zero sorry \\
+\lean{orbit\_vectors\_linearly\_independent} & Gen$_{1,2,3}$ orbit vectors linearly independent over $\mathrm{GF}(7)$ & \lean{RSCodeOrbit.lean} & Zero sorry \\
+\end{longtable}
+\endgroup
+
+\subsubsection*{A.9 Gravity / Spacetime}
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.28\linewidth}P{0.24\linewidth}P{0.24\linewidth}P{0.12\linewidth}@{}}
+\toprule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \\
+\midrule \endfirsthead \midrule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \\
+\midrule \endhead \bottomrule \endfoot
+\lean{z3\_invariant\_entropy\_closes\_hierarchy} & Planck/$\tau$ hierarchy $= 21^{10}\times 7^{7/2}$ & P43 & Zero sorry \\
+\lean{gte\_spacetime\_dimension} & $D = N_{\rm gen}+1 = 4$ & ugp-lean & Spatial $D_s=3$ cert \\
+\lean{causal\_graph\_spectral\_dim\_thermodynamic\_limit} & $d_s = 4$ in thermodynamic limit & ugp-lean & \\
+\lean{phimdl\_potential\_at\_vacuum\_zero} & $\Lambda = 0$ at tree level & ugp-lean & \\
+\lean{phimdl\_tmunu\_vacuum\_zero} & $T_{\mu\nu}|_{\rm vac} = 0$ at all 7 $Z_7$ vacua & ugp-lean & \\
+\lean{kg\_dispersion\_lorentz\_invariant} & KG equation Lorentz-invariant & ugp-lean & \\
+\lean{poincare\_invariance\_of\_kg} & KG equation Poincar\'{e}-invariant & ugp-lean & \\
+\lean{no\_finite\_ca\_exact\_lorentz\_replica} & $\varepsilon_0(M) > 0$ for all finite $M$ & P43 & \\
+\lean{psc\_orbit\_is\_curvature\_geodesic} & Geodesic theorem from PSC orbit curvature & P43 & \\
+\lean{planck\_density\_bound\_via\_lifting} & $7^8 > e^{4\pi}$; CMCA Planck density bound via Lifting Thm & \lean{PlanckDensityBound.lean} & Zero sorry \\
+\lean{minimal\_coupling\_is\_mdl\_minimal} & $\xi = 0$ uniquely MDL-minimal; no curvature coupling & \lean{MinimalCoupling.lean} & Zero sorry \\
+\lean{z7\_superselection\_preserved\_by\_flat\_metric} & $Z_7$ superselection preserved on curved backgrounds & \lean{MinimalCoupling.lean} & Zero sorry \\
+\lean{flrw\_phimdl\_equation\_well\_defined} & $Z_7$-KG on FLRW: existence + uniqueness (Picard--Lindel\"{o}f) & \lean{FLRWFieldEquation.lean} & Zero sorry \\
+\lean{causal\_path\_exists} & Causal path theorem (directed/undirected) & \lean{Spatially\allowbreak{}Extended\allowbreak{}Lifting.lean} & Zero custom axioms \\
+\lean{kink\_bps\_mass\_formula} & $M_{\rm kink} = 8m/49$ (analytic BPS mass; exact) & \lean{PMDLGravityTheorems} & Zero sorry \\
+\lean{gorard\_bridge\_coefficient} & Gorard $\kappa_{\rm SD}/(8\pi) \in (0,1)$; $C_{\rm Gorard} \in (0,1)$ (bound) & \lean{GorardRicciFlatVacuum} & Zero sorry \\
+\lean{c\_gorard\_eq\_n\_spatial\_over\_two\_dsq} & $C_{\rm Gorard} = N_{\rm spatial}/(2D^2) = 3/32$ \textbf{exact} (not approximation) & \lean{TemporalVoxelCC} (P47) & Zero sorry (\CatAL) \\
+\end{longtable}
+\endgroup
+
+\subsubsection*{A.10 SRRG / VEV}
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.33\linewidth}P{0.33\linewidth}P{0.16\linewidth}P{0.08\linewidth}@{}}
+\toprule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \\
+\midrule \endfirsthead \midrule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \\
+\midrule \endhead \bottomrule \endfoot
+\lean{abs\_psi\_eq\_inv\_phi} & SRRG contraction rate $= 1/\varphi$ & ugp-lean & Zero sorry \\
+\lean{entropy\_formula\_U1} & PSC entropy $H_{\rm adj} = \ln(2\pi)$ & ugp-lean & Zero sorry \\
+\lean{A3\_half\_factor} & Symmetry splitting factor $= 1/2$ & ugp-lean & Zero sorry \\
+\lean{SrrgLean.VEVProof.*} & $v_{\rm PSC} = 246.16$~GeV from SRRG & srrg-lean & Zero sorry; zero open axioms (B5 proved); conditional on B1--B4 \\
+\lean{srrg\_beta\_zero\_iff\_kCMCA\_minimum} & SRRG $\beta$-function zero $\Leftrightarrow$ MDL $K_{\rm CMCA}$ minimum; $g^* = 1/\varphi$ & \lean{SRRGCABridge} & Zero sorry \\
+\lean{fca\_attractor\_diagonal\_fp\_equals\_srrg\_fp} & FCA attractor diagonal fixed point $=$ SRRG fixed point at $g^* = 1/\varphi$ & \lean{SRRGCABridge} & Zero sorry \\
+\lean{op9\_catal\_unconditional} & $K_{\rm alg}(g^*)=0$; unique $K_{\rm alg}$ zero on $(0,\infty)$; strict positivity on $(0,g^*)$; OP9 \CatAL{} for canonical SRRG scalar profile & \lean{srrg-lean/\allowbreak{}Bridges/\allowbreak{}ToMDL.lean} & Zero sorry, unconditional \\
+\lean{srrg\_op9\_k\_alg\_biconditional} & \textsc{IsSrrgFixedPoint} $\Leftrightarrow$ $K_{\rm alg}$ minimiser; full OP9 biconditional for algebraic MDL profile & \lean{srrg-lean/\allowbreak{}Bridges/\allowbreak{}ToMDL.lean} & Zero sorry, no $h_{\rm ugp}$ hypothesis \\
+\lean{srrg\_mdl\_functional\_identity} & descLen $= B - \text{Viability}$; $K[S] = B - F[S]$ & \lean{ToMDL.lean} & Zero sorry \\
+\lean{argmax\_viability\_iff\_argmin\_descLen} & argmax $F[S]$ $=$ argmin $K[S]$ (OP9 algebraic core) & \lean{ToMDL.lean} & Zero sorry \\
+\lean{srrg\_fp\_is\_mdl\_minimizer} & SRRG fixed point minimises description length & \lean{ToMDL.lean} & Zero sorry \\
+\end{longtable}
+\endgroup
+
+\subsubsection*{A.11 Cyclotomic $\mathbb{Z}_7$ / Galois Structure}
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.28\linewidth}P{0.24\linewidth}P{0.24\linewidth}P{0.12\linewidth}@{}}
+\toprule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \\
+\midrule \endfirsthead \midrule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \\
+\midrule \endhead \bottomrule \endfoot
+\lean{z7\_galois\_orbit\_partition} & $\sigma_2$-orbits: $\{1,2,4\}$ ($u$-type) and $\{3,5,6\}$ ($d$-type) & \lean{CyclotomicZ7Galois.lean} & Zero sorry \\
+\lean{seven\_not\_divides\_120} & $7 \nmid 120$; $\mathbb{Q}(\zeta_7) \not\subset \mathbb{Q}(\zeta_{120})$ & \lean{CyclotomicZ7Galois.lean} & Zero sorry \\
+\lean{gte\_arithmetic\_sectors\_disjoint} & GTE mass and vacuum arithmetic sectors disjoint & \lean{CyclotomicZ7Galois.lean} & Zero sorry \\
+\lean{cyclotomic\_z7\_master\_bundle} & $\mathrm{Gal}(\mathbb{Q}(\zeta_7)/\mathbb{Q}) = \mathbb{Z}_2 \times \mathbb{Z}_3$; CPT as Galois automorphism; $\mathbb{Z}_3$ orbits = GTE flavour families & \lean{CyclotomicZ7Galois.lean} & Zero sorry \\
+\end{longtable}
+\endgroup
+
+\subsubsection*{A.12 P44--P47: Quantum Gravity, Three-Tape CMCA, Polynomial UFT, Cosmological Predictions}
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.28\linewidth}P{0.24\linewidth}P{0.24\linewidth}P{0.12\linewidth}@{}}
+\toprule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \\
+\midrule \endfirsthead \midrule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \\
+\midrule \endhead \bottomrule \endfoot
+\lean{minimal\_coupling\_is\_mdl\_minimal} & $\xi=0$ uniquely MDL-minimal; certified in P43 and confirmed for P44 & \lean{MinimalCoupling.lean} & \\
+\lean{z7\_superselection\_preserved\_by\_flat\_metric} & $\mathbb{Z}_7$ superselection preserved on curved backgrounds & \lean{MinimalCoupling.lean} & \\
+\lean{gte\_orbit\_vectors\_are\_rs\_codewords} & Gen$_{1,2,3}$ orbit vectors are $[5,3,3]_7$ RS codewords; GTE Holographic Encoding route & \lean{RSCodeOrbit.lean} & \\
+\lean{cyclotomic\_z7\_master\_bundle} & Galois $\mathrm{Gal}(\mathbb{Q}(\zeta_7)/\mathbb{Q}) = \mathbb{Z}_2\times\mathbb{Z}_3$; CPT as Galois automorphism & \lean{CyclotomicZ7Galois.lean} & \\
+DPP (Dimensional Protocol Principle) & Shared clock $\tau_c^{\rm out}$ necessary and sufficient for 3+1D dynamics & P45 & \\
+Lorentz algebra ($\mathfrak{so}(1,3)$) & All 12 $\mathfrak{so}(1,3)$ commutation relations machine-certified & P45 & \\
+Color confinement MDL & $\Delta K = \log_2 9$ description-length gap forbids free quarks & P45, P46 & \\
+Baryon number topological & $B = (1/3)\sum\chi_q(w_j)$; derived from $N_{\rm tapes}=3$ & P45, P46 & \\
+Holographic 3-tape & $3L/L^3\to 0$; Bekenstein--Hawking area scaling realized & P45 & \\
+Fermionic statistics & From $\mathbb{Z}_7^*$ non-primitive roots & P45, P46 & \\
+Polynomial MDL uniqueness & $p(L,C,R)$ unique degree-3 multilinear over GF(7) satisfying $\mathbb{Z}_7$, Rule~110, 19-bit MDL & P46 & \\
+$\mathbb{Z}_7{\times}\mathbb{Z}_3$ MDL uniqueness (unconditional) & Non-circular derivation MDL $\to$ $\mathbb{Z}_7{\times}\mathbb{Z}_3$ closed $\mathbf{A}_{\rm Lean}$: \lean{mdl\_ca\_rule\_coding\_closed}, \lean{z5\_fmdl\_no\_psc\_kink\_orbits} (GF(5) poly, winding-based), \lean{mdl\_total\_z7z3\_strictly\_beats\_z5z3}; zero SM input & ugp-lean & All zero sorry \\
+SRRG golden ratio & $1/\varphi$ is unique positive root of $p(x,x,x)=x$ over $\mathbb{R}$ & P46 & \\
+Vacuum stability (poly) & $p(0,0,0)=0$; $w=0$ unique fixed point of $p(x,x,x)\equiv x\pmod 7$ & P45, P46 & \\
+\lean{baryon\_number\_l1\_l2\_correspondence\_certified} & $B_{L1} = B_{L2}$ (exact baryon number preservation across levels) & \lean{BaryonNumber} & Zero sorry \\
+\lean{phimdl\_axial\_current\_topological} & $\partial_\mu J^\mu_A = 0$ topological conservation at Level~2 & \lean{ChiralCurrentL2} & Zero sorry \\
+\lean{gibbs\_sector\_unique\_minimizer} & Gibbs state uniquely minimises free energy at each $Z_7$ sector & \lean{C2CoherenceG40} & Zero sorry \\
+\lean{gte\_polynomial\_five\_labelled\_roles} & GTE polynomial $p$ has exactly 5 labelled semantic roles & \lean{FiveRolesPolynomial} & Zero sorry \\
+\lean{phimdl\_free\_propagator\_formula} & $\Phi_{\rm MDL}$ free scalar propagator $G(p) = 1/(p^2+m_{\rm kink}^2)$ & \lean{PhiMDLPropagator} & Zero sorry \\
+\lean{phimdl\_quartic\_coupling} & Quartic vertex $\lambda_4 = m^2 \times 7^2$ (from $Z_7$ symmetry) & \lean{PhiMDLPropagator} & Zero sorry \\
+\lean{phimdl\_sextic\_coupling} & Sextic vertex $\lambda_6 = m^2 \times 7^4$ (from $Z_7$ symmetry) & \lean{PhiMDLPropagator} & Zero sorry \\
+\lean{phimdl\_satisfies\_wightman\_axioms} & $\Phi_{\rm MDL}$ satisfies Wightman axioms (structural; OS reconstruction + distributional smearing named axioms) & \lean{WightmanAxioms} & Structural CatAD \\
+\lean{gte\_bell\_violation\_at\_half\_coupling} & GTE qutrit sector achieves $S_{\rm CHSH} > 2$ at half-coupling & \lean{BellViolationGTE} & Named axiom \\
+\lean{gte\_hgrav\_diagonal\_nontrivial} & $H_{\rm grav}$ diagonal part non-trivial (condition for CHSH violation) & \lean{BellViolationGTE} & Zero sorry \\
+\lean{cogwheel\_dynamics\_composition}, \lean{cogwheel\_dynamics\_unitarity}, \lean{cogwheel\_dynamics\_step\_recurrence} & Discrete Schr\"odinger $U(n)=e^{-iH_{\rm cyc}n\tau_c}$: composition, unitarity, step recurrence & \lean{CogwheelDynamicsG21} & Zero sorry \\
+$n_s$ binary entropy (P47) & $n_s = 1 - \ln 2/(2\pi^2) = 0.96488$ from holographic running; 14 certified theorems & P47 & Zero sorry \\
+$\Omega_\Lambda$ PSC epoch count (P47) & $\Omega_\Lambda = (\ln 2/3\pi)\log_2(2000/3) = 0.6899$; orbit count $2000/3 = D^2 N_{\rm fam}^{N_{\rm gen}}/N_{\rm gen}$ from DPP first principles & P47 & CatAD \\
+$\Omega_\Lambda$ holographic (P47) & $\Omega_\Lambda = 3\pi/14 = 0.6732$ from three-tape mode count; $\tau = 3/7$ Rule-110 ether rate & P47 & CatAD \\
+$w=-1$ (P47) & Equation of state fixed by PSC boundary condition; Weinberg no-go evaded & P47 & CatAD \\
+CKM $\delta_{CP}$ via $S_3$ (P47) & $\delta_{CP} = \pi/2 - 3/8 = 68.51^\circ$; $0.017\%$ from PDG; $S_3$ subgroup chain & P47 & CatAD \\
+\lean{c\_gorard\_eq\_n\_spatial\_over\_two\_dsq} & $C_{\rm Gorard} = N_{\rm spatial}/(2D^2) = 3/32$ exact; $D=4$ from DPP & \lean{TemporalVoxelCC} (P47) & Zero sorry (\CatAL) \\
+\lean{z7\_shift\_measure\_preserving} & $\mathbb{Z}_7$ shift $\phi\to\phi+2\pi/7$ is measure-preserving; scalar anomaly-free & \lean{Z7AnomalyFree.lean} (ugp-lean) & Zero sorry \\
+\lean{z7\_jacobian\_eq\_one} & Radon--Nikodym derivative of shifted measure $= 1$ a.e.\ (no Jacobian anomaly) & \lean{Z7AnomalyFree.lean} & Zero sorry \\
+\lean{lebesgue\_shift\_invariant} & Lebesgue measure shift-invariant: $\forall c$, $\mathrm{map}(\cdot+c)$ = volume & \lean{Z7AnomalyFree.lean} & Zero sorry \\
+\lean{z7\_vacuum\_sectors\_equiprobable} & All 7 $\mathbb{Z}_7$ vacuum sector integrals equal (quantum vacuum degeneracy; pure-$\varphi$ sector, $\mathbb{Z}_7$-periodic observables) & \lean{Z7AnomalyFree.lean} & Zero sorry \\
+\lean{phimdl\_potential\_su2l\_invariant} & $L_2$ norm preserved under $SU(2)$ rotation on within-tape doublet & \lean{GaugeMDL.lean} & $\CatAL$ \\
+\lean{su2l\_covariant\_derivative\_minimal} & Covariant derivative is MDL-minimal upgrade of $\partial_\mu|\Psi|^2$ & \lean{GaugeMDL.lean} & $\CatAL$ \\
+\lean{su2l\_wpm\_generator\_algebra} & $W^\pm$ generators satisfy $SU(2)$ Lie algebra & \lean{GaugeMDL.lean} & $\CatAL$ \\
+\lean{su2l\_l2\_from\_phimdl\_potential\_catad} & Master bundle: full $SU(2)_L$ MDL gauging chain & \lean{GaugeMDL.lean} & $\CatAL$ \\
+\end{longtable}
+\endgroup
+
+\subsubsection*{A.13 New Machine Certifications (2026)}
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.31\linewidth}P{0.31\linewidth}P{0.20\linewidth}P{0.08\linewidth}@{}}
+\toprule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \textbf{Notes} \\
+\midrule \endfirsthead \midrule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \textbf{Notes} \\
+\midrule \endhead \bottomrule \endfoot
+\lean{frobenius\_chain\_b\_l1} + 16 theorems &
+  $F(N_c) = G(N_c) = 73$ uniquely at $N_c=3$ (FGCI);
+  $b_{L_2}=42=2N_c|Z_7|$ & \lean{FrobeniusChain.lean} (17 thms) & Zero sorry \\
+\lean{elegant\_kernel\_full\_certification} &
+  All 9 UCL Elegant Kernel coefficients packaged in one master theorem &
+  \lean{ElegantKernel/\allowbreak{}Unconditional/\allowbreak{}Master\allowbreak{}Certification.lean} & Zero sorry \\
+\lean{ucl\_fermion\_mass\_ordering} &
+  $m(\text{gen}_1) < m(\text{gen}_2) < m(\text{gen}_3)$ for lepton, up, down sectors &
+  \lean{UCLMassOrdering\allowbreak{}.lean} & Zero sorry \\
+\lean{ucl\_tier3\_lepton\_koide} &
+  Full Koide identity $Q=2/3$ from phase + amplitude separately certified &
+  \lean{UCLKoide.lean} & Zero sorry \\
+\lean{lepton\_koide\_amplitude\_pinned} &
+  $b=\sqrt{2}$ from $S_3$ equal-irrep-norm cone condition forces $Q=2/3$ for all $\theta$ &
+  \lean{KoideYukawa\allowbreak{}Amplitude\allowbreak{}.lean} & Zero sorry \\
+\lean{higgs\_quartic\_corrected} &
+  SRRG-corrected $\lambda$; $m_H = 125.2499$~GeV ($-0.0003\sigma$) &
+  \lean{MassRelations/\allowbreak{}HiggsQuartic.lean} & Zero sorry \\
+\lean{two\_cH\_plus\_one\_eq\_ngen\_cubed} &
+  $2c_H+1 = 27 = N_{\rm gen}^3$; unique at $N_{\rm gen}=3$ &
+  \lean{MassRelations/\allowbreak{}HiggsQuartic.lean} & Zero sorry \\
+\lean{pmns\_solar\_sin\_sq} &
+  $\sin^2\theta_{12} = 4/13$ from orbit ratios &
+  \lean{MassRelations/\allowbreak{}NeutrinoSector.lean} & Zero sorry \\
+\lean{pmns\_atm\_sin\_sq} &
+  $\sin^2\theta_{23} = 19/42$ from orbit ratios &
+  \lean{MassRelations/\allowbreak{}NeutrinoSector.lean} & Zero sorry \\
+\lean{pmns\_reactor\_sin\_val} &
+  $\sin\theta_{13} = 11/73$ from orbit ratios &
+  \lean{MassRelations/\allowbreak{}NeutrinoSector.lean} & Zero sorry \\
+\lean{gte\_jarlskog} &
+  $J_{\rm GTE} = -(8184\sqrt{437}/5057221)\sin(\pi/7)$ &
+  \lean{MassRelations/\allowbreak{}NeutrinoSector.lean} & Zero sorry \\
+\lean{pmns\_cp\_phase\_from\_z7\_winding} &
+  $\delta_{CP}^{\rm PMNS} = 205.71^\circ$ from $\mathbb{Z}_7$ winding &
+  \lean{MassRelations/\allowbreak{}NeutrinoSector.lean} & Zero sorry \\
+\lean{fn\_dirac\_yukawa\_rank\_theorem} &
+  Rank-1 structure of Dirac Yukawa from FN charge assignment &
+  \lean{MassRelations/\allowbreak{}NeutrinoSector.lean} & Zero sorry \\
+\lean{yukawa\_overlap\_exponent\_catad} &
+  Overlap exponent $\alpha = N_c-1 = 2$ from DPP tape counting &
+  \lean{Gravity/\allowbreak{}YukawaOverlap\allowbreak{}Exponent.lean} & Zero sorry \\
+\lean{leptogenesis\_kink\_overlap\_catad} &
+  Leptogenesis $\eta_B$ suppression bundle; links kink overlap to $\eta_B$ &
+  \lean{Gravity/\allowbreak{}YukawaOverlap\allowbreak{}Exponent.lean} & Zero sorry \\
+\lean{z7\_dark\_baryon\_correction\_identity} &
+  $q_{\rm dark}/(|Z_7|-1) = 1/N_c$; $D_{\rm top}=e^{-1/N_c}$ (\CatAL) &
+  ugp-lean & Zero sorry \\
+\lean{z7\_star\_transitivity\_under\_addition} &
+  $\mathbb{Z}_7^*$ is transitive under addition; forces equal sector distribution &
+  \lean{GUTStructure.lean} & Zero sorry \\
+\lean{z7\_symmetry\_forces\_equal\_sector\_action} &
+  $S_{\rm per} = 2/6 = 1/N_c$; equal-weight distribution from $Z_7$ symmetry &
+  \lean{GUTStructure.lean} & Zero sorry \\
+\lean{d\_top\_derivation\_chain\_catal} &
+  Full derivation chain: $D_{\rm top} = e^{-1/N_c}$ from $Z_7$ group theory alone;
+  no dilute instanton gas approximation &
+  \lean{GUTStructure.lean} & Zero sorry \\
+\lean{integral\_sech\_cubed} &
+  $\int_{-\infty}^\infty \mathrm{sech}^3 = \pi/2$ (Mathlib FTC) &
+  \lean{Substrate/\allowbreak{}PhiMDL\allowbreak{}Fluctuation\allowbreak{}Spectrum.lean} & Zero sorry \\
+\lean{integral\_sech} &
+  $\int_{-\infty}^\infty \mathrm{sech} = \pi$ (Mathlib FTC) &
+  \lean{Substrate/\allowbreak{}PhiMDL\allowbreak{}Fluctuation\allowbreak{}Spectrum.lean} & Zero sorry \\
+\lean{phimdl\_fluctuation\_is\_poschl\_teller} &
+  $V_{\rm fl}(x) = m_\varphi^2[1-2\,\mathrm{sech}^2(m_\varphi x)]$ is exactly $s=1$ P\"oschl--Teller &
+  \lean{Substrate/\allowbreak{}PhiMDL\allowbreak{}Fluctuation\allowbreak{}Spectrum.lean} & Zero sorry \\
+\lean{lambda\_all\_order\_zero\_pure\_phi} &
+  All computable quantum corrections to $\Lambda$ vanish identically in the
+  pure-$\varphi$ sector (closes OP3) &
+  P48 & Zero sorry (\CatAL) \\
+\lean{va\_op6\_bundle} &
+  Quantitative V$-$A chiral coupling: $g_R=0$, $g_A/g_V=-1$ from GTE first
+  principles (substantially closes OP6) &
+  P48 & CatAD \\
+\lean{f21\_is\_borel\_psl27} &
+  $F_{21}$ is the Borel stabilizer of $\infty$ in $\mathrm{PSL}(2,7)$ &
+  P52 & Zero sorry (\CatAL) \\
+\lean{pgl27\_generated\_by\_singer\_and\_borel} &
+  Fibonacci--Möbius generator and $F_{21}$ generate $\mathrm{PGL}(2,7)$ of order~336 &
+  P52 & Zero sorry (\CatAL) \\
+\lean{psl27\_is\_aut\_fano} &
+  $\mathrm{PSL}(2,7)$ is the full automorphism group of the Fano plane $\mathcal{F}$ &
+  P52 & Zero sorry (\CatAL) \\
+\lean{f21\_regular\_on\_fano\_flags} &
+  $F_{21}$ acts simply transitively on all 21 incidence flags of the Fano plane &
+  P52 & Zero sorry (\CatAL) \\
+\lean{eisenstein\_a4\_from\_inert\_2} &
+  Inert prime~2 in $\mathbb{Z}[\omega]$ gives $\mathbb{Z}[\omega]/(2)\cong\mathrm{GF}(4)$
+  with additive group $V_4$ and multiplicative group $\mathbb{Z}_3$, assembling to
+  $A_4 = V_4 \rtimes \mathbb{Z}_3$ &
+  P52 & Zero sorry (\CatAL) \\
+\lean{klein\_quartic\_genus\_eq\_n\_gen} &
+  The Klein quartic has genus $= N_{\rm gen} = 3$ (from the $(2,3,7)$ triangle group) &
+  P52 & Zero sorry (\CatAL) \\
+\lean{gte\_manifest\_flavor\_is\_s3\_in\_a4} &
+  GTE manifest neutrino flavor symmetries $\mu_3$ and $\mu$--$\tau$ exchange generate
+  $S_3 \leq A_4$ &
+  P52 & Zero sorry (\CatAL) \\
+\end{longtable}
+\endgroup
+
+\subsubsection*{A.14 P53--P54: Framework Assessment and Synthesis}
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.31\linewidth}P{0.31\linewidth}P{0.20\linewidth}P{0.08\linewidth}@{}}
+\toprule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \textbf{Notes} \\
+\midrule \endfirsthead \midrule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \textbf{Notes} \\
+\midrule \endhead \bottomrule \endfoot
+\lean{algebraic\_lifting\_theorem} &
+  Every property certified at discrete Level~1 must exist in the continuum
+  Level~3 field $\Phi_{\rm MDL}$: CA theorems are physics theorems &
+  \lean{Spacetime/LiftingTheorem.lean} & Zero sorry (\CatAL) \\
+\lean{algebraic\_descent\_theorem} &
+  Every conservation law, charge-quantisation condition, and generation structure
+  in any continuum model realising the $F_{21}$ winding algebra must respect
+  discrete Level~1 constraints &
+  \lean{Universality/\allowbreak{}AlgebraicDescent\allowbreak{}Theorem.lean} & Zero sorry (\CatAL) \\
+\lean{no\_finite\_ca\_exact\_lorentz\_replica} &
+  No finite cellular automaton can exactly replicate Lorentz-invariant dynamics;
+  any CA with finite lattice spacing carries Lorentz-violating artefacts &
+  \lean{Framework/\allowbreak{}CMCAContinuum\allowbreak{}Limit.lean} & Zero sorry (\CatAL) \\
+\lean{ngen\_universality\_seven\_constraints} &
+  Seven independent structural constraints (PSC-PI, DPP, CMCA, TPC, Gorard, GTE
+  cascade, MDL orbit) are each individually certified at \CatAL{} and all force
+  $N_{\rm gen} = 3$ unconditionally &
+  \lean{Classification/\allowbreak{}NgenUniqueness.lean} & Zero sorry (\CatAL) \\
+\lean{ngen\_universality\_master} &
+  All seven structural constraints plus the bracket-admissibility bound together
+  force $N_{\rm gen} \leq 3$; combined with the GoE lower bound, $N_{\rm gen} = 3$
+  exactly &
+  \lean{Classification/\allowbreak{}NgenUniqueness.lean} & Zero sorry (\CatAL) \\
+\lean{f21\_theta\_term\_vanishes} &
+  $\theta_{\rm QCD} = 0$ is a structural identity of the $F_{21}$ colour group;
+  the exponent-sum condition and $\mathbb{Z}_3$ order-3 action are machine-certified &
+  \lean{Universality/\allowbreak{}SylowIndexCoupling\allowbreak{}Hierarchy.lean} & Zero sorry (\CatAL) \\
+\lean{gte\_baryon\_number\_topological\_charge} &
+  $3B = \chi_{\rm baryon}(w_x) + \chi_{\rm baryon}(w_y) + \chi_{\rm baryon}(w_z)$;
+  baryon number is a topological charge over the three-tape winding labels &
+  \lean{Algebra/\allowbreak{}BaryonNumber.lean} & Zero sorry (\CatAL) \\
+\lean{incompleteness\_implies\_nonzero\_omega\_lambda} &
+  PSC physical incompleteness forces a positive residual $D_{\rm res} > 0$ and
+  thereby a nonzero $\Omega_\Lambda > 0$ from the PSC epoch count &
+  \lean{Gravity/\allowbreak{}PSCEpochSelection.lean} & Zero sorry (\CatAL) \\
+\lean{past\_hypothesis\_from\_mdl\_seed} &
+  MDL-minimal seed selects flat spatial curvature $k=0$:
+  $\Sigma_{\rm FLRW}$-bits $= \log_2 3$ and $k=0$ minimises the description length &
+  \lean{Cosmology/\allowbreak{}MDLInitialState.lean} & Zero sorry (\CatAL) \\
+\end{longtable}
+\endgroup
+{\footnotesize
+\textit{Note.}  P53 (\emph{The GTE Framework: A Comparative Assessment}) is a
+comparative survey paper; it introduces no new axioms or physical-quantity rows
+but presents the nine theorems above as load-bearing architectural results.
+P54 (\emph{The Fire in the Equations}) is a philosophical synthesis of the GTE
+and NEMS frameworks; it introduces no new physical-quantity rows or Lean
+certifications in the UGP Physics series.}
+
+\subsubsection*{A.15 P55: Octonionic Shadow of GF(7)}
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.31\linewidth}P{0.31\linewidth}P{0.20\linewidth}P{0.08\linewidth}@{}}
+\toprule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \textbf{Notes} \\
+\midrule \endfirsthead \midrule
+\textbf{Theorem / Module} & \textbf{Statement} & \textbf{File} & \textbf{Notes} \\
+\midrule \endhead \bottomrule \endfoot
+\lean{D\_difference\_set} &
+  $D=\{1,2,4\}$ is the unique $(7,3,1)$ planar difference set in $\mathbb{Z}/7$ &
+  \lean{OctonionShadowInterface.lean} & Zero sorry (\CatAL) \\
+\lean{fanoLines\_are\_D\_translates} &
+  The seven translates of $D$ are the seven lines of the Fano plane &
+  \lean{OctonionShadowInterface.lean} & Zero sorry (\CatAL) \\
+\lean{pencil\_card} &
+  Exactly $|D|=3$ lines pass through every point (pencil = $N_c=3$) &
+  \lean{OctonionShadowInterface.lean} & Zero sorry (\CatAL) \\
+\lean{hurwitz\_presentation\_order\_168} &
+  $|\mathrm{PSL}(2,7)|=168$ certified by 168-coset Todd--Coxeter enumeration &
+  \lean{HurwitzCosetCertificate.lean} & Zero sorry (\CatAL) \\
+\lean{Nc\_factorization} &
+  $N_c=3$ from the pencil count of the $(7,3,1)$ design via
+  $F_{21}\hookrightarrow G_2$ and $\mathrm{Stab}_{G_2}(\mathrm{apex})=\mathrm{SU}(3)$ &
+  \lean{OctonionShadowInterface.lean} & Zero sorry (\CatAL) \\
+\lean{weights\_card\_from\_pencil} &
+  The weight set cardinality equals the pencil count, identifying the color charge
+  sector with the Fano geometry &
+  \lean{OctonionShadowInterface.lean} & Zero sorry (\CatAL) \\
+\lean{derivation\_algebra\_is\_g2\_certificate} &
+  $\mathrm{der}(\mathbb{O})=\mathfrak{g}_2$ (dimension~14 exact) from first-principles
+  bracket closure and Killing-form certificate &
+  \lean{G2StabilizerCertificate.lean} & Zero sorry (\CatAL) \\
+\lean{apex\_stabilizer\_is\_su3\_certificate} &
+  $\mathrm{Stab}_{G_2}(\mathrm{apex})=\mathfrak{su}(3)$ (dimension~8 exact) &
+  \lean{G2StabilizerCertificate.lean} & Zero sorry (\CatAL) \\
+\lean{G6\_rigidity\_conditional} &
+  UGP's flavor package $(\mu_3,U,V_4,A_4)$ is equivariantly isomorphic to
+  the $\mathrm{Spin}(8)$ triality package; $\mathrm{gen}_1\leftrightarrow V$ from
+  Eisenstein norm uniqueness $b_{\mathrm{gen}_1}=73=\mathcal{N}(9+\omega)$ &
+  \lean{TrialityInterface.lean} & Zero sorry (\CatAL) \\
+\lean{seesaw\_triality\_pinning\_bundle} &
+  Right-handed seed ordering $b_{R,1}<b_{R,2}<b_{R,3}$ pins mass eigenstates
+  $\nu_k$ to generations $k$ and predicts normal mass ordering &
+  \lean{TrialityInterface.lean} & Zero sorry (\CatAL) \\
+\end{longtable}
+\endgroup
+{\footnotesize
+\textit{Note.}  P55 (\emph{The Octonionic Shadow of GF(7)}) formalizes
+the division-algebra bridge in eleven zero-sorry Lean~4 modules (174 theorems
+total, all in \texttt{ugp-lean}).  Key physical-quantity predictions corroborated
+by P55 via the octonionic route: $N_c=3$ (\CatAL, independent second derivation);
+the SM charge spectrum; $N_{\mathrm{gen}}=3$ from triality (\CatAL); normal
+neutrino ordering (\CatAL); Koide phase $2/9+7.4\times10^{-6}$ (\CatA).
+These quantities were first derived in P48 from GTE arithmetic; P55 supplies
+a structurally independent confirmation.}
+
+% ─── Summary Counts ────────────────────────────────────────────────────────
+\subsection{Summary: Quantity and Axiom Counts}
+\label{sec:mi-summary-counts}
+
+\begingroup\footnotesize\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}P{0.70\linewidth}P{0.20\linewidth}@{}}
+\caption{Grand total count summary for the UGP Physics corpus.}
+\label{tab:mi-summary}\\
+\toprule
+\textbf{Category} & \textbf{Count} \\
+\midrule
+\endfirsthead
+\midrule
+\textbf{Category} & \textbf{Count} \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+Structural/arithmetic inputs (derived from axioms) & \textbf{16} \\
+External measured inputs (from experiment) & \textbf{5} \\
+Calibrated parameters (Cat~B groups) & \textbf{3 groups ($\sim\!18$ scalars)} \\
+\textbf{Total ``inputs''} & \textbf{25--35} \\
+\midrule
+UGP core axioms (A1--A3) & \textbf{3} \\
+PSC Layer~I axioms (incl.\ 1 proved: AC) & \textbf{5} \\
+PSC Layer~II conditions (incl.\ 1 proved: PI) & \textbf{2} \\
+GTE construction principles (all proved) & \textbf{6} \\
+$[D]$-constraints (3 of 5 proved) & \textbf{5} \\
+SRRG axioms (3 proved, 5 open) & \textbf{8} \\
+Cook bridge axioms (1 discharged, 6 open) & \textbf{7} \\
+GTE universality bridge axioms (all open) & \textbf{8} \\
+P44 architecture restrictions (2 proved, 1 open: AR3) & \textbf{3} \\
+Analytic number theory axioms (not in Cat~A closure) & \textbf{2} \\
+\textbf{Total axioms / principles cataloged} & \textbf{49} \\
+\textbf{Open (truly assumed) axioms} & $\approx\mathbf{28}$--$\mathbf{31}$ \\
+\textbf{Proved theorems (previously listed as axioms)} & $\approx\mathbf{17}$--$\mathbf{20}$ \\
+\midrule
+Physical quantities (P00--P55) & $\approx\mathbf{280}$ \\
+\CatAL\ (Lean-certified) quantities & $\approx\mathbf{163}$ \\
+Discrepancies documented and resolved & \textbf{10} \\
+New \CatAL{} certifications (Appendix A.13) & \textbf{29} \\
+New \CatAL{} certifications (Appendix A.15, P55) & \textbf{174 theorems, 11 modules} \\
+\end{longtable}
+\endgroup

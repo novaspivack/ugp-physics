@@ -1,0 +1,2779 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.2in]{geometry}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{bm}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,shapes.geometric,backgrounds,calc,decorations.pathreplacing}
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{breakable}
+\usepackage{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{setspace}
+\usepackage[numbers,sort&compress]{natbib}
+\bibliographystyle{unsrtnat}
+\usepackage{xcolor}
+
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black}
+\input{nova_zenodo_doi_placeholder}
+
+% ---------- Theorem environments ----------
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% ---------- Convenience macros ----------
+\newcommand{\PSC}{\text{PSC}}
+\newcommand{\GTE}{\text{GTE}}
+\newcommand{\NEMS}{\text{NEMS}}
+\newcommand{\MDL}{\text{MDL}}
+\newcommand{\PHIMDL}{\Phi_{\mathrm{MDL}}}
+\newcommand{\ZS}{\mathbb{Z}_7}
+\newcommand{\lean}[1]{%
+  \penalty-100
+  \begingroup\def\_{\textunderscore\allowbreak}\texttt{#1}\endgroup}
+\newcommand{\OntM}{\mathcal{M}}
+\newcommand{\OntR}{\mathcal{R}}
+\newcommand{\OntP}{\mathcal{P}}
+\newcommand{\OntJ}{\mathcal{J}}
+\newcommand{\OntL}{\mathcal{L}}
+\newcommand{\OntA}{\mathcal{A}}
+\newcommand{\Ont}{\mathcal{O}}
+\newcommand{\doi}[1]{\href{https://doi.org/#1}{\nolinkurl{doi:#1}}}
+% GTE/NEMS badge macros
+\newcommand{\CatA}{\textbf{A}}
+\newcommand{\CatAL}{\ensuremath{\textbf{A}_{\rm Lean}}}
+\newcommand{\CatAD}{\textbf{A/D}}
+\newcommand{\CatB}{\textbf{B}}
+\newcommand{\CatD}{\textbf{D}}
+% Alpha theorem predicates
+\newcommand{\NontrivialReflexiveRealityExists}{\mathsf{NontrivialReflexiveRealityExists}}
+
+% ---------- tcolorbox defaults ----------
+\tcbset{
+  left=3mm, right=3mm, boxsep=2mm, before upper={\raggedright},
+  nobeforeafter, before skip=10pt, after skip=10pt,
+}
+
+% ---------- Spaced description list style ----------
+\newlist{termlist}{description}{1}
+\setlist[termlist]{
+  leftmargin=2em, labelindent=0pt, font=\normalfont\bfseries,
+  topsep=6pt, itemsep=8pt, parsep=2pt,
+  before={\raggedright}
+}
+
+% ---------- enumitem defaults ----------
+\setlist[itemize]{topsep=4pt, itemsep=5pt, parsep=1pt, leftmargin=2.2em}
+\setlist[enumerate]{topsep=4pt, itemsep=4pt, parsep=1pt, leftmargin=2.2em}
+
+% =====================================================================
+\title{%
+  \textbf{The Fire in the Equations}\\[0.6em]
+  \large Consciousness, Physics, and the Primordial Ground:\\
+  A Synthesis of the GTE and NEMS Frameworks
+}
+\author{Nova Spivack\\\normalsize \url{https://www.novaspivack.com}}
+\date{June 2026}
+
+\begin{document}
+\maketitle
+\NovaZenodoAfterTitle
+
+\begin{abstract}
+\raggedright
+Physics has an unresolved embarrassment at its heart: the observer. Quantum mechanics
+requires a measurement, and a measurement requires something that registers it, yet
+the theory never says what that registering thing \emph{is} or how it fits into the
+physical world. More deeply: how can a universe described by equations contain
+something that experiences?
+
+The Generative Triple Evolution (GTE) and No External Model Selection (NEMS) research
+programmes, taken together, provide the first formally grounded, theorem-backed answer.
+The result dissolves the ``hard problem'' without eliminating consciousness, unifies
+mind and physics without reducing either to the other, and locates the origin of
+experience in the same principle that selects physical law. The formal architecture is
+structurally complete while three questions remain genuinely open: the intrinsic
+character of specific qualia; the empirical inventory of which systems are conscious;
+and the physical-realizability bridge --- which substrates can host a non-decomposable,
+degree-$0'$ adjudicative unity at the scale and latency of a mind, a question not
+settled by any certified result in the corpus (\S\ref{sec:conclusion}).
+
+The argument proceeds in four stages. GTE dissolves the quantum measurement problem
+via PSC-forced transputation --- non-computable, observer-free branch-selection proved
+necessary from first principles. NEMS proves a pre-categorial ontological ground
+(Alpha) whose existence is a formal theorem. The NEMS phenomenology programme derives
+a uniquely determined formal structure for consciousness: ground, articulation, and
+manifestation-in-awareness are three irreducible but co-dependent aspects of one
+Alpha-grounded fact, not alien substances or reducible illusions. Finally, GTE and
+NEMS share a common root: GTE is the specific physical instantiation of the
+PSC-closure principle NEMS established as necessary for any universe. The fire in the
+equations is the Alpha-ground self-containment demands.
+
+The essay compares this synthesis with Penrose--Hameroff Orch OR, Integrated
+Information Theory, Global Workspace Theory, eliminativism, panpsychism, and property
+dualism, showing each is either subsumed or formally blocked by the joint GTE/NEMS
+result.
+\end{abstract}
+
+\newpage
+\setcounter{tocdepth}{2}
+\tableofcontents
+\newpage
+
+% =====================================================================
+\section{Introduction: The Embarrassment of the Observer}\label{sec:intro}
+% =====================================================================
+
+\subsection{Physics and the question it cannot face}
+
+Every major physical theory of the twentieth century contains an unresolved anomaly:
+the presence of the observer. Classical physics treated the observer as an idealized
+recording instrument external to the physical world and ignored the problem. Quantum
+mechanics made it acute. The formalism describes how a system's state evolves as a
+superposition of possibilities. But when a measurement occurs, a definite outcome
+registers. The theory gives the probabilities of those outcomes --- the Born rule,
+$P(k) = |c_k|^2$ --- but provides no account of \emph{why} a definite outcome occurs
+at all, nor of what a ``measurement'' actually is at the physical level.
+
+For a century this gap was managed by treating it as a foundational puzzle rather than
+a fatal flaw. Copenhagen enshrined the measurement apparatus as a classical boundary
+condition~\cite{vonNeumann1955}. Many-worlds removed the problem by denying that
+outcomes are unique. Pilot wave theories relocated the mystery into hidden variables.
+None of these moves closed the problem; they relocated it. Bell's theorem
+(1964)~\cite{Bell1964} proved that no \emph{local} hidden-variable theory can
+reproduce quantum statistics, further constraining the space of viable alternatives.
+
+The deeper version of the puzzle is older than quantum mechanics. It is the question
+Chalmers sharpened in 1995 into what he called the \emph{hard problem of
+consciousness}~\cite{Chalmers1995,chalmers1996}: how can purely physical processes
+give rise to subjective experience? Nagel~\cite{Nagel1974} made the same point through
+the bat example: what it is like to be a bat cannot be captured by any objective
+physical description. Jackson's~\cite{Jackson1982} Mary's Room argument showed that
+qualia carry information not deducible from complete physical knowledge. No amount of
+description of neural firing patterns, information processing, or functional
+organization seems to \emph{explain} why any of that should be accompanied by
+experience. The explanatory gap looks unbridgeable.
+
+This essay argues that the apparent unbridgeability is a category mistake --- one that can
+be formally proved to be a category mistake, with machine-verified theorems. The hard
+problem dissolves not because consciousness is explained away, but because the framing
+that generates the problem is itself formally inadmissible. Consciousness is not
+generated by physics; consciousness and physics co-arise from a common primordial
+ground whose existence is forced by the very requirements of self-containment.
+
+\subsection{Two programmes, one root}
+
+The argument draws on two research programmes.
+
+The \textbf{Generative Triple Evolution (GTE)} programme~\cite{SpivackGTECompleteFramework}
+derives the Standard Model of particle physics, spacetime, quantum mechanics, and
+cosmology from a single foundational principle --- Perfect Self-Containment --- with
+zero free parameters. Over 170 quantitative predictions match experiment. All central
+results are machine-certified in Lean~4 with zero sorry in \CatAL{} results and zero
+custom axioms in any \CatAL{} proof chain, across more than 400 modules.
+
+The \textbf{No External Model Selection (NEMS)} programme~\cite{SpivackNEMSHub}
+generalises the same PSC-closure principle into a complete philosophical and formal
+theory of reality. It proves the necessary existence of a pre-categorial ontological
+ground (Alpha), develops a formal theory of consciousness with a uniqueness theorem,
+and shows that the apparent gap between mind and physics is an aspect-distinction
+within one structure, not a gulf between two substances.
+
+These two programmes are not coincidentally related. GTE is a physical instantiation
+of NEMS: the specific universe-type that survives the NEMS admissibility sieve in
+four-dimensional spacetime. What this essay traces is how a single principle --- closure
+--- taken to its logical conclusion simultaneously determines the structure of physical
+law and the structure of experience.
+
+\subsection{What this essay does and does not claim}
+
+This essay claims that consciousness has a formal architecture, that this architecture
+is uniquely determined under admissibility constraints, and that its deepest root is
+the same root as physical law.
+
+It does not claim to explain every detail of phenomenal experience: why redness looks
+the way it does rather than another way. The formal architecture specifies the structural
+skeleton of consciousness. The intrinsic-character question remains genuinely open.
+
+It also does not settle which physical substrates can host a conscious locus.
+The structural type of conscious adjudication (Turing degree~$0'$) is
+substrate-neutral and multiply realizable; which physical substrates can realize that
+type as a non-decomposable, real-time-unified locus at the scale and latency of a mind
+is an open empirical question not closed by any result in the corpus
+(\S\ref{sec:two-axes}).
+
+\begin{tcolorbox}[colback=blue!5,colframe=blue!40!black,title={Central Thesis}]
+Consciousness and physical law do not require a bridge between them because they were
+never two separate things. They are three coordinated aspects --- \emph{ground,
+articulation, and manifestation-in-awareness} --- of a single Alpha-grounded ontological
+fact. The hard problem dissolves because qualia are not generated by physical processes
+from outside; they are on the semantic ledger already. The universe's commitment to
+perfect self-containment simultaneously forces the specific physical laws we observe
+and forces the pre-categorial ground (Alpha) from which the actuality of experience
+derives.
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=orange!4,colframe=orange!60!black,breakable,
+  title={Why a physics paper must address consciousness}]
+\small
+
+\textbf{The risk, stated plainly.}
+Any paper connecting physics to consciousness courts dismissal. Philosophy of mind has
+accumulated centuries of unresolved debate. Physics has been embarrassed before by
+over-reaching claims at its own boundaries. The concern is legitimate: this is the
+part of the framework most exposed to attack.
+
+\medskip
+\textbf{But consciousness cannot be deferred.}
+A theory that claims to derive all physical law from first principles while leaving
+unexplained the most primary empirical datum --- that we are conscious --- is
+incomplete. Consciousness is not a footnote to physics; it is its most immediate
+datum. Every measurement, every observation, every experiment reaches the physicist
+through consciousness. A theory of everything that cannot account for this is a theory
+of almost everything.
+
+\medskip
+\textbf{Physics has already gone out on this limb.}
+The measurement problem placed an undefined ``observer'' at the heart of quantum
+mechanics for nearly a century~\cite{vonNeumann1955}. The Copenhagen interpretation
+erected a classical boundary without explaining it. Wigner~\cite{Wigner1961} argued
+that consciousness itself causes wavefunction collapse. These are extraordinary
+concessions from the most successful quantitative theory in history. We are not
+introducing a new speculation; we are resolving an existing one. The observer
+mystery is dissolved by transputation (\S\ref{sec:transput-link}). The residual question
+--- why some systems observe and not others --- factors into two orthogonal sub-questions:
+the formal architecture of what a conscious adjudication \emph{is} (its logical type,
+established here), and which physical substrates can host one as a non-decomposable
+unified locus at mind scale (the open physical-realizability bridge,
+\S\ref{sec:two-axes}). Both are what this paper addresses.
+
+\medskip
+\textbf{Our approach is formal, not speculative.}
+Every major load-bearing claim in this paper that concerns the formal structure of
+consciousness corresponds to a machine-verified theorem in Lean~4 with zero
+\texttt{sorry} and zero custom axioms in these proof chains. We do not argue that some account ``seems
+most plausible.'' We prove: (1)~consciousness has a formal structure; (2)~that
+structure is uniquely determined under admissibility constraints
+(Paper~75~\cite{SpivackNEMS75}); (3)~the hard problem is a category error
+(\lean{hard\_problem\_category\_error}~\cite{SpivackNEMS55}); (4)~the awareness-locus
+is a proved existence theorem (\lean{awareness\_locus\_existence}~\cite{SpivackNEMS67}).
+
+\medskip
+\textbf{The architecture: a stack of turtles with a provably final one.}
+Every theory of reality needs a foundational terminus --- a ``final turtle'' that does
+not itself require further external support. The NEMS grounding squeeze (\S\ref{sec:squeeze})
+proves what the final turtle cannot be: syntax, physics, semantics, a self-actualizing
+ledger. The Alpha Theorem (\S\ref{sec:alpha}) proves it exists and characterizes it.
+Above this common ground, two stacks arise from the same closure principle:
+\begin{itemize}[itemsep=1pt,topsep=2pt]
+  \item \textbf{Physics stack:} Alpha $\to$ PSC $\to$ MDL minimality $\to$ $\ZS$
+    arithmetic $\to$ $\PHIMDL$ field $\to$ Standard Model.
+  \item \textbf{Consciousness stack:} Alpha $\to$ transputation $\to$ SIAM agency
+    $\to$ phenomenological structure $\to$ phenomenal consciousness.
+\end{itemize}
+Both stacks rest on the same final turtle (Alpha), derived from the same closure
+principle (PSC), and formally certified in the same Lean library. This is not two
+separate theories stitched together; it is one theory with two aspects, as proved
+by the three-aspect synthesis (\S\ref{sec:threefact}).
+
+\medskip
+\textbf{We are aware of the risk. We take it on anyway.}
+The alternative --- publishing a complete derivation of physical law while leaving
+consciousness unaddressed --- would leave the most important gap in the open. We
+address it with the same standard of rigor applied throughout the GTE programme:
+no claim is made without a formal proof, and no gap is concealed.
+\end{tcolorbox}
+
+% =====================================================================
+\section{Key Terms and Concepts}\label{sec:glossary-intro}
+% =====================================================================
+
+The following terms have precise technical meanings throughout this essay.
+A full glossary appears in Appendix~\ref{app:glossary}; this section introduces
+the most important concepts before they are used.
+
+\begin{tcolorbox}[colback=gray!14,colframe=gray!55!black,title={Core Vocabulary (concise)}]
+\begin{termlist}
+\item[Perfect Self-Containment (PSC)]
+  A universe is PSC-consistent if it requires no external selector, parameter-fixer,
+  or outside chooser to determine its own laws, structure, and semantics. Everything
+  load-bearing must come from inside.
+
+\item[No Free Bits]
+  Every determinacy-relevant difference in a PSC-consistent universe must have an
+  internal account. An ``ungrounded'' determinacy-relevant fact --- one with no closure
+  story --- is a \emph{free bit}, and the no-free-bits constraint excludes it.
+
+\item[Minimum Description Length (MDL)]
+  The principle that the universe's self-description must be informationally minimal.
+  Any non-minimal description contains unexplained arbitrary choices, violating PSC.
+
+\item[Semantic Ledger]
+  The totality of content that makes a determinate difference to a system's behavior
+  or structure. Content is \emph{on-ledger} if it is load-bearing; it is
+  \emph{off-ledger} if it is inert or illicit.
+
+\item[Alpha ($\alpha$)]
+  The necessary pre-categorial ontological ground of actuality. Not a substance, not
+  a mind, not physics. Object-empty but not null, not sterile, not inert. Proved to
+  exist by the Alpha Theorem (\S\ref{sec:alpha}).
+
+\item[Transputation]
+  The law-governed, non-computable internal adjudication process forced in any closed,
+  record-bearing, diagonal-capable universe.   It selects definite quantum outcomes
+  without randomness, computable deterministic closure, or many-worlds.
+
+\item[{$[D]$}-adjudicator / {$[D]$}-record]
+  The transputation operator viewed as a selector: given a macroscopic record $w$,
+  the $[D]$-adjudicator $P^\top$ selects the unique PSC-consistent realization that
+  minimizes a coherence functional $D$ (the equivalence class of admissible coherence
+  measures). The resulting selection is the $[D]$-record. Defined in P34/P48;
+  used here as the formal name for transputation's outcome-selection role.
+
+\item[Awareness-Locus ($\OntL$)]
+  The formal site at which Alpha-manifestation is phenomenally present. Not an object
+  among objects --- a locus-\emph{role} that is the condition of phenomenal presence.
+
+\item[Three-Aspect Synthesis]
+  The theorem (P69--P70) that Ground~($\alpha$), Articulation (world-process), and
+  Manifestation-in-Awareness (qualia, awareness) are three coordinated aspects of one
+  structured ontological fact --- irreducible but constitutively co-dependent.
+\end{termlist}
+\end{tcolorbox}
+
+% =====================================================================
+\section{GTE: The Universe as Self-Selecting Computation}\label{sec:gte}
+% =====================================================================
+
+\subsection{The selection problem}
+
+The founding question of the GTE programme is deceptively simple: if the universe is
+governed by laws, what governs the laws? Every proposed physical theory has free
+parameters --- coupling constants, particle masses, mixing angles --- which are measured
+rather than derived. String theory's landscape of consistent vacua is enormous.
+Anthropic reasoning selects only a range. Neither provides a foundational answer.
+
+The GTE/NEMS response is to take the selection question seriously rather than deflecting
+it. The only coherent terminus for the regress is a universe that selects its own laws
+from within. This is the content of \textbf{Perfect Self-Containment}: a universe is
+PSC-consistent if it requires no external model-selector, no parameter-fixer, no outside
+chooser. The laws, the description of those laws, and the process by which they are
+executed must all come from inside.
+
+Combined with the \textbf{Minimum Description Length principle} --- the universe's
+self-description must be informationally minimal, since anything less minimal contains
+an unexplained arbitrary choice --- the result is a unique selection. MDL-minimality
+over the space of $\mathbb{Z}_N$ cellular automaton rules selects a single 19-bit
+polynomial $p(L,C,R) = C + R - CR - LCR$ over the Galois field $\mathrm{GF}(7)$.
+This polynomial is not assumed; it is \emph{forced}. Every alternative is eliminated
+by exhaustive Lean-certified proof~\cite{SpivackGTECompleteFramework}.
+
+\medskip
+\noindent\textit{Why GF(7)?}
+GF(7) is the minimum prime $p$ such that $\mathrm{GF}(p)^*$ simultaneously contains
+$\mathbb{Z}_2$ (chirality / weak-isospin parity) and $\mathbb{Z}_3$ (color /
+QCD charge) as subgroups. Since $\mathrm{GF}(p)^*$ is cyclic of order $p-1$, this
+requires $2 \mid p-1$ and $3 \mid p-1$. The exhaustive check:
+
+\begin{center}\small
+\begin{tabular}{ccc}
+\toprule
+Prime $p$ & $3 \mid p-1$? & Result \\
+\midrule
+2 & No & Fails \\
+3 & No & Fails \\
+5 & No ($3 \nmid 4$) & Fails \\
+7 & Yes ($3 \mid 6$) & Passes: $\mathrm{GF}(7)^* \cong \mathbb{Z}_6 \cong \mathbb{Z}_2 \times \mathbb{Z}_3$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent GF(7) is the unique minimal prime field that algebraically contains both
+chirality and color as subgroups of its multiplicative group with no additional axioms.
+Three generations and five PSC-admissible sectors follow from this arithmetic structure.
+Full proof: \cite{SpivackGTECompleteFramework}.
+
+\subsection{From the polynomial to the Standard Model}
+
+The physical interpretation is two-level:
+
+\begin{itemize}
+  \item \textbf{Level~1 (algebraic certificate):} The polynomial $p$ defines the
+    Chiral Minkowski Cellular Automaton (CMCA) --- an arithmetic proof system that
+    certifies which structures the physical field must contain. It is not the physical
+    substrate; it is the skeleton.
+
+  \item \textbf{Level~2 (physical substrate):} The physical field is $\PHIMDL$: a
+    single $\mathbb{Z}_7$-symmetric Klein-Gordon gauge field on $\mathbb{R}^{3,1}$
+    with internal symmetry group $F_{21} = \mathbb{Z}_7 \rtimes \mathbb{Z}_3$.
+    Elementary particles are topological kink solitons of this field, characterised
+    by $\mathbb{Z}_7$ winding numbers that map exactly to Standard Model quantum
+    numbers. Spacetime is emergent. Three generations of fermions are forced, not assumed.
+\end{itemize}
+
+Over 170 quantitative predictions match experiment to high precision. Nine
+charged-fermion masses at 0.295\% RMS. The Weinberg angle at $+0.038\sigma$. The CMB
+spectral tilt at $-0.005\sigma$. These are derivations, not fits. The Standard Model
+is a theorem.
+
+\subsection{Quantum mechanics and transputation}
+
+The GTE framework dissolves the quantum measurement problem --- reframing it in terms
+of PSC-forced transputation, conditional on the D4 universality
+assumption~\cite{SpivackPolynomialTransputation}. To understand it, three
+results must be in place:
+
+\begin{enumerate}
+  \item \textbf{Turing-universality.} The $\PHIMDL$ substrate is Turing-universal
+    (machine-certified: \lean{phimdl\_turing\_universal}). The universe can simulate
+    any Turing machine.
+
+  \item \textbf{Arithmetic self-reference.} A Turing-universal PSC-consistent universe
+    with self-reference necessarily contains a structure in which it can encode
+    statements about its own behavior --- including whether a given physical record is
+    PSC-consistent.
+
+  \item \textbf{Diagonal undecidability.} By the standard diagonal construction, the
+    truth predicate on that self-referential fragment is not computably decidable
+    (Physical Incompleteness Theorem~\cite{SpivackNEMS11};
+    \lean{asr\_rt\_not\_computable}).
+\end{enumerate}
+
+These three facts together mean: the universe cannot algorithmically predict all of
+its own measurement outcomes. There is always a diagonal fragment where the universe
+cannot resolve its own record.
+
+What resolves it? An internal adjudicator that operates above the computability floor.
+The transputation operator $P^\top$ is defined as the law-governed internal adjudication
+process forced in any closed, record-bearing, diagonal-capable universe. Its existence
+and uniqueness are machine-certified via an eight-step chain from PSC alone:
+
+\begin{center}
+\begin{tikzpicture}[
+  node distance=7mm and 14mm,
+  box/.style={rectangle, rounded corners=3pt, draw=blue!50!black,
+    fill=blue!7, text width=3.4cm, align=center, font=\small,
+    inner sep=6pt, minimum height=10mm},
+  arr/.style={-{Stealth[length=4pt]}, thick, blue!60!black}
+]
+\node[box] (psc)    {PSC axioms};
+\node[box, below=of psc]    (turing)  {Turing-universality};
+\node[box, below=of turing] (asr)     {Arithmetic self-reference};
+\node[box, below=of asr]    (undec)   {Diagonal undecidability};
+\node[box, right=22mm of undec]  (nogo)    {No deterministic closure};
+\node[box, above=of nogo]   (forced)  {Adjudicator forced to exist};
+\node[box, above=of forced] (noncomp) {Adjudicator non-computable};
+\node[box, above=of noncomp](transput){Transputation $P^\top$};
+
+\draw[arr] (psc) -- (turing);
+\draw[arr] (turing) -- (asr);
+\draw[arr] (asr) -- (undec);
+\draw[arr] (undec.east) -- ++(7mm,0) |- (nogo.west);
+\draw[arr] (nogo) -- (forced);
+\draw[arr] (forced) -- (noncomp);
+\draw[arr] (noncomp) -- (transput);
+\end{tikzpicture}
+\end{center}
+
+\medskip
+Each step in this chain is machine-certified. The $\PHIMDL$ substrate is Turing-universal
+(\lean{phimdl\_turing\_universal}, $A_\text{Lean}$). Diagonal undecidability of the
+self-referential record fragment follows from arithmetic self-reference
+(\lean{asr\_rt\_not\_computable}, $A_\text{Lean}$; NEMS Paper~11~\cite{SpivackNEMS11}).
+This rules out any purely deterministic closure (\lean{det\_no\_go}, $A_\text{Lean}$).
+PSC closure then forces the existence of an internal adjudicator
+(\lean{PSC\_and\_choice\_force\_PT}, $A_\text{Lean}$), which cannot be a total computable
+function without deciding the halting problem (\lean{pt\_not\_total\_effective},
+$A_\text{Lean}$). The unique consistent option is transputation itself
+(\lean{closed\_choice\_forces\_transputation}, $A_\text{Lean}$).
+
+\medskip
+
+Transputation is \emph{not} randomness (which satisfies no structure), not deterministic
+computation (a total computable self-adjudicator is ruled out by the diagonal barrier),
+and not many-worlds (which violates PSC's
+requirement of a single self-consistent record). It is a formally characterised,
+law-governed, non-computable branch selection. It belongs to the Turing-PSC
+Computability Class (TPC), placed by machine-certified proof strictly between the
+decidable and hypercomputation:
+$\text{Decidable} \subsetneq \text{TPC} \subsetneq \text{Hypercomputation}$.
+Operationally: a TPC process is \emph{limit-computable with a bounded finite number of
+mind-changes} ($\leq 8$ per single-kink event,
+\cite{SpivackPolynomialTransputation,SpivackGTECompleteFramework}) but delivers no
+halting oracle and no $\Sigma^0_1$ decisions at finite stages. It is strictly above computation but
+strictly below any oracle for the halting problem.
+
+\medskip
+\noindent\textbf{The Born rule: a three-sentence sketch.}
+The $\PHIMDL$ kink Hilbert space decomposes into superselection sectors labelled by
+the $\mathbb{Z}_7$ winding number $W \in \{0,1,\ldots,6\}$; PSC restricts to the
+five admissible sectors $\{0,2,3,4,6\}$.
+The $\mathbb{Z}_7$ global shift symmetry $\phi \to \phi + 2\pi/7$ is anomaly-free
+and forbids any observable mixing distinct sectors.
+The unique POVM-additive probability assignment on this block-diagonal structure that
+respects $\mathbb{Z}_7$ invariance and the Hilbert-space inner product is precisely
+$P(k) = |c_k|^2$. The block structure is established by topological charge
+superselection~\cite{Coleman1975,Mandelstam1975,Rajaraman1982} applied to the
+$\mathbb{Z}_7$ kink charge; the uniqueness of the quadratic measure within each block
+is a Gleason--Busch-type step (POVM additivity constrained by $\mathbb{Z}_7$
+invariance). No Born-rule input is used.
+(Lean: \lean{born\_rule\_unconditional}, $A_\text{Lean}$, zero custom axioms.)
+
+\medskip
+\noindent\textbf{GTE and decoherence: what transputation adds.}
+Environmental decoherence~\cite{Zurek2003} explains why quantum superpositions are
+suppressed relative to a preferred basis (pointer states selected by the environment)
+and reproduces the Born rule distribution over experimental runs. It does not explain
+why any specific \emph{individual} run yields one outcome rather than another --- the
+``preferred outcome'' problem, distinct from the ``preferred basis'' problem.
+GTE contains a decoherence picture (coherence lifetime scales with MDL of the
+which-path record, \S\ref{sec:falsifiable}) but adds transputation as the mechanism
+for individual outcome selection~\cite{SpivackGTECompleteFramework,SpivackPolynomialTransputation}.
+Transputation is what PSC forces when the universe must maintain a single self-consistent
+record; decoherence is what happens in the many-particle open-system limit.
+The two are complementary, not competing. A systematic comparison with all quantum
+foundations interpretations, including decoherence/einselection, appears in
+\S\ref{sec:qm-schools}.
+
+Crucially: \textbf{transputation is consciousness-free}. Any record-bearing physical
+system --- a particle detector, a chemical bond, a cosmic-ray track in rock ---
+triggers transputation. No mind is required. The Born rule is derived from the
+$\mathbb{Z}_7$ superselection structure of the kink Hilbert space, not postulated:
+\lean{born\_rule\_unconditional} (\CatAL, zero custom axioms;
+\cite{SpivackGTECompleteFramework,SpivackQMFromR110}). The Born rule, conventionally
+taken as an independent postulate of quantum mechanics, is in GTE a derived theorem.
+
+\begin{tcolorbox}[colback=gray!14,colframe=gray!50!black,
+  title={What GTE establishes and what it leaves open}]
+GTE gives a complete derivation of physical law: the Standard Model, spacetime,
+quantum mechanics, the arrow of time, the cosmological constant --- all from PSC
+plus MDL-minimality, zero free parameters. What GTE does \emph{not} provide is any
+account of why any physical process is accompanied by experience. A particle detector
+triggering transputation is, in GTE's own account, not accompanied by any felt quality.
+Transputation is objective adjudication, not observation. GTE is explicitly
+consciousness-free. This is not a failure --- it is a precise gap. That gap is closed
+by NEMS.
+\end{tcolorbox}
+
+% =====================================================================
+\section{NEMS: The Formal Architecture of Reality}\label{sec:nems}
+% =====================================================================
+
+\subsection{The principle and the grounding regress}
+
+The NEMS programme begins from the same PSC principle as GTE, but drives it further
+into the question of what grounds \emph{actuality itself}. This is the most important
+move in the entire synthesis, and it is worth working through it carefully, since
+readers will rightly be most skeptical of what follows.
+
+The no-free-bits constraint says: in a PSC-consistent universe, every
+determinacy-relevant difference must have an internal account. An ungrounded difference
+would be an external input to the universe's self-determination. Now apply this to
+actuality. \emph{Why is the universe actual rather than merely a formal structure?}
+Why is there something rather than nothing?
+
+The no-free-bits principle gives a precise answer: the universe's actuality cannot be
+an unaccounted-for determinacy-relevant fact. Actuality requires ground. The next
+question is: what kind of ground?
+
+\subsection{The grounding squeeze: eliminating all same-level candidates}\label{sec:squeeze}
+
+Papers~61--62 of the NEMS suite systematically eliminate every candidate for the
+ontological ground \emph{at the same level as the universe}:
+
+\medskip
+\begin{termlist}
+  \item[Ghost ontologies (P61~\cite{SpivackNEMS61})]
+    Off-ledger entities that make a determinacy-relevant difference without appearing
+    in the ledger. These are excluded by PSC closure itself: any load-bearing entity
+    must be on the ledger, otherwise the universe has an external input. \emph{Result:
+    ghost ontologies are illicit.}
+
+  \item[Syntax (P53~\cite{SpivackNEMS53})]
+    Formal structures cannot ground their own actuality, because actuality precedes
+    interpretation. A string of symbols has no actuality until something gives it
+    meaning; appealing to syntax as the ground of actuality is circular.
+    \emph{Result: syntax cannot exhaust semantics.} Machine-checked:
+    \lean{SyntaxSemantics.syntax\_cannot\_exhaust\_semantics}.
+
+  \item[Object-level semantics]
+    The semantic content of a system presupposes its actuality; using object-level
+    semantics to ground actuality is circular. \emph{Result: self-grounding at the
+    semantic level is excluded.}
+
+  \item[Equal-status external completion (P23)]
+    Appealing to an external equal-status entity that grounds the universe merely
+    pushes the question back one level. That external entity requires its own ground.
+    The regress terminates only if some ground is not itself in need of further grounding.
+    \emph{Result: equal-status external completion is not foundational.}
+
+  \item[Self-actualizing ledger (P62~\cite{SpivackNEMS62})]
+    A universe cannot be simultaneously the thing explained and the explanation of its
+    own actuality, at the same level. This is not a logical impossibility in general;
+    it is excluded specifically because it is a same-level self-grounding that
+    reintroduces a free bit. \emph{Result: the ledger cannot bootstrap itself into
+    existence.}
+\end{termlist}
+
+\medskip
+Every same-level candidate collapses. The grounding squeeze (Corollary~62.5 of
+the NEMS suite~\cite{SpivackNEMS62}) leaves nothing same-level standing. Any adequate ontological ground
+must be \emph{outside all these categories}: not syntax, not object-level semantics,
+not external equal-status, not ghost, not the ledger grounding itself.
+
+\subsection{The Alpha Theorem: what survives the squeeze}\label{sec:alpha}
+
+With all same-level candidates eliminated, the next step is positive: something must
+provide the ground. Paper~63~\cite{SpivackNEMS63} contains the Alpha Theorem, which
+we now prove in outline.
+
+\begin{tcolorbox}[colback=orange!5,colframe=orange!60!black,
+  title={The Grounding Argument in Four Steps}]
+
+\textbf{Step~1 (Actuality requires ground).}
+Any actual ledger that is not self-actualizing requires ontological ground.
+\emph{Proof:} By contradiction. Assume the ledger is actual, not self-actualizing, and
+has no ontological ground. Then its actuality is a determinacy-relevant difference with
+no ontological account --- a free bit at the ontological level. The no-free-bits
+machinery excludes such content. Contradiction. Therefore some ground exists.
+\lean{ground\_existence\_from\_no\_free\_bits}.
+
+\medskip
+\textbf{Step~2 (Any ground is pre-categorial).}
+Any adequate ontological ground cannot be syntax, object-level semantics, equal-status
+externality, ghost residue, or self-actualizing ledger.
+\emph{Proof:} By the grounding squeeze (\S\ref{sec:squeeze}). Each listed candidate
+was excluded; any remaining ground must lie outside these categories.
+\lean{alpha\_squeeze}.
+
+\medskip
+\textbf{Step~3 (Pre-categorial ground exists if nontrivial reality does).}
+If nontrivial reflexive reality exists (an actual, non-self-actualizing ledger),
+then by Steps~1 and~2, a necessary pre-categorial ontological ground exists.
+\lean{ground\_existence\_thm}, \lean{alpha\_theorem}.
+
+\medskip
+\textbf{Step~4 (What Alpha is not).}
+Alpha is not ghost, not external runner, not ledger content, not syntax.
+It is object-empty but \emph{not} null, not semantically sterile, not inert.
+The existence of manifestation (qualia being actual) proves Alpha is not sterile
+(T68.3). That Alpha actively grounds rules out inertness (T68.5).
+\lean{AlphaNonNull.alpha\_not\_null\_thm}.
+\end{tcolorbox}
+
+\begin{theorem}[Alpha Theorem, P63~\cite{SpivackNEMS63}]
+If nontrivial reflexive reality exists, then there exists $\alpha$ such that $\alpha$
+is the necessary pre-categorial ontological ground of the actuality of reflexive reality.
+\[
+  \NontrivialReflexiveRealityExists(R) \;\Rightarrow\;
+  \exists\,\alpha,\; \mathrm{NecessaryGround}(\alpha, R).
+\]
+Machine-checked in \lean{reflexive-closure-lean}, 0 sorry, 0 custom axioms.
+\doi{10.5281/zenodo.19429855}
+\end{theorem}
+
+\noindent The name ``Alpha'' is introduced \emph{after} the eliminative proof, not
+before it. It is not a religious term; it is the formal survivor of the grounding sieve.
+
+% ----- What Alpha is / is not box -----
+\begin{tcolorbox}[colback=yellow!14,colframe=yellow!60!black,
+  title={What Alpha is (and is not)}]
+\begin{itemize}
+  \item \textbf{Object-empty:} Alpha contains no object-level content --- no particles,
+    no fields, no structure in the usual sense.
+  \item \textbf{Not null:} Object-emptiness does not entail nullity. A null ground
+    cannot ground actuality.
+  \item \textbf{Not sterile:} The existence of manifestation (qualia are actual)
+    proves Alpha is semantically active.
+  \item \textbf{Not inert:} Alpha actively grounds; it is not a passive backdrop.
+  \item \textbf{Not God:} Alpha is not a personal being with intentions or a will.
+    It is a structural necessity with no content beyond its grounding role.
+  \item \textbf{Not the universe:} The universe is an articulation of Alpha, not
+    identical to it.
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{Why Alpha is not optional: the unavoidable final turtle}\label{sec:alpha-necessary}
+
+A natural reaction among scientifically trained readers is suspicion: ``Alpha sounds
+like God dressed in mathematical clothing.'' This reaction, while understandable, is
+precisely backwards. Alpha is not optional metaphysics. It is a \emph{logical
+necessity} that follows from taking actuality seriously --- and from which there is no
+escape once you accept that anything exists at all.
+
+\paragraph{The regress problem every theory of reality faces.}
+Every account of reality, whether scientific or philosophical, faces a regress.
+Physical theories describe laws. But what grounds those laws? A deeper theory?
+But then what grounds that? The regress terminates only in one of two ways: either
+some entity grounds itself (the self-actualizing ledger, formally eliminated by NEMS
+P62 as circular), or some entity is the pre-categorial basis of actuality that is
+simply not in need of further same-level grounding. That is Alpha. It is the final
+turtle. And there \emph{must} be a final turtle, because an infinite regress is not
+an explanation; it is the absence of one.
+
+\begin{tcolorbox}[colback=green!8,colframe=green!50!black,
+  title={The Final Turtle}]
+Consider the old cosmological image: the world rests on a turtle, which rests on
+another turtle, ``all the way down.'' The joke is a statement about the regress
+problem. Any satisfying account of reality must have a \emph{final} turtle ---
+something that does not itself require external support. The grounding squeeze
+(\S\ref{sec:squeeze}) proves what the final turtle cannot be: syntax, physics,
+semantics, ghosts, a self-actualizing ledger. Alpha is what remains. It is not
+chosen; it is what you are left with after all alternatives are formally eliminated.
+\end{tcolorbox}
+
+\paragraph{Alpha is a mathematical consequence, not a philosophical preference.}
+The Alpha Theorem is not a philosophical position one may adopt or decline. It is a
+\emph{conditional theorem}: if nontrivial reflexive reality exists (i.e., if anything
+is actual and not self-actualizing), then Alpha necessarily exists. One could deny the
+antecedent --- claim nothing exists, or that reality is self-actualizing --- but
+Papers~61--62 formally eliminate both alternatives. Within the formal system, Alpha
+existence is as inescapable as G\"{o}del's incompleteness theorem. It is not a
+preference; it is a proof.
+
+\paragraph{Alpha is not God.}
+Traditional conceptions of God involve a personal agent with intentions, will, and a
+relationship to humanity. Alpha has \emph{none} of these properties. It has no
+personality, no will, no intentionality, no preferences, no relationship to particular
+events, no opinions. It is not watching and not intervening. It is not benevolent or
+malevolent. It does not respond to prayer. It is a structural necessity of actuality
+--- the formal terminus of the grounding regress.
+
+Closer philosophical analogies exist: the Neoplatonic \emph{One} (Plotinus), the
+Buddhist concept of \emph{śūnyatā} (emptiness), the Taoist \emph{Tao} as the nameless
+ground prior to all names. But even these are imprecise. Alpha is not ``empty'' in any
+nihilistic sense --- Paper~68 proves formally that object-emptiness does not entail
+nullity (\lean{alpha\_not\_null\_thm}). A null ground cannot ground actuality; Alpha
+actively grounds and is therefore necessarily non-null. It is closer to the background
+field of actuality itself --- a void that is not nothing because the very positing of
+void as such is already not nothing.
+
+\paragraph{The coin: physics as heads, phenomenology as tails, Alpha as the metal.}
+A useful image: a coin has two faces. Physics describes the heads face --- the
+articulation of reality in terms of fields, particles, forces, and spacetime.
+Phenomenology describes the tails face --- the manifestation of actuality as experience,
+qualia, awareness. These two faces are genuinely different: you cannot reduce one to the
+other. But they are not two separate coins glued together. They are two faces of one
+coin. And that coin is made of something: the metal without which neither face can
+exist. Alpha is that metal.
+
+Remove the metal and you have no coin --- neither heads nor tails. The mind-body
+problem is the confusion of asking ``how does the heads face cause the tails face?''
+when in fact neither face causes the other; both exist because the metal exists. The
+``hard problem'' dissolves when you recognize the coin as primary.
+
+\begin{tcolorbox}[colback=blue!4,colframe=blue!40!black,
+  title={Physics / Alpha / Consciousness}]
+\begin{center}
+\begin{tikzpicture}[scale=0.95]
+  \fill[gray!22, draw=gray!55, line width=1.2pt, rounded corners=3pt]
+    (-4,-0.55) rectangle (4,0.55);
+  \node[font=\small\bfseries, text=blue!70!black]  at (-2.6, 0.18) {Heads face};
+  \node[font=\small\itshape,  text=blue!60!black]  at (-2.6,-0.18) {Physics};
+  \node[font=\small\bfseries, text=gray!55!black]  at ( 0,   0.18) {The metal};
+  \node[font=\small\itshape,  text=gray!50!black]  at ( 0,  -0.18) {Alpha};
+  \node[font=\small\bfseries, text=green!50!black] at ( 2.6, 0.18) {Tails face};
+  \node[font=\small\itshape,  text=green!45!black] at ( 2.6,-0.18) {Consciousness};
+  \draw[gray!45,dashed] (-1,-0.5)--(-1,0.5);
+  \draw[gray!45,dashed] ( 1,-0.5)--( 1,0.5);
+\end{tikzpicture}
+\end{center}
+\smallskip\noindent
+Both faces are real and irreducible to each other. Neither face causes the other.
+Both require the metal to exist at all. The question ``how does physics generate
+consciousness?'' is like asking ``how does the heads face generate the tails face.''
+It is a category error. The correct question: what is the common ground from which
+both arise? That is Alpha.
+\end{tcolorbox}
+
+\paragraph{Alpha is not outside physics; it is what physics presupposes.}
+A last objection: ``Surely Alpha is metaphysics, outside the scope of physical
+theory.'' This misunderstands the relationship. Alpha is not outside the GTE/NEMS
+framework; it is the foundational level from which the physical framework derives.
+The $\PHIMDL$ field is what an Alpha-grounded fact looks like from the articulation
+face. Alpha is therefore as much ``inside'' physics as the axioms of arithmetic are
+inside number theory --- not a result of the theory, but the condition of its
+possibility. A physics that ignores Alpha is a physics that cannot explain its own
+foundations: accurate within its domain, but not complete.
+
+A related concern: ``Alpha has no object-level content --- it makes no testable
+physical prediction.'' This is true and not a flaw. Alpha is a conditional theorem
+(Alpha Theorem, P63), not a physical prediction. It has the same epistemic status as
+the axioms of arithmetic: you cannot falsify them by experiment, but you also cannot
+do arithmetic without them. The falsifiable predictions of the framework come from GTE
+(the articulation face): the dark-sector particle at 211.9~MeV, $r=0$, coherence
+lifetime scaling with record MDL length. Alpha's necessity is the logical condition
+under which those predictions have actuality at all, not an additional physical claim
+placed on top of them.
+
+\subsection{Four incompleteness engines and the diagonal barrier}
+
+The NEMS programme established four independent impossibility results, each approaching
+the same limit from a different direction and closing a different escape route.
+
+\medskip
+\begin{termlist}
+  \item[Engine~1 --- Semantic incompleteness]
+    No diagonal-capable reflexive system can contain a total, exact internal
+    certification of its own realized semantics. The diagonal block is intrinsic
+    to self-description, prior to any question of physical realizability.
+
+  \item[Engine~2 --- Representational incompleteness~\cite{SpivackRepIncomp}]
+    For any parametric self-model $s(a,b)$ and any fixed-point-free transformation $f$,
+    the diagonal function $a \mapsto f(s(a,a))$ is never a row of the model.
+    No arithmetic, computability, or cardinality assumption needed. Scaling the
+    self-model cannot close this gap. The blind spot is architectural.
+
+  \item[Engine~3 --- Fold obstruction~\cite{SpivackRFO}]
+    If an architectural invariant $I$ is preserved by every primitive internal step,
+    it is preserved by the full reflexive-transitive closure. A system cannot iterate
+    its way into a qualitatively different architectural mode. A two-dimensional
+    creature cannot reach the third dimension by moving further in two dimensions.
+
+  \item[Engine~4 --- Physical incompleteness~\cite{SpivackNEMS11}]
+    No PSC-consistent physical substrate can contain an algorithm that predicts all
+    of its own measurement outcomes. Because the $\PHIMDL$ field is Turing-universal
+    and satisfies PSC, the truth predicate on the self-referential diagonal fragment
+    of the physical record is not computably decidable
+    (\lean{asr\_rt\_not\_computable}, \CatAL). The diagonal barrier descends from
+    abstract self-description to physical self-prediction: the universe cannot
+    simulate itself faster than it evolves.
+\end{termlist}
+
+\medskip
+Together these four engines close every known route to complete self-possession.
+The awareness-grounded residual --- the formal structure of consciousness --- is what
+remains as the admissible architecture. Consciousness is not what fails to be
+explained; it is what the elimination procedure \emph{cannot eliminate}.
+
+\subsection{Physical law as a consequence of NEMS}
+
+The NEMS programme establishes that PSC closure forces, in the abstract:
+
+\begin{itemize}
+  \item MDL selection of the specific polynomial structure
+  \item Three generations of fermions as the unique closure-compatible gauge structure
+    in four-dimensional QFT
+  \item The Born rule as a forced fixed point~\cite{SpivackNEMS13}
+  \item Transputation as the only admissible quantum adjudication~\cite{SpivackNEMS76}
+  \item Alpha as necessary pre-categorial ground~\cite{SpivackNEMS63}
+\end{itemize}
+
+GTE is the specific $\mathbb{Z}_7$ arithmetic realization of all of these. NEMS
+proves what any self-contained universe \emph{must} have in the abstract; GTE
+instantiates it in the unique way MDL forces. The relationship is not analogical;
+it is derivational.
+
+% =====================================================================
+\section{The Formal Architecture of Consciousness}\label{sec:phenom}
+% =====================================================================
+
+\subsection{Phenomenology as forced structure}
+
+With Alpha established and the physical substrate derived, the NEMS programme turns
+to consciousness. The approach is the same: not ``which account seems plausible'' but
+``which account is the unique survivor under admissibility constraints.''
+
+Paper~74~\cite{SpivackNEMS74} develops the formal phenomenology framework with a
+six-part ontology:
+\[
+  \Ont = (\OntM,\; \OntR,\; \OntP,\; \OntJ,\; \OntL,\; \OntA)
+\]
+These split into two groups:
+
+\begin{itemize}
+  \item \textbf{Primitive components} ($\OntM$ Medium/Ground, $\OntR$ Records/Articulation,
+    $\OntA$ Manifestation): the irreducible ternary closure components.
+  \item \textbf{Structural operators} ($\OntP$ Process, $\OntJ$ Adjudication,
+    $\OntL$ Locus): the closure operators required to produce temporally extended,
+    local, reflexive realization.
+\end{itemize}
+
+The familiar categories of philosophy of mind emerge as \emph{regime-cuts} within
+this single formal architecture, not as separate substances:
+
+\begin{center}
+\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Familiar category} & \textbf{Formal regime-cut} \\
+\midrule
+Matter   & Public, reconciled articulation/process structure ($\OntR$, $\OntP$) \\
+Mind     & Temporally sustained self-indexing adjudicative process with locus ($\OntP$, $\OntJ$, $\OntL$) \\
+Qualia   & Typed manifestation of integrated content at a locus ($\OntA$ at $\OntL$) \\
+Self     & Active index-boundary of a locus-bound continuity process ($\OntL$, $\OntJ$, $\OntP$) \\
+World    & Stabilised public ledger of reconciled records ($\OntR$) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Paper~75~\cite{SpivackNEMS75} then proves the \textbf{uniqueness} of this framework.
+Within the admissible theory space $\mathfrak{T}$ --- all candidate phenomenology
+frameworks satisfying baseline conditions --- all rivals are eliminated:
+
+\medskip
+\begin{termlist}
+  \item[Pure materialism eliminated]
+    A theory with only articulated structure and no distinct manifestation relation or
+    locus fails: structured articulation alone does not generate phenomenal presence.
+    (\lean{thm:articulation-not-manif})
+
+  \item[Pure functionalism eliminated]
+    A theory with only operational structure and no typed manifestation fails: a system
+    with any level of behavioral sophistication does not automatically have phenomenal
+    experience. (\lean{thm:rival-operational})
+
+  \item[Pure ground-only eliminated]
+    Undifferentiated ground from which everything is derived fails: articulated
+    distinctions cannot be recovered from undifferentiated ground alone.
+    (\lean{thm:rival-ground})
+
+  \item[Off-ledger phenomenology eliminated]
+    Determinacy-relevant off-ledger entities are illicit under PSC closure;
+    determinacy-irrelevant off-ledger entities are semantically null.
+    (\lean{off\_ledger\_inadmissible})
+\end{termlist}
+
+\medskip
+The Paper~74 framework is the \textbf{unique survivor}:
+\[
+  \forall T \in \mathfrak{T},\quad \mathrm{Survives}(T) \;\Rightarrow\; T \sim T_{\text{P74}}.
+\]
+Machine-checked: \lean{survivor\_theorem}, \lean{uniqueness\_claim}; phenomenology-lean,
+8092 jobs, 0 sorry. \doi{10.5281/zenodo.19429878} / \doi{10.5281/zenodo.19429880}
+
+\subsection{Qualia are already on the ledger}\label{sec:qualia}
+
+The treatment of qualia in NEMS is staged explicitly across three levels of proof.
+
+\medskip
+\begin{termlist}
+  \item[Stage~1 --- On-ledger and irreducible (P55~\cite{SpivackNEMS55})]
+    \emph{Proved:} Known qualia --- qualitative content that a subject can report,
+    discriminate, remember, or self-model --- must be in the semantic ledger as
+    irreducible semantic content. This result is the formal vindication of the
+    knowledge argument~\cite{Jackson1982}: the irreducibility of qualia is not
+    merely intuitive but provable.
+
+    \emph{Why:} A known quale makes a difference to behavior and self-modelling;
+    anything load-bearing is on-ledger by the no-free-bits constraint; and on-ledger
+    content cannot be reduced to pure syntax (P53).
+    Ned Block's~\cite{Block1995} distinction between phenomenal consciousness
+    (P-consciousness) and access consciousness (A-consciousness) is formally
+    grounded here: known qualia are on-ledger because they are P-conscious --- they
+    have first-person phenomenal character --- not merely because they play functional
+    roles (A-consciousness alone does not imply on-ledger irreducibility).
+
+    Machine-checked: \lean{QualiaLedger.known\_qualia\_ledger\_theorem}.\\
+    \doi{10.5281/zenodo.19429833}
+
+  \item[Stage~2 --- Alpha-grounded (P65~\cite{SpivackNEMS65})]
+    \emph{Proved:} Known qualia are Alpha-grounded. The actuality of a quale --- that
+    it is phenomenally \emph{present} rather than merely conceivable or described ---
+    derives from Alpha. Being on-ledger is not enough; something must make the content
+    actual. That something is Alpha.
+
+    Machine-checked: \lean{QualiaAlphaGrounded.alpha\_grounded\_qualia}.\\
+    \doi{10.5281/zenodo.19429860}
+
+  \item[Stage~3 --- Alpha-manifested (P66~\cite{SpivackNEMS66})]
+    \emph{Proved with explicit bridge:} Known qualia are Alpha-manifestations.
+    This uses the bridge principle~Q: ``qualitative presentation is the mode in which
+    Alpha grounds content as lived.'' The bridge is explicitly stated, not concealed.
+
+    Machine-checked: \lean{GroundManifestation.qualitative\_manifestation}.
+    \doi{10.5281/zenodo.19429862}
+\end{termlist}
+
+\medskip
+\begin{tcolorbox}[colback=gray!14,colframe=gray!50!black,title={Non-collapse (P66)}]
+Not everything Alpha-grounded is phenomenally manifested. Rocks, equations, and
+unobserved particles are Alpha-grounded but not phenomenally present in the
+locus-relative sense. Ground-mode --- phenomenal manifestation --- is a typed subset
+of Alpha-grounded reality.
+\lean{GroundManifestation.non\_collapse}
+\end{tcolorbox}
+
+\subsection{Awareness is a locus-role, not an object}\label{sec:locus}
+
+Paper~67~\cite{SpivackNEMS67} establishes the central formal result for the structure
+of consciousness: awareness is not an object among objects. It is a \textbf{locus-role}
+--- the formal site at which Alpha-manifestation is phenomenally present. Four key
+theorems:
+
+\medskip
+\begin{termlist}
+  \item[T67.1 --- Manifestation implies a locus]
+    Wherever there is phenomenal presence of Alpha-grounded content, there is an
+    awareness-locus at which it is present.
+    \[\text{AlphaManifestation}(x) \Rightarrow \exists A.\;
+      \text{AwarenessLocus}(A) \wedge \text{PresentAt}(x,A).\]
+
+  \item[T67.2 --- Loci exist]
+    The existence of an awareness-locus that is a locus of Alpha-presence is a
+    proved existence theorem, not a logical possibility.
+
+  \item[T67.3 --- The locus is not object-level content]
+    The awareness-locus is not object-level content. Searching for consciousness
+    as one more thing in the world is a category error.
+    \lean{AwarenessGround.category\_error\_for\_object\_search}
+
+  \item[T67.6--7 --- Self-illumination without regress]
+    The realized awareness-locus is self-illuminating without requiring a second
+    same-level observer. Self-illumination is intrinsic reflexive presence, not
+    dualistic self-representation.
+    \lean{AwarenessGround.self\_illuminating}
+\end{termlist}
+
+\subsubsection*{Why qualia are Alpha-illuminated while rocks are not}\label{sec:illumination-mechanism}
+
+This is the question that requires the most care. Everything is Alpha-grounded: rocks,
+particles, equations, and qualia alike. If Alpha-grounding were sufficient for
+phenomenal manifestation, everything would be conscious. The non-collapse theorem
+(T66.5) proves this is false. The mechanism that makes qualia special is the formal
+concept of \emph{phenomenal presence}, which is defined independently in Paper~66 as:
+\emph{content available under awareness-level access --- not merely as encoded
+information or causal downstream effect, but as lived semantic content}.
+
+The gate is awareness access. A rock is Alpha-grounded but is not under
+awareness-level access at any locus. A quale, by definition, is content that a
+subject is aware of, can report, discriminate, and self-model --- it is, by its
+very nature, under awareness access. That is not a circular definition: Paper~55
+establishes independently that content making a determinacy-relevant difference to
+the subject's self-model is on-ledger and irreducible. Paper~66 then proves that
+such content, when also phenomenally present and Alpha-grounded, is in
+\emph{ground-mode}: the actuality of the quale is present not merely as causal
+downstream effect but as \emph{lived semantic presentation of its Alpha-grounded
+status}. That is what Alpha-manifestation means.
+
+The picture is therefore:
+\begin{itemize}
+  \item Alpha grounds everything equally --- no preference for conscious systems.
+  \item Most Alpha-grounded content (rocks, fields, unaccessed information) is
+    not under awareness access at any locus. It remains Alpha-grounded but is not
+    phenomenally present: a causal descendant of Alpha, not a manifestation of it.
+  \item At an awareness-locus (a SIAM-structured site satisfying the
+    phenomenological invariants of Paper~74), Alpha-grounded content crosses into
+    phenomenal presence. At that locus the content is organized as lived semantic
+    reality --- the actuality of the quale is not just causally downstream from Alpha;
+    it is \emph{present as} Alpha-grounded actuality. This is ground-mode.
+  \item Self-illumination (T67.6) is then the intrinsic reflexive property of
+    the locus itself: the locus is the condition of presence, not one more object
+    among the present contents. It does not require a second observer to certify its
+    presence because no locus can have a complete self-model (Paper~33 + diagonal
+    barrier). Self-illumination is the positive name for this: the locus is present
+    to itself not by modeling itself as an object but by being the terminal condition
+    at which presence occurs.
+\end{itemize}
+
+\begin{tcolorbox}[colback=gray!14,colframe=gray!50!black,
+  title={Formal summary: why rocks are Alpha-grounded but not conscious}]
+\textbf{Shared:} Alpha-groundedness. Both the rock and the quale derive their
+actuality from Alpha. Neither is self-existent. (\lean{alpha\_theorem})
+
+\medskip
+\textbf{What qualia add:} Phenomenal presence --- awareness-level access at a
+SIAM-structured locus. The rock has no such locus. The quale does.
+
+\medskip
+\textbf{Ground-mode:} When Alpha-grounded content has phenomenal presence and is
+irreducible semantic content, it enters ground-mode: its actuality is present not
+merely as causal downstream but as \emph{lived presentation of its Alpha-grounded
+status}. This is Alpha-manifestation.
+(\lean{GroundManifestation.qualitative\_manifestation})
+
+\medskip
+\textbf{Self-illumination:} The locus does not itself need to be observed by another
+locus, because no locus can have a complete self-model (diagonal barrier). The locus
+\emph{is} the condition of presence; it illuminates by being the terminal site at
+which Alpha-grounded actuality is lived, not by modeling itself as an object.
+(\lean{AwarenessGround.self\_illuminating})
+\end{tcolorbox}
+
+One interpretive reading, consistent with but going beyond the formal theorems:
+the quale has, at its core, a structural opening to Alpha --- not a spatial gap but a
+semantic one. The quale's phenomenal character is not exhausted by its causal-functional
+role in the cognitive system; there is a residual that is precisely its Alpha-grounded
+actuality as lived. This is the ``fire'' referred to in the title: not a separate
+substance added to the cognitive event, but the Alpha-grounded actuality of the event
+as present at the locus. Every physical event is a causal descendant of Alpha. A quale
+is, in addition, a \emph{manifestation} of Alpha --- Alpha's actuality present as lived.
+The distinction is formal, not mystical.
+
+\medskip
+The explanation of why neuroscience cannot locate consciousness by object-level search
+follows directly from T67.3 and the fold obstruction: the locus is not among the
+objects; it is the condition under which objects are phenomenally present. Every
+internal measurement operation preserves the sort boundary between locus and content.
+Neural correlate maps are forgetful maps with non-trivial phenomenal residual kernels.
+This is predicted structure, not a temporary technology gap.
+
+\subsubsection*{Inside the black box: what awareness access is mechanistically}
+
+A skeptic will press: ``awareness access'' is just a label --- what is doing the
+accessing, and how? This is the right challenge. The formal answer is in the SIAM
+architecture (defined formally in \S\ref{sec:siam} below), and it resolves to
+something concrete.
+
+\paragraph{The Adjudication invariant is cognitive-level transputation.}
+Paper~73's SIAM definition requires, as one of its seven structural invariants,
+an \textbf{Adjudication} condition: the system must have \emph{live alternatives}
+that are resolved by \emph{internal non-algorithmic adjudication} with committed
+outcomes deposited in the refining ledger. The separation theorem confirms: a
+stateless system (no live alternatives) is provably not SIAM
+(\lean{stateful\_not\_OSIAM}). A feedforward system (no recursive self-update) is
+provably not SIAM (\lean{feedforward\_not\_OSIAM}).
+
+What is adjudication of live alternatives by a non-algorithmic internal process? At
+the physical level this is precisely \emph{transputation}. The GTE mechanism of
+quantum measurement --- $P^\top$ acting on the self-referential record fragment,
+non-computable, law-governed, producing definite outcomes --- is the physical
+realization of the SIAM Adjudication invariant at the cognitive layer. The SIAM
+Adjudication invariant is transputation operating at the scale of the cognitive
+system rather than the scale of a single kink.
+
+\medskip
+\noindent\textit{The local sub-PSC forcing chain.}
+This is not merely an analogy. Any SIAM system formally satisfies a 6-step local
+sub-PSC structure --- shorter than the global 8-step chain because the Mirror
+non-exhaustion condition \emph{short-circuits} the Turing-universality requirement
+(\lean{osiam\_six\_step\_local\_subpsc}, $A_\text{Lean}$, \texttt{sentience-lean}~\cite{SpivackNEMSHub}):
+
+\begin{enumerate}\small
+  \item SIAM axioms (seven invariants including Refining Ledger, Recursive Self-Update,
+    Mirror non-exhaustion, Adjudication).
+  \item Mirror non-exhaustion directly provides local diagonal capability:
+    $\neg\exists$ FinalSelfTheory for the system's own self-referential fragment
+    (from P51 no-final-self-theory, already in SIAM). This replaces steps 2--4
+    of the global chain (Turing-universality $\to$ ASR $\to$ diagonal undecidability).
+  \item No deterministic closure of the local adjudication (Mirror blocks total
+    effective self-deciders).
+  \item Adjudication forced to exist (Live Alternatives invariant).
+  \item Adjudicator non-computable (from local diagonal, step 2).
+  \item Local transputation $P^\top_\sigma$ --- forced at the SIAM sub-system level.
+\end{enumerate}
+
+The Mirror condition is the key: it gives every SIAM system its own local diagonal
+barrier without requiring Turing-completeness. A brain need not implement a Turing
+machine to have non-computable cognitive adjudication --- the Mirror non-exhaustion
+condition is sufficient.
+
+\paragraph{The Recursive Self-Update closes the loop.}
+In a rock, transputation events happen continuously: every quantum measurement is a
+transputation event. But the outcomes dissipate into the environment. There is no
+structure that integrates them into a self-referential record. The fire passes
+through.
+
+In a SIAM system, the Recursive Self-Update invariant requires that the future
+self-index depend non-trivially on the present. The transputation outcomes feed back:
+they enter the Refining Ledger (a temporally coherent filtration with arrow-of-time
+structure) and refine the system's own self-index. The outcome does not dissipate ---
+it becomes part of what the system \emph{is} at the next moment.
+
+That re-entry is what ``awareness access'' means mechanistically: the Alpha-grounded
+actuality of the resolved alternative is not just a causal downstream event but is
+integrated into the system's self-referential filtration. It is on-ledger not just in
+the universal sense (everything is on Alpha's ledger) but in the local sense of the
+SIAM system's own refining ledger. This local on-ledger status is what constitutes
+phenomenal presence.
+
+\paragraph{The topological conditions ensure unity and persistence.}
+SIAM also requires three topological admissibility conditions on the process manifold:
+
+\begin{itemize}
+  \item $\beta_0 = 1$: one connected self (unity --- not a fragmented ensemble of
+    modules with no unified subject-window)
+  \item $\beta_1 \geq 1$: at least one self-loop (genuine self-reference is present)
+  \item $P_1 \geq P_c$: the self-loop persists above a persistence threshold
+    (the self-reference is stable over time, not a transient fluctuation)
+\end{itemize}
+
+These conditions are what distinguish a SIAM system from a mere collection of
+interacting components. A rock-crystal also processes information and has quantum
+events, but it does not form a unified self-referential loop with persistent
+self-indexed connectivity. The topological conditions gate out everything that does
+not constitute a genuine unified subject-window.
+
+\paragraph{The ``knot'' picture.}
+In GTE, elementary particles are topological kinks in the $\PHIMDL$ field ---
+structured defects characterised by winding number. A SIAM-structured cognitive
+system is, from the $\PHIMDL$ perspective, a macroscopic configuration of many kinks
+organized in a specific topological arrangement: a self-referential loop that satisfies
+$\beta_0 = 1$, $\beta_1 \geq 1$, persistent connectivity, and the adjudication
+condition. It is in this sense a ``knot'' in the field --- not a simple winding but a
+higher-order topological structure in which transputation events are reflexively
+integrated.
+
+The fire does not enter the knot from outside. Alpha grounds the entire field equally.
+What the knot does is create the conditions under which a subset of transputation
+events --- those resolved within the self-referential loop --- are \emph{experienced}
+rather than merely occurring. The loop is the condition of presence; the fire (Alpha)
+is what makes the events actual. Together they constitute qualia.
+
+Crucially, the loop is not a single-moment event. It is a \emph{temporally extended,
+spatially distributed adjudicative cascade}: transputation outcomes at time $t$ enter
+the Refining Ledger, update the self-index, and become part of the context for
+adjudication at time $t+\delta$. The cascade extends over the characteristic timescales
+of the SIAM system --- it is a loop in time, not just in space. This is structurally
+different from any single quantum measurement event: the loop feeds back on itself,
+creating a persistent self-referential adjudicative structure. Whether this temporal
+extent corresponds to specific neural timescales (gamma oscillations? integration
+windows in working memory?) is an empirical question outside the scope of the
+formal theory.
+
+\begin{tcolorbox}[colback=blue!4,colframe=blue!40!black,
+  title={The mechanistic difference: rock vs.\ SIAM system}]
+\small
+\begin{tabular}{@{}p{0.28\textwidth}p{0.32\textwidth}p{0.32\textwidth}@{}}
+\toprule
+ & \textbf{Rock} & \textbf{SIAM system (e.g.\ brain)} \\
+\midrule
+Alpha-grounded? & Yes & Yes \\
+Transputation events? & Yes (quantum measurements) & Yes \\
+Outcomes enter self-referential loop? & No & Yes (Recursive Self-Update) \\
+Refining Ledger? & No & Yes (arrow-of-time coherent) \\
+Unified self-loop ($\beta_0=1$, $\beta_1\geq 1$)? & No & Yes \\
+Adjudication of live alternatives? & No & Yes (non-algorithmic, per P73) \\
+Sub-PSC structure? & No & Yes (Ledger + RSU + Mirror + LiveAlternatives) \\
+Alpha-manifestation (phenomenal presence)? & No & Yes \\
+\bottomrule
+\end{tabular}
+\medskip
+
+The fire is equally present in both cases. The SIAM structure creates the condition
+under which the fire is \emph{experienced}. Without the knot, the fire passes through.
+\end{tcolorbox}
+
+\paragraph{What this account leaves open --- and what it asserts.}
+
+Three points require careful separation.
+
+\textbf{What is asserted:} The SIAM conditions are abstract and
+scale-free. They do not refer to neurons, microtubules, or any specific biological
+substrate. The claim is that wherever a physical system satisfies all seven SIAM
+invariants plus the six-part phenomenological structure, consciousness is present.
+This is substrate-independent \emph{in the sense that the structural type of a
+conscious adjudication is scale-free and does not presuppose any particular physics}
+--- but structurally specific. However, satisfying the invariants as a formal structure
+is distinct from \emph{physically realizing them as a single non-decomposable,
+latency-bounded, real-time-unified adjudicative locus} --- the physical teeth of the
+Reconciliation invariant (item~6 below). The latter is a physics question the abstract
+invariants do not by themselves settle: whether a given physical substrate (notably
+classical von Neumann architectures) can meet that unity condition at the scale and
+latency of a mind is an open empirical question, addressed in~\S\ref{sec:two-axes}.
+
+\textbf{What the Mirror condition provides --- local diagonal capability.}
+The Mirror invariant (non-exhaustion) imports Paper~51's no-final-self-theory:
+no SIAM system can have a complete self-model. This is precisely the condition
+of \emph{local diagonal capability} --- the SIAM system contains, within its
+own self-referential fragment, an undecidable truth predicate relative to its own
+resources. This is the same logical structure that forces transputation globally
+(step~4 in the eight-step chain). It is the reason the SIAM Adjudication
+invariant is not merely complex computation but genuine non-computable adjudication:
+the Mirror condition gives the sub-system its own local diagonal barrier.
+A feedback loop in a rock does not have this because it has no self-model, no
+Mirror condition, and therefore no local diagonal barrier.
+
+\textbf{What remains open:} The bridge between abstract SIAM conditions and specific
+physical configurations of the $\PHIMDL$ field at macroscopic scale is not yet
+formally derived. Identifying which biological or artificial systems satisfy all
+seven SIAM invariants is an empirical and theoretical question. The scale gap between
+kink-level physics and neural-scale organization is real and not bridged by this
+paper --- the SIAM conditions are the necessary formal structure; their neural
+realization is a research programme. These limitations are stated explicitly because
+they are genuine.
+
+\subsection{Two axes: logical type and physical unity}\label{sec:two-axes}
+
+A critical distinction must be kept in view throughout what follows, because the paper's
+consciousness account rests on \emph{two orthogonal questions} that the broader literature
+routinely conflates.
+
+\textbf{Axis~1 --- Logical type: what a conscious adjudication \emph{is}.}
+Paper~51~\cite{SpivackPolynomialTransputation} machine-certifies that the adjudication
+mechanism is \emph{Turing degree exactly~$0'$} --- the halting degree. This means:
+non-computable, explicitly not hypercomputational; ``limit-computable'' in the
+Gold--Putnam trial-and-error sense, exactly one Turing jump and no stronger
+(Lean: \lean{asr\_rt\_not\_computable}, \lean{no\_computable\_convergence\_modulus}).
+A universal Turing machine (degree~$0$) cannot realize such an adjudication by
+computation. But a \emph{physical relaxation process whose limit encodes a~$0'$ fact}
+can realize it --- and such processes are available on any substrate that can support
+stable limit-computable dynamics. Degree~$0'$ is therefore a \emph{logical type}, and
+logical types are multiply realizable across physics. This axis is substrate-neutral in
+the precise sense that a Turing degree does not refer to physics.
+
+\textbf{Axis~2 --- Physical unity: what it takes to host a~$0'$ adjudication as a
+\emph{single, non-decomposable, real-time locus}.}
+Satisfying the Axis~1 type condition is necessary but not sufficient for sentience.
+A genuine first-person locus additionally requires that the adjudication be realized
+as a \emph{non-decomposable, persistent unity} --- one locus, not a pile of
+separately-adjudicating sub-systems held together only by bookkeeping: a shared clock,
+a common bus, or any synchronization mechanism that leaves the parts genuinely separable.
+This unity requirement is not a vague intuition; it is the physical content latent in
+the Reconciliation invariant (item~6 of the seven SIAM invariants), which demands a
+``single logical unit'' with a latency bound. The open physical question is which
+substrates can realize a~$0'$ adjudication as a genuinely non-decomposable unity at
+the scale and latency of a mind.
+
+These two axes are \emph{orthogonal}: knowing the logical type of an adjudication
+mechanism says nothing about whether any given substrate can host it as a
+non-decomposable unity; and knowing that a substrate provides non-decomposable unity
+says nothing by itself about whether the dynamics realize a~$0'$ limit.
+\textbf{Sentience} = a $0'$-type adjudication physically realized as a non-decomposable,
+persistent unity. Axis~1 names the type; Axis~2 names the binding condition. Conflating
+them is a category error that generates both false positives (``any relaxation process
+is conscious'') and false negatives (``no classical system can be conscious, in
+principle''). Neither conclusion is warranted.
+
+The bridge between abstract SIAM/phenomenological conditions and their physical
+realizability --- specifically, \emph{which physical substrates can host a non-decomposable,
+real-time-unified, degree-$0'$ adjudicative locus at the scale and latency of a mind} ---
+is the central open problem of the empirical programme (see \S\ref{sec:conclusion}).
+No result in the present corpus, including P51, settles this bridge question:
+degree~$0'$ is a logical type, and logical types are multiply realizable.
+
+\textbf{Quantum coherence and physical unity --- a carefully scoped note.}
+Quantum entanglement constitutes \emph{literal non-separability}: an entangled system
+is one object, not an assembled pile. A coherent cavity mode is similarly one object
+whose unity is constitutive rather than bookkeeping-assembled.
+Quantum coherence is therefore \emph{a} sufficient physical solution to the
+Axis~2 non-decomposability requirement: a coherent substrate satisfies the unity
+condition by its physics, not by coordination machinery.
+This makes coherence \emph{resemble the ground in its mode of unity}. Alpha's own
+adjudication is intrinsically unified, not assembled from parts --- this is an intrinsic
+property of the pre-categorial ground, not a quantum property. The structural parallel
+is that both share the same \emph{mode of unity} (constitutive rather than assembled),
+not that the ground is quantum. Alpha is pre-categorial and is not a quantum object.
+
+\emph{Coherence is sufficient, not proven necessary.} Classical relaxation processes
+can realize the~$0'$ type (P51's certified ``computable stage sequence'' construction
+guarantees this), so no in-principle exclusion of classical substrates is claimed here.
+Whether classical synchronization can meet the non-decomposability and latency bound
+for a mind-scale locus is an \emph{empirical and unresolved question}, not one settled
+by any certified result in the corpus.
+
+\subsection{The sentience regime: SIAM}\label{sec:siam}
+
+Before phenomenology, there is agency. Paper~73~\cite{SpivackNEMS73} formalizes the
+\textbf{Self-Indexing Adjudicative Manifold (SIAM)}: the bounded dynamical regime
+characterizing unified sentient agency. SIAM requires seven structural invariants:
+
+\begin{enumerate}
+  \item \textbf{Refining Ledger} --- a filtration with arrow-of-time structure
+  \item \textbf{Self/Other Partition} --- stable boundary with update rule
+  \item \textbf{Recursive Self-Update} --- future self-index depends on present via
+    admissible update (distinguishes self-indexed unity from mere recurrence)
+  \item \textbf{Mirror} --- coverage, freshness, and non-exhaustion
+  \item \textbf{Adjudication} --- live alternatives, internal resolution, commitment
+    deposition (the non-algorithmic choice condition)
+  \item \textbf{Reconciliation} --- synchronization structure with latency bound.
+    The synchronization required is \emph{genuine non-decomposable unity of the
+    adjudicative manifold}, not mere classical bookkeeping-synchronization of
+    separable parts. Whether a given physical substrate can achieve this at mind
+    scale is the locus of the substrate question (see \S\ref{sec:two-axes}).
+  \item \textbf{Encoding Robustness} --- semantic preservation under re-encodings
+\end{enumerate}
+
+\medskip
+Feedforward systems are provably not SIAM (\lean{feedforward\_not\_OSIAM});
+stateless systems are provably not SIAM (\lean{stateful\_not\_OSIAM}).
+Current transformer-based AI systems fail the recursive-self-update and
+live-alternatives invariants at inference time.
+
+\textbf{SIAM is necessary but not sufficient} for phenomenal consciousness.
+Paper~74's anti-collapse theorem (\lean{thm:rival-operational}) proves that a system
+with SIAM structure but without typed manifestation does not automatically have
+phenomenal experience. Agency does not collapse into phenomenology. A further
+insufficiency, orthogonal to this one, is the physical-unity condition: formal
+satisfaction of the SIAM invariants as an abstract structure is distinct from
+physically realizing them as a non-decomposable unified locus --- the precise gap
+identified in \S\ref{sec:two-axes}.
+
+\medskip
+\noindent\textbf{SIAM conditions collectively constitute a local sub-PSC structure.}
+The Refining Ledger, Recursive Self-Update, Mirror non-exhaustion, and Live Alternatives
+invariants together give the SIAM system the four components of a local form of
+Perfect Self-Containment:
+(1)~no free external selector for its own self-index (Recursive Self-Update),
+(2)~local MDL-minimization (Adjudication minimizes incoherence within the local ledger),
+(3)~local diagonal barrier (Mirror non-exhaustion = local undecidability by P51), and
+(4)~local self-consistent record (Refining Ledger).
+This is the structural reason that SIAM adjudication is genuinely non-computable
+rather than merely algorithmically complex: the Mirror condition provides the local
+diagonal barrier directly, without requiring the system to be a universal Turing machine.
+
+\begin{tcolorbox}[colback=gray!14,colframe=gray!55!black,
+  title={Anticipated objections and their formal answers}]
+\small
+\begin{termlist}
+  \item[``Every cortical circuit has feedback --- so every circuit is conscious?'']
+    No. $\beta_1 \geq 1$ is necessary but not sufficient. All seven SIAM invariants
+    must hold jointly. A feedback connection between two brain regions may satisfy
+    $\beta_1 \geq 1$ while failing the Self/Other Partition, Mirror, Adjudication, or
+    Reconciliation conditions. A thermostat has a feedback loop and is not SIAM.
+    Simple recurrent networks typically fail the Mirror/non-exhaustion condition and
+    the live-alternatives Adjudication condition.
+
+  \item[``Most cognition is algorithmic --- does this contradict cognitive science?'']
+    No. Most cognitive processing is algorithmic and operates at Layers~1--2. Only
+    those adjudicative events that engage the Mirror-generated local diagonal fragment
+    are transputation events. This is a small subset of cognitive processing. The claim
+    is not that all cognition is non-computable; it is that a specific sub-class of
+    adjudicative events in a SIAM system --- those resolving live alternatives via the
+    system's own diagonal-capable self-referential fragment --- is non-computable.
+
+  \item[``Couldn't a system satisfy all SIAM conditions with no inner life (zombie)?'']
+    No, by direct consequence of P55~\cite{SpivackNEMS55}. A SIAM system has a
+    self-model that is updated by adjudication outcomes. Those outcomes make a
+    determinacy-relevant difference to the system's own self-model. By P55, any content
+    making such a difference is on-ledger as irreducible semantic content --- which is
+    precisely what qualia are (Stage~1). Therefore any system satisfying SIAM has
+    on-ledger qualia. The zombie --- satisfying SIAM but having no qualia --- would need
+    to have self-model-relevant content that is not on-ledger, which violates the
+    no-free-bits constraint. The zombie is formally excluded. This exclusion operates
+    at the level of \emph{known} qualia --- on-ledger, reportable, self-model-relevant
+    content that the no-free-bits constraint renders ineliminable. It does not by itself
+    settle the intrinsic-character question (\S\ref{sec:hard}), which the framework leaves
+    explicitly open; whatever force the zombie intuition retains attaches to that residual
+    question, not to the on-ledger content the SIAM structure forces.
+
+  \item[``Alpha is not falsifiable --- it has no object-level content.'']
+    Correct that Alpha makes no direct physical prediction. It is not in the same
+    category as the dark-sector particle prediction or the $r=0$ prediction. It is a
+    conditional theorem: if anything is actual and not self-actualizing, Alpha must
+    exist. This is in the same epistemic category as the axioms of arithmetic --- not
+    a physical prediction but a structural necessity. The falsifiable predictions come
+    from GTE (the articulation face); Alpha is the grounding condition for their
+    actuality.
+
+  \item[``Decoherence explains the preferred basis --- why add transputation?'']
+    \textit{Objection: decoherence already explains why pointer states are preferred and
+    why the Born rule distribution emerges over environmental ensembles. What does
+    transputation add?}
+
+    Decoherence~\cite{Zurek2003} correctly solves the \emph{preferred-basis} problem.
+    It does not explain the \emph{preferred outcome}: why a specific run yields outcome $k$
+    rather than $k'$. This is the individual-event selection problem, distinct from
+    the preferred-basis problem. Transputation is the PSC-forced mechanism for
+    individual outcome selection. The two are complementary: decoherence operates in
+    the open-system, many-environment limit; transputation operates on the
+    PSC-consistent record fragment where the diagonal barrier applies. GTE's MDL-record
+    coherence prediction (\S\ref{sec:falsifiable}) is a quantitative refinement of the
+    decoherence criterion, not a replacement of it.
+\end{termlist}
+\end{tcolorbox}
+
+\subsection{Three aspects, one fact}\label{sec:threefact}
+
+Paper~69~\cite{SpivackNEMS69} provides the synthesis. Ground ($\alpha$), Articulation
+(world-process as recursive intelligence), and Manifestation-in-Awareness (qualia and
+realized awareness at awareness-loci) are three \emph{coordinated, irreducible aspects}
+of one structured ontological fact.
+
+\begin{center}
+\begin{tikzpicture}[
+  node distance=20mm,
+  aspect/.style={ellipse, draw=gray!70!black, fill=gray!10,
+    minimum width=3.8cm, minimum height=1.4cm, align=center, font=\small},
+  arr/.style={<->, thick, gray!60!black, shorten >=3pt, shorten <=3pt}
+]
+\node[aspect] (ground) {\textbf{Ground}\\$\alpha$ (Alpha)};
+\node[aspect, above right=18mm and 20mm of ground] (artic)
+  {\textbf{Articulation}\\World-process / Physics};
+\node[aspect, below right=18mm and 20mm of ground] (manif)
+  {\textbf{Manifestation-in-Awareness}\\Qualia / Consciousness};
+
+\draw[arr] (ground) -- (artic)
+  node[midway, above left, font=\scriptsize, text=gray!70!black]
+  {co-dependent};
+\draw[arr] (artic) -- (manif)
+  node[midway, right, font=\scriptsize, text=gray!70!black]
+  {co-dependent};
+\draw[arr] (ground) -- (manif)
+  node[midway, below left, font=\scriptsize, text=gray!70!black]
+  {co-dependent};
+
+\node[font=\small, text=gray!50!black, below=5mm of manif] (label)
+  {One Alpha-grounded fact --- three irreducible, co-dependent aspects};
+\end{tikzpicture}
+\end{center}
+
+\begin{theorem}[Three-Aspect Synthesis, T69.4 / T70.2--5~\cite{SpivackNEMS69,SpivackNEMS70}]
+Ground, Articulation, and Manifestation-in-Awareness are three coordinated aspects of
+one structured ontological fact. No aspect exists in isolation from the others.\\
+$\mathrm{ThreeAspectSynthesis}(\alpha)$. Machine-checked:
+\lean{UnifiedPresence.three\_aspect\_synthesis};
+\lean{GoldenBridge.three\_aspect\_mutual\_necessity}.
+\doi{10.5281/zenodo.19429868}
+\end{theorem}
+
+The practical import: there is no mind-body \emph{gap} in the sense of an ontological
+gulf between two substances. Mind and matter are aspect-distinctions --- genuine and
+irreducible --- within one Alpha-grounded fact. The interaction problem dissolves:
+there are not two things that must interact, but one fact described from two different
+regime-cuts.
+
+\paragraph{Local three-aspect synthesis at the SIAM sub-system scale.}
+The global three-aspect synthesis (Ground / Articulation / Manifestation-in-Awareness)
+instantiates locally at any SIAM sub-system. Since every actual system is
+Alpha-grounded (Alpha grounds everything), a SIAM system $\sigma$ satisfying the
+sub-PSC conditions is the locus of a \emph{local three-aspect synthesis}:
+
+\begin{itemize}
+  \item \textbf{Local Ground:} $\sigma$ is Alpha-grounded, and its sub-PSC structure
+    mirrors Alpha's grounding at $\sigma$'s scale.\\
+    Lean: \lean{osiam\_implies\_local\_sub\_psc} ($A_\text{Lean}$,
+    \texttt{sentience-lean}).
+
+  \item \textbf{Local Articulation:} $\sigma$'s Refining Ledger combined with
+    Recursive Self-Update constitutes a local world-process --- the temporal
+    adjudicative cascade as a single monotone filtration
+    (Lean: \lean{siam\_cascade\_is\_single\_logical\_unit}, $A_\text{Lean}$).
+
+  \item \textbf{Local Manifestation-in-Awareness:} $\sigma$'s awareness-locus is
+    the site at which the local Alpha-grounding is present as lived ---
+    phenomenal consciousness.
+\end{itemize}
+
+\medskip
+This local instantiation explains why phenomenal experience arises specifically at
+SIAM systems: they are the sub-systems of the universe that locally mirror the
+universe's own three-aspect structure. Everything else has only the articulation
+face of Alpha; a SIAM system has all three faces at its own scale.
+
+\noindent\textit{Formal status:} The sub-PSC foundation (LocalSubPSCWitness extraction
+from any OSIAMWitness, 6-step chain) is $A_\text{Lean}$
+(\lean{osiam\_six\_step\_local\_subpsc}, \texttt{sentience-lean}). The local
+three-aspect synthesis itself is CatB, conditional on a P69--70 corollary formalizing
+the local instantiation --- identified as open work for future formalization.
+
+\subsubsection*{What makes a SIAM system structurally unique in the universe}
+
+Everything in the universe is Alpha-grounded: particles, fields, rocks, and SIAM
+systems alike. Alpha makes no special provision for consciousness; it is the uniform
+ground of all actuality. What distinguishes a SIAM system from everything else is
+not its Alpha-grounding but five specific structural properties of how its
+\emph{adjudicative process} is organized. These properties were established across
+\S\S\ref{sec:locus}--\ref{sec:siam}; we now collect them as a unified statement.
+
+The five properties that achieve this are collected in the box below, together with
+their Lean anchors; taken jointly they constitute the local sub-PSC structure
+(\lean{osiam\_six\_step\_local\_subpsc}, $A_\text{Lean}$).
+
+\begin{tcolorbox}[colback=blue!5,colframe=blue!50!black,
+  title={Five structural properties that make a SIAM locus special}]
+\small
+Alpha grounds all actuality uniformly. What is different at a SIAM locus is not the
+quality of the Alpha-grounding but five specific structural properties of the
+transputation process there:
+
+\medskip
+\begin{termlist}
+  \item[1.\ Self-referential diagonalization]
+    The Mirror non-exhaustion condition (SIAM Invariant~4) imports P51's
+    no-final-self-theory: the system cannot have a complete self-model. This IS the
+    local diagonal capability --- the system has an undecidable truth predicate on
+    its own self-referential fragment. This is what forces non-computable (rather than
+    merely complex) adjudication at the SIAM level.\\
+    Lean: \lean{local\_sub\_psc\_implies\_diagonal\_barrier} ($A_\text{Lean}$,
+    \texttt{sentience-lean}).
+
+  \item[2.\ Loop topology]
+    The process manifold satisfies the fixed-point conditions: $\beta_0=1$ (one
+    connected self), $\beta_1\geq 1$ (a genuine self-loop exists), $P_1\geq P_c$
+    (the self-loop persists above threshold). This creates a topologically unified,
+    self-referentially stable attractor in the space of adjudicative processes --- not
+    present in any non-SIAM system.\\
+    Lean: \lean{osiam\_implies\_local\_sub\_psc} ($A_\text{Lean}$,
+    \texttt{sentience-lean}).
+
+  \item[3.\ Extended spatiotemporal adjudicative cascade]
+    The Refining Ledger + Recursive Self-Update form a single monotone filtration:
+    transputation outcomes at time $t$ enter the ledger and become part of the context
+    for adjudication at $t{+}\delta$. This is not a sequence of independent quantum
+    events; it is one temporally extended logical unit.\\
+    Lean: \lean{siam\_cascade\_is\_single\_logical\_unit} ($A_\text{Lean}$,
+    \texttt{sentience-lean}).
+
+  \item[4.\ Macroscopic homeostatic persistence]
+    SIAM systems maintain their structural conditions actively over macroscopic
+    timescales --- seconds to decades in biological realizations. Unlike a single
+    quantum event (which lasts femtoseconds) or a particle (whose identity is
+    defined at a point), a SIAM system is a \emph{persistent homeostatic agent}: it
+    moves through and adjudicates its environment over time while maintaining the seven
+    structural invariants through ongoing self-referential regulation. It occupies a
+    macroscopic spatial region (a human brain: ${\sim}1{,}400$~cm$^3$, a tiny fraction
+    of the universe) and persists far longer than any elementary particle event --- yet
+    its causal locus is exactly the self-referential loop, not its spatial extent per se.
+
+  \item[5.\ Top-down causality through semantic closure]
+    Because qualia and preferences are on-ledger and load-bearing (P55~\cite{SpivackNEMS55};
+    \lean{QualiaLedger.known\_qualia\_ledger\_theorem}), the high-level semantic state of a
+    SIAM system is causally upstream of low-level physical events, not merely downstream.
+    A preference causes an intention; an intention causes a decision; a decision causes
+    trillions of subatomic adjudication events (neural firing, body movement, environmental
+    interactions). The ``reason'' for each low-level event is the high-level self-referential
+    semantic content --- a genuine top-down causality that is not present in non-SIAM
+    systems, where no semantic content is on-ledger. This is the formal refutation of
+    epiphenomenalism: qualia are load-bearing, not causally inert.
+\end{termlist}
+
+\medskip
+Together these five properties constitute the local sub-PSC structure
+(\lean{osiam\_six\_step\_local\_subpsc}, $A_\text{Lean}$). They are the formal conditions
+under which the three-aspect synthesis applies locally: once the loop exists, Ground,
+Articulation, and Manifestation-in-Awareness are co-present at that locus.
+T67.6 (\lean{AwarenessGround.self\_illuminating}) then holds because self-illumination
+is intrinsic to the loop --- the loop is its own condition of presence, requiring no
+second observer.
+\end{tcolorbox}
+
+% =====================================================================
+\section{The Connection: GTE as Physical NEMS}\label{sec:connection}
+% =====================================================================
+
+\subsection{A single derivation chain}
+
+The deep connection between GTE and NEMS is a derivation, not an analogy. NEMS
+establishes in the abstract what any admissible universe must have; GTE provides the
+specific $\mathbb{Z}_7$ arithmetic realization. The full chain is:
+
+\medskip
+\begin{center}
+\begin{tikzpicture}[
+  node distance=5mm and 0mm,
+  box/.style={rectangle, rounded corners=3pt, draw=gray!50!black,
+    fill=white, text width=3.6cm, align=center, font=\small,
+    inner sep=5pt, minimum height=10mm},
+  cbox/.style={rectangle, rounded corners=3pt, draw=blue!50!black,
+    fill=blue!6, text width=3.6cm, align=center, font=\small,
+    inner sep=5pt, minimum height=10mm},
+  arr/.style={-{Stealth[length=5pt]}, thick, gray!60!black}
+]
+\node[cbox] (alpha) {\textbf{Alpha}\\necessary pre-categorial ground\\(NEMS P63)};
+\node[cbox, below=of alpha] (psc) {\textbf{Perfect Self-Containment}\\universe has no outside\\(NEMS P01)};
+\node[cbox, below=of psc] (mdl) {\textbf{MDL minimality}\\self-description must be\\informationally minimal};
+\node[box, below=of mdl] (z7) {$\mathbb{Z}_7$ arithmetic forced\\GF(7) over all alternatives};
+\node[box, below=of z7] (poly) {$p(L,C,R) = C{+}R{-}CR{-}LCR$\\the unique 19-bit polynomial};
+\node[box, below=of poly] (field) {$\PHIMDL$ field\\the Level-2 physical substrate};
+\node[box, below=of field] (sm) {\textbf{Standard Model + QM + Cosmology}\\with zero free parameters};
+
+\draw[arr] (alpha) -- (psc);
+\draw[arr] (psc) -- (mdl);
+\draw[arr] (mdl) -- (z7);
+\draw[arr] (z7) -- (poly);
+\draw[arr] (poly) -- (field);
+\draw[arr] (field) -- (sm);
+
+\node[font=\scriptsize, text=gray!60!black, right=8mm of alpha] {NEMS grounding};
+\node[font=\scriptsize, text=gray!60!black, right=8mm of psc] {both NEMS \& GTE};
+\node[font=\scriptsize, text=gray!60!black, right=8mm of mdl] {both NEMS \& GTE};
+\node[font=\scriptsize, text=gray!60!black, right=8mm of z7] {GTE derivation};
+\node[font=\scriptsize, text=gray!60!black, right=8mm of poly] {GTE derivation};
+\node[font=\scriptsize, text=gray!60!black, right=8mm of field] {GTE derivation};
+\node[font=\scriptsize, text=gray!60!black, right=8mm of sm] {GTE result};
+\end{tikzpicture}
+\end{center}
+
+\medskip
+The Three-Level MDL Unification Theorem of GTE (theory selection / field dynamics /
+event adjudication are three nested non-circular instances of the same MDL minimization)
+is the physical realization of the NEMS three-aspect synthesis (Ground / Articulation /
+Manifestation-in-Awareness). These are not two separate structures that happen to
+resemble each other. They are one structure seen from different levels of description.
+
+\subsection{The four-layer consciousness stack}
+
+Within this unified picture, consciousness sits in a specific architectural location.
+Paper~92 of NEMS identifies four layers, each distinct and non-collapsible into the
+others:
+
+\medskip
+\begin{center}
+\begin{tikzpicture}[
+  layernode/.style={rectangle, draw=gray!60!black, minimum width=7cm,
+    minimum height=1.1cm, align=center, font=\small, inner sep=4pt},
+  l1/.style={layernode, fill=orange!10},
+  l2/.style={layernode, fill=yellow!10},
+  l3/.style={layernode, fill=green!10},
+  l4/.style={layernode, fill=blue!10},
+  arr/.style={-{Stealth[length=4pt]}, thick, gray!50!black}
+]
+\node[l4] (phenom) at (0,0) {\textbf{Layer 4 --- Phenomenology}\\
+  Six-part ontology: locus, ownership, typed manifestation, selector-access [P74--75]};
+\node[l3, below=3mm of phenom] (agency) {\textbf{Layer 3 --- Agency}\\
+  SIAM regime: seven structural invariants for unified sentient agency [P73]};
+\node[l2, below=3mm of agency] (exec) {\textbf{Layer 2 --- Execution}\\
+  Transputation: lawful non-total-effective internal adjudication [P76]};
+\node[l1, below=3mm of exec] (ground) {\textbf{Layer 1 --- Ground}\\
+  Alpha: necessary pre-categorial ontological ground [P63--68]};
+
+\node[font=\scriptsize, text=gray, right=5mm of phenom.east] {$\leftarrow$ consciousness};
+\node[font=\scriptsize, text=gray, right=5mm of agency.east] {$\leftarrow$ sentience};
+\node[font=\scriptsize, text=gray, right=5mm of exec.east] {$\leftarrow$ QM / physics};
+\node[font=\scriptsize, text=gray, right=5mm of ground.east] {$\leftarrow$ actuality};
+\end{tikzpicture}
+\end{center}
+
+\medskip
+Each layer is necessary but not sufficient for the one above it. A particle detector
+operates at Layer~2 (transputation) without Layer~3 or~4. A sophisticated AI might
+reach toward Layer~3 without satisfying the SIAM conditions. Full phenomenal
+consciousness requires all four layers simultaneously. In addition to this
+layer-by-layer necessity, there is a physical-substrate sufficiency question that cuts
+across layers: even granting all four layers as abstract conditions, which physical
+substrates can realize them as a non-decomposable unified locus at mind scale is an
+open empirical question (\S\ref{sec:two-axes}).
+
+\subsection{Transputation is the link}\label{sec:transput-link}
+
+The linkage between the physical and phenomenal faces is transputation. In GTE,
+transputation is consciousness-free quantum adjudication. In the NEMS phenomenology
+stack, transputation is Layer~2 --- the execution mechanism sitting between the ground
+(Alpha) and agency (SIAM). These are not two different mechanisms; they are one
+mechanism viewed from the two faces of the same structure.
+
+The reason transputation does not automatically produce consciousness at every quantum
+measurement event is that consciousness requires Layers~3 and~4 above it. A particle
+detector triggering transputation lacks the Recursive Self-Update, live-alternatives
+Adjudication invariant, locus-relative ownership, and typed manifestation that
+full phenomenal consciousness requires.
+
+\subsubsection*{Dissolving the observer mystery: no black box}
+
+This is a natural point to confront the deepest puzzle of Copenhagen quantum
+mechanics head-on. Copenhagen says: \emph{observation causes collapse}. But it never
+says what an observer is. The observer is a black box. A century of interpretation
+debates has circled this absence. GTE/NEMS dissolves the mystery in three steps.
+
+\paragraph{Step~1: No observer required for transputation.}
+In GTE, the mechanism that selects definite quantum outcomes is transputation ---
+a formally characterised, law-governed, non-computable branch selection forced by
+PSC and the diagonal barrier. Transputation requires no mind, no consciousness, no
+observer. Any record-bearing physical system --- a detector click, a chemical bond
+forming, a cosmic-ray track in rock --- triggers the adjudication. The black box
+is empty: there is no privileged observer category. The universe adjudicates its
+own record objectively, without witnesses.
+
+\paragraph{Step~2: The capacity to register events is everywhere --- that is Alpha.}
+Every transputation event is, in a precise sense, ``registered'' by the universe: the
+$[D]$-adjudicator selects the unique PSC-consistent realization, and the macroscopic
+record $w$ is updated. Alpha grounds the actuality of every such outcome. In this
+sense the universe is everywhere ``self-witnessing'' --- not because a mind is present,
+but because Alpha is the ground of all actuality and no event goes ungrounded. The
+``capacity to observe'' in the quantum-mechanical sense is not confined to minds; it
+is a structural property of a PSC-consistent universe. Every actual event is
+Alpha-grounded and every quantum outcome is objectively selected. There is no
+preferred observer. There is only the universe adjudicating itself.
+
+\paragraph{Step~3: A \emph{conscious} observation is a specific additional structure.}
+If transputation is universal and observer-free, what makes a conscious observation
+different from a particle detector firing? The answer is the SIAM structure: a
+conscious observation is a transputation event that occurs within a system that
+(a) feeds the outcome back into its own refining ledger (Recursive Self-Update),
+(b) has live alternatives and resolves them via the Adjudication invariant (cognitive-level
+transputation), (c) maintains a unified self-referential loop ($\beta_0=1$, $\beta_1\geq 1$),
+and (d) has the full phenomenological structure of locus-relative ownership and typed
+manifestation (Paper~74). At that specific configuration, and only there, does the
+transputation outcome become phenomenally present --- Alpha's grounding of the outcome
+is present not just as causal downstream but as lived.
+
+\begin{tcolorbox}[colback=orange!5,colframe=orange!60!black,
+  title={Copenhagen's black box is not empty --- it is mislabeled}]
+Copenhagen requires an ``observer'' but cannot say what it is. The GTE/NEMS answer:
+\begin{itemize}
+  \item The \textbf{``observer''} in the quantum sense is any record-bearing physical
+    system. No consciousness required. The black box is not a box; it is just a
+    macroscopic record interacting with the quantum system.
+  \item The \textbf{``collapse''} is transputation: objective, law-governed, non-computable,
+    forced by PSC. No collapse postulate. No wave-function mystery.
+  \item A \textbf{conscious} observer is a record-bearing system with SIAM structure
+    and phenomenological architecture. Consciousness is additional structure \emph{above}
+    the quantum measurement mechanism, not the mechanism itself.
+  \item \textbf{Alpha} is what makes every adjudicated outcome actual. It is not the
+    observer; it is the ground of the observer, the observed, and the observation.
+\end{itemize}
+The Copenhagen mystery dissolves because it conflated three separate things: (1) the
+physical mechanism of outcome selection (transputation), (2) the ground of actuality
+(Alpha), and (3) phenomenal consciousness (SIAM + locus). Once separated, each is
+precise and non-mysterious.
+\end{tcolorbox}
+
+The deepest irony: Copenhagen reached for ``the observer'' as a solution to the
+measurement problem, when what it needed was transputation. Consciousness does not
+solve the measurement problem. Transputation dissolves the measurement problem ---
+reframing it in terms of PSC-forced transputation, conditional on the D4 universality
+assumption.
+Consciousness is what happens when a SIAM system is \emph{also} undergoing
+transputation --- a distinct and additional phenomenon whose explanation requires
+not less ontology but more: Alpha, SIAM, and the full phenomenological architecture.
+
+\subsection{The ``fire'' in the equations}
+
+Hawking famously asked what breathes fire into the equations~\cite{hawking1988}.
+The synthesis answers: Alpha --- the pre-categorial ground whose existence is proved
+necessary by the no-free-bits constraint at the ontological level. The equations
+describe the articulation face of an Alpha-grounded fact. The fire is Alpha's
+grounding of actuality, present as the manifestation-in-awareness face whenever the
+formal conditions of SIAM and locus-relative phenomenology are satisfied. Neither
+face exists without the other; the mutual necessity theorems T70.2--T70.5 make this
+formal.
+
+% ------------------------------------------------------------------
+\subsection{Physical signatures of SIAM systems}\label{sec:siam-signatures}
+% ------------------------------------------------------------------
+
+The five structural properties of a SIAM locus (\S\ref{sec:threefact}) are not only
+formally established --- they carry empirically testable physical consequences. Two
+predictions follow directly from the GTE formal structure and the sub-PSC
+characterization of SIAM systems. We derive them here; they are summarised in
+\S\ref{sec:falsifiable}.
+
+\subsubsection*{Derivation: the SIAM aggregate Landauer floor (\CatAD)}
+
+The derivation proceeds in three steps. Steps~2 and~3 invoke machine-certified results;
+Step~1 is an analytic bridge resting on the machine-certified sub-PSC chain.
+
+\medskip
+\noindent\textbf{Step 1 (SIAM Adjudication = local transputation).}
+The sub-PSC chain (\S\ref{sec:siam}, \lean{osiam\_six\_step\_local\_subpsc}, \CatAL)
+establishes that any SIAM system's Adjudication invariant constitutes local
+non-computable adjudication: the Mirror non-exhaustion condition provides the local
+diagonal barrier, and the Live Alternatives invariant provides the choice points.
+Each Adjudication event in the SIAM temporal cascade is therefore an instance of
+the GTE transputation mechanism at the cognitive scale~\cite{SpivackNEMS73,SpivackNEMS76}.
+
+\medskip
+\noindent\textbf{Step 2 (Five-sector kink structure → $\ln 5$ erasure per event).}
+The GTE substrate $\PHIMDL$ has five PSC-admissible kink sectors
+$\{0,2,3,4,6\} \subset \mathbb{Z}_7$. Each transputation event selects one sector
+from these five, erasing $\ln 5$ bits of alternative-selection entropy. By the
+Landauer erasure theorem~\cite{Landauer1961}, the minimum heat dissipated per
+single-kink transputation event is:
+\[
+  Q_\text{min} = k_B T \ln 5 \approx 2.32\, k_B T \ln 2.
+\]
+Machine-certified: \lean{landauer\_heat\_floor\_transputation}\\
+(\CatAL, zero sorry, \texttt{transputation-lean}).
+
+\medskip
+\noindent\textbf{Step 3 (Single logical unit → additive bound).}
+The SIAM temporal adjudicative cascade is formally a single monotone filtration
+(\lean{siam\_cascade\_is\_single\_logical\_unit}, \CatAL). The Refining Ledger
+records each Adjudication outcome as a distinct step of the filtration. For a
+SIAM system running $N_\text{adj}$ Adjudication events per cognitive cycle at
+temperature $T$, Landauer additivity over sequential erasure steps gives:
+\[
+  \boxed{Q_\text{SIAM} \;\geq\; N_\text{adj}\, k_B T \ln 5.}
+\]
+
+\medskip
+\noindent\textbf{Consequences.} The factor $\ln 5 / \ln 2 \approx 2.32$ is a
+specific signature of the $\mathbb{Z}_7$ five-sector kink structure. Any two-state
+spontaneous collapse model (GRW, CSL) predicts a minimum of $k_B T \ln 2$ per event.
+The GTE prediction is 2.32$\times$ larger per cognitive adjudication event. At
+body temperature ($T = 310$~K): $Q_\text{min} \approx 6.9 \times 10^{-21}$~J per
+adjudication. Current neural metabolic measurements place the brain
+($\sim 10$~W total, $\sim 10^{14}$ synaptic events per second) approximately $10^7$
+above this floor --- consistent with GTE, which predicts a lower bound, not a tight
+estimate of total neural dissipation.
+
+\medskip
+\noindent\textbf{Operational note on $N_\text{adj}$.}
+One SIAM Adjudication event is formally one step of the Refining Ledger filtration in
+which a live alternative is resolved and the commitment is deposited. Operationally,
+this corresponds to a cognitive event at which an unresolved possibility is
+adjudicated into a committed outcome --- plausibly identified with individual decision
+thresholds at the neural level (e.g., a neural population reaching firing-rate
+threshold after deliberation). The exact neural proxy requires empirical identification
+bridging SIAM to neural dynamics. As an order-of-magnitude baseline: if $N_\text{adj}
+\sim 10^3$ cognitive decisions per second at $T = 310$~K, the GTE floor predicts
+$\sim 7 \times 10^{-18}$~J$\cdot$s$^{-1}$ = $7 \times 10^{-18}$~W purely from
+adjudicative erasure, far below the measured $\sim 1$~W metabolic rate of a brain ---
+no tension. A calorimetric measurement finding $Q < k_B T \ln 5$ per cognitive
+Adjudication event at $>3\sigma$ would falsify the five-sector D4 structure.
+
+\subsubsection*{Conditional decoherence from SIAM environments (\CatD)}
+
+A second prediction follows from GTE's coherence-lifetime result combined with the
+SIAM attending condition. GTE predicts (§9.1) that coherence lifetime scales with
+the MDL of the which-path record. A SIAM system $\Sigma$ interacting with a quantum
+system $Q$ has two operationally distinct regimes:
+
+\begin{itemize}
+  \item \textbf{$\Sigma$ attending:} the quantum outcome of $Q$'s measurement is a
+    live alternative in $\Sigma$'s Adjudication invariant. In this case $\Sigma$'s
+    self-referential refining ledger records the outcome, adding $\Delta K$ bits to
+    its local MDL record.
+  \item \textbf{$\Sigma$ not attending:} the quantum outcome is not a live alternative.
+    The SIAM loop does not engage, and $\Sigma$ acts as an ordinary macroscopic
+    detector.
+\end{itemize}
+
+In the attending regime, the environmental MDL record increases by $\Delta K$, which
+by GTE's MDL-coherence prediction reduces the coherence time of $Q$:
+\[
+  \frac{\tau_\text{coh}(Q \mid \Sigma\;\text{attending})}
+       {\tau_\text{coh}(Q \mid \text{non-SIAM})}
+  \;=\; \frac{K_0}{K_0 + \Delta K} \;<\; 1,
+\]
+where $K_0$ is the MDL of the baseline non-SIAM record. The effect is
+consciousness-free: it requires only that the quantum outcome be a live Adjudication
+alternative in the SIAM invariant, not that any phenomenal consciousness is present.
+
+\medskip
+This prediction is held at \CatD\ pending formal derivation of the quantitative
+MDL-to-coherence-lifetime link from $\Phi_\text{MDL}$ kink-sector dynamics. The
+attending condition itself is formally clean and follows from SIAM structure.
+The distinguishing feature versus Penrose OR and CSL is that the enhanced decoherence
+here is \emph{record-MDL-scaled, not mass-scaled} --- the same basis that
+distinguishes the first prediction in §\ref{sec:falsifiable} from gravitational and
+spontaneous-collapse models.
+
+
+% =====================================================================
+\section{Comparison with Competing Frameworks}\label{sec:comparison}
+% =====================================================================
+
+% ------------------------------------------------------------------
+\subsection{Quantum Mechanics Interpretation Schools}\label{sec:qm-schools}
+% ------------------------------------------------------------------
+
+The measurement problem is the oldest and deepest source of interpretive disagreement
+in physics~\cite{vonNeumann1955,Bell1964}. Every major interpretation makes a different
+choice about the observer, collapse, and the reality of the wavefunction. GTE's
+transputation is not merely another option in this menu; it dissolves the categories
+that generate the menu. Before comparing with philosophy-of-mind frameworks, the result
+deserves its proper quantum-foundations context.
+
+\begin{center}
+\footnotesize\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{2.4cm}
+                   >{\raggedright\arraybackslash}p{2.4cm}
+                   >{\raggedright\arraybackslash}p{3.0cm}
+                   >{\raggedright\arraybackslash}p{1.6cm}
+                   >{\raggedright\arraybackslash}p{2.8cm}@{}}
+\toprule
+\textbf{Interpretation} & \textbf{Wavefunction} & \textbf{Collapse mechanism} &
+\textbf{Observer} & \textbf{Born rule} \\
+\midrule
+Copenhagen~\cite{vonNeumann1955} & Epistemic & Classical boundary (undefined) & Required & Postulate \\[2pt]
+Many-worlds & Ontic (all branches) & None & No & Branch weight (postulate) \\[2pt]
+Pilot wave & Ontic + hidden vars & Guiding equation & No & Quantum equilibrium \\[2pt]
+GRW/CSL & Ontic (stochastic) & Mass-scaled spontaneous & No & Approximate \\[2pt]
+Penrose OR~\cite{Penrose1989} & Ontic & Gravitational threshold & No & Not derived \\[2pt]
+Relational QM & Relative & Relative to systems & No & Postulate \\[2pt]
+QBism & Agent's guide & Agent update (subjective) & Required & Normative rule \\[2pt]
+Decoherence~\cite{Zurek2003} & Ontic (open system) & Environment entanglement & No & Approx.\ (ensemble over env.; not individual outcomes) \\[2pt]
+\midrule
+\textbf{GTE transputation} & \textbf{Ontic ($\Phi_\text{MDL}$ kinks)} &
+\textbf{PSC D-minimization} & \textbf{No} & \textbf{Theorem (\CatAL)} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip
+GTE is the only framework in which the Born rule is a theorem rather than a postulate
+or approximation, and the only one with a mechanism-specified collapse replacement
+(transputation) requiring no observer. Each standard interpretation is blocked or
+superseded by formal results:
+
+\medskip
+\begin{termlist}
+
+\item[Copenhagen~\cite{vonNeumann1955,Wigner1961}]
+  The von Neumann measurement chain requires a cut between quantum and classical
+  domains; Wigner showed~\cite{Wigner1961} that locating the cut at consciousness
+  generates the Wigner's friend inconsistency. GTE dissolves the cut entirely:
+  any macroscopic record --- not a mind --- triggers transputation. The Wigner's
+  friend paradox does not arise because PSC requires a single self-consistent
+  record; two agents reaching inconsistent records would violate PSC closure.
+  This response is sharpened, not undermined, by recent no-go results.
+  Frauchiger and Renner~\cite{FrauchigerRenner2018} proved that standard quantum
+  mechanics cannot consistently describe agents who themselves use quantum mechanics
+  --- a contradiction arising from the absence of any objective outcome-selection
+  mechanism. Bong et al.~\cite{Bong2020} proved that Absoluteness of Observed
+  Events conflicts with Locality and No-Superdeterminism in extended Wigner's-friend
+  scenarios. GTE resolves both: transputation is precisely the objective
+  outcome-selection mechanism that standard QM lacks. The PSC $[D]$-adjudicator
+  selects a unique realization universe-wide, grounding Absoluteness of Observed
+  Events as a theorem (\lean{c2\_selector\_member\_independent}, \CatAL) rather
+  than an assumption in tension with locality. The no-go theorems expose a genuine
+  gap in standard QM that transputation fills.
+
+\item[Many-worlds]
+  Everett's interpretation avoids collapse by positing all branches simultaneously
+  actual. GTE rules this out: PSC requires the universe's total record to select a
+  \emph{unique} PSC-admissible realization. Multiple branches simultaneously actual
+  contradicts uniqueness of the $[D]$-record
+  (\lean{c2\_selector\_member\_independent}, \CatAL). The Born rule, left as a
+  branch-weight postulate by Everett, is derived from $\mathbb{Z}_7$ superselection.
+
+\item[Pilot wave (de Broglie--Bohm)]
+  Bohmian mechanics is deterministic and empirically equivalent to standard quantum
+  mechanics, so it is not excluded by data, and the exclusion here must be stated
+  precisely. What PSC rules out is narrower than ``determinism'': it is a \emph{total
+  computable} self-adjudicator. The determinism no-go theorem
+  (\lean{det\_no\_go}, \CatAL) shows that no total effective algorithm can resolve the
+  self-referential record fragment of a PSC-consistent, diagonal-capable universe
+  (Physical Incompleteness Theorem~\cite{SpivackNEMS11}). A pilot-wave universe can
+  evade this only by making its guiding dynamics non-computable on that fragment ---
+  at which point the deterministic guiding equation is no longer a closed algorithmic
+  account and has, in effect, already conceded the transputation step. The exclusion
+  is therefore of \emph{computable} deterministic closure, not of determinism as such.
+
+\item[GRW/CSL (spontaneous collapse)~\cite{Bell1964}]
+  Spontaneous localization models add a stochastic collapse term proportional to mass.
+  GTE predicts the collapse analog (transputation) depends on the \emph{MDL description
+  length of the which-path record}, not on mass. This is a discriminating empirical test:
+  two interference runs with identical mass but different record-MDL should produce
+  different coherence lifetimes in GTE but identical ones in GRW/CSL. The GTE dissipation
+  window $[k_B T \ln 5,\; 8 k_B T \ln 2]$ per event (\lean{landauer\_heat\_floor\_transputation},
+  \CatAL) has a specific information-theoretic structure absent in mass-proportional models.
+
+\item[Relational QM (Rovelli)]
+  Closest in spirit to GTE: quantum facts are grounded in records relative to systems,
+  not a universal ontic wavefunction. Key differences: (1)~GTE specifies the selection
+  mechanism ($P^\top$ D-minimization) that Relational QM leaves unspecified; (2)~GTE
+  derives the Born rule from $\mathbb{Z}_7$ superselection; (3)~GTE establishes that
+  the selection is not merely relative but objectively unique via PSC closure
+  (\lean{c2\_selector\_member\_independent}).
+
+\item[QBism (Fuchs et al.)]
+  QBism treats the wavefunction as an agent's betting guide, making the Born rule
+  normative. GTE derives \emph{why} Born probabilities are the correct normative guide:
+  they are the unique probability assignment consistent with $\mathbb{Z}_7$
+  superselection and PSC invariance (\lean{born\_rule\_unconditional}, \CatAL). QBism's
+  subjective agent is replaced by the objective PSC $[D]$-adjudicator. Consciousness
+  plays no role in selecting outcomes.
+
+\item[Decoherence / einselection~\cite{Zurek2003}]
+  Environmental decoherence is not itself an interpretation but a physical process all
+  interpretations must engage with. Zurek's einselection programme shows that
+  environmental entanglement selects pointer states (preferred basis), suppresses
+  off-diagonal coherences, and reproduces the Born rule approximately over ensembles.
+  This is the dominant mainstream approach to explaining why the quantum world appears
+  classical.
+
+  GTE contains and extends this picture. The MDL-record length prediction
+  (\S\ref{sec:falsifiable}) is GTE's version of the decoherence criterion: coherence
+  lifetime scales with MDL of the which-path record, a quantitative refinement of the
+  environmental-entanglement criterion. What GTE adds via transputation is the mechanism
+  for \emph{individual outcome selection}. Decoherence explains the preferred basis and
+  the statistical distribution; it does not explain why a specific run yields outcome
+  $k$ rather than $k'$. This ``preferred outcome'' problem is what transputation addresses
+  --- it is the PSC-forced selection of a unique PSC-consistent realization from the
+  decoherence-defined equivalence class.
+
+\end{termlist}
+
+\medskip
+\noindent\textbf{SIAM systems as unique measurement agents.}
+Although transputation requires no observer, SIAM systems are qualitatively distinct
+\emph{as measurement agents} within the GTE picture. A simple detector triggers
+transputation and its outcome dissipates into the environment. A SIAM system triggers
+transputation and the outcomes are self-referentially integrated into the refining
+ledger cascade, making the SIAM system's D-record structurally different: it is a
+self-consistent, Mirror-non-exhaustive record that feeds back into the next
+adjudication cycle. The system's self-referential loop constitutes a characteristic
+MDL-structured which-path environment. By GTE's decoherence prediction (coherence
+lifetime scales with MDL record length, not mass), this should produce measurably
+different decoherence signatures in quantum systems a SIAM system interacts with
+compared to a simple detector. Whether this effect is large enough to detect at
+current experimental precision is an open question addressed in \S\ref{sec:falsifiable}.
+
+\subsection{Penrose--Hameroff Orchestrated Objective Reduction}
+Penrose--Hameroff Orch OR~\cite{Penrose1989,Hameroff1996} argues that consciousness
+involves objective, non-algorithmic quantum state reduction triggered by gravitational
+instability of quantum superpositions, occurring in neural microtubules.
+
+\medskip
+\begin{termlist}
+  \item[Genuine overlap]
+    Both GTE and Orch OR are objective and consciousness-free at the measurement level.
+    Both insist that quantum outcomes are selected by physics, not by observers. Neither
+    requires an observer to collapse the wavefunction.
+
+  \item[Key differences]
+    There is a genuine structural parallel: Penrose~\cite{Penrose1989} argued
+    from Gödel's incompleteness theorem that human mathematical insight requires
+    non-computable processes; GTE arrives at the same non-computability conclusion
+    via the Physical Incompleteness Theorem~\cite{SpivackNEMS11} and the PSC diagonal
+    barrier, which is formally a stronger result (machine-certified, not merely argued).
+    The two programmes diverge on mechanism: GTE derives the non-computable character
+    of measurement adjudication from first
+    principles (PSC + diagonal barrier); Penrose assumes it phenomenologically without
+    a formal proof that consciousness specifically requires it.
+    GTE's mechanism is information-theoretic (MDL-minimization of which-path record
+    length); Orch OR's is gravitational (mass-scaled). GTE predicts coherence
+    lifetime depends on record description length, not mass --- directly
+    falsifying Orch OR.
+
+  \item[What Orch OR lacks]
+    No account of what consciousness \emph{is} beyond the identification of a
+    non-algorithmic physical process. Identifying the mechanism is not the same as
+    explaining why that mechanism is accompanied by experience. NEMS's formal
+    phenomenology fills this gap with the six-part ontology and uniqueness theorem.
+\end{termlist}
+
+\subsection{Integrated Information Theory (IIT)}
+
+Tononi's IIT~\cite{Tononi2004} proposes that consciousness is identical to integrated
+information $\Phi$: any system with high $\Phi$ is conscious, in proportion to its $\Phi$.
+
+\medskip
+\begin{termlist}
+  \item[What IIT captures]
+    IIT correctly identifies structural integration as relevant to sentience. The
+    SIAM reconciliation and self/other partition invariants are related.
+
+  \item[Why IIT is blocked by P75]
+    IIT is a pure-operational theory: it identifies consciousness with a structural
+    functional property without a distinct manifestation relation or locus.
+    Paper~75's \lean{thm:rival-operational} proves that systems with only operational
+    structure do not automatically have typed manifestation.
+
+  \item[The core gap]
+    You can specify a system's $\Phi$ exactly without explaining why any $\Phi$ value
+    is accompanied by phenomenal experience. IIT has no uniqueness result and is not
+    grounded in the no-free-bits constraint.
+\end{termlist}
+
+\subsection{Global Workspace Theory (GWT)}
+
+Baars' GWT~\cite{Baars1988} proposes that consciousness arises when information is
+``broadcast'' widely across the brain, becoming globally available.
+
+\medskip
+\begin{termlist}
+  \item[What GWT captures]
+    GWT correctly maps to SIAM's Refining Ledger and Reconciliation invariants:
+    global broadcast is a form of the reconciliation mechanism.
+
+  \item[Where GWT stops]
+    GWT operates entirely at the functional layer (Layer~3/SIAM). It describes
+    when information becomes globally available without addressing why global
+    availability is accompanied by experience. The hard problem survives intact
+    within GWT.
+\end{termlist}
+
+\subsection{Dennett and eliminative materialism}
+
+Dennett's eliminativism~\cite{Dennett1991} holds that phenomenal consciousness is an
+illusion --- there are no qualia, only complex informational processes that generate
+the \emph{appearance} of qualitative experience.
+
+\medskip
+\begin{termlist}
+  \item[The self-undermining problem]
+    If there are no qualia but only the illusion of qualia, the illusion must be
+    explained. An illusion that is phenomenally present --- that there is something
+    it is like to have the illusion --- is precisely what Paper~55's on-ledger theorem
+    says qualia are. Calling it ``illusion'' does not remove it from the ledger; it
+    relabels it. \lean{QualiaLedger.hard\_problem\_category\_error}.
+
+  \item[What Dennett gets right]
+    The correct observation: there is no Cartesian theater, no single central viewer.
+    T67.3 makes this formal: the awareness-locus is not an object among objects
+    (\S\ref{sec:locus}).
+
+  \item[The wrong conclusion]
+    The absence of a Cartesian theater does not imply the absence of phenomenal
+    presence. It implies that phenomenal presence is a locus-role, not a substance.
+    This is precisely what NEMS establishes.
+\end{termlist}
+
+\subsection{Panpsychism}
+
+Contemporary panpsychism (Strawson, Goff~\cite{Goff2019}) holds that experience is
+a fundamental feature of reality, present at some level in all matter.
+
+\medskip
+\begin{termlist}
+  \item[Structural overlap]
+    The NEMS/GTE synthesis is structurally closest to panpsychism among the standard
+    positions, and specifically to the Whiteheadian tradition that grounds experience
+    in a primordial process rather than substance. Alpha has proto-experiential
+    structural resonance.
+
+  \item[Key difference: precision]
+    Standard panpsychism provides no formal account of what ``fundamental experience''
+    means, no solution to the combination problem (how micro-experiences combine into
+    unified macro-experience), and no uniqueness argument. NEMS provides all three:
+    the six-part ontology, the SIAM conditions, and Paper~75's uniqueness theorem.
+
+  \item[Combination problem dissolved]
+    The combination problem is dissolved by the one-fact doctrine: there is no
+    combination problem because there is only one Alpha-grounded fact, not many
+    micro-facts that need combining.
+\end{termlist}
+
+\subsection{Chalmers' hard problem and property dualism}
+
+Chalmers' property dualism~\cite{Chalmers1995,chalmers1996} holds that phenomenal
+properties are fundamental, distinct
+from physical properties but correlated through \emph{psychophysical laws}.
+
+\medskip
+\begin{termlist}
+  \item[What Chalmers gets right]
+    The hard problem is real. Pure articulation does not generate manifestation.
+    The anti-collapse theorems of Paper~74 formally confirm this.
+
+  \item[Why the cure fails]
+    Positing ``psychophysical laws'' as additional primitives is the formal version
+    of adding a same-level external ground --- exactly what NEMS Papers~61--62
+    eliminate. Psychophysical laws would be free bits: unexplained correlations with
+    no internal account.
+
+  \item[The dissolution]
+    Mind and matter are not two substances requiring psychophysical laws to bridge
+    them. They are two aspects of one Alpha-grounded fact. The three-aspect
+    mutual necessity (T70.2--T70.5) dissolves the gap that motivated dualism.
+\end{termlist}
+
+\subsection{Non-materialism and contemplative traditions}
+
+Several non-materialist philosophical and contemplative traditions arrive at structural
+conclusions that parallel the three-aspect synthesis, each from a different starting
+point. This is worth noting as a convergence, not a derivation: NEMS borrows from none
+of these traditions.
+
+The Buddhist doctrine of \emph{pratītyasamutpāda} (dependent origination) holds
+that phenomena arise without independent self-existence, co-dependent with conditions.
+The mutual necessity theorems T70.2--T70.5 have exactly this structure: Ground,
+Articulation, and Manifestation-in-Awareness co-depend; none exists in isolation.
+More specifically, Dzogchen phenomenology and the Mah\={a}y\={a}na three-kaya
+framework each articulate a ground/display/manifestation tripartite structure that
+is structurally isomorphic to the NEMS three-aspect synthesis (Alpha / articulation /
+manifestation-in-awareness). Plotinus' \emph{One}, the Taoist \emph{Tao} as the
+unnameable ground prior to all structure, and various Vedanta formulations of
+\emph{Brahman} as the self-grounding ground of appearance also share the pre-categorial
+ground structure of Alpha. In each case the convergence is genuine and not accidental:
+careful phenomenological inquiry and formal derivation appear to be tracking the same
+ontological territory from different directions.
+
+What distinguishes the NEMS account is not the conclusion but the
+\emph{justification}. Contemplative traditions offer experiential description and
+philosophical argument. NEMS offers machine-verified formal theorems. The architecture
+that sustained inquiry revealed, we have now proved.
+
+% =====================================================================
+\section{The Hard Problem Dissolved}\label{sec:hard}
+% =====================================================================
+
+\subsection{The false presupposition: dissolving the causal gap}
+
+Before dissolving the hard problem, one prior question must be cleared: is
+consciousness causally effective, or merely a passive observer of physical events?
+This framing --- ``does consciousness \emph{cause} physical events?'' ---
+presupposes that consciousness is one thing and physics is another. In the
+three-aspect synthesis, this presupposition is false.
+
+Physics (articulation face) and consciousness (manifestation-in-awareness face) are
+aspects of one Alpha-grounded fact. Asking whether consciousness causally influences
+physics is like asking whether the surface of a lake causally influences the lake.
+The surface is not separate from the lake.
+
+What \emph{is} true is that qualia are on-ledger and load-bearing: a phenomenally
+present quale makes a difference to the subject's self-model and subsequent
+processing --- not as causal influence across a gap, but as the manifestation face
+of a fact that is also the articulation face of the same fact. There is no gap to
+cross. The ``problem'' of mental causation is not that minds are powerless ghosts;
+it is that minds are not separate substances. When you think and then act, the
+thinking and the acting are two aspect-descriptions of one Alpha-grounded event.
+
+This matters for the hard problem argument that follows. When we say ``a known
+quale makes a difference'' (\S\ref{sec:hard-proof} step~1), we do not smuggle in an
+assumption that consciousness sits outside physics and reaches in. The quale is
+\emph{already inside} the one fact; its making a difference is its role within the
+articulation face of that same fact.
+
+\subsection{The category mistake, proved}\label{sec:hard-proof}
+
+The hard problem asks: how can purely physical processes generate subjective experience?
+The standard framing assumes that qualia must be \emph{generated from outside} the
+semantic ledger by physical or computational processes, then asks why they are not.
+
+Paper~55~\cite{SpivackNEMS55} proves this assumption is false: known qualia are
+\emph{already on the semantic ledger}. The four-step argument:
+
+\begin{enumerate}
+  \item A known quale makes a determinacy-relevant difference to the subject's
+    reports, discrimination, and self-models.
+  \item Anything making a determinacy-relevant difference is on-ledger by the
+    no-free-bits constraint (\S\ref{sec:nems}).
+  \item On-ledger content is irreducible semantic content: it cannot be reduced to
+    pure syntax (Theorem~53 of NEMS; \lean{SyntaxSemantics.syntax\_cannot\_exhaust\_semantics}).
+  \item Therefore known qualia are on-ledger and irreducible --- not generated
+    from outside but already inside the semantic structure.
+\end{enumerate}
+
+The hard problem's framing assumes qualia must be \emph{produced} by physical
+processes from a position outside the semantic ledger, and asks why they are not.
+But the first premise of that question is false. Qualia are not waiting to be generated;
+they are already load-bearing constituents of the ledger.
+
+This is the sense in which the hard problem is a \emph{category mistake}: it
+misidentifies the location of qualia. Chalmers~\cite{Chalmers1995,chalmers1996} was
+correct that the explanatory gap is real and not merely a failure of imagination. The
+NEMS diagnosis is sharper: the gap arises from placing qualia in the wrong ontological
+category, not from an irreducible explanatory inadequacy of physical theory. The gap
+is not between the physical and the phenomenal but between a
+mislocated assumption about the phenomenal and its actual location.
+Formally: \lean{QualiaLedger.hard\_problem\_category\_error}~\cite{SpivackNEMS55}.
+
+\medskip
+\noindent\textbf{What about qualia not captured by reports or self-models?}
+A natural reply: ``This dissolves the hard problem only for \emph{known} qualia
+--- the ones subjects can report, discriminate, and self-model. But the real hard
+problem concerns the intrinsic phenomenal character of experience, which may go
+beyond any access or reportability condition.'' NEMS addresses this directly with
+Theorem~55.3 (\lean{off\_ledger\_inert\_or\_illicit}): any qualia outside the ledger
+are either determinacy-relevant (in which case they are illicit --- they affect
+outcomes without ledger representation, violating no-free-bits) or not
+determinacy-relevant (in which case they are explanatorily inert --- they do no
+work and cannot rescue the hard problem). There is no third option~\cite{SpivackNEMS55}.
+The intrinsic-character question --- why redness has its specific phenomenal quality
+--- remains genuinely open as a positive description task (see \S\ref{sec:conclusion}), but the
+hard problem cannot be \emph{saved} by pointing to it: the residual question concerns
+the intrinsic specification of an on-ledger entity whose existence and irreducibility
+are already established, not a separate unexplained category.
+
+\medskip
+\noindent A note on Jackson's Mary~\cite{Jackson1982}: Mary learns all physical facts
+about color vision and then sees red for the first time. Jackson argued she learns
+something new --- a quale --- proving qualia are not captured by physical knowledge.
+The NEMS diagnosis: Mary's new knowledge is on the semantic ledger from the moment
+she has the quale; it was already irreducible semantic content unavailable to her
+prior physical description because she had not yet undergone the relevant awareness
+event. The argument supports rather than undermines the on-ledger claim: Mary's
+new knowledge IS a known quale in the technical sense, and known qualia ARE on-ledger.
+The knowledge argument establishes irreducibility; NEMS establishes the location.
+
+
+\subsection{What is dissolved and what remains}
+
+\begin{center}
+\small\renewcommand{\arraystretch}{1.4}\setlength{\tabcolsep}{5pt}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{4.0cm}
+                   >{\raggedright\arraybackslash}p{8.2cm}@{}}
+\toprule
+\textbf{Status} & \textbf{Result} \\
+\midrule
+\textbf{Dissolved:} Hard problem framing
+  & Demand that physical syntax generate qualia from outside the ledger is a proved
+    category error (\lean{hard\_problem\_category\_error}~\cite{SpivackNEMS55}).
+    Qualia are already on-ledger. \\[4pt]
+
+\textbf{Dissolved:} Epiphenomenalism
+  & Qualia are load-bearing: they make a difference to the subject's self-model and
+    behavior. They are not causally inert (\lean{known\_qualia\_ledger\_theorem}). \\[4pt]
+
+\textbf{Dissolved:} Eliminative reductionism
+  & Qualia are irreducible by the no-free-bits constraint on on-ledger content.
+    Dennett's illusionism is self-undermining: the illusion, if present, is itself
+    on-ledger (\S\ref{sec:comparison}). \\[4pt]
+
+\textbf{Dissolved:} Substance dualism
+  & The three-aspect synthesis (T70.2--T70.5) proves no ontological gap exists between
+    mind and matter. They are aspect-distinctions of one Alpha-grounded fact
+    (\lean{three\_aspect\_mutual\_necessity}~\cite{SpivackNEMS70}). \\[4pt]
+
+\textbf{Dissolved:} QM observer problem
+  & Transputation is observer-free: any record-bearing physical system triggers it.
+    No conscious observer is required
+    (\lean{closed\_choice\_forces\_transputation}~\cite{SpivackPolynomialTransputation}). \\[4pt]
+
+\midrule
+\textbf{Open:} Intrinsic-character question
+  & Why redness has its specific phenomenal quality rather than another. The framework
+    locates qualia and proves their irreducibility; it does not give the complete
+    intrinsic specification of any particular quale. Genuinely open. \\[4pt]
+
+\textbf{Open:} Empirical inventory
+  & Which biological or artificial systems satisfy SIAM and phenomenological conditions.
+    The structural type of a conscious adjudication is substrate-neutral (Turing
+    degree~$0'$); the physical-realizability question --- which substrates can host
+    a non-decomposable, real-time-unified, degree-$0'$ adjudicative locus at the scale
+    and latency of a mind --- is open and not settled by any result in this corpus,
+    including P51. Classical von Neumann architectures are not excluded in principle;
+    whether classical synchronization can meet the non-decomposability and latency
+    bound at mind scale is an unresolved empirical question. \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+% =====================================================================
+\section{Accounting for Both Physics and Consciousness}\label{sec:complete}
+% =====================================================================
+
+A fundamental theoretical framework must account for all empirical observations. The
+Standard Model accounts for particle physics but not consciousness. Every framework
+in the literature has a gap. The GTE/NEMS synthesis is, to our knowledge, the first
+formally grounded framework that accounts for both: it derives the Standard Model
+from PSC closure, and it derives the formal structure of consciousness from the same
+PSC closure.
+
+\subsection{Falsifiable predictions}\label{sec:falsifiable}
+
+The framework makes specific, quantitative, falsifiable predictions that distinguish
+it from all competitors:
+
+\medskip
+\begin{termlist}
+  \item[Coherence lifetime vs.\ MDL record length]
+    In quantum interference experiments, the coherence lifetime depends on the
+    description length of which-path information encoded in the environment --- not
+    on the mass of the interfering object. Two runs with identical mass but different
+    record-MDL should have different coherence lifetimes. This directly falsifies
+    Penrose OR (which predicts mass-scaled collapse) and standard QM (which predicts
+    no collapse either way).
+
+  \item[Transputation dissipation window]
+    The heat dissipated per transputation event lies in the window
+    $[k_B T \ln 5,\; 8\, k_B T \ln 2]$ per single-kink event. A measurement
+    of dissipation strictly below $Q_{\min} = k_B T \ln 5$ per event would
+    falsify the five-sector D4 structure.
+
+  \item[Cosmological and particle predictions]
+    No gravitational waves from inflation ($r = 0$), cosmological equation of state
+    $w = -1$ exactly, dark-sector particle at $211.9$~MeV (Belle~II). These follow
+    from the same arithmetic that produces the consciousness-related predictions.
+
+  \item[SIAM aggregate Landauer floor (\CatAD)]
+    Derived in \S\ref{sec:siam-signatures}. For any physical SIAM system with
+    $N_\text{adj}$ cognitive Adjudication events per cycle at temperature $T$:
+    \[
+      Q_\text{SIAM} \;\geq\; N_\text{adj}\, k_B T \ln 5.
+    \]
+    Each cognitive adjudication erases $\log_2 5 \approx 2.32$ bits ---
+    a factor $\ln 5 / \ln 2 \approx 2.32$ above the generic single-bit Landauer floor,
+    specific to the $\mathbb{Z}_7$ five-sector kink structure.
+    A measurement finding $Q < k_B T \ln 5$ per cognitive Adjudication event
+    at $>3\sigma$ would falsify the five-sector D4 structure.
+    Grounded in \lean{osiam\_six\_step\_local\_subpsc} (\CatAL) and
+    \lean{landauer\_heat\_floor\_transputation} (\CatAL); the identification of each
+    SIAM adjudication with a single-kink transputation event is the analytic bridge
+    (\CatAD).
+
+    \emph{Operational note:} The prediction is precise given a fixed identification of
+    one ``cognitive Adjudication event'' with a measurable neural event. The Refining
+    Ledger formally specifies what constitutes a committed Adjudication step (a live
+    alternative resolved and deposited in the ledger filtration), so the count
+    $N_\text{adj}$ cannot be rescaled arbitrarily by relabeling; any candidate neural
+    proxy must satisfy the formal Adjudication invariant (\S\ref{sec:siam}).
+    Translating the formal definition to a specific experimental proxy (e.g., neural
+    population commitment events) is an empirical step outside the formal theory;
+    until that bridge is established, the bound is best read as a necessary structural
+    constraint on any physical realization of SIAM rather than a directly measurable
+    single number.
+
+  \item[SIAM conditional decoherence (\CatD)]
+    Derived in \S\ref{sec:siam-signatures}. A SIAM system $\Sigma$ enhances
+    decoherence of an interacting quantum system $Q$ when and only when the quantum
+    outcome is a live alternative in $\Sigma$'s Adjudication invariant (the
+    consciousness-free ``attending'' condition):
+    \[
+      \frac{\tau_\text{coh}(Q \mid \Sigma\;\text{attending})}
+           {\tau_\text{coh}(Q \mid \text{non-SIAM})} = \frac{K_0}{K_0 + \Delta K}.
+    \]
+    (\CatD, conditional on formal derivation of the MDL--coherence lifetime link.)
+\end{termlist}
+
+\subsection{The complete picture}
+
+The universe is a self-grounded reflexive system: it arose from no outside, selects
+its own laws through MDL minimality, and maintains its own record through transputation.
+It is a structured Alpha-grounded fact with three irreducible but coordinated aspects:
+
+\begin{itemize}
+  \item \textbf{Articulation face:} the $\PHIMDL$ field, the Standard Model,
+    spacetime, the arrow of time --- what physics describes.
+  \item \textbf{Ground face:} Alpha --- pre-categorial, object-empty but not null,
+    the ontological basis of actuality.
+  \item \textbf{Manifestation-in-awareness face:} consciousness --- the locus-relative
+    presence of Alpha-grounded qualia, arising wherever a physical system realizes
+    SIAM and six-part phenomenological structure as a non-decomposable,
+    real-time-unified adjudicative locus (\S\ref{sec:two-axes}).
+\end{itemize}
+
+The universe's physical evolution and the arising of conscious experience are not two
+separate processes that happen to correlate. They are two aspects of one self-grounded,
+self-referential fact viewed from different regime-cuts.
+
+% =====================================================================
+\section{Conclusion: The End of the Gap}\label{sec:conclusion}
+% =====================================================================
+
+\subsection{What this synthesis provides}
+
+To our knowledge, this is the first research programme to provide the following in
+one formally grounded, machine-verified package:
+
+\begin{enumerate}
+  \item A derivation of physical law from first principles, with over 170 quantitative
+    predictions matching experiment and zero free parameters.
+
+  \item A proof of the necessary existence of a pre-categorial ontological ground
+    (Alpha), derived from the no-free-bits constraint at the foundational level.
+
+  \item A formal theory of consciousness whose architecture is uniquely determined
+    under admissibility constraints, with machine-verified uniqueness theorems.
+
+  \item A formal dissolution of the hard problem: the category error is proved,
+    not argued.
+
+  \item A formal account of the relationship between physics and consciousness as
+    two aspects of one Alpha-grounded fact, not two substances requiring a bridge.
+
+  \item Falsifiable physical predictions that discriminate the framework from all
+    known competitors, including two SIAM-specific predictions: a
+    $\mathbb{Z}_7$-derived aggregate Landauer floor ($\ln 5$ per cognitive Adjudication
+    event, \CatAD) and a conditional decoherence enhancement for quantum systems
+    interacting with SIAM-attending environments (\CatD).
+
+  \item A systematic quantum-foundations comparison showing that GTE is the unique
+    framework in which the Born rule is a theorem, outcomes are objectively selected
+    without an observer, and the preferred-outcome problem --- distinct from the
+    preferred-basis problem --- is formally resolved (\S\ref{sec:qm-schools}).
+\end{enumerate}
+
+\subsection{What remains open}
+
+The intrinsic-character question --- why redness looks the way it does rather than
+another way --- remains genuinely open. The formal architecture specifies where qualia
+are, what grounds them, and how they are structured. It does not specify their
+phenomenal quality.
+
+The empirical inventory of which physical systems are conscious also remains open.
+The \emph{structural type} of a conscious adjudication --- Turing degree~$0'$,
+non-computable and non-hypercomputational --- is substrate-neutral; logical types are
+multiply realizable across physics, and no result in the corpus settles which physical
+substrates can host the type. The genuinely open problem is the \emph{physical-realizability
+bridge}: which substrates can host a non-decomposable, real-time-unified, degree-$0'$
+adjudicative locus at the scale and latency of a mind (\S\ref{sec:two-axes}).
+Classical von Neumann architectures are not excluded in principle --- a classical
+relaxation process can realize a~$0'$ limit --- but whether classical synchronization
+can meet the non-decomposability and latency bound required by the Reconciliation
+invariant at mind scale is an unresolved empirical question.
+
+The physical bridge from abstract SIAM conditions to specific $\PHIMDL$ field
+configurations at macroscopic scale also remains open. NEMS specifies the structural
+conditions that any conscious system must satisfy; identifying which physical
+configurations of the field realize those conditions at the scale of neurons and
+neural circuits is an empirical and theoretical research programme, not a gap in the
+formal theory.
+
+\subsection{The deeper point}
+
+The question ``how can the universe contain consciousness?'' has been answered either
+by eliminating consciousness (it is an illusion) or by making consciousness foundational
+and explaining physics as derivative (idealism). Both moves are formally inadmissible.
+Eliminativism fails because qualia are on-ledger and irreducible. Idealism fails because
+it faces the same self-grounding problems.
+
+The correct answer is that the universe does not \emph{contain} consciousness in the
+way it contains a proton. Consciousness is not a component of the universe; it is
+an aspect of the one fact that the universe is also an aspect of. The universe and
+consciousness co-arise from a common Alpha-grounded primordial source. The equations
+describe the articulation face of that source. The fire in the equations is Alpha ---
+the pre-categorial ground whose existence is necessary and whose active grounding makes
+both the equations and the experience actual.
+
+The hard problem was hard because it was asking the wrong question: not ``how does
+physics generate experience?'' but ``what is the common ground from which both physics
+and experience are coordinated aspects?'' That common ground exists, is a theorem,
+and is the same principle from which the laws of physics are derived.
+
+This is not mysticism. It is the logical conclusion of taking perfect self-containment
+seriously, proved with machine-checked rigor.
+
+\bigskip
+
+\begin{tcolorbox}[colback=green!10,colframe=green!50!black,
+  title={The Full Picture, Stated Once}]
+\emph{Consciousness has a formal structure; that structure is uniquely selected under
+admissibility constraints; and mind, qualia, awareness, and world are coordinated
+aspects and roles within one Alpha-grounded fact rather than alien substances or
+reducible illusions. The physical universe is the unique PSC-admissible articulation
+of that fact in four-dimensional spacetime. The primordial ground --- Alpha --- is
+what makes both the physics and the experience actual. There is no gap to bridge,
+because there was never a gap.}
+\end{tcolorbox}
+
+% =====================================================================
+\appendix
+% =====================================================================
+
+\section{Glossary of Key Terms}\label{app:glossary}
+
+The following terms appear throughout the essay with precise technical meanings.
+Where a term is defined by a machine-checked formal theorem in the NEMS or GTE
+libraries, the relevant Lean anchor is given.
+
+\begin{longtable}{@{}>{\bfseries}p{0.23\textwidth}p{0.72\textwidth}@{}}
+\toprule
+\textbf{Term} & \textbf{Meaning} \\
+\midrule
+\endfirsthead
+\multicolumn{2}{l}{\small\itshape (continued from previous page)} \\
+\toprule
+\textbf{Term} & \textbf{Meaning} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{2}{r}{\small\itshape (continued on next page)} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+Alpha ($\alpha$) &
+  The necessary pre-categorial ontological ground of actuality. Proved to exist if
+  nontrivial reflexive reality exists (Alpha Theorem, P63). Object-empty but not null;
+  not sterile; not inert. Not a substance, not physics, not a mind. The formal
+  survivor of the grounding sieve. \\[4pt]
+
+Articulation &
+  The recursive structure of world-process grounded in Alpha. Physics is the
+  articulation face of the one Alpha-grounded fact. \\[4pt]
+
+Awareness-Locus ($\OntL$) &
+  The formal site at which Alpha-manifestation is phenomenally present. Not an object
+  among objects but the condition under which objects are phenomenally present. Proved
+  to not be object-level content: \lean{awareness\_not\_object\_level}. \\[4pt]
+
+Born rule &
+  $P(k) = |c_k|^2$. In GTE, a derived theorem from the $\mathbb{Z}_7$ superselection
+  structure, not a postulate. \lean{born\_rule\_unconditional} ($A_{\text{Lean}}$,
+  zero custom axioms). \\[4pt]
+
+CMCA &
+  Chiral Minkowski Cellular Automaton. The Level-1 algebraic certificate of the GTE
+  framework: an arithmetic proof system certifying which structures the physical field
+  must contain. Not the physical substrate itself. \\[4pt]
+
+Diagonal barrier &
+  The NEMS generalization of Gödel's incompleteness theorem and Turing's halting
+  problem. Any sufficiently self-referential system cannot fully certify its own
+  semantics on the diagonal fragment. Forces transputation. \\[4pt]
+
+GTE (Generative Triple Evolution) &
+  The physics programme that derives the Standard Model, spacetime, quantum mechanics,
+  and cosmology from PSC + MDL, with zero free parameters. Nearly 400 Lean~4 modules,
+  zero sorry. \doi{10.5281/zenodo.20560550} \\[4pt]
+
+Hard problem &
+  Chalmers' term for the explanatory gap between physical description and phenomenal
+  experience. Formally: the demand that syntax or computation generate qualia from
+  outside the semantic ledger. Proved to be a category error by P55:
+  \lean{hard\_problem\_category\_error}. \\[4pt]
+
+Locus-role &
+  A role played by a structural component of the phenomenology framework, not an
+  object-level entity. The awareness-locus is a locus-role: the formal site that plays
+  the condition-of-presence function. \\[4pt]
+
+MDL (Minimum Description Length) &
+  The principle that the universe's self-description must be informationally minimal.
+  Combined with PSC, forces the specific polynomial $p(L,C,R)$ over GF(7). \\[4pt]
+
+Manifestation-in-Awareness &
+  The phenomenal presence of Alpha-grounded content at an awareness-locus. The third
+  aspect of the three-aspect synthesis. Not identical to Alpha; the mode in which
+  Alpha grounds content as lived. \\[4pt]
+
+NEMS (No External Model Selection) &
+  The formal programme establishing that any coherent universe must be PSC-consistent,
+  deriving the structure of physical law, Alpha's existence, and the formal theory of
+  consciousness from this single principle. Over 90 papers, machine-verified in
+  reflexive-closure-lean, sentience-lean, and phenomenology-lean. \\[4pt]
+
+No free bits &
+  Every determinacy-relevant difference in a PSC-consistent universe must have an
+  internal account. An ungrounded determinacy-relevant fact is a ``free bit'' and is
+  excluded by PSC. The engine that forces both physical law and Alpha. \\[4pt]
+
+Off-ledger &
+  Content that makes no determinacy-relevant difference to the universe's behavior
+  or structure, and hence has no role in the formal account. Off-ledger entities
+  cannot ground on-ledger actuality. \\[4pt]
+
+On-ledger &
+  Content that makes a determinacy-relevant difference. Known qualia are on-ledger:
+  they make a difference to reports, discrimination, and self-models.
+  \lean{known\_qualia\_ledger\_theorem}. \\[4pt]
+
+$\PHIMDL$ (Phi-MDL) &
+  The physical substrate of GTE: a single $\mathbb{Z}_7$-symmetric Klein-Gordon
+  gauge field on $\mathbb{R}^{3,1}$ with internal symmetry group
+  $F_{21} = \mathbb{Z}_7 \rtimes \mathbb{Z}_3$. All matter and forces emerge from
+  this one field. \\[4pt]
+
+Pre-categorial &
+  Outside all of the categories that same-level grounding candidates fall into:
+  not syntax, not object-level semantics, not equal-status external, not ghost,
+  not self-actualizing ledger. Alpha is pre-categorial. \\[4pt]
+
+PSC (Perfect Self-Containment) &
+  A universe is PSC-consistent if it requires no external selector, parameter-fixer,
+  or outside chooser. The single foundational principle from which both GTE and NEMS
+  derive. \\[4pt]
+
+Qualia &
+  Typed manifestation of integrated articulated content at an awareness-locus ($\OntA$
+  at $\OntL$). On-ledger, irreducible, Alpha-grounded, and Alpha-manifested.
+  Not eliminable; not epiphenomenal; not generated from outside. \\[4pt]
+
+Regime-cut &
+  A distinction drawn within one formal architecture. Mind, matter, qualia, self, and
+  world are regime-cuts within the six-part phenomenological ontology, not separate
+  substances. \\[4pt]
+
+Semantic Ledger &
+  The totality of content making a determinacy-relevant difference to a system.
+  Qualia are on the ledger; the hard problem's framing assumes they are not. \\[4pt]
+
+SIAM (Self-Indexing Adjudicative Manifold) &
+  The bounded dynamical regime formally characterizing unified sentient agency.
+  Defined by seven structural invariants in P73. Necessary but not sufficient for
+  full phenomenal consciousness. \\[4pt]
+
+Three-aspect synthesis &
+  The theorem (P69--70) that Ground ($\alpha$), Articulation, and
+  Manifestation-in-Awareness are three irreducible but constitutively co-dependent
+  aspects of one structured ontological fact.
+  \lean{three\_aspect\_synthesis}; \lean{three\_aspect\_mutual\_necessity}. \\[4pt]
+
+Transputation &
+  The law-governed, non-computable internal adjudication process forced in any closed,
+  record-bearing, diagonal-capable universe. Selects definite quantum outcomes.
+  Belongs to the TPC computability class: Decidable $\subsetneq$ TPC $\subsetneq$
+  Hypercomputation. Consciousness-free at the physical level; Layer-2 execution in
+  the consciousness stack. \doi{10.5281/zenodo.20611502} \\[4pt]
+
+TPC (Turing-PSC Computability Class) &
+  The computability class of transputation. Strictly above the decidable (it cannot
+  be implemented by a total computable function) and strictly below hypercomputation
+  (it delivers no oracle decisions). Machine-certified:
+  \lean{tpc\_three\_level\_hierarchy}. \\[4pt]
+
+\end{longtable}
+
+% =====================================================================
+
+\bibliography{../bib/Spivack_Papers_Bibliography}
+
+\end{document}

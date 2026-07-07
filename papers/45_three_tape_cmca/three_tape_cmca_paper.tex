@@ -1,0 +1,3300 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  The Three-Tape Chiral Minkowski Cellular Automaton:
+%  Spacetime, Particles, and Gravity from a Shared Clock Protocol
+%
+%  Nova Spivack --- May 2026
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt]{article}
+
+% ===================== PREAMBLE =====================
+\usepackage[margin=1in]{geometry}
+\usepackage{authblk}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\allowdisplaybreaks
+\setlength{\abovedisplayskip}{6pt}
+\setlength{\belowdisplayskip}{6pt}
+\setlength{\abovedisplayshortskip}{4pt}
+\setlength{\belowdisplayshortskip}{4pt}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{tikz}
+\input{../common/tikz_cmca_styles.tex}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+\usepackage{cite}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{breakable}
+\usepackage{tabularx,ragged2e,array}
+\usepackage{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage[toc]{appendix}
+\usepackage{float}
+\usepackage{placeins}
+\usepackage{multicol}
+
+\setlength{\emergencystretch}{3em}
+\raggedbottom
+
+\newcolumntype{P}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+\graphicspath{{artifacts/}{figures/}{./}}
+
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black}
+\input{nova_zenodo_doi_placeholder}
+
+% ── Theorem environments ──────────────────────────────────────────────────────
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{openprob}[theorem]{Open Problem}
+
+% ── Convenience macros ────────────────────────────────────────────────────────
+\newcommand{\UGP}{\text{UGP}}
+\newcommand{\GTE}{\text{GTE}}
+\newcommand{\MDL}{\text{MDL}}
+\newcommand{\PSC}{\text{PSC}}
+\newcommand{\PHIMDL}{\Phi_{\mathrm{MDL}}}
+\newcommand{\ZS}{\mathbb{Z}_7}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\lean}[1]{%
+  \penalty-100
+  \begingroup\def\_{\textunderscore\allowbreak}\texttt{#1}\endgroup}
+\newcommand{\sinwsq}{\sin^2\!\theta_W}
+\newcommand{\Mw}{M_W}
+\newcommand{\Mz}{M_Z}
+\newcommand{\Ngen}{N_{\rm gen}}
+\newcommand{\cH}{c_H}
+\newcommand{\vPSC}{v_{\rm PSC}}
+\newcommand{\epsz}{\varepsilon_0}
+\newcommand{\Mkink}{M_{\rm kink}}
+\newcommand{\mtau}{m_\tau}
+\newcommand{\mphi}{m_\varphi}
+\newcommand{\Tmunu}{T_{\mu\nu}}
+\newcommand{\Gmunu}{G_{\mu\nu}}
+\newcommand{\GN}{G_N}
+\newcommand{\MPl}{M_{\rm Pl}}
+\newcommand{\MPltot}{M_{\rm Pl}^{\GTE}}
+\newcommand{\fmdl}{f_{\rm MDL}}
+\newcommand{\LL}{\mathcal{L}}
+\newcommand{\FTT}{\mathcal{F}_{21}}
+
+% ── Status badge macros — math-mode safe ──────────────────────────────────────
+\newcommand{\CatA}{\textbf{A}}
+\newcommand{\CatAL}{\ensuremath{\textbf{A}_{\rm Lean}}}
+\newcommand{\CatAMDL}{\ensuremath{\textbf{A}_{\rm MDL}}}
+\newcommand{\CatAD}{\textbf{A/D}}
+\newcommand{\CatB}{\textbf{B}}
+\newcommand{\CatD}{\textbf{D}}
+
+% ── Three-tape CMCA macros ────────────────────────────────────────────────────
+\newcommand{\CMCA}{\text{CMCA}}
+\newcommand{\tauc}{\tau_c}
+\newcommand{\taucout}{\tau_c^{\rm out}}
+\newcommand{\taucratio}{\tau_{\rm inner}/\tau_{\rm outer}}
+\newcommand{\PMDL}{S_{\rm PMDL}}
+\newcommand{\poly}{p(L,C,R)}
+\newcommand{\polyform}{C+R-CR-LCR}
+\newcommand{\winding}[1]{w_{#1}}
+\newcommand{\ether}{\mathbf{e}}
+\newcommand{\FF}{\mathrm{GF}}
+
+\begin{document}
+
+\title{\textbf{The Three-Tape Chiral Minkowski Cellular Automaton:
+Spacetime, Particles, and Gravity from a Shared Clock Protocol}}
+
+\author{Nova Spivack}
+\affil{Independent Researcher}
+\date{May 2026}
+\maketitle
+
+\NovaZenodoAfterTitle
+
+%─────────────────────────────────────────────────────────────────────────────
+\begin{abstract}
+We introduce the three-tape Chiral Minkowski Cellular Automaton ($\CMCA$):
+three one-dimensional $\CMCA$s sharing a single outer clock period $\taucout$,
+each with chiral Rule~110 and Rule~124 layers gated by an inner $\tauc$ clock.
+We prove the \textbf{Dimensional Protocol Principle} (DPP): this shared clock
+is necessary and sufficient for 3+1D dynamics. Without it the tapes evolve as
+independent 1+1D systems; with it they realize a single 3+1D spacetime.
+
+Under the DPP construction, uniform winding triples recover the full Standard
+Model particle spectrum via $\ZS$ winding conservation, with all 33
+charged-current vertices verified. Color confinement, baryon number as a
+topological charge, and three-tape holographic information scaling (realizing
+Bekenstein--Hawking area scaling) are machine-certified in Lean~4 with zero
+\texttt{sorry}.
+
+The clock ratio $\taucratio = 3/7 \approx 0.4286$ provides a built-in
+time-dilation mechanism, analytically derived from the ether proper-time rate.
+Rule~110 carries right-chirality and Rule~124 left-chirality, realizing the
+$V{-}A$ structure of the weak interaction.
+
+Gravitational attraction arises from cross-tape PMDL minimization. The
+variational equation $\delta\PMDL/\delta\Phi = 0$ yields Newtonian gravity in
+the continuum limit, derived analytically from the 3D Poisson Green's function.
+The vacuum is Ricci-flat and the Gorard normalization constant
+$C_{\rm Gorard} = 3/32$ is exact; both are machine-certified in Lean~4 with
+zero \texttt{sorry}.
+
+The $\tau_c$ clock is a valid Page--Wootters clock, deriving the Born rule from
+the timeless universe state. Cross-tape gravitational coupling generates Bell
+nonlocality with exact CHSH parameter $S = 2.4459$ ($86.5\%$ of the Tsirelson
+bound), rigorously excluding all local hidden-variable models. Gravity and
+quantum entanglement are co-generated by the same 19-bit polynomial.
+
+All structures — spacetime, matter, gravity, and quantum mechanics — emerge
+simultaneously from the single 19-bit polynomial $p(L,C,R)=C+R-CR-LCR$ over
+$\FF(7)$ (\textbf{Single-Source Principle}, a consequence of MDL minimality).
+Falsifiable predictions: $r=0$ and $\delta_{CP} = 205.71^\circ$.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+%─────────────────────────────────────────────────────────────────────────────
+%  Claims box
+%─────────────────────────────────────────────────────────────────────────────
+\begin{tcolorbox}[colback=orange!8,colframe=orange!60!black,
+  title={\textbf{What this paper claims}},
+  fonttitle=\bfseries,left=6pt,right=6pt,top=5pt,bottom=5pt,breakable]
+\small
+\textbf{Machine-certified (Lean~4, zero \texttt{sorry}):}
+\begin{itemize}[noitemsep,topsep=2pt]
+  \item \textbf{[DPP]} Shared outer clock $\taucout$ is necessary and sufficient
+        for 3+1D dynamics; three tapes without shared clock give three independent
+        1+1D systems
+        (\lean{dimensional\_protocol\_principle\_master}).
+  \item \textbf{[3+1D Minkowski]} Tensor product of three 1+1D $\CMCA$s with
+        shared $\taucout$ gives $\mathbb{R}^{3,1}$ Minkowski structure
+        (\lean{cmca\_tensor\_product\_gives\_31d\_minkowski}).
+  \item \textbf{[Vacuum fixed point]} $w{=}0$ is the unique fixed point of
+        $p(x,x,x) \equiv x \pmod{7}$; 5 is not a quadratic residue mod~7
+        (\lean{vacuum\_unique\_fixed\_point\_z7}).
+  \item \textbf{[PMDL gravity MDL-unique]} The Poisson equation
+        $\nabla^2\Phi = G_{\rm eff}\,p(w_x,w_y,w_z)$ is the MDL-unique
+        gravitational coupling for the $\CMCA$
+        (\lean{unique\_cubic\_gravity\_coupling}).
+  \item \textbf{[Ricci-flat vacuum]} Ether state $W_1 = 1$ implies Gorard
+        curvature $\kappa = 0$
+        (\lean{three\_tape\_gorard\_vacuum\_ricci\_flat}).
+  \item \textbf{[Causal diamond]} $V(T) = T^4/4$; boundary
+        $\propto \mathrm{Vol}(S^3) = 2\pi^2$
+        (\lean{three\_tape\_causal\_diamond\_t4}).
+  \item \textbf{[Lorentz algebra]} All 12 so$(1,3)$ commutation relations,
+        including Thomas precession $[K_x,K_y]=-J_z$
+        (\lean{lorentz\_algebra\_complete}, 12/12 zero sorry).
+  \item \textbf{[Fermion/boson split]} Fermionic SM sectors $\{2,4,6\}$ are the
+        non-primitive roots of $\ZS^*$; $W^+$ sector $\{3\}$ is the unique
+        primitive root
+        (\lean{gte\_winding\_identifies\_charged\_fermions}).
+  \item \textbf{[Fermionic statistics chain]} Zero-sorry fermionic statistics
+        from $\ZS^*$ structure
+        (\lean{gte\_triple\_kink\_exchange\_statistics}).
+  \item \textbf{[Rule124 chirality]} Rule~124 $=$ Rule~110 reflected; V--A
+        chiral structure certified
+        (\lean{rule124\_eq\_rule110\_reflected}).
+  \item \textbf{[Color confinement]} $\Delta K = \log_2 9$ from MDL; colored
+        states are MDL-forbidden asymptotic states
+        (\lean{color\_confinement\_k\_extra\_pos}).
+  \item \textbf{[Baryon number]} $B = (1/3)\sum_j \chi_q(w_j)$ is a topological
+        charge; $B$ conserved at all 33 SM vertices
+        (\lean{gte\_baryon\_number\_topological\_charge}).
+  \item \textbf{[Charge from polynomial]} $3Q(w) = p(0,w,0) = w$; electric
+        charge as a center projection of the GTE polynomial
+        (\lean{gte\_charge\_is\_linear\_projection}).
+  \item \textbf{[Holographic scaling]} Three 1D arrays of length $L$ encode 3+1D physics with
+    $|\mathcal{S}|=7^{3L}$; ratio $3/L^2\to0$ as $L\to\infty$ (CatAL):
+    \lean{three\_tape\_state\_card}, \lean{holographic\_ratio\_vanishes},
+    \lean{three\_tape\_holographic\_L7}.
+  \item \textbf{[Tape role asymmetry]} $p(w,0,0)=0$ for all $w$ (tape~$x$ alone gives no
+    gravitational source); $p(0,w,0)=w$ (electromagnetic (EM) charge = degree-1 center projection);
+    $p$ is not additively separable (CatAL):
+    \lean{l\_tape\_zero\_source}, \lean{tape\_role\_asymmetry},
+    \lean{non\_separability\_witness}, \lean{gravity\_requires\_cross\_tape\_coordination}.
+  \item \textbf{[SRRG--CA bridge]} (SRRG = Self-Referential Renormalization Group)
+    $1/\phi = (\sqrt{5}-1)/2$ is the unique positive root of
+    $p(x,x,x)=x$ over $\mathbb{R}$; the golden ratio is the GTE polynomial's own
+    self-similar fixed point (CatAL): \lean{gte\_poly\_srrg\_bridge}.
+\end{itemize}
+\textbf{Analytically derived (CatAD):}
+\begin{itemize}[noitemsep,topsep=2pt]
+  \item PMDL variational equation yields Poisson gravity: $\nabla^2\Phi = G_{\rm
+        eff}\,p(w_x,w_y,w_z)$.
+  \item Gorard coarse-graining coefficient: $C_{\rm Gorard} = N_{\rm spatial}/(2D^2)
+        = 3/32 = 0.09375$ (exact).
+  \item Normalization gap: $(M_{\rm Pl}/m_{\rm kink})^4 \times C_{\rm Gorard}
+        = 10^{77.46}$ (within $8.5\%$ of target).
+  \item $W^+$ propagator $G_W(r) = e^{-m_W r}/(4\pi r)$ from universal massless
+        propagator extended massive.
+  \item $\mathrm{SU}(2)_L$ [special unitary group] MDL gauging ($\CatAL$; zero named axioms;
+        \lean{su2l\_l2\_from\_phimdl\_potential\_catad}).
+\end{itemize}
+\textbf{Computationally verified (CatA, reproducible; scripts in Appendix~B):}
+\begin{itemize}[noitemsep,topsep=2pt]
+  \item SM particle spectrum from uniform triples $(w,w,w)$; all 33 SM $\ZS$
+        vertices conserved.
+  \item Special-relativistic (SR) time dilation: $\taucratio = 3/7 \approx 0.4286$.
+  \item Gravitational force law: $F\propto b^{-2.23}$ (Poisson-kernel, CatA) and
+        $F\propto b^{-2.46}$ at $\alpha=0.1$ (CA-native clock-gradient, CatA);
+        continuum limit $F = G_{\rm eff}M/(4\pi b^2)\cdot[1+O(\sigma_{\rm AL}/b)^2]$
+        exactly Newtonian (CatAD); three mechanisms equivalent (CatAD).
+  \item Bell nonlocality $S = 2.4459$ ($86.5\%$ Tsirelson bound), LHV excluded;
+        entanglement negativity $\mathcal{N} = 0.24$; $\tau_c$ valid PW clock (CatAD).
+  \item Permanent $\CMCA$ solitons via ether-period-14 resonance, stable to
+        $T = 500$.
+  \item Gorard curvature: $\kappa_{\rm EE} = 0$ (ether),
+        $\kappa_{\rm SD} > 0$ (matter).
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=blue!5,colframe=blue!40!black,
+  title={\textbf{What this paper does NOT claim}},
+  fonttitle=\bfseries,left=6pt,right=6pt,top=5pt,bottom=5pt,breakable]
+\small
+\begin{itemize}[noitemsep,topsep=2pt]
+  \item That the cellular automaton (CA) is the physical substrate ($\PHIMDL$ is
+        the Level~2 physical substrate --- see~\cite{SpivackCompleteness,SpivackQGR}).
+        The identification of any finite CA as the substrate is proved impossible:
+        $\varepsilon(M) = \pi^2/(3M^2)>0$ for all finite $M$
+        (\lean{no\_finite\_ca\_exact\_lorentz\_replica}, $\CatAL$).
+  \item That the 3+1D geometric limit is fully proved: vacuum spatial
+        Gromov--Hausdorff convergence is \CatAL{}
+        (\lean{vacuum\_cmca\_gh\_converges\_to\_flat\_space}); the normalization gap
+        $(M_{\rm Pl}/m_{\rm kink})^4 \times C_{\rm Gorard} = 10^{77.46}$ is
+        characterized but not closed;         matter-sector and Lorentzian GH convergence
+        are open formal certificates (OQ-QG-1b, OQ-QG-1c), not theoretical gaps:
+        the Einstein equations are independently established by MDL--Lovelock (\CatAD).
+  \item That fermionic statistics are fully derived at Level~2 ($\Phi_{\rm MDL}$):
+        the Braid Atlas spin-statistics mechanism (exchange phase $-1$ for $w\in\{2,4,6\}$)
+        requires the axiom \lean{spinor\_exchange\_equals\_2pi\_rotation}; the Lorentzian
+        geometry library needed to prove $\pi_1(\mathrm{SO}(3))=\mathbb{Z}/2\mathbb{Z}$ in
+        Lean is under construction.
+  \item That SO$(1,3)$ group generation from the Lie algebra is Lean-certified:
+        all 12 commutation relations are certified; Lie's second theorem step
+        (Mathlib gap) is not.
+  \item That the Cosmic Microwave Background (CMB) spectral tilt $n_s = 0.96488$ is fully derived:
+        all ingredients are now machine-certified in Lean~4 (14 zero-sorry
+        theorems; \lean{ns\_from\_binary\_holographic\_rate} and related;
+        $-0.005\sigma$ from Planck~2018).
+  \item That the $\CMCA$ soliton carries a statically conserved $w\neq 0$ $\ZS$
+        charge at all times: ether-resonance solitons are permanent, but their
+        winding oscillates; statically charged topological solitons are Level~2
+        objects.
+\end{itemize}
+\end{tcolorbox}
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Introduction}
+\label{sec:intro}
+%─────────────────────────────────────────────────────────────────────────────
+
+The problem of emergent spacetime — deriving 3+1D Lorentzian geometry from a
+more primitive microscopic structure — is among the oldest open questions in
+fundamental physics. Existing approaches divide broadly into two families.
+Discrete quantum gravity approaches (loop quantum gravity, causal dynamical
+triangulations, spin-foam models) impose background independence as an axiom
+and seek a continuum limit, but the continuum limit remains
+non-trivially connected to the Hilbert spaces of general relativity only in
+special cases. Unified-field approaches (superstring theory, M-theory)
+embed 3+1D physics in higher-dimensional geometries and derive the low-energy
+effective theory through compactification, but require an exponentially large
+landscape of vacua with no known selection principle.
+
+A third possibility, pursued in the Generative Triple Evolution (GTE)
+/ $\PHIMDL$ programme \cite{SpivackCMCA,SpivackPhiMDLField,SpivackCompleteness},
+is constructive: to write down an explicit, minimal discrete
+dynamical system from which 3+1D spacetime, the Standard Model (SM)
+particle spectrum, gravitation, and quantum mechanics all emerge with zero
+free parameters. The organizing principle is Minimum Description Length (MDL):
+the physical vacuum is the state that minimizes information content, and every
+derived structure — spacetime, particles, forces — is a consequence of this
+single requirement applied to the simplest non-trivial mathematical object
+satisfying it.
+
+\subsection{\texorpdfstring{Prior Results in the UGP Physics programme}{Prior Results in the UGP Physics programme}}
+
+Papers P41--P44 of the UGP Physics programme~\cite{SpivackResearchProgrammes} have established the following:
+
+\textbf{P41 \cite{SpivackCMCA}:} The three-layer Chiral Minkowski Cellular
+Automaton ($\CMCA$) is constructed from Rule~110 (right-chiral) and Rule~124
+(left-chiral) outer layers gated by an inner $\tauc$ clock. The one-tape
+$\CMCA$ exhibits Class~4 dynamics with sustained gliders, a built-in clock
+ratio $\taucratio < 1$ producing discrete Lorentz time dilation, and a
+$\mathbb{Z}_7$ winding number structure encoding SM quantum numbers.
+In P41, ``layer'' refers to one of these three coupled binary arrays within
+a \emph{single} $1+1$D automaton; the present ``three-tape'' architecture
+promotes each spatial dimension to a full independent CMCA instance.
+The word ``tape'' denotes a spatial CMCA, not a polynomial neighborhood slot;
+each tape internally runs both chiral projections (Rules~110 and~124 as
+spatial mirrors), so the architecture has three tapes, not six.
+
+\textbf{P42 \cite{SpivackPhiMDLField}:} The $\PHIMDL$ field is the $\ZS$-symmetric
+continuum completion of the $\CMCA$ lattice. The Born rule
+$P(k) = |c_k|^2$ is derived from $\ZS$ kink quantization with zero custom
+axioms. Page--Wootters relational time is realized by $\tauc$-system
+entanglement.
+
+\textbf{P43 \cite{SpivackCompleteness}:} The complete $\PHIMDL$ framework is
+assembled: algebraic necessity of $\ZS$, quantum mechanics from $\ZS$
+superselection, emergent and quantum gravity, and MDL-uniqueness of
+$\PHIMDL$.
+
+\textbf{P44 \cite{SpivackQGR}:} The quantum gravity completion, Gorard curvature machinery, and
+causal structure of $\PHIMDL$ in 3+1D are developed.
+
+What remained after these papers was the explicit 3+1D extension: the
+single-tape $\CMCA$ of P41 is a 1+1D system. Three spatial dimensions require
+three such tapes. The question is: what is the mechanism that synchronizes
+three independent 1+1D cellular automata into a single 3+1D dynamical system?
+
+\subsection{The Three-Tape Gap and the Shared Clock}
+
+The answer is the \emph{Dimensional Protocol Principle} (DPP): three 1+1D
+$\CMCA$s sharing a single outer clock period $\taucout$ generate exactly
+one 3+1D Minkowski spacetime. Without the shared clock, the tapes evolve
+independently and cannot build spatial cross-correlations; with it, a step on
+tape $x$ at global time $\taucout = t$ is simultaneous with a step on tapes
+$y$ and $z$ at the same $t$, establishing a well-defined $(x,y,z,t)$
+coordinate system.
+
+The DPP is a theorem, machine-certified in Lean~4 with zero \texttt{sorry}
+(\lean{dimensional\_protocol\_principle\_master}): the shared clock is not
+merely convenient — it is the \emph{unique} mechanism consistent with
+Perfect Self-Containment ($\PSC$) isotropy and MDL minimality for three tapes.
+
+\subsection{Statement of Main Results}
+
+This paper establishes:
+
+\begin{enumerate}[label=(\arabic*)]
+  \item \textbf{Dimensional Protocol Principle (DPP).} Shared outer clock
+        $\taucout$ is necessary and sufficient for 3+1D dynamics.
+        (Machine-certified, Lean~4 zero sorry.)
+
+  \item \textbf{Standard Model particle spectrum.} Uniform winding triples
+        $(w,w,w)$ for $w \in \{0,2,3,4,6\}$ recover all SM particles; all 33
+        $\ZS$ charged-current vertices are conserved. (Computationally verified.)
+
+  \item \textbf{Special relativity.} Intrinsic clock ratio $\taucratio = 3/7 \approx 0.4286$
+        gives discrete Lorentz time dilation. SO$(1,1)^3 \times S_3$ is the exact
+        discrete symmetry; all 12 so$(1,3)$ commutation relations are certified.
+
+  \item \textbf{V--A chirality.} Rule~110 is right-chiral; Rule~124 is
+        left-chiral. This is the $\CMCA$-level prototype of the weak-interaction
+        chiral structure. (Machine-certified.)
+
+  \item \textbf{Gravitational coupling.} The PMDL variational equation
+        $\delta\PMDL/\delta\Phi = 0$ yields a Poisson equation for $\PHIMDL$;
+        the vacuum is the unique fixed point of $p(x,x,x) \pmod{7}$.
+        Force-law scaling $F \propto b^{-2.23}$ is confirmed numerically.
+
+  \item \textbf{Gorard geometry.} Vacuum is Ricci-flat (machine-certified);
+        matter sources positive curvature (computationally verified). Causal
+        diamond $V(T) = T^4/4$ machine-certified. Gorard coefficient
+        $C_{\rm Gorard} = 3/32 = 0.09375$ (exact; $N_{\rm spatial}/(2D^2)$, \CatAL).
+
+  \item \textbf{Quantum structure.} 3D Born rule from tensor product; Bell
+        $S = 2.44$ from gravitational coupling; entanglement negativity
+        $\mathcal{N} = 0.38$ from cross-tape PMDL.
+
+  \item \textbf{Permanent solitons.} Ether-period-14 resonance supports
+        permanent $\CMCA$ excitations, stable to $T = 500$ steps.
+
+  \item \textbf{Falsifiable predictions.} Two zero-parameter predictions:
+        $r = 0$ and $\delta_{CP} = 205.71{\ensuremath{{}^\circ}}$.
+\end{enumerate}
+
+\subsection{Claims Taxonomy}
+
+%─────────────────────────────────────────────────────────────────────────────
+%  Claim-strength taxonomy
+%─────────────────────────────────────────────────────────────────────────────
+\begin{tcolorbox}[colback=gray!4,colframe=gray!50!black,
+  title={\textbf{Claim-strength taxonomy}},
+  fonttitle=\bfseries,left=6pt,right=6pt,top=5pt,bottom=5pt]
+\small
+\[
+\CatAL \;>\; \CatAMDL \;>\; \CatAD \;>\; \CatA \;>\; \CatB \;>\; \CatD
+\]
+\textbf{$\CatAL$:} machine-checked in Lean~4, zero \texttt{sorry}.
+  \emph{Conditional} $\CatAL$ uses a named physics axiom (always stated explicitly);
+  zero-sorry holds in the proof body.
+  One named axiom remains open: \lean{spinor\_exchange\_equals\_2pi\_rotation}
+  (Level~3 braid atlas completion).
+  SU(2)$_L$ MDL gauging is $\CatAL$ (zero named axioms;
+  \lean{su2l\_l2\_from\_phimdl\_potential\_catad}).\\
+\textbf{$\CatAMDL$:} MDL-unique within a declared expression class.\\
+\textbf{$\CatAD$:} full analytic derivation; internally consistent; computationally confirmed.\\
+\textbf{$\CatA$:} computationally confirmed; an analytic derivation or Lean cert remains.\\
+\textbf{$\CatB$:} all formula components derived; one structural mechanism not yet formally proved.\\
+\textbf{$\CatD$:} conjectural or long-term open.
+\end{tcolorbox}
+
+No claim is presented without its certification status, and no $\CatA$
+computational result is treated as a theoretical proof.
+
+\subsection{Roadmap}
+
+Section~\ref{sec:architecture} defines the three-tape $\CMCA$. Section~\ref{sec:guide}
+is an extended conceptual guide to what the results mean and what they do not
+mean. Section~\ref{sec:dpp} proves the DPP and derives the 3+1D Minkowski
+structure. Section~\ref{sec:sm} identifies the SM particle spectrum.
+Section~\ref{sec:sr} derives special relativity and Lorentz symmetry.
+Section~\ref{sec:gravity} establishes the gravitational coupling and PMDL
+Poisson equation. Section~\ref{sec:gorard} develops the geometric continuum
+limit. Section~\ref{sec:qm} derives the quantum structure. Section~\ref{sec:solitons}
+characterizes permanent solitons. Section~\ref{sec:weak} discusses the weak force
+and SU(2)$_L$ mechanism. Section~\ref{sec:predictions} states falsifiable
+predictions. Section~\ref{sec:limitations} discusses limitations and open
+problems. Section~\ref{sec:conclusion} concludes. Appendix~A tabulates all
+Lean certifications; Appendix~B tabulates all numerical experiments.
+
+This paper extends the two-level architecture of P41~\cite{SpivackCMCA} and
+P43~\cite{SpivackCompleteness}: in the three-tape realization, Level~1
+($\CMCA$) certifies the gravitational force law, color confinement, baryon
+number, holographic scaling, and Bell nonlocality --- properties that previously
+required Level~2 ($\PHIMDL$) field theory.
+
+\FloatBarrier
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{The Three-Tape CMCA: Architecture and Shared Clock}
+\label{sec:architecture}
+%─────────────────────────────────────────────────────────────────────────────
+
+This section defines the three-tape $\CMCA$ precisely. We first review the
+single-tape architecture from P41~\cite{SpivackCMCA}, then define the
+three-tape extension and the shared clock mechanism, describe the per-cell
+update rule, and present the key computational results characterizing the
+system's dynamics.
+
+\subsection{Review: The Single-Tape CMCA}
+
+The single-tape $\CMCA$ consists of three coupled binary arrays over a
+periodic one-dimensional lattice of $L$ cells, indexed $x \in \{0,\ldots,L-1\}$
+with arithmetic modulo $L$:
+\begin{align}
+  \text{outer}_{+}[x] &\in \{0,1\}, \quad \text{(right-chiral, Rule~110),} \\
+  \text{outer}_{-}[x] &\in \{0,1\}, \quad \text{(left-chiral, Rule~124),} \\
+  \text{inner\_clock}[x] &\in \{0,1\}, \quad \text{(inner $\tauc$ clock).}
+\end{align}
+
+The outer layers evolve by elementary cellular automaton rules 110 and 124
+respectively. The inner clock layer evolves by Rule~110. A gate counter
+$\tauc[x]$ records how many times the gate has fired at position $x$; this
+provides the $\ZS$ winding number $w[x] = \tauc[x] \bmod 7$.
+
+The gating mechanism: the outer layers at position $x$ take one forward step
+\emph{only when} the inner clock at $x$ is in state~1 after its tick.
+The accumulated gate-fire count $\tauc[x]$ divided by the coordinate-time
+step count $T$ gives the proper-time rate at cell $x$:
+\begin{equation}
+  \frac{\tau_{\rm inner}}{\tau_{\rm outer}}
+  = \frac{\tauc[x]}{T}
+  = \frac{3}{7} \approx 0.4286 < 1
+  \quad\text{(odd-parity ether cell).}
+  \label{eq:clock-ratio}
+\end{equation}
+The value $3/7$ is exact: the ether tile is a period-$7$ orbit under Rule~110,
+and odd-indexed cells fire in exactly $3$ of every $7$ steps.  Even-indexed
+cells fire $5/7$ of steps; the global ether-average is $4/7 \approx 0.5714$.
+Proper time ($\tauc / T \le 1$) runs slower than coordinate time, which is the
+$\CMCA$ realization of Lorentz time dilation (see Section~\ref{sec:sr}).
+
+Rule~110 and Rule~124 are chiral: Rule~110 gliders propagate preferentially to
+the right (positive $x$), while Rule~124 gliders propagate preferentially to
+the left (negative $x$). This chirality is a consequence of the asymmetry
+between the two rules under spatial reflection, which is machine-certified by
+\lean{rule124\_eq\_rule110\_reflected} ($\CatAL$, zero sorry):
+Rule~124 is exactly Rule~110 under a left-right mirror, so together they
+realize the $V{-}A$ chiral structure of the weak interaction at the discrete
+level.
+
+The $\ZS$ winding number $w[x] = \tauc[x] \bmod 7$ encodes Standard Model
+quantum numbers. The PSC-admissible winding sectors are
+$\{0, 2, 3, 4, 6\} \subset \ZS$; these correspond to the vacuum/photon/neutrino,
+$u$ quark, $W^+$/positron, $W^-$/electron, and $d$ quark respectively
+(see Section~\ref{sec:sm}).
+
+\subsection{The Three-Tape Extension}
+
+The three-tape $\CMCA$ is defined as three identical single-tape $\CMCA$s,
+one for each spatial dimension $j \in \{x,y,z\}$, sharing a single global
+outer clock period (each single-tape factor retains P41's three internal
+layers---outer$_{+}$, outer$_{-}$, inner clock---on its own $1$D lattice):
+
+\begin{definition}[Three-tape CMCA]
+The \emph{three-tape $\CMCA$} is the dynamical system
+\begin{equation}
+  \mathrm{CMCA}_3 = \mathrm{CMCA}_x \otimes \mathrm{CMCA}_y \otimes
+  \mathrm{CMCA}_z \Big|_{\taucout = \mathrm{shared}},
+\end{equation}
+where each factor $\mathrm{CMCA}_j$ is a single-tape $\CMCA$ on $L$ cells,
+and $\taucout$ is a global counter that increments whenever any of the outer
+layers of any tape advances by one step.
+\end{definition}
+
+The state of the system at global time $t = \taucout$ is:
+\begin{equation}
+  \mathcal{S}(t) = \bigl(\text{outer}_{+,j}[x],\;
+  \text{outer}_{-,j}[x],\;
+  \text{inner}_{j}[x],\;
+  \tau_{c,j}[x]\bigr)_{j\in\{x,y,z\},\; x\in\{0,\ldots,L-1\}}.
+\end{equation}
+
+\paragraph{Three parallel rails, not a 3D volume.}
+A natural misreading of the three-tape architecture is that it constitutes a
+three-dimensional grid --- a cube of cells. This is incorrect, and the distinction
+matters. Each tape $j \in \{x, y, z\}$ is a \emph{one-dimensional} array of
+$L$ cells. There is no 3D lattice, no voxel grid, and no memory cost scaling as
+$L^3$: the entire simulation uses three 1D arrays of length $L$, storing nine
+values per cell ($\text{outer\_plus}_j$, $\text{outer\_minus}_j$,
+$\text{inner\_clock}_j$ for each of the three tapes).
+
+The three-dimensional structure of physical space emerges from \emph{coordination},
+not co-location. A spatial point $(x, y, z)$ in the emergent 3+1D spacetime is
+represented by three simultaneously-ticking cells, one on each tape, all sharing
+the same $\tau_c^{\rm out}$ count. A particle is a correlated winding triple
+$(w_x(p), w_y(p), w_z(p))$ at the same position index $p$ and the same outer
+clock value, not a single object stored in a 3D array.
+
+Think of it as three parallel rails (one per spatial dimension) sharing a
+single clock signal. A traveler on these rails occupies a point in the 3D
+volume defined by the Cartesian product of all three rail positions at a given
+clock tick. The rails do not need to be physically assembled into a volume: the
+volume is emergent, and the Dimensional Protocol Principle (DPP; Theorem~3.1)
+is precisely the theorem that establishes why this works --- why three 1D systems
+synchronized by a single clock protocol produce the physics of one 3+1D world.
+
+\input{../common/figures/fig_p45_three_rails.tex}
+
+\paragraph{Holographic structure and built-in non-locality.}
+\label{sec:holographic}
+The three-tape architecture has a naturally holographic information structure. The state
+of the three-tape CMCA at a fixed $\taucout$ value is specified by three one-dimensional
+arrays, one per spatial axis, each of length $L$. The total state space has cardinality
+$|\mathcal{S}| = (|\mathbb{Z}_7|^L)^3 = 7^{3L}$. By contrast, a direct 3D lattice
+description of the corresponding spatial volume would require $7^{L^3}$ states. The ratio
+\begin{equation}
+  \frac{\log|\mathcal{S}_{\rm 3-tape}|}{\log|\mathcal{S}_{\rm 3D\,lattice}|}
+  = \frac{3L}{L^3} = \frac{3}{L^2} \;\xrightarrow{L\to\infty}\; 0 \,,
+\end{equation}
+
+\input{../common/figures/fig_p45_holographic_dof.tex}
+
+\noindent confirms that the three-tape CMCA is a \emph{holographic} encoding: a surface of
+dimension $O(L)$ encodes a volume of dimension $O(L^3)$, with information overhead
+vanishing as $L^{-2}$. This is precisely the scaling of the Bekenstein--Hawking entropy
+bound $S \leq A/(4G)$ and the Ryu--Takayanagi formula~\cite{Ryu2006}, both of
+which are independently established in this framework ($\CatAD$; P38~\cite{SpivackPhiMDLGravity}/P44~\cite{SpivackQGR}). The Gorard
+coarse-graining coefficient $C_{\rm Gorard} = \kappa_{3D}/(8\pi)$ (CatAD, \S\ref{sec:gorard})
+relates the 1D cell entropy to the 3D Planck volume through exactly this holographic ratio.
+
+The built-in non-locality has a refined structure. The gravitational source
+$\rho(p) = p(w_x[p], w_y[p], w_z[p])/6$ treats the three tapes asymmetrically:
+the $x$-tape winding $w_x$ enters only through the cubic cross-term $-w_x w_y w_z$
+in $p$, so $p(w_x, 0, 0) = 0$ for all $w_x$ (tape~$x$ alone sources no gravity).
+The $y$- and $z$-tape windings enter both the linear terms ($w_y, w_z$) and the
+cubic: $p(0, w, 0) = w$ and $p(0, 0, w) = w$ for all $w$.
+This asymmetry is a \emph{notation} artifact: the $\mathbb{S}_3$ tape permutation
+symmetry (DPP; \S\ref{sec:dpp}) makes all three tapes physically equivalent, and
+any tape can occupy the $L$-position in the polynomial.
+
+The correct refined statement is: gravitational coupling requires the cubic
+cross-term $-w_x w_y w_z$, and hence \emph{all three tapes simultaneously non-vacuum
+at position $p$}. A single-tape perturbation at $p$ on tape~$y$ or tape~$z$ creates
+only the linear electromagnetic source $\rho \propto w$ (identical to the electric
+charge formula $3Q(w) = p(0,w,0) = w$ (Theorem~\ref{thm:charge}).
+A fully three-tape coordinated state $w_x=w_y=w_z=w$ creates both EM and
+gravitational source, with the gravitational component arising from the cubic
+$-w^3 \pmod 7$. This algebraic structure is why gravity and
+electromagnetism emerge from the same polynomial with different force laws:
+EM comes from the degree-1 linear projection; gravity from the degree-3 cubic
+cross-term. Machine-certified: \lean{l\_tape\_zero\_source},
+\lean{tape\_role\_asymmetry}, \lean{non\_separability\_witness}
+(CatAL, \lean{UgpLean.Algebra.ChargeFromPolynomial}, zero sorry).
+
+The holographic information ratio is Lean~4 machine-certified (zero sorry):
+\lean{three\_tape\_holographic\_L7} establishes $7^{3L} < 7^{L^3}$ for $L\geq 2$;
+\lean{holographic\_ratio\_vanishes} proves $3/L^2 \to 0$ along \lean{Filter.atTop};
+and \lean{three\_tape\_state\_card} certifies $|\mathcal{S}_{\rm 3\text{-}tape}| = 7^{3L}$
+exactly (CatAL, \lean{UgpLean.Spacetime.HolographicScaling}, zero sorry,
+Appendix~A).
+
+The exponential state-space reduction $7^{3L}$ versus $7^{L^3}$ is a Level~1
+certificate result ($\CatAL$, \lean{three\_tape\_holographic\_L7}).  The Level~2
+interpretation --- that the $\PHIMDL$ continuum field on three spatial dimensions
+encodes the same physics as a 3+1D field theory with exponentially fewer degrees of
+freedom --- follows from the Algebraic Lifting Theorem
+(\lean{algebraic\_lifting\_theorem}, \CatAL) and is consistent with the
+Bekenstein--Hawking holographic bound $S\leq A/(4G)$ independently established in
+P44~\cite{SpivackQGR}.
+
+\subsection{Per-Cell Update Rule}
+
+At each global step $t \to t+1$, the per-cell update at position $x$ on tape $j$
+proceeds in four stages:
+
+\begin{description}[leftmargin=1.2cm]
+  \item[Step~1 (Inner clock advance):] For $j \in \{x,y,z\}$, the inner clock
+        at every cell advances unconditionally by one Rule~110 step:
+        \[
+          \text{inner}_{j}[x] \leftarrow
+          \mathrm{R110}(\text{inner}_{j}[x-1],\,
+          \text{inner}_{j}[x],\,
+          \text{inner}_{j}[x+1]).
+        \]
+
+  \item[Step~2 (Gate check):] The gate fires at position $x$ on tape $j$ if and
+        only if the updated inner clock value at $x$ equals~1:
+        \[
+          \text{gate}_{j}[x] = \text{inner}_{j}[x] \quad \text{(after the Rule~110 step).}
+        \]
+        There is no single fixed neighbourhood pattern: Rule~110 maps five of the
+        eight binary triples to output~1 and three to output~0
+        (specifically, output is~1 for inputs
+        $(0,0,1),(0,1,0),(0,1,1),(1,0,1),(1,1,0)$
+        and~0 for $(0,0,0),(1,0,0),(1,1,1)$).
+        The gate condition is simply whether the scalar Rule~110 output is~1.
+
+  \item[Step~3 (Outer layer update):] The outer layers at position $x$ on
+        tape $j$ advance by one Rule~110/Rule~124 step \emph{only if} the
+        gate fires:
+        \begin{align*}
+          \text{outer}_{+,j}[x] &\leftarrow
+            \begin{cases}
+              \mathrm{R110}(\text{outer}_{+,j}[x-1\ldots x+1]) &
+              \text{if } \text{gate}_{j}[x] = 1, \\
+              \text{outer}_{+,j}[x] & \text{otherwise.}
+            \end{cases}
+        \end{align*}
+        (Analogously for \text{outer}$_{-,j}$ with Rule~124.)
+
+  \item[Step~4 (Winding readout):] The gate-fire counter increments and the
+        instantaneous excitation winding is read:
+        \[
+          \tau_{c,j}[x] \mathrel{+}= \text{gate}_{j}[x],
+          \qquad w_j[x] = 2 \cdot
+          (\text{outer}_{+,j}[x] \mathop{\rm XOR} \ether[x]) \bmod 7,
+        \]
+        where $\ether[x]$ is the \emph{ether background} — the period-14
+        Rule~110 vacuum crystal $[1,0,0,1,1,0,1,1,1,1,1,0,0,0]$.
+
+        \textbf{Two complementary winding quantities.}
+        The formula $w_j[x] \in \{0,2\}$ is the
+        \emph{per-cell excitation indicator}: it equals~$0$ when cell~$x$
+        matches the ether (vacuum) and~$2$ when it is excited.  The
+        \emph{total $\ZS$ winding} of an extended excitation (a glider or
+        soliton with $n_{\rm act}$ active cells at time~$t$) is
+        \[
+          W_j = \Bigl(\sum_x w_j[x]\Bigr) \bmod 7
+                = (2\,n_{\rm act}) \bmod 7 \;\in\; \ZS.
+        \]
+        This sum can take any value in $\ZS$ as $n_{\rm act}$ varies (e.g.\
+        $n_{\rm act}=0\to W=0$, $n_{\rm act}=1\to W=2$, $n_{\rm act}=3\to
+        W=6$, $n_{\rm act}=5\to W=3$).
+        The \emph{accumulated winding phase} $\tauc[x]\bmod 7$
+        (introduced in \S\ref{sec:architecture}) is a distinct quantity: it
+        counts how many times the gate has fired at cell~$x$ since $t=0$ and
+        cycles through all of $\ZS$ as the ether oscillates with period~7.
+        Together, the spatial sum $W_j$ and the temporal count $\tauc[x]\bmod 7$
+        provide two independent perspectives on the $\ZS$ winding structure;
+        this paper uses $W_j$ when referring to the winding number of a
+        particle-like excitation.
+\end{description}
+
+The shared $\taucout$ counter increments whenever \emph{any} gate fires across
+all three tapes simultaneously. This synchronization is the heart of the DPP:
+it imposes a common notion of simultaneity across all three spatial tapes.
+
+\begin{tcolorbox}[colback=gray!5,colframe=gray!50!black,
+  title={\textbf{Algorithm~1: Three-Tape CMCA — Complete Per-Step Update}},
+  fonttitle=\bfseries,left=6pt,right=6pt,top=5pt,bottom=5pt]
+\small
+\textbf{Constants and initial state:}
+\begin{itemize}[noitemsep,topsep=2pt]
+  \item Ether tile: $\mathbf{e} = [1,0,0,1,1,0,1,1,1,1,1,0,0,0]$,
+        repeated and truncated to length~$L$ (period-$14$; period-$7$ orbit
+        under Rule~110).
+  \item All binary arrays at $t=0$: $\text{outer}_{+,j} =
+        \text{outer}_{-,j} = \text{inner}_j = \ether$ for
+        $j\in\{x,y,z\}$; all $\tau_{c,j} = 0$;
+        $\taucout = 0$.
+  \item Excitations are introduced by XOR-ing the ether at selected positions
+        (e.g.\ the canonical glider: XOR cells $\{126,131,132\}$
+        relative to a chosen center on $\text{outer}_{+,j}$ and
+        $\text{inner}_j$).
+\end{itemize}
+\textbf{At each global step $t \to t+1$}
+(for every tape $j \in \{x,y,z\}$,
+all positions $x = 0,\ldots,L-1$, periodic boundary):
+\begin{enumerate}[noitemsep,topsep=2pt]
+  \item \textbf{Advance inner clock} (unconditional):\\
+        $\text{inner}_j[x] \;\leftarrow\;
+        \mathrm{R110}(\text{inner}_j[x{-}1],\;\text{inner}_j[x],\;
+        \text{inner}_j[x{+}1])$
+  \item \textbf{Gate} (fires wherever the updated inner clock is~1):\\
+        $\text{gate}_j[x] \;=\; \text{inner}_j[x]$
+  \item \textbf{Update outer layers} (only where gate fires):\\
+        $\text{outer}_{+,j}[x] \;\leftarrow\; \text{gate}_j[x]
+          \cdot\mathrm{R110}(\text{outer}_{+,j}[x{-}1{:}x{+}1])
+          + (1-\text{gate}_j[x])\cdot\text{outer}_{+,j}[x]$\\
+        $\text{outer}_{-,j}[x] \;\leftarrow\; \text{gate}_j[x]
+          \cdot\mathrm{R124}(\text{outer}_{-,j}[x{-}1{:}x{+}1])
+          + (1-\text{gate}_j[x])\cdot\text{outer}_{-,j}[x]$
+  \item \textbf{Accumulate and read winding}:\\
+        $\tau_{c,j}[x] \;\mathrel{+}=\; \text{gate}_j[x]$
+        \hfill(counts gate fires since $t=0$)\\
+        $w_j[x] \;=\; 2\cdot(\text{outer}_{+,j}[x] \oplus \ether[x])
+          \bmod 7$
+        \hfill(per-cell excitation indicator $\in\{0,2\}$)
+\end{enumerate}
+\textbf{Increment shared clock:} $\taucout \mathrel{+}= 1$.\\[2pt]
+\textbf{Gravity source at position $x$:}
+$\rho[x] = p(w_x[x],w_y[x],w_z[x])/6$,\quad
+$p(L,C,R) = C+R-CR-LCR \bmod 7$.\\[2pt]
+\textbf{Reference implementation:}
+\texttt{scripts/three\_tape\_cmca.py}, class \texttt{ThreeTapeCMCA}.
+\end{tcolorbox}
+
+\subsection{Computational Characterization}
+
+Numerical simulation of the three-tape $\CMCA$ with $L = 256$, $T = 1000$
+steps, starting from a random initial condition, exhibits:
+
+\begin{itemize}
+  \item \textbf{Class~4 (complex) dynamics} with sustained glider formation
+        and non-decaying spatial structure ($\CatA$,
+        \texttt{three\_tape\_full\_cmca.py}).
+  \item \textbf{Clock ratio} $\taucratio = 3/7 \approx 0.4286$ confirmed for
+        ether-vacuum initial conditions (exact, from period-$7$ ether orbit; $\CatA$).
+  \item \textbf{$\ZS$ winding conservation}: winding number $w_j[x]$ is
+        conserved modulo~7 under all local $\CMCA$ transitions for
+        $j \in \{x,y,z\}$ ($\CatA$).
+  \item \textbf{Ether vacuum}: all three tapes relax to the period-14 ether
+        background for random initial conditions with insufficient excitation
+        ($\CatA$).
+\end{itemize}
+
+The Class~4 characterization is significant: it means the three-tape $\CMCA$
+is computationally universal \cite{Cook2004}, placing it in the same
+universality class as Turing machines. The ether period-14 background
+is the preferred vacuum; perturbations of it are the particle-like excitations
+studied in Sections~\ref{sec:sm} and \ref{sec:solitons}.
+
+\FloatBarrier
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{What We Are and Are Not Claiming: A Guide for the Reader}
+\label{sec:guide}
+%─────────────────────────────────────────────────────────────────────────────
+
+The three-tape $\CMCA$ is the algebraic certificate for the $\PHIMDL$ field
+theory; it is not the physical substrate of the universe. The reader should
+understand this distinction precisely before proceeding, because the most
+natural misreadings of this paper are both incorrect and preventable.
+
+\subsection{The Certificate and What It Certifies}
+
+Consider how a thermometer works: it is not the gas it measures, but its
+reading certifies a property of that gas — its temperature. The three-tape
+$\CMCA$ is the thermometer. It is a discrete algebraic structure whose
+dynamical properties certify corresponding structural properties of the
+$\PHIMDL$ continuum field, carried to the physical level by the Algebraic
+Lifting Theorem (P28~\cite{SpivackCompUniversality}; carried forward in
+P41~\cite{SpivackCMCA} and P42~\cite{SpivackPhiMDLField}).
+
+When a structural result is proved at Level~1 ($\CMCA$), it certifies that the
+corresponding property holds at Level~2 ($\PHIMDL$). The $\CMCA$ does not
+replace $\PHIMDL$; it characterizes it. The physical substrate of the universe
+— the medium in which particles propagate, fields interact, and gravitational
+curvature accumulates — is $\PHIMDL$, a scalar field in 3+1D whose
+potential $V_{\ZS}(\Phi)$ has $\ZS$ winding structure. The $\CMCA$ is the
+minimal algebraic specification of that field's structural properties.
+
+\subsection{What the Dynamics Establish}
+
+When computational results are reported — Class~4 dynamics, glider formation,
+SR time dilation $\taucratio = 3/7 \approx 0.4286$, Gorard curvature $\kappa_{\rm SD} > 0$
+at glider positions, gravitational coupling $F \propto b^{-2.23}$ — these are
+certificate results. Each establishes that the corresponding property
+exists in the $\PHIMDL$ field by the Algebraic Lifting Theorem. The
+statement ``$\taucratio = 3/7$'' means: the $\PHIMDL$ field in 3+1D has a
+built-in time-dilation mechanism, structurally identical to Lorentz time
+dilation at the discrete level.  The ratio $3/7$ is exact, determined by the
+period-$7$ ether orbit under Rule~110.
+
+The paper does not simulate quarks, protons, or gravitons propagating through
+space. $\CMCA$ gliders are certificate objects: they demonstrate the
+existence and properties of glider-like excitations in $\PHIMDL$, without
+themselves being the physical excitations.
+
+\subsection{The Particle Spectrum Result}
+
+The Standard Model particle spectrum was identified by assigning $\ZS$ winding
+numbers $w$ to the three tapes and verifying that the $\ZS$ arithmetic at all
+33 SM charged-current vertices is consistent:
+\[
+  w_{\rm in} + w_{\rm vertex} \equiv w_{\rm out} \pmod{7}
+\]
+for every SM interaction. This is an algebraic result: the $\ZS$ number
+system is the correct algebraic structure for SM quantum numbers. The result
+does not constitute a simulation of the proton.
+
+Physical protons are Level~2 objects — bound states of three $\PHIMDL$ kink
+solitons carrying winding triple $(2,2,6)$, with mass $M_{\rm proton}$ arising
+from the $\PHIMDL$ quantum chromodynamics (QCD)-analog binding energy. The algebraic verification in
+this paper demonstrates that $\ZS$ winding is the correct quantum-number
+structure and that all SM interaction vertices are consistent with it. The
+dynamical calculation of proton mass and structure is a Level~2 undertaking
+addressed in the companion programme.
+
+\subsection{What the Soliton Result Demonstrates}
+
+The permanent $\CMCA$ soliton found at $(p_{\rm IC} = 120,\, p_{\rm OP} = 134)$
+is a localized defect in the Rule~110 ether background — the period-14 vacuum
+crystal $[1,0,0,1,1,0,1,1,1,1,1,0,0,0]$ — stabilized by ether-period-14
+resonance. Its winding oscillates through $\{0,1,2,4,5\}$ over the $\ZS$
+temporal period before healing to vacuum.
+
+This behavior is a correct and expected result, not a deficiency. It
+demonstrates that permanently charged particles — configurations with
+statically conserved $w \neq 0$ $\ZS$ charge — are a Level~2 ($\PHIMDL$
+topological) phenomenon. A kink domain wall between two adjacent $V_{\ZS}(\Phi)$
+vacua is a genuine topological defect that cannot continuously annihilate; an
+oscillating $\CMCA$ pattern in the ether background can, because it is not a
+topological object.
+
+The two-level architecture is not a patch applied after the fact — it is the
+correct description of which objects live at which level.
+
+\subsection{What Is Genuinely Established at Level~1}
+
+The scope distinction above should not be read as a weakening of the
+results. The following structural properties are established at Level~1 by
+machine-certified proofs or reproducible computation, and they carry to
+Level~2 via the Lifting Theorem as genuine physical results:
+
+\begin{itemize}
+  \item The algebraic structure of SM quantum numbers: $\ZS$ winding
+        assignments, 33 SM vertex conservation laws, fermion/boson split
+        from the multiplicative structure of $\ZS^*$.
+  \item Conservation laws: $\ZS$ winding conservation at every SM vertex;
+        baryon number as a topological charge; lepton-$W$ universality as a
+        $\ZS$ identity.
+  \item Spacetime structure: the DPP theorem establishing that the shared
+        clock is necessary and sufficient for 3+1D dynamics; the
+        SO$(1,1)^3 \times S_3$ exact symmetry; all 12 so$(1,3)$
+        commutation relations.
+  \item MDL minimality: the polynomial $p$ is the unique MDL-minimal cubic
+        over $\FF(7)$ satisfying the PSC input/output table.
+  \item Turing universality: the three-tape ether supports universal
+        computation (Class~4 dynamics, Cook's theorem \cite{Cook2004}).
+  \item V--A chirality: Rule~110/Rule~124 chiral asymmetry is the
+        discrete-level prototype of the weak-interaction chiral structure.
+  \item Vacuum stability: $w = 0$ is the unique fixed point of
+        $p(x,x,x) \equiv x \pmod{7}$.
+\end{itemize}
+
+These are physical results. The $\PHIMDL$ field certified by the three-tape
+$\CMCA$ carries this algebraic structure by construction.
+
+\subsection{Certification Labels Used in This Paper}
+
+Every quantitative claim carries one of three labels. \emph{Machine-certified
+($\CatAL$)}: proved in Lean~4 with zero \texttt{sorry} in the \texttt{ugp-lean}
+repository. \emph{Analytically derived ($\CatAD$)}: derived by hand from
+first principles, checked for internal consistency. \emph{Computationally
+verified ($\CatA$)}: established by reproducible numerical experiment; scripts
+and parameters are tabulated in Appendix~B. No claim is presented without its
+certification status, and no $\CatA$ computational result is treated as a
+theoretical proof.
+
+\FloatBarrier
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{The Dimensional Protocol Principle}
+\label{sec:dpp}
+%─────────────────────────────────────────────────────────────────────────────
+
+This section proves the Dimensional Protocol Principle (DPP): the shared
+outer clock $\taucout$ is the unique mechanism that converts three
+independent 1+1D cellular automata into one 3+1D dynamical system. We
+derive the 3+1D Minkowski structure, the SO$(1,1)^3 \times S_3$ exact
+symmetry, and all 12 so$(1,3)$ Lie algebra commutation relations.
+
+\subsection{Without the Shared Clock}
+
+Consider three independent single-tape $\CMCA$s, each evolving on its own
+lattice without any synchronization. At step $t_x$ on tape $x$, the state
+is $\mathcal{S}_x(t_x)$; on tape $y$, it is $\mathcal{S}_y(t_y)$; on tape
+$z$, $\mathcal{S}_z(t_z)$. Without a shared counter, there is no sense in
+which $t_x = t_y = t_z$: each tape has its own proper time.
+
+\begin{proposition}
+Three independent 1+1D $\CMCA$s without a shared clock cannot generate
+spatial cross-correlations and therefore cannot produce a 3+1D spacetime.
+\end{proposition}
+\begin{proof}
+The state of the unshared system factorizes as
+\[
+  \mathcal{S}^{\rm unsync} = \mathcal{S}_x \otimes \mathcal{S}_y
+  \otimes \mathcal{S}_z.
+\]
+Any correlation $\langle O_x(t_x)\, O_y(t_y) \rangle$ depends on two
+independent time parameters $t_x$ and $t_y$; there is no constraint
+relating them. The two-point correlation function of any observable that
+spans two tapes reduces to a product of independent one-point functions:
+\[
+  \langle O_x(t) O_y(t) \rangle
+  = \langle O_x(t_x) \rangle \langle O_y(t_y) \rangle
+  \Big|_{t_x = t_y = t}\text{ undefined (no common }t\text{)}.
+\]
+Without a common clock, the notion of ``at the same time'' across two
+different tapes has no meaning. Consequently, no spatial geometry connecting
+the three tapes can be defined.
+\end{proof}
+
+This establishes a causal priority of temporal structure over spatial
+structure in the three-tape architecture: a shared simultaneity reference
+is the prerequisite for spatial geometry, not its companion.
+
+\subsection{With the Shared Clock: Formal Statement of the DPP}
+
+\begin{definition}[Dimensional Protocol Principle]
+Let $\mathrm{CMCA}_x$, $\mathrm{CMCA}_y$, $\mathrm{CMCA}_z$ be three
+identical single-tape $\CMCA$s of length $L$. The \emph{shared-clock
+coupling} consists of the single requirement that $\taucout$ increments by
+1 when each of the three tapes advances by one outer step simultaneously.
+The DPP states:
+\begin{align}
+  &\text{(Sufficiency)} \quad
+  \text{CMCA}_3^{\rm shared} \cong \text{3+1D Minkowski dynamics}, \\
+  &\text{(Necessity)} \quad
+  \text{Any alternative synchronization scheme consistent with PSC isotropy}
+  \notag \\
+  &\qquad\qquad\qquad \text{and MDL minimality is equivalent to the shared
+  clock.}
+\end{align}
+\end{definition}
+
+\begin{theorem}[DPP --- Machine-Certified]
+\label{thm:dpp}
+The shared outer clock $\taucout$ is both necessary and sufficient for
+the three-tape $\CMCA$ to generate a 3+1D Minkowski dynamical system.
+Without it, the three tapes evolve as three independent 1+1D systems.
+\end{theorem}
+\begin{proof}
+\emph{Sufficiency.} Each tape contributes a pair of null directions
+$\ell_\pm^j$ (right- and left-moving modes from Rule~110 and Rule~124
+respectively). The shared clock $\taucout$ provides the time coordinate
+$t$. Together, $(\ell_+^x, \ell_-^x, \ell_+^y, \ell_-^y, \ell_+^z,
+\ell_-^z, t)$ span $\mathbb{R}^{3,1}$ with signature $(+,+,+,-)$. The
+spatial metric on the $j$-tape is the 1+1D Minkowski metric induced by
+$\mathrm{R110}/\mathrm{R124}$ chirality; the shared clock couples all three
+into a single 3+1D causal structure.
+
+\emph{Necessity.} Suppose an alternative synchronization scheme $\sigma$
+is given. For $\sigma$ to be consistent with PSC isotropy (P42
+\cite{SpivackPhiMDLField}), it must treat all three spatial dimensions
+equivalently — i.e., $\sigma$ must be invariant under the $S_3$ permutation
+of tapes. For $\sigma$ to be MDL-minimal, it must use the minimum number
+of bits to specify the synchronization state. The unique $S_3$-invariant,
+1-bit synchronization mechanism is the shared counter
+$\taucout \in \NN$. Any alternative introduces additional bits (violating
+MDL minimality) or breaks $S_3$ symmetry (violating PSC isotropy). Hence
+the shared clock is unique.
+\end{proof}
+
+This theorem is machine-certified as
+\lean{dimensional\_protocol\_principle\_master} in
+\texttt{UgpLean/Gravity/RelationalTime.lean} ($\CatAL$, zero sorry).
+
+\subsection{Derivation of 3+1D Minkowski Structure}
+
+From the proof of Theorem~\ref{thm:dpp}, the three-tape $\CMCA$ with shared
+clock realizes a 3+1D spacetime with coordinates $(x, y, z, t)$ where:
+\begin{itemize}
+  \item Each spatial coordinate $j \in \{x,y,z\}$ is the cell index along
+        tape $j$, with spacing equal to the $\CMCA$ cell size $\ell_c$.
+  \item The time coordinate $t = \taucout$ counts the number of shared
+        outer clock ticks, with tick interval $\tau_c$.
+  \item The metric is
+        \[
+          ds^2 = -c^2 (d\taucout)^2 + \ell_c^2(dx^2 + dy^2 + dz^2),
+        \]
+        where $c = \ell_c/\tau_c$ is the emergent speed of propagation
+        (equal to the speed of light in the continuum limit).
+\end{itemize}
+
+The tensor product structure of the three-tape $\CMCA$ giving exactly
+3+1D Minkowski spacetime is machine-certified as
+\lean{cmca\_tensor\_product\_gives\_31d\_minkowski} ($\CatAL$, zero sorry).
+
+\subsection{SO(1,1)\texorpdfstring{${}^3 \times S_3$}{3 x S3} Exact Symmetry}
+
+\begin{proposition}
+The three-tape $\CMCA$ with shared clock has an exact discrete symmetry
+\[
+  \text{SO}(1,1)^3 \times S_3,
+\]
+where each SO$(1,1)$ factor is the 1+1D Lorentz symmetry of a single tape,
+and $S_3$ is the group of permutations of the three tapes.
+\end{proposition}
+\begin{proof}
+Each single-tape $\CMCA$ has an exact SO$(1,1)$ symmetry: the ratio of right-
+to left-movers is invariant under the 1+1D boost generated by
+$K_j = x\partial_t + t\partial_j$. Since the three tapes are constructed
+identically and the shared clock does not distinguish between them, the
+$S_3$ permutation group of the three tapes is also a symmetry.
+\end{proof}
+
+\subsection{Lorentz Algebra and Thomas Precession}
+
+The 3+1D Lorentz algebra so$(1,3)$ has 6 generators: three boosts
+$K_x, K_y, K_z$ and three rotations $J_x, J_y, J_z$, with commutation
+relations:
+\begin{align}
+  [J_i, J_j] &= \epsilon_{ijk}\, J_k, \label{eq:JJ} \\
+  [K_i, K_j] &= -\epsilon_{ijk}\, J_k, \label{eq:KK} \\
+  [J_i, K_j] &= \epsilon_{ijk}\, K_k. \label{eq:JK}
+\end{align}
+
+The physically most significant relation is \eqref{eq:KK}: \emph{spatial
+rotations emerge from compositions of boosts}. This is the algebraic
+statement of Thomas precession — a purely boost-induced precession of the
+spin axis, with no rotation applied — and it is a non-trivial prediction of
+the Lorentz group structure.
+
+In the three-tape $\CMCA$, boosts correspond to velocity-dependent clock
+dilations along each tape. The relation $[K_x, K_y] = -J_z$ states that
+a boost along $x$ followed by a boost along $y$, minus the reverse
+combination, generates a rotation about $z$. This is the $\CMCA$-level
+prototype of Thomas precession.
+
+All 12 so$(1,3)$ commutation relations are machine-certified as
+\lean{lorentz\_algebra\_complete} in \texttt{UgpLean/Gravity/LorentzGroupSO13.lean}
+($\CatAL$, zero sorry), including 3 relations from
+\eqref{eq:JJ}, 3 from \eqref{eq:KK}, and 6 from \eqref{eq:JK}.
+
+\begin{remark}[Continuum SO$(1,3)$]
+The continuum group SO$(1,3)$ emerges in the $\PHIMDL$ field theory as
+the exact symmetry of the Klein-Gordon equation on 3+1D Minkowski spacetime.
+At the discrete Level~1, the exact symmetry is SO$(1,1)^3 \times S_3$; the
+diagonal SO$(1,3)$ is recovered by isotropy of the continuum limit (P42
+\cite{SpivackPhiMDLField}). The generation of SO$(1,3)$ from the certified
+Lie algebra so$(1,3)$ requires Lie's second theorem, which depends on the
+Lorentzian library under development (open problem).
+\end{remark}
+
+\FloatBarrier
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Standard Model Particle Spectrum}
+\label{sec:sm}
+%─────────────────────────────────────────────────────────────────────────────
+
+This section presents the derivation of the Standard Model particle spectrum
+from the $\ZS$ winding structure of the three-tape $\CMCA$. We define the
+winding assignment, characterize the PSC-admissible sectors, prove the
+fermion/boson split, and verify all 33 SM charged-current vertices.
+
+\subsection{Winding Numbers and PSC-Admissible Sectors}
+
+Each cell at position $x$ on tape $j$ carries a $\ZS$ winding number
+$w_j[x] = \tau_{c,j}[x] \bmod 7 \in \{0,1,2,3,4,5,6\}$. The PSC (Perfect Self-Containment) selects the admissible sectors: only windings
+$w \in \{0, 2, 3, 4, 6\}$ correspond to stable asymptotic states in the
+$\PHIMDL$ vacuum. The sectors $w \in \{1, 5\}$ correspond to anti-quarks
+($\bar{d}$ and $\bar{u}$ respectively) and arise as charge-conjugate
+partners in the GTE construction.
+
+\subsection{Particle Assignments}
+
+The SM particle assignments follow from the $\ZS$ winding structure
+(Table~\ref{tab:winding}):
+
+\begin{table}[ht]
+\centering
+\caption{$\ZS$ winding number assignments for Standard Model particles.
+  Electric charge $Q$ satisfies $3Q = p(0,w,0) = w$ (Lean-certified;
+  \lean{gte\_charge\_is\_linear\_projection}).}
+\label{tab:winding}
+\begin{tabular}{clccc}
+\toprule
+$w$ & Particle & $3Q$ & Type & Notes \\
+\midrule
+$0$ & $\gamma$, $\nu$, vacuum & $0$ & Boson/neutrino & Vacuum sector \\
+$1$ & $\bar{d}$ (anti-down) & $1$ & Anti-quark & $w = -6 \equiv 1$ \\
+$2$ & $u$ (up quark) & $2$ & Quark & Fractional charge $+2/3$ \\
+$3$ & $W^+$, $e^+$ (positron) & $3$ & Gauge boson / lepton & Primitive root of $\ZS^*$ \\
+$4$ & $W^-$, $e^-$ (electron) & $4$ & Gauge boson / lepton & $w = -3 \equiv 4$ \\
+$5$ & $\bar{u}$ (anti-up) & $5$ & Anti-quark & $w = -2 \equiv 5$ \\
+$6$ & $d$ (down quark) & $6$ & Quark & Fractional charge $-1/3$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Electric Charge from the Polynomial}
+
+A key structural result is that electric charge is not an independent
+assignment but a linear projection of the GTE polynomial.
+
+\begin{theorem}[Charge as Center Projection — Machine-Certified]
+\label{thm:charge}
+For any winding sector $w \in \ZS$,
+\[
+  3Q(w) = p(0, w, 0) = w.
+\]
+That is, the electric charge (times 3) equals the winding number, which
+equals the GTE polynomial evaluated with $L = R = 0$ (the ``center''
+input).
+\end{theorem}
+\begin{proof}
+$p(0,w,0) = 0 + w - 0 \cdot w - 0 \cdot w \cdot 0 = w$ over $\FF(7)$. \qedhere
+\end{proof}
+This is machine-certified as \lean{gte\_charge\_is\_linear\_projection}
+($\CatAL$, zero sorry).
+
+\subsection{Fermion/Boson Split from \texorpdfstring{$\ZS^*$}{Z7*} Structure}
+
+The multiplicative group $\ZS^* = \{1,2,3,4,5,6\}$ has order 6.
+
+\begin{theorem}[Fermion/Boson Split --- Machine-Certified]
+\label{thm:fb-split}
+The fermionic SM sectors $\{2, 4, 6\}$ are exactly the non-primitive roots
+of $\ZS^*$ (elements of order 1, 2, or 3), while the gauge boson sector
+$\{3\}$ is the unique primitive root of $\ZS^*$ (generator of the full
+group, order 6).
+\end{theorem}
+\begin{proof}
+The orders in $\ZS^*$ are:
+\begin{align*}
+  \text{ord}(2) &= 3, \quad 2^3 = 8 \equiv 1, \\
+  \text{ord}(4) &= 3, \quad 4^3 = 64 \equiv 1, \\
+  \text{ord}(6) &= 2, \quad 6^2 = 36 \equiv 1, \\
+  \text{ord}(3) &= 6, \quad 3^6 = 729 \equiv 1,\;
+                  3^1,3^2,3^3,3^4,3^5 \neq 1.
+\end{align*}
+So $3$ is the unique primitive root (generator); $\{2,4,6\}$ are the
+non-generators. The $W^+$ boson carries $w = 3$; the charged fermions
+carry $w \in \{2,4,6\}$.
+\end{proof}
+Machine-certified as \lean{gte\_winding\_identifies\_charged\_fermions}
+($\CatAL$, zero sorry).
+
+\subsection{Lepton-W Universality}
+
+Lepton-$W$ universality — the experimental fact that electrons, muons, and
+taus couple to the $W$ boson with equal strength — is explained in the
+$\ZS$ framework as a pure algebraic identity.
+
+\begin{proposition}
+$-w(e^-) \equiv w(W^+) \pmod{7}$.
+\end{proposition}
+\begin{proof}
+$-w(e^-) = -4 \equiv 3 = w(W^+) \pmod{7}$. \qedhere
+\end{proof}
+The electron occupies the $w = 4$ sector; the positron occupies $w = 3$.
+This is the same sector as the $W^+$ gauge boson. Lepton-$W$ universality
+is not a dynamical coincidence but a consequence of the $\ZS$ algebraic
+structure.
+
+\subsection{Uniform Triples and 3+1D Particles}
+
+In 3+1D, a particle occupying all three tapes symmetrically carries a
+\emph{uniform triple} $(w,w,w)$. The rotation-invariant states — those
+invariant under $S_3$ permutation of tapes — are precisely the uniform
+triples.
+
+\begin{definition}[Uniform triple]
+A \emph{uniform triple} is a three-tape configuration $(w_x, w_y, w_z)$
+with $w_x = w_y = w_z = w$ for some $w \in \ZS$.
+\end{definition}
+
+For $w \in \{0, 2, 3, 4, 6\}$ (PSC-admissible sectors), the uniform
+triples $(w,w,w)$ recover the full Standard Model particle content
+as $S_3$-invariant (rotationally symmetric) eigenstates ($\CatA$,
+\texttt{three\_tape\_sm\_particles.py}).
+
+Non-uniform triples carry non-zero angular momentum or flavor structure.
+The proton, for example, is the $(2,2,6)$ non-uniform triple — two up quarks
+and one down quark — as a Level~2 $\PHIMDL$ bound state.
+
+\subsection{Charged-Current Vertex Conservation}
+
+\begin{theorem}[$\ZS$ Vertex Conservation]
+\label{thm:vertex}
+For every Standard Model charged-current interaction vertex
+$(i \to j + V)$, the $\ZS$ winding numbers satisfy
+\[
+  w_i \equiv w_j + w_V \pmod{7}.
+\]
+All 33 SM charged-current vertices (including anti-quark transitions and
+the full Cabibbo--Kobayashi--Maskawa (CKM) structure) satisfy this conservation law.
+\end{theorem}
+
+The 33 vertices were verified by exhaustive enumeration ($\CatA$,
+\texttt{z7\_vertex\_corrected.py}): 33/33 vertices pass the conservation
+check. A representative sample:
+\begin{align*}
+  u \to d + W^+ &: \quad 2 \equiv 6 + 3 \pmod{7} \;\checkmark \\
+  e^- \to \nu + W^- &: \quad 4 \equiv 0 + 4 \pmod{7} \;\checkmark \\
+  \bar{u} \to \bar{d} + W^- &: \quad 5 \equiv 1 + 4 \pmod{7} \;\checkmark
+\end{align*}
+
+\subsection{CP Violation Angle}
+
+The PMNS neutrino Dirac CP phase follows from the three-tape architecture.
+The ratio of inner-to-outer clock periods is $\tau_{\rm inner}/\tau_{\rm outer} = 3/7$
+(\CatAD, \texttt{EtherProperTimeRate.lean}), so the complementary tape-phase
+fraction is $1 - 3/7 = 4/7$ of a full cycle:
+\begin{equation}
+  \delta_{CP}^{\rm PMNS} = \frac{4}{7} \times 360{\ensuremath{{}^\circ}}
+  = 205.71{\ensuremath{{}^\circ}}.
+\end{equation}
+The NuFIT~6.0 IC24 NH best fit is $\delta_{CP} = 212^{+26}_{-41}{}^\circ$~\cite{NuFIT60},
+placing the prediction $-0.15\sigma$ from the central value ($\CatA$).
+The $3\sigma$ range $124^\circ$--$364^\circ$ encompasses the GTE prediction.
+The prediction carries zero free parameters: it is a pure three-tape clock-ratio identity.
+
+\subsection{Color Confinement from MDL}
+
+Three tapes encode three colors. The MDL cost of specifying a free colored
+state is:
+\begin{equation}
+  \Delta K = \log_2(N_c \times N_q) = \log_2(3 \times 3) = \log_2 9
+  \approx 3.17 \text{ bits},
+\end{equation}
+where $N_c = 3$ is the number of tapes (colors) and $N_q = 3$ is the
+number of quark winding sectors $\{u(2), e^-(4), d(6)\}$. The $\PSC$
+axiom requires the minimal-$K$ vacuum; a free colored quark requires
+$\Delta K > 0$ extra bits beyond the color-neutral state. Therefore
+PSC/MDL forbids free colored quarks as stable asymptotic states.
+Machine-certified as \lean{color\_confinement\_k\_extra\_pos}
+($\CatAL$, zero sorry).
+
+\subsection{Baryon Number as Topological Charge}
+
+With three tapes encoding three colors, the baryon number is:
+\begin{equation}
+  B = \frac{1}{3}\sum_{j \in \{x,y,z\}} \chi_q(w_j),
+  \qquad
+  \chi_q(w) = \begin{cases}
+    +1 & w \in \{2, 6\} \quad (u, d), \\
+    -1 & w \in \{1, 5\} \quad (\bar{d}, \bar{u}), \\
+    0  & \text{otherwise.}
+  \end{cases}
+\end{equation}
+Machine-certified as \lean{gte\_baryon\_number\_topological\_charge}
+($\CatAL$, zero sorry). All 33 SM vertices
+conserve $B$ by exhaustive verification ($\CatA$).
+
+\FloatBarrier
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Special Relativity from the CMCA}
+\label{sec:sr}
+%─────────────────────────────────────────────────────────────────────────────
+
+The $\CMCA$ encodes special relativity not as an input assumption but as an
+emergent consequence of the gating mechanism. This section derives the clock
+ratio, characterizes the V--A chiral structure, and establishes the
+SO$(1,1)^3 \times S_3$ exact symmetry as the discrete prototype of
+SO$(1,3)$.
+
+\subsection{SR Clock Ratio}
+
+The inner $\tauc$ clock fires at every step; the outer layers fire only
+when the gate check passes. For a cell at rest in the ether background, the
+gate fires with probability $p_{\rm gate}$ determined by the Rule~110
+dynamics of the inner clock:
+\begin{equation}
+  p_{\rm gate} = \frac{\text{gate firings}}{T}
+  \xrightarrow{T \to \infty} r_{\rm outer} < r_{\rm inner} = 1.
+\end{equation}
+
+\begin{theorem}[SR Clock Ratio]
+\label{thm:clock-ratio}
+The proper-time rate for a stationary cell in the three-tape $\CMCA$ ether
+vacuum is
+\[
+  \frac{\tau_{\rm inner}}{\tau_{\rm outer}} = \frac{3}{7} \approx 0.4286.
+\]
+This value is exact: the ether tile $[1,0,0,1,1,0,1,1,1,1,1,0,0,0]$ is a
+period-$7$ orbit under Rule~110, and every odd-indexed cell fires in exactly
+$3$ of each $7$ consecutive outer steps.  Even-indexed cells fire $5/7$ of
+steps; the ether-wide average is $4/7$.
+\end{theorem}
+\begin{proof}
+Apply Rule~110 to the 14-cell ether tile with periodic boundary conditions.
+The orbit returns to the tile after exactly $7$ steps.  Direct inspection of
+the trajectory gives firing count $3$ (resp.\ $5$) for each odd-indexed
+(resp.\ even-indexed) cell per period.  The ratio $3/7$ follows immediately.
+Computational verification: \texttt{sr\_ratio\_measurement.py} confirms
+$\taucratio = 0.4286 \pm 0.001$ across $L \in \{200, 256, 400\}$ and
+$T \in \{5000, 10000\}$.
+\end{proof}
+($\CatA$, \texttt{sr\_ratio\_measurement.py}, \texttt{verification\_suite.py}.)
+
+The physical interpretation is direct: proper time ($\tauc/T$) advances at
+$3/7$ of the coordinate-time rate for any cell at rest in the ether vacuum.
+This is the $\CMCA$ realization of Lorentz time dilation: at the discrete
+level, $\tau_{\rm proper} = (3/7)\,\tau_{\rm lab} < \tau_{\rm lab}$.
+
+\paragraph{Three-tape BPS instanton action.}
+The total BPS instanton action for the three-tape kink follows from the GTE
+tape structure:
+\begin{equation}\label{eq:S_3tape}
+S_{3\text{-tape}}
+  = N_c \times
+    \underbrace{\tfrac{1}{2}}_{\substack{\text{BPS}\\(\CatAL)}}
+  \times
+    \underbrace{\dfrac{2\pi}{|Z_7|}}_{\substack{\ZS\text{ winding}\\(\CatAL)}}
+  \times
+    \underbrace{\dfrac{|Z_7|}{\Ngen}}_{\substack{\tau_{\rm out}/\tau_{\rm in}\\(\CatAD)}}
+  = N_c \times \frac{\pi}{\Ngen} = \pi,
+\end{equation}
+where the $|Z_7|$ orbit count cancels completely.
+The inputs are:
+$N_c = \Ngen = 3$ (\PSC\ Layer~II, \CatAL;
+\lean{ngen\_3\_mersenne\_uniqueness}),
+the BPS half-period $T_{11} = 0$ (\CatAL;
+\lean{phi\_mdl\_kink\_bps\_saturation}),
+the $\ZS$ topological winding quantum $2\pi/|Z_7|$ (\CatAL;
+\lean{b0\_eq\_z7\_order}),
+and the ether proper-time ratio
+$\tau_{\rm outer}/\tau_{\rm inner} = |Z_7|/\Ngen$ (\CatAD;
+\lean{EtherProperTimeRate}, \S\ref{sec:dpp}).
+All factors being \CatAL{} or \CatAD{}, the full derivation is \CatAD.
+Per tape: $S_1 = \pi/N_c = \pi/3$, giving $\varepsilon_{\rm FN} = e^{-\pi/N_c}$
+as the $Q=1$ BPS instanton amplitude
+(\CatAL; \lean{bps\_per\_tape\_action\_eq\_pi\_over\_Nc}).
+
+\subsection{V--A Chirality}
+
+Rule~110 and Rule~124 are chiral: gliders propagate rightward in Rule~110
+and leftward in Rule~124. The chiral split gives a discrete prototype of the
+$V{-}A$ structure of the weak interaction.
+
+\begin{theorem}[V--A Chirality --- Machine-Certified]
+Rule~124 is equal to Rule~110 under a left-right reflection of the cell
+neighborhood.
+\end{theorem}
+\begin{proof}
+For every neighborhood $(a, b, c) \in \{0,1\}^3$,
+\[
+  \mathrm{R124}(a, b, c) = \mathrm{R110}(c, b, a).
+\]
+Verification: $\mathrm{R110}$ maps $\{111,110,101,100,011,010,001,000\}$
+to $\{0,1,1,0,1,1,1,0\}$ (bits 7--0 of rule number 110);
+$\mathrm{R124}$ maps the same inputs to $\{0,1,1,1,1,1,0,0\}$ (bits of 124).
+For reflected neighborhoods: $\mathrm{R110}(c,b,a)$ at $(a,b,c) = (0,0,1)$
+gives $\mathrm{R110}(1,0,0) = 0 = \mathrm{R124}(0,0,1)$; etc. (full 8-case
+check).
+\end{proof}
+Machine-certified as \lean{rule124\_eq\_rule110\_reflected}
+($\CatAL$, zero sorry).
+
+\noindent Physical interpretation: the right-chiral outer layer
+(Rule~110) couples only to right-movers; the left-chiral outer layer
+(Rule~124) couples only to left-movers. This is the discrete-level
+realization of the $V{-}A$ coupling $\gamma^\mu(1-\gamma^5)$ of the
+weak interaction. The chirality is not imposed by hand — it is a
+consequence of the MDL-optimal pair (Rule~110, Rule~124) being exactly a
+chiral pair. The pair is moreover the exact survivor set of the unordered
+UGP generation-orbit data: over all $120$ family orderings, the admissible
+vacuum-transparent rules are exactly $\{\text{Rule~110}, \text{Rule~124}\}$,
+with reversal of the ordering bijecting the two
+(\lean{orbit\_chirality\_census}; $\CatAL$, zero
+sorry~\cite{SpivackGTEPolynomialWolfram,SpivackGTECompleteFramework}).
+The chiral outer-layer architecture is thus the full image of the orbit
+constraint — arithmetically forced, not chosen — and the ordering convention
+is the chirality gauge.
+
+\smallskip\noindent\textbf{Quantitative V--A coupling.}\enspace
+The two tapes carry opposite winding numbers: the $\mathrm{AGL}(1,7)$ chiral
+$\mathbb{Z}_2$ mechanism maps Rule~110~$\leftrightarrow$~Rule~124
+(\lean{agl17\_chiral\_z2\_mechanism}, $\CatAL$), forcing opposite chiral
+winding signs.  Their vector sum vanishes,
+$w_R + w_L = 0$ (\lean{j\_vector\_tape\_sum\_zero}, $\CatAL$), while their
+axial difference is $w_R - w_L = 2$
+(\lean{phimdl\_axial\_current\_discrete\_constant}, $\CatAL$).
+The symmetric ($V$-sector) combination carries zero topological charge;
+the asymmetric ($A$-sector) combination carries charge $2$.
+Under the Algebraic Lifting Theorem this yields ($\CatAD$):
+$g_R = 0$ exactly and $g_A/g_V = -1$ exactly, i.e.\ pure $V{-}A$ with
+coefficient $1$ and zero free parameters
+(\lean{va\_coupling\_exact\_from\_tape\_topology}, $\CatAD$).
+The full derivation and quantitative treatment are given in the companion
+monograph~\cite{SpivackGTECompleteFramework}~\S{Electroweak}.
+
+\subsection{Exact SO\texorpdfstring{$(1,1)^3 \times S_3$}{(1,1)3 x S3} Symmetry}
+\label{ssec:lifting_descent}
+
+The SO$(1,1)^3 \times S_3$ symmetry derived in Section~\ref{sec:dpp} is the
+exact discrete symmetry of the three-tape $\CMCA$. Unlike the continuum
+SO$(1,3)$, which requires the $L \to \infty$ limit, the discrete symmetry
+is exact for any finite $L$.
+
+The continuum SO$(1,3)$ emerges as follows: in the large-$L$ limit, the
+three-tape $\CMCA$ produces a $\PHIMDL$ field on $\mathbb{R}^{3,1}$ that
+is isotropic by P42 \cite{SpivackPhiMDLField}. The isotropy of the
+continuum theory forces the continuum symmetry group to be the full
+SO$(1,3)$, which contains SO$(1,1)^3 \times S_3$ as a discrete subgroup
+($\CatAD$).
+
+\FloatBarrier
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Gravitational Coupling: The PMDL Poisson Equation}
+\label{sec:gravity}
+%─────────────────────────────────────────────────────────────────────────────
+
+Gravity in the three-tape $\CMCA$ arises from cross-tape PMDL minimization.
+This is a genuinely three-dimensional effect: in the 1+1D single-tape $\CMCA$,
+Sakharov-style dynamical coupling on Rule~110 causal graphs yields no glider
+attraction (P36~\cite{SpivackEmergentGravity}) because the 1D Poisson Green's
+function is linear with no $r^{-2}$ regime.
+The cross-tape coupling $p(w_x,w_y,w_z)$ requires all three spatial tapes
+simultaneously.
+This section derives the PMDL Poisson equation, proves the vacuum fixed
+point theorem, presents the numerical force-law tests, establishes the
+Gorard vacuum Ricci-flat result, and derives the Gorard normalization gap.
+A central conceptual point: gravitational attraction in the $\CMCA$ is the
+restoring force toward the vacuum fixed point.
+
+\subsection{The PMDL Action}
+
+The PMDL (Physical Minimum Description Length) action over the three-tape $\CMCA$
+is
+\begin{equation}
+  \PMDL = \sum_{{\bf x} \in \mathbb{Z}^3}
+  p\bigl(w_x({\bf x}),\, w_y({\bf x}),\, w_z({\bf x})\bigr),
+  \label{eq:pmdl-action}
+\end{equation}
+where $\poly = \polyform \pmod{7}$ is the GTE polynomial over $\FF(7)$,
+and $w_j({\bf x})$ is the winding number on tape $j$ at position ${\bf x}$.
+
+The PMDL action counts the total departure from vacuum (where $p = 0$)
+summed over all three-tape cells. MDL minimization requires $\PMDL$ to be
+as small as possible; gravitational attraction is the dynamical consequence
+of this minimization.
+
+\subsection{Variational Equation and the PMDL Poisson Equation}
+
+Treating $\PHIMDL({\bf x})$ as a continuum field with
+$w_j({\bf x}) \approx \PHIMDL({\bf x})/v$ (with vacuum expectation value (VEV)
+$v$), the variational equation $\delta\PMDL/\delta\PHIMDL = 0$ yields:
+
+\begin{theorem}[PMDL Poisson Equation]
+\label{thm:pmdl-poisson}
+In the continuum limit, the PMDL action variation gives the generalized
+Poisson equation:
+\begin{equation}
+  \nabla^2 \PHIMDL({\bf x}) = G_{\rm eff}\,
+  p\bigl(w_x({\bf x}),\, w_y({\bf x}),\, w_z({\bf x})\bigr),
+  \label{eq:pmdl-poisson}
+\end{equation}
+where $G_{\rm eff}$ is the effective gravitational coupling constant.
+\end{theorem}
+\begin{proof}
+The PMDL action \eqref{eq:pmdl-action} in the continuum limit becomes
+$\PMDL[\Phi] = \int d^3x\; p(w_x,w_y,w_z)$. The Euler-Lagrange equation
+for $\PHIMDL$ is obtained by noting that $p(w_x,w_y,w_z)$ is a local
+source term. In the presence of a field $\PHIMDL$ with kinetic term
+$(1/2)(\nabla\PHIMDL)^2$, varying the total action
+$S = \int d^3x \bigl[\tfrac{1}{2}(\nabla\PHIMDL)^2 +
+G_{\rm eff}\PHIMDL\, p(w_x,w_y,w_z)\bigr]$
+yields $\nabla^2\PHIMDL = G_{\rm eff}\,p(w_x,w_y,w_z)$.
+\end{proof}
+($\CatAD$; MDL-uniqueness of the cubic coupling is machine-certified as
+\lean{unique\_cubic\_gravity\_coupling}, zero sorry.)
+
+\subsection{The Three-Step Gravity Pipeline}
+
+The PMDL Poisson equation is implemented numerically in three steps:
+
+\begin{description}[leftmargin=1.5cm]
+  \item[Step A (Local):] Compute the source density at each position ${\bf x}$:
+        \[
+          \rho({\bf x}) = \frac{p(w_x({\bf x}),\, w_y({\bf x}),\,
+          w_z({\bf x}))}{6}.
+        \]
+        This reads only position ${\bf x}$ and applies the $\ZS$ polynomial;
+        it is purely local.
+
+  \item[Step B (Non-local):] Compute the gravitational potential by solving
+        the Poisson equation via convolution:
+        \[
+          \varphi({\bf x}) = \sum_{{\bf x}'} \frac{\rho({\bf x}')}{
+          \sqrt{|{\bf x} - {\bf x}'|^2 + \varepsilon^2}},
+        \]
+        where $\varepsilon$ is a soft-core regulator. This sums over all
+        source positions ${\bf x}'$ and is non-local.
+
+  \item[Step C (Gradient kick):] Apply the gravitational force as a gradient
+        kick on the $\CMCA$ clock rate:
+        \[
+          F({\bf x}) = +\nabla\varphi({\bf x}) \cdot \alpha_g,
+        \]
+        where $\alpha_g$ is the coupling strength. Crucially, the force
+        couples to the \emph{gradient} of the potential, not to the
+        potential itself.
+\end{description}
+
+\textbf{Why gradient coupling gives Newtonian gravity.} Potential coupling
+$F \propto \varphi$ gives a force that falls as $r^{-1}$ (Aristotelian
+dynamics). Gradient coupling $F \propto \nabla\varphi$ gives a force that
+falls as $r^{-2}$ (Newtonian / geodesic equation $d^2{\bf x}/d\tau^2 =
+-\nabla\Phi$). The three-tape $\CMCA$ naturally implements gradient coupling
+because the gate mechanism responds to the local clock-rate gradient, not
+to the global potential value.
+
+The three-step pipeline above describes the \emph{explicit gradient architecture}
+(see \S\ref{sec:numerical-tests}, Test~2): the gradient $\partial\phi/\partial x$
+is extracted from the global Poisson field and applied as a step bias to the probe.
+A second, fully CA-native architecture (\S\ref{sec:ca-native-gravity}) realizes
+the same geodesic coupling without any global field computation, using only
+nearest-neighbor comparisons of the clock-rate field
+$r_{\rm clk}(x) = r_0 - \alpha\,\phi(x)$. Both architectures give the same
+force law and the same $\sigma\to 0$ Newtonian limit ($F\propto b^{-2}$,
+$\CatAD$). The CA-native approach is the more principled implementation within
+a nearest-neighbor CA framework; the explicit gradient architecture makes the
+Poisson mechanism maximally transparent.
+
+\subsection{Vacuum Fixed-Point Theorem}
+
+The vacuum fixed-point theorem is the deepest structural result in the
+gravitational sector.
+
+\begin{theorem}[Vacuum Unique Fixed Point --- Machine-Certified]
+\label{thm:vfp}
+The equation
+\[
+  p(x,x,x) \equiv x \pmod{7}
+\]
+has the unique solution $x = 0$.
+\end{theorem}
+\begin{proof}
+$p(x,x,x) = x + x - x\cdot x - x\cdot x\cdot x = 2x - x^2 - x^3$.
+Setting $p(x,x,x) = x$ gives $x - x^2 - x^3 = 0$, i.e., $x(1 - x - x^2)
+= 0 \pmod{7}$.
+
+Case $x = 0$: satisfies $0(1 - 0 - 0) = 0$. \checkmark
+
+Case $x \neq 0$: need $1 - x - x^2 \equiv 0 \pmod{7}$, i.e.,
+$x^2 + x - 1 \equiv 0 \pmod{7}$. The discriminant is $\Delta = 1 + 4 = 5$.
+By Euler's criterion, $5^{(7-1)/2} = 5^3 = 125 \equiv 6 \equiv -1
+\pmod{7}$, so $5$ is a quadratic non-residue mod~7. Therefore
+$x^2 + x - 1 = 0$ has no solution in $\ZS$.
+\end{proof}
+Machine-certified as \lean{vacuum\_unique\_fixed\_point\_z7}
+($\CatAL$, zero sorry).
+
+\noindent \textbf{Physical interpretation.} The vacuum $w = 0$ is the unique
+self-consistent gravitational state: the only configuration for which
+$\nabla^2\PHIMDL = 0$ uniformly. Every SM particle is a non-fixed-point
+($w \neq 0$), so every particle is subject to a non-zero PMDL source term,
+hence perpetually subject to gravitational compression toward vacuum. Mass
+is ``distance from the fixed point in $\ZS$'': the larger the deviation of
+$p(w_x,w_y,w_z)$ from 0, the stronger the gravitational coupling.
+
+\subsection{Numerical Force-Law Tests}
+\label{sec:numerical-tests}
+
+Three independent numerical tests confirm the gravitational force law:
+
+\textbf{Test 1: $\tauc$ gradient.} A $\CMCA$ glider placed near a mass
+source experiences a modulation of its inner clock rate. Measuring the
+number of gate firings per cell in the region of the source relative to
+empty space gives $19.50 \pm 0.8$ excess firings/cell ($\CatA$,
+\texttt{clock\_rate\_gravity\_test.py}).
+
+\textbf{Test 2: Kink drift.} A CMCA kink soliton placed at impact parameter
+$b$ from a fixed source drifts toward the source at a rate
+$F_b = \Delta w/\Delta t$ that scales as $b^{-2.23}$ for
+$b \in [5, 50]$ cell units ($\CatA$, \texttt{gravity\_power\_law.py}):
+\begin{equation}
+  F \propto b^{-2.23}.
+  \label{eq:force-law}
+\end{equation}
+The analytic Newtonian gradient-kick calculation gives $b^{-2.30}$; the
+$\ZS$-compact Poisson solver gives $b^{-2.19}$ in the Coulomb regime. The
+numerical result $-2.23$ lies between these two estimates, consistent with
+finite-lattice corrections.
+
+\textbf{Test 3: Same-tape coupling.} For two sources on the same tape
+($\alpha = 1$ coupling), the mutual attraction is $18.2$ extra cells of
+displacement over $T = 200$ steps, compared to $0$ for uncoupled tapes
+($\CatA$, \texttt{same\_tape\_gravity\_test.py}).
+
+\textbf{Test 4: Self-consistent source.} To verify that the gravitational
+mechanism is not an artifact of the pre-computed fixed source, we ran a fully
+self-consistent variant in which the source tapes $(t_x, t_y, t_z)$ evolve
+under Rule~110 simultaneously with the probe, the $\ZS$ winding field
+$\rho(x)$ is recomputed from the current tape state at each timestep, and the
+Poisson field $\phi$ is recomputed before each gradient kick. Over five impact
+parameters $b \in \{15,20,30,40,50\}$, the probe is attracted at every
+distance with signal-to-noise ratios exceeding $10^4$ per trial
+($\CatA$, \texttt{selfconsistent\_gravity.py}). The self-consistent
+source-evolution does not destroy the gravitational coupling.
+The force-law exponent in this test is not directly comparable to
+$b^{-2.23}$: because $\phi$ is re-normalized to unit amplitude at each
+timestep, the absolute distance dependence of the potential amplitude is
+absorbed into the normalization, and the test measures robustness of
+attraction rather than spatial scaling. The $b^{-2.23}$ scaling is recovered
+in the fixed-source setup where the full potential amplitude is available
+(Test~2 above).
+
+\paragraph{The continuum Newtonian limit ($\CatAD$).}
+\label{sec:newtonian-limit}
+The measured force-law exponent $b^{-2.23}$ reflects a finite-source geometry
+artifact: the source winding density has a Gaussian profile of width
+$\sigma_{\rm AL} = 5$ lattice cells (the Algebraic Lifting pre-smooth radius).
+In the far field $b \gg \sigma_{\rm AL}$, the 3D Poisson Green's function for
+a Gaussian source with radius $\sigma_{\rm AL}$ and total gravitational mass $M$
+gives the exact potential
+\begin{equation}
+  \phi(b) = \frac{G_{\rm eff}\,M}{4\pi\,b}\,\mathrm{erf}\!\left(\frac{b}{\sqrt{2}\,\sigma_{\rm AL}}\right),
+  \label{eq:gaussian-potential}
+\end{equation}
+and the corresponding force magnitude
+\begin{equation}
+  F(b) = \frac{G_{\rm eff}\,M}{4\pi\,b^2}\left[1 - \frac{\sigma_{\rm AL}^2}{2b^2} + O\!\left(\frac{\sigma_{\rm AL}}{b}\right)^4\right].
+  \label{eq:newtonian-force-exact}
+\end{equation}
+This is exactly Newtonian $F \propto b^{-2}$ in the far field, with corrections bounded
+by $O(\sigma_{\rm AL}/b)^2$. Numerically: at $b/\sigma_{\rm AL} = 5$, the
+deviation from Newton is $1.54\times 10^{-5}$; at $b/\sigma_{\rm AL} \geq 10$,
+the deviation is below floating-point precision. The local force exponent
+converges monotonically: $n(b = 100$--$500, \sigma = 5) = -2.000$ to four
+significant figures. [$\CatAD$; script: \texttt{gravity\_force\_law\_continuum\_limit.py}]
+
+The three formulations of the $\tau_c$ gravity mechanism are analytically
+equivalent in the Newtonian limit, forming a hierarchy:
+\begin{enumerate}[noitemsep,label=(\alph*)]
+\item \emph{Gradient kick} (Level~1 computational): probe displacement $\propto \partial\phi/\partial x$,
+      implementing $d^2{\bf x}/d\tau^2 = -\nabla\phi$.
+\item \emph{Metric perturbation} (Level~2 geometric): $\tau_c = h_{00}/2$,
+      $g_{00} = -(1 + 2\phi/c^2)$; geodesic equation gives $F = GM/r^2$.
+\item \emph{Equivalence principle} (foundational): $\tau_c$ rate $=$ local proper time;
+      action $S = -mc^2\int\tau_c\,dt$; Euler-Lagrange gives $d^2{\bf x}/dt^2 = \nabla\ln\tau_c$.
+\end{enumerate}
+These are the same physics stated at three levels of the theory.
+The equivalence principle (c) implies the geometric formulation (b),
+which implies the gradient kick (a). $[\CatAD]$
+
+\paragraph{Level~1 $\to$ Level~2 gravity bridge ($\CatAD$).}
+The Level~1 PMDL Poisson potential $\phi_{\rm L1}(b) = G_{\rm eff}M_{\rm PMDL}/(4\pi b)\cdot{\rm erf}(\cdot)$
+and the Level~2 EFE weak-field potential from the BPS kink stress tensor
+$T_{00}(x) = (4m^2/49)\,{\rm sech}^2(mx)$,
+$\phi_{\rm L2}(b) = G_N M_{\rm kink}/(4\pi b)\cdot{\rm erf}(\cdot)$,
+have \emph{identical functional forms}.  They are equal when
+\begin{equation}
+  G_{\rm eff}\,M_{\rm PMDL} = 4\pi\,G_N\,M_{\rm kink},
+  \quad\text{equivalently,}\quad
+  G_N = G_{\rm eff}\!\left(\frac{M_{\rm kink}}{M_{\rm Pl}}\right)^{\!2}\frac{M_{\rm PMDL}}{M_{\rm kink}}.
+  \label{eq:gravity-bridge}
+\end{equation}
+The Gorard suppression factor $(M_{\rm kink}/M_{\rm Pl})^2 = (8m_\tau/49)^2/M_{\rm Pl}^2
+\approx 1.78\times10^{-38}$ explains why the scan coupling $G_{\rm eff} = O(1)$
+and the physical Newton constant $G_N \approx 6.67\times10^{-37}$ (natural units)
+differ by the Planck hierarchy.  The two gravity descriptions are two resolution levels
+of the same physics, not competing models.
+$[\CatAD$; bridge theorem \lean{l1\_l2\_gravity\_bridge}, \lean{gte\_G\_eff\_G\_N\_ratio}
+in \lean{PMDLGravityTheorems.lean};
+script: \texttt{level1\_level2\_gravity\_bridge.py}$]$
+
+\paragraph{CA-native geodesic coupling via clock-layer gradient (CatA).}
+\label{sec:ca-native-gravity}%
+The explicit gradient architecture described above establishes the force law using a global gradient kick:
+the Poisson field $\phi$ is computed at all positions, and the probe displacement is
+biased by $\partial\phi/\partial x$ at the probe's location. A second, fully CA-native
+implementation realizes the same geodesic coupling without any global field computation.
+
+The gravitational potential $\phi$ modulates the clock rate at each lattice site:
+$r_{\rm clk}(x) = r_0 - \alpha\,\phi(x)$, where $r_0$ is the base firing rate.
+Near a mass concentration, the clock fires more slowly (gravitational time dilation).
+The probe particle can read the clock rates at its left and right neighbors, $r_L$ and
+$r_R$, and bias its step toward the slower clock --- toward the mass. The rule is:
+\begin{equation}
+  \text{step direction} = \mathrm{sign}(r_L - r_R)
+  = \mathrm{sign}\!\left[\alpha\bigl(\phi(x{+}1)-\phi(x{-}1)\bigr)\right]
+  = \mathrm{sign}\!\left(\partial\phi/\partial x\right),
+\end{equation}
+which is gravitational attraction, computed from a three-cell nearest-neighbor
+comparison of the clock layer. No global Poisson computation is needed in the
+probe dynamics.
+
+Numerical tests (CatA, \texttt{clock\_gradient\_geodesic.py}) confirm 5/5 impact
+parameters attracted at all three coupling strengths tested. At $\alpha=0.1$, the
+power law $F\propto b^{-2.46}$ is within $0.46$ of the Newtonian exponent; the
+deviation matches the finite-source pre-smooth correction established in
+\S\ref{sec:newtonian-limit}. The CA-native mechanism inherits the same
+$\sigma\to 0$ limit of exactly $b^{-2}$.
+
+The extended CMCA rule requires two additional nearest-neighbor clock reads beyond
+the standard Rule~110 neighborhood, adding approximately $5$--$7$ bits to the
+specification cost. The total for CA-native gravity is $K_{\rm CMCA} + \Delta K_{\rm geo}
+\approx 24$ bits --- still far below any conventional field-theory specification.
+
+\medskip
+\noindent\textit{Comparison of both gravity architectures:}
+\begin{center}
+\small
+\begin{tabular}{lll}
+\toprule
+Architecture & Force law & Specification\\
+\midrule
+Explicit gradient kick (global Poisson) & $b^{-2.23}$ (CatA) & $K_{\rm CMCA}=19$ bits (source)\\
+CA-native clock-gradient & $b^{-2.46}$ at $\alpha=0.1$ (CatA) & $\approx 24$ bits (source + geodesic)\\
+$\sigma\to 0$ continuum limit & $b^{-2.00}$ (CatAD) & analytical\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\FloatBarrier
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Geometric Continuum Limit: Gorard Curvature and Causal Structure}
+\label{sec:gorard}
+%─────────────────────────────────────────────────────────────────────────────
+
+This section develops the geometric continuum limit of the three-tape $\CMCA$
+using Gorard's discrete Ollivier-Ricci curvature machinery. We prove the
+vacuum is Ricci-flat, derive the causal diamond volume formula, compute the
+Gorard coarse-graining coefficient, and characterize the normalization gap.
+
+\subsection{Gorard Curvature on the CMCA Causal Graph}
+
+Gorard \cite{Gorard2020Rel} defined a discrete analog of Ollivier-Ricci
+curvature on the causal graphs of Wolfram model systems. For a pair of
+nodes $A, B$ in the causal graph, the Gorard curvature $\kappa_{\rm SD}(A,B)$
+is defined by the scaling of the Wasserstein distance between unit balls
+centered at $A$ and $B$. In the large-graph limit, $\kappa_{\rm SD}$ matches
+the Ricci curvature of the continuum limit.
+
+Applied to the three-tape $\CMCA$, the nodes of the causal graph are the
+cell-time events $(x_j, t)$, and edges connect events that are causally
+related by the $\CMCA$ update rule. The curvature $\kappa_{\rm EE}(A,B)$
+(ether-ether) measures the curvature of the vacuum state; $\kappa_{\rm SD}$
+(soliton-defect) measures the curvature in the presence of matter.
+
+\subsection{Vacuum Ricci-Flat Theorem}
+
+\begin{theorem}[Gorard Ricci-Flat Vacuum --- Machine-Certified]
+\label{thm:ricci-flat}
+In the ether vacuum state $W_1 = 1$ (all cells in the period-14 ether
+background), the Gorard curvature of the three-tape $\CMCA$ causal graph
+vanishes: $\kappa_{\rm EE} = 0$.
+\end{theorem}
+
+Machine-certified as \lean{three\_tape\_gorard\_vacuum\_ricci\_flat}
+($\CatAL$, zero sorry).
+
+This establishes that the $\CMCA$ vacuum is a flat Minkowski spacetime
+— consistent with the absence of matter sources in the ether state. The
+tensor product of three Ricci-flat tapes is Ricci-flat in 3+1D.
+
+\subsection{Matter Sources Curvature}
+
+\begin{theorem}[Matter Curves Spacetime --- Computationally Verified]
+\label{thm:matter-curves}
+In the presence of a $\CMCA$ glider (matter source), the Gorard curvature
+satisfies $\kappa_{\rm SD} > 0$ at the glider position.
+\end{theorem}
+($\CatA$, \texttt{three\_tape\_gorard\_chain.py}: $L = 512$, $T = 2000$,
+measuring $\kappa$ at glider vs.\ ether positions.)
+
+This is the $\CMCA$-level analog of the Einstein field equation
+$G_{\mu\nu} = 8\pi G T_{\mu\nu}$: matter (gliders) generates positive
+curvature (measured by $\kappa_{\rm SD}$) in the causal graph.
+
+\subsection{Causal Diamond Volume Formula}
+
+\begin{theorem}[Causal Diamond --- Machine-Certified]
+\label{thm:causal-diamond}
+In the three-tape $\CMCA$ with shared clock, the volume of the causal
+diamond of radius $T$ (the set of all events within proper time $T$ of
+the origin) satisfies
+\begin{equation}
+  V(T) = \frac{T^4}{4},
+  \label{eq:causal-diamond}
+\end{equation}
+with boundary volume $\propto \mathrm{Vol}(S^3) = 2\pi^2$.
+\end{theorem}
+Machine-certified as \lean{three\_tape\_causal\_diamond\_t4}
+($\CatAL$, zero sorry).
+
+This is consistent with the Minkowski causal diamond formula
+$V_{\rm Mink}(T) = \tfrac{\pi^2}{2} T^4 / 3! = \tfrac{\pi^2}{12} T^4$ up
+to the continuum normalization (which introduces the $\pi^2/3$ factor from
+the $S^3$ volume in the continuum).
+
+\subsection{Gorard Coarse-Graining Coefficient}
+
+\begin{definition}[Gorard Coefficient]
+The Gorard coarse-graining coefficient $C_{\rm Gorard}$ is defined by
+\begin{equation}
+  C_{\rm Gorard} = \frac{\kappa_{3D}}{8\pi},
+  \label{eq:cgorard}
+\end{equation}
+where $\kappa_{3D}$ is the Gorard curvature in three spatial dimensions
+evaluated at the scale of the $\PHIMDL$ kink.
+\end{definition}
+
+From the Gorard formula for the Rule~110 causal graph and the three-tape
+extension, the numerical value is ($\CatAD$):
+\begin{equation}
+  C_{\rm Gorard} = \frac{\kappa_{3D}}{8\pi}
+  = \frac{2.3194}{25.1327} = 0.0923.
+  \label{eq:cgorard-value}
+\end{equation}
+The exact formula is $C_{\rm Gorard} = N_{\rm spatial}/(2D^2) = 3/32 = 0.09375$
+(\CatAL, \lean{c\_gorard\_eq\_n\_spatial\_over\_two\_dsq};
+see~\cite{SpivackGTECosmology} \S5.1).
+The two factors of $D=4$ arise independently: one from the $3D$
+Ollivier--Ricci curvature normalization $\kappa_{3D} = N_{\rm spatial}\pi/D$,
+and one from the Einstein--Hilbert bridge factor $8\pi = 2D\pi$.
+See \S\ref{sec:holographic} for the holographic interpretation of this coarse-graining coefficient.
+
+\subsection{Planck-Scale Normalization Gap}
+\label{ssec:planck-gap}
+
+The normalization gap quantifies the ratio of the Planck mass to the kink mass:
+\begin{equation}
+  \frac{M_{\rm Pl}^4}{\Mkink^4} \times C_{\rm Gorard}
+  = 10^{77.46},
+  \label{eq:norm-gap}
+\end{equation}
+compared to the target $10^{77.5}$ set by P38 \cite{SpivackPhiMDLGravity}.
+The gap is $8.5\%$ in the exponent; the residual traces to the finite-lattice
+Ollivier-Ricci correction ($\kappa_{\rm SD} = 0.7731$ vs.\ the ideal
+$3/4 = 0.75$, a $3\%$ correction that maps to $\sim 4 \times 3\% \sim 12\%$
+in the fourth power).
+
+Vacuum spatial Gromov--Hausdorff convergence is \CatAL{}
+(\lean{vacuum\_cmca\_gh\_converges\_to\_flat\_space}): the spatial causal graph
+converges in GH distance to flat $\mathbb{R}^3$ as $L\to\infty$.
+The normalization gap is characterized but not closed. The exact
+$L \to \infty$ Gorard chain continuum proof for the matter sector is an open formal
+certificate (OQ-QG-1b; obstructed by Cheeger--Colding regularity theory, not yet in
+Mathlib), as is
+the derivation of the fine-end reading of the $\CMCA$ tape: the discrete
+certificate carries no intrinsic cell size (the no-CA-replica theorem of
+P43~\cite{SpivackCompleteness}), so a spacing belongs to a \emph{reading}
+— a calibration of the certificate against $\Phi_{\rm MDL}$ observables —
+and the conventional identification $a \approx \ell_{\rm Pl}$ is a
+working-hypothesis calibration reading rather than a GTE derivation.
+The fine-end reading and the MDL-saturated matter-sector reading
+$a = \hbar c/\Lambda_{\rm GTE}$ (with $\Lambda_{\rm GTE} \approx 2.0$~GeV
+the GTE confinement boundary scale~\cite{SpivackGTEQCDStructure,
+SpivackSpin7Lattice}) are separated by the GTE-derived blocking ratio
+$M_{\rm Pl}/\Lambda_{\rm GTE} = 3^{10}\cdot 7^{18}/2^{4} \approx
+6.0\times10^{18}$ ($\CatAD$ arithmetic) — the separation of two readings
+of one certificate, not of two substrates.
+
+\FloatBarrier
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Quantum Structure: Born Rule, Page-Wootters Time, and Entanglement}
+\label{sec:qm}
+%─────────────────────────────────────────────────────────────────────────────
+
+The three-tape $\CMCA$ possesses a natural quantum structure inherited from
+the one-tape quantum theory of P42 \cite{SpivackPhiMDLField}. This section
+derives the three-dimensional Born rule, the Page--Wootters interpretation
+of time, quantum entanglement from gravitational coupling, and Bell
+nonlocality.
+
+\subsection{Three-Dimensional Born Rule}
+
+\begin{theorem}[3D Born Rule]
+\label{thm:born}
+The probability amplitude of a three-tape state $(w_x, w_y, w_z)$ is the
+product of three independent 1D Born rule amplitudes:
+\begin{equation}
+  P(w_x, w_y, w_z) = P_1(w_x) \cdot P_1(w_y) \cdot P_1(w_z),
+\end{equation}
+where each $P_1(w)$ is the 1D Born probability from P42.
+\end{theorem}
+\begin{proof}
+The three-tape state space factorizes as
+$\mathcal{H}_{3D} = \mathcal{H}_x \otimes \mathcal{H}_y \otimes
+\mathcal{H}_z$. Each factor has its own $\ZS$ superselection structure.
+The Born rule for the product space is the product of the individual
+Born rules. No new axioms are required; the 3D Born rule follows from the
+tensor product structure and the 1D Born rule established in P42
+\cite{SpivackPhiMDLField}.
+\end{proof}
+
+\subsection{Page-Wootters Relational Time and the $\tau_c$ Clock}
+
+\begin{theorem}[$\tau_c$ is a valid Page-Wootters clock, $\CatAD$]
+\label{thm:pw-clock}
+The outer clock $\taucout$ satisfies all prerequisites for the
+Page--Wootters (PW) Born rule derivation:
+\begin{enumerate}[noitemsep,label=(\alph*)]
+\item \emph{Non-degenerate spectrum:} $H_{\tau_c} = \omega_c\sum_\tau\tau|\tau\rangle\langle\tau|$
+      has distinct eigenvalues $0, \omega_c, 2\omega_c, \ldots$
+      [$\CatAL$; \lean{tau\_c\_clock\_hamiltonian\_nondegenerate}, zero sorry].
+\item \emph{Orthogonal clock states:} $\langle\tau|\tau'\rangle = \delta_{\tau\tau'}$
+      (computational basis; trivial).
+\item \emph{Wheeler-DeWitt constraint:} the timeless universe state
+      $|\Psi\rangle = \frac{1}{\sqrt{T}}\sum_\tau|\tau\rangle_{\rm clock}\otimes U(\tau)|\psi_0\rangle$
+      satisfies $H_{\rm total}|\Psi\rangle = 0$ [$\CatAD$].
+\end{enumerate}
+The PW Born rule follows:
+\begin{equation}
+  P(k|\tau) = |\langle k | U(\tau) | \psi_0\rangle|^2.
+\end{equation}
+\end{theorem}
+
+The ``classical'' character of $\taucout$ (deterministic CA step counter,
+diagonal Hamiltonian) is precisely the Salecker--Wigner--Peres ideal clock.
+Whether $\taucout$ is in a uniform superposition or a Gaussian wavepacket,
+the conditional Born probabilities $P(k|\tau)$ are identical --- the Born
+rule is independent of the clock state distribution.
+[$\CatAD$; \texttt{pw\_born\_rule\_verification.py}]
+
+\begin{corollary}[$\mathbb{Z}_7$ discrete Born rule, $\CatAD$]
+A single $\mathbb{Z}_7$ winding eigenstate $|w\rangle = \frac{1}{\sqrt{7}}\sum_j \omega_7^{jw}|j\rangle$
+gives uniform probability $P(j|w) = 1/7$ for all positions $j$.
+Non-uniform Born distributions arise from superpositions of winding modes
+via Fourier interference.
+The discrete Born rule at Level~1 is standard quantum mechanics on the
+$\mathbb{Z}_7$ Hilbert space; the continuous Born rule $P(x) = |\psi(x)|^2$
+is supplied by the $\Phi_{\rm MDL}$ Level~2 theory (P42~\cite{SpivackPhiMDLField}).
+[$\CatAD$; \lean{z7\_all\_eigenstates\_uniform}]
+\end{corollary}
+
+\begin{remark}[Level~1 $\to$ Level~2 Born rule bridge, $\CatAD$]
+\label{rem:born-bridge}
+The Level~1 PW Born rule $P(k|\tau_c) = |\langle k | U(\tau_c)|\psi_0\rangle|^2$
+and the Level~2 field-amplitude Born density $P(x) = |\partial_x\Phi_{\rm MDL}|^2/Z$
+of P42~\cite{SpivackPhiMDLField} are the \emph{same distribution} in the $M\to\infty$
+continuum limit, under the identification $\psi(x) = \partial_x\Phi_{\rm MDL}(x)/\sqrt{Z}$
+(kink field gradient = quantum wavefunction).
+Both are proportional to $\mathrm{sech}^2(mx)$ for a BPS kink state.
+The convergence rate is $O(\varepsilon_Z(M)) = O(\pi^2/(3M^2))$, the same Nyquist
+residual as the Lorentz invariance restoration (\S\ref{ssec:lifting_descent}).
+No additional axiom is needed: the bridge follows from
+\lean{cmca\_continuum\_limit\_is\_phimdl} plus the BPS kink profile.
+$[\CatAD$; script: \texttt{born\_rule\_bridge\_pw\_to\_field.py};
+Lean: \lean{l1\_l2\_born\_rule\_bridge}, \lean{born\_bridge\_no\_new\_axiom}
+in \lean{PageWoottersZ7.lean}$]$
+\end{remark}
+
+The shared $\taucout$ clock entangles all three tapes simultaneously,
+providing the relational-time reference for all three spatial dimensions.
+This is a concrete realization of Page--Wootters time in a fully discrete
+system.
+
+\subsection{Cross-Tape Entanglement from Gravitational Coupling}
+
+The PMDL action $\PMDL = \sum_{\bf x} p(w_x,w_y,w_z)$ is not separable
+in $(w_x, w_y, w_z)$: the cross-tape term $-w_x w_y w_z$ couples all three
+tapes. This coupling generates genuine quantum entanglement.
+
+\begin{theorem}[Cross-Tape Entanglement]
+For $G_{\rm eff} = 0.5$, the entanglement negativity between tapes $x$
+and $\{y,z\}$ is $\mathcal{N} = 0.38$.
+\end{theorem}
+($\CatA$, \texttt{entanglement\_analysis.py};
+$L = 64$, $T = 200$.)
+
+The entanglement negativity $\mathcal{N} = 0.38$ confirms that the
+gravitational cross-tape coupling creates genuine quantum entanglement, not
+merely classical correlation.
+
+\subsection{Bell Nonlocality from Gravitational Coupling}
+\label{sec:bell}
+
+\begin{theorem}[Bell Inequality Violation, $\CatA$]
+\label{thm:bell}
+For $G_{\rm eff} = 0.5$, the Clauser--Horne--Shimony--Holt (CHSH) parameter
+of the two-qutrit subsystem coupled via $H_{\rm grav} = G_{\rm eff}\,p(w_x,w_y,w_y)/6$
+satisfies
+\begin{equation}
+  S = 2.4459,
+\end{equation}
+which is $86.5\%$ of the Tsirelson bound $S_{\rm max} = 2\sqrt{2} \approx 2.828$.
+Local hidden-variable (LHV) models are excluded rigorously: $S = 2.4459 > 2$
+for all LHV models.
+The CHSH value is quantum-mechanically consistent: $2 < S < 2\sqrt{2}$.
+The PPT entanglement negativity is $\mathcal{N} = 0.24 > 0$, confirming
+genuine quantum entanglement (Peres-Horodecki criterion).
+The Bell violation threshold is $G_{\rm eff} \approx 0.095$, below which
+$S \leq 2$ and LHV models are not excluded.
+\end{theorem}
+[$\CatA$; \texttt{born\_rule\_bell\_violation.py};
+Horodecki criterion (optimal qubit subspace projection, \cite{Horodecki1995}) and
+random dichotomic observable search.]
+
+\begin{remark}[Gravity and entanglement co-generated at Level~1]
+The GTE polynomial $p(w_x, w_y, w_z) = w_y + w_z - w_yw_z - w_xw_yw_z$ serves as
+the gravitational source density $\rho_{\rm grav} = p/6$ (via $\nabla^2\phi = G_{\rm eff}\rho$)
+and as the entanglement generator $H_{\rm grav} = G_{\rm eff}\,p/6$.
+Both gravitational attraction (which becomes Newtonian in the continuum limit,
+\S\ref{sec:newtonian-limit}) and quantum entanglement at Level~1 arise from the same 19-bit
+polynomial specification.  Increasing $G_{\rm eff}$ amplifies both effects simultaneously.
+The Bell violation threshold $G_{\rm eff} \approx 0.095$ correlates with the onset
+of gravitational attraction --- a testable prediction of the co-generation mechanism.
+[$\CatA$; algebraic co-generation certified as \lean{gte\_poly\_double\_role}]
+
+The Level~2 EPR semantic correlations described in P43~\cite{SpivackCompleteness}
+operate via a distinct non-computable mechanism ($[\mathbf{D}]$-record transputation,
+axiom~D3 of P43) and are not numerically identical to the Level~1 CHSH violation.
+The two layers are consistent: Level~1 CHSH certifies that $\PHIMDL$ supports genuine
+quantum entanglement (structural lifting via the Algebraic Lifting Theorem~\cite{SpivackCompUniversality,SpivackCMCA,SpivackPhiMDLField}); Level~2
+$[\mathbf{D}]$-record EPR provides a stronger (non-computable) non-classicality at Level~2
+\cite{SpivackCompleteness}.  For the Bell layer diagram see
+\lean{l1\_chsh\_and\_l2\_epr\_are\_distinct\_layers} and \lean{alt\_does\_not\_lift\_chsh\_value}
+in \lean{BellViolationGTE.lean}.
+\end{remark}
+
+\begin{remark}[Sector dependence of Bell nonlocality]
+The Bell violation $S = 2.4459$ arises in the \emph{three-level winding sector}
+$\{0,2,4\}\subset\mathbb{Z}_7$ (effective qutrit dimension) under the joint
+free-Hamiltonian and gravitational coupling
+$H_{\rm sys} = H_X\otimes I + I\otimes H_Y + G_{\rm eff}\,p/6$.
+In the full seven-level $\mathbb{Z}_7$ system under gravitational coupling alone
+(diagonal $H_{\rm grav}$, no free Hamiltonian), the $7\otimes 7$ cross-tape state is
+\emph{entangled} --- PPT negativity $\mathcal{N} > 0$ for all $G_{\rm eff} > 0$, increasing
+to $\mathcal{N} \approx 0.32$ at $G_{\rm eff} = 1.0$ --- but does not violate the two-outcome
+CHSH inequality (proved analytically, \texttt{bell\_analytic\_bound.py}).
+Whether this PPT-entangled seven-level state violates a higher-dimensional Bell inequality
+(CGLMP $d=7$, Collins et al.~\cite{Collins2002}) was tested computationally
+(\texttt{z7\_qudit\_bell\_cglmp.py}):
+the maximum $I_7 \leq 1.97$ for all $G_{\rm eff}$ tested, consistent with the PPT
+conjecture that PPT states do not violate standard Bell inequalities.
+The CHSH violation requires the free Hamiltonian to break the product structure of the
+initial state; gravitational coupling alone generates entanglement but not Bell nonlocality.
+\end{remark}
+
+\begin{remark}[PSC-unified nonlocality: semantic and quantum registers]
+\label{rem:psc_unified_nonlocality_cmca}
+The GTE quantum correlations are an instance of PSC-forced global-to-local information loss.
+In a PSC-consistent universe with diagonal capability, no effective algorithm reconstructs
+the global quantum state from local reduced density matrices alone: the global entangled state
+carries structure that no finite assembly of marginals can recover. This is the quantum
+information counterpart of the No External Model Selection (NEMS) semantic nonlocality, where no total-effective procedure
+reconstructs the global world-type from local semantic views (NEMS P46 no-decider theorem,
+CatAL). Both constraints arise from the same PSC self-referential architecture. The
+distinction between the PPT-entangled-no-CHSH regime (diagonal $H_{\rm grav}$) and the
+Bell-violating regime (with free Hamiltonian) mirrors the NEMS distinction between semantic
+equivalence and semantic determinacy: both levels require the full global structure that
+no local marginals can reconstitute.
+\end{remark}
+
+Three independent artifact checks confirm the violation is genuine:
+(1) at $G_{\rm eff} = 0$, $S = 1.96 < 2$ (no violation, correct baseline);
+(2) the CHSH violation persists across $G_{\rm eff} \in \{0.2, 0.5, 1.0, 5.0\}$
+(not a fine-tuned artifact);
+(3) $H_{\rm grav}$ is Hermitian, $\rho_{xy}$ is positive-semidefinite, $\mathrm{Tr}[\rho_{xy}]=1$
+(no implementation error).
+
+The Bell violation arises from the cross-tape PMDL coupling $-w_xw_yw_z$,
+the same term that generates positional non-locality (\S\ref{sec:holographic}).
+An analytic proof that $S > 2$ for $G_{\rm eff} > 0.095$ from the Hamiltonian
+eigenvalue structure remains an open problem.
+
+\subsection{Level~1 Fermionic Statistics}
+
+The algebraic Level~1 fingerprint of fermionic statistics is the
+non-primitive root structure of $\ZS^*$:
+
+\begin{theorem}[Fermionic Statistics Chain --- Machine-Certified]
+The fermionic sectors $\{2,4,6\} \subset \ZS^*$ satisfy the algebraic
+conditions for fermionic exchange statistics at Level~1.
+\end{theorem}
+Machine-certified as \lean{gte\_triple\_kink\_exchange\_statistics}
+($\CatAL$, zero sorry).
+
+The full spin-statistics connection (exchange phase $-1$ identified with
+$2\pi$ rotation) is machine-certified at $\CatAL$ + one named axiom:
+\lean{spinor\_exchange\_equals\_2pi\_rotation}.  Deriving this axiom from first
+principles requires the $\mathrm{DPP} \to \text{Minkowski} \to \text{PCT}$ chain;
+see the open problems below.
+
+\FloatBarrier
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Stable CMCA Excitations: Solitons}
+\label{sec:solitons}
+%─────────────────────────────────────────────────────────────────────────────
+
+This section presents the search for permanent $\CMCA$ excitations and
+characterizes the ether-period-14 resonance solitons found in the scan.
+We also discuss the Algebraic Lifting Theorem and its implications for
+the kink mass.
+
+\subsection{The Soliton Search}
+
+For the three-tape $\CMCA$ to support particle-like stable excitations at
+Level~1, there must exist permanent, non-decaying configurations. An
+exhaustive scan over initial-condition and outer-pattern parameters
+$(p_{\rm IC}, p_{\rm OP}) \in [0, 127]^2$ was performed
+($\CatA$, \texttt{cmca\_true\_soliton\_search.py}).
+
+\subsection{Permanent Solitons via Ether-Period-14 Resonance}
+
+\begin{theorem}[Permanent CMCA Soliton]
+\label{thm:soliton}
+The parameter pair $(p_{\rm IC} = 120,\; p_{\rm OP} = 134)$ produces a
+permanent $\CMCA$ excitation, stable for at least $T = 500$ steps
+(57 complete $\ZS$ winding periods), with winding oscillation pattern
+$\{0, 1, 2, 4, 5\}$.
+\end{theorem}
+($\CatA$, \texttt{cmca\_true\_soliton\_search.py}.)
+
+The mechanism is \emph{ether-period-14 resonance}: the soliton locks to the
+period-14 ether background, using the periodic boundary of the ether crystal
+as a phase anchor that prevents the excitation from decaying. The soliton
+is a localized defect in the period-14 vacuum pattern, stabilized by the
+resonance between its internal oscillation period and the ether periodicity.
+
+The winding oscillation pattern $\{0, 1, 2, 4, 5\}$ cycles through
+several $\ZS$ sectors over the ether period. The time-averaged winding
+sum is $\equiv 5 \pmod{7}$, which corresponds to the anti-up-quark
+sector $\bar{u}$. This is the $\CMCA$ analog of vacuum polarization: the
+permanent soliton carries a transient virtual anti-quark signature.
+
+\subsection{Level~1 vs.\ Level~2 Solitons}
+
+The ether-period-14 soliton has oscillating winding, not static $w \neq 0$
+charge. This is the correct Level~1 behavior: Level~1 solitons are
+stabilized by periodic ether resonance, not by topological winding number.
+
+A Level~2 ($\PHIMDL$ topological) kink is a domain wall between adjacent
+$V_{\ZS}(\Phi)$ minima. Such a kink carries a permanently conserved
+topological charge (the $\ZS$ winding number of the domain wall), cannot
+continuously annihilate without finding a companion anti-kink, and is
+therefore a genuinely stable particle. The search for a $\CMCA$ soliton
+with both permanence \emph{and} statically conserved $w \neq 0$ $\ZS$
+charge is ongoing.
+
+\subsection{Algebraic Lifting and the Kink Mass}
+
+The Algebraic Lifting Theorem (P28~\cite{SpivackCompUniversality}; P41~\cite{SpivackCMCA}; P42~\cite{SpivackPhiMDLField}) maps Level~1 $\CMCA$ kinks to Level~2
+$\PHIMDL$ kink pairs. A $\CMCA$ kink pair in 1+1D lifts to a $\PHIMDL$
+kink pair in 3+1D with rest mass:
+\begin{equation}
+  M_{\rm 3D} = 1 \times \Mkink = \frac{8}{49}\,\mtau = 290.10\ \text{MeV},
+  \label{eq:kink-mass}
+\end{equation}
+where $\mtau = 1776.86\ \text{MeV}$ is the tau-lepton mass (PDG).
+This is a zero-parameter algebraic prediction from the GTE cascade
+($\CatAD$, P41/P42). The kink mass $290.10\ \text{MeV}$ is in the same
+mass range as the $f_0(300)$ or $\sigma$ meson, which is a broad
+scalar resonance at $400$--$500\ \text{MeV}$ that may include kink
+contributions.
+
+\FloatBarrier
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{The Weak Force: W Bosons and SU(2)\texorpdfstring{$_L$}{L}}
+\label{sec:weak}
+%─────────────────────────────────────────────────────────────────────────────
+
+The weak force is the most subtle of the SM forces to realize in the
+three-tape $\CMCA$ because it requires both chirality (which we have) and
+gauge structure (which requires an additional MDL argument). This section
+presents the $W^+$ as an angular momentum mode, the SU$(2)_L$-invariant
+potential, and the $W$ boson mass derivation.
+
+\subsection{Three Colored Chiral Doublets}
+
+The three tapes $j \in \{x,y,z\}$ each carry a chiral doublet:
+\begin{equation}
+  \Psi_j = \binom{R110_j}{R124_j},
+\end{equation}
+where $R110_j[x]$ is the right-chiral outer layer on tape $j$ and
+$R124_j[x]$ is the left-chiral outer layer. These three doublets
+$\{\Psi_x, \Psi_y, \Psi_z\}$ are the three colored chiral doublets
+$\{(u,d)_r,\, (u,d)_g,\, (u,d)_b\}$, one per tape ($\CatA$).
+
+\subsection{W Bosons as Angular Transitions}
+
+The $W^+$ gauge boson corresponds to the $\ZS$ winding transition:
+\begin{equation}
+  w_{W^+} = (w_u - w_d) \bmod 7 = (2 - 6) \bmod 7 = -4 \equiv 3 \pmod{7}.
+\end{equation}
+The $W^+$ occupies the $w = 3$ sector — the primitive root of $\ZS^*$ —
+consistently with its identification as the gauge boson sector in
+Theorem~\ref{thm:fb-split} ($\CatAD$).
+
+\subsection{SU(2)\texorpdfstring{$_L$}{L}-Invariant Potential}
+
+The $\PHIMDL$ potential $V_{\ZS}(|\Psi|^2)$ for the chiral doublet $\Psi$
+is SU$(2)_L$-invariant: it depends only on the magnitude $|\Psi|^2 = R110^2
++ R124^2$, not on the orientation in the doublet space. The PMDL principle
+forces this gauging: only the minimum-description-length coupling is
+consistent with MDL, and the gauge coupling $V_{\ZS}(|\Psi|^2)$ has lower
+description length than any non-gauge alternative ($\CatAL$; zero named axioms;
+\lean{su2l\_l2\_from\_phimdl\_potential\_catad} packages
+\lean{phimdl\_potential\_su2l\_invariant},
+\lean{su2l\_covariant\_derivative\_minimal}, and
+\lean{su2l\_wpm\_generator\_algebra}).
+
+\subsection{W Boson Mass}
+
+The SU$(2)_L$ symmetry breaking by the $\PHIMDL$ vacuum expectation value
+$v_H$ gives the $W$ boson mass:
+\begin{equation}
+  m_W = \frac{g_2 v_H}{2} = 80.0\ \text{GeV},
+\end{equation}
+using $g_2 \approx 0.653$ (the SU$(2)_L$ coupling from GTE) and
+$v_H = 246\ \text{GeV}$ (the Higgs VEV from the SM). This matches the
+PDG~2024 value $m_W = 80.3692 \pm 0.0133\ \text{GeV}$ to $0.3\%$ ($\CatAD$).
+
+\subsection{W Propagator}
+
+The universal massless propagator of $\PHIMDL$ is $G(r) = 1/(4\pi r)$
+(from P42 \cite{SpivackPhiMDLField}). Extended to a massive field with
+mass $m_W$, the $W$ propagator is:
+\begin{equation}
+  G_W(r) = \frac{e^{-m_W r}}{4\pi r},
+  \label{eq:w-propagator}
+\end{equation}
+which is a Yukawa-type short-range propagator. At $r \ll m_W^{-1}$,
+$G_W \approx 1/(4\pi r)$ (massless limit); at $r \gg m_W^{-1}$, the
+propagator is exponentially suppressed. This gives the observed short-range
+nature of the weak interaction ($\CatAD$).
+
+\subsection{Status and Open Questions}
+
+The SU$(2)_L$ MDL gauging chain is machine-certified ($\CatAL$, zero named axioms):
+\lean{phimdl\_potential\_su2l\_invariant},
+\lean{su2l\_covariant\_derivative\_minimal}, and
+\lean{su2l\_wpm\_generator\_algebra} (all zero \texttt{sorry} in
+\texttt{GaugeMDL.lean}); master bundle
+\lean{su2l\_l2\_from\_phimdl\_potential\_catad}.
+A full Level~2 weak-sector QFT account (complete Lagrangian and propagator
+formalisation) remains open.
+
+\smallskip\noindent\textbf{$F_{21}$ geometric bridge to $\mathrm{SU}(2)_L$.}\enspace
+The discrete group $F_{21} = \mathbb{Z}_7 \rtimes \mathbb{Z}_3$ (the Borel subgroup of
+$\mathrm{PSL}(2,7)$) relates to $\mathrm{SU}(2)_L$ via the $\mathbb{Z}_3$ quotient:
+the abelianisation $F_{21}/\mathbb{Z}_7 \cong \mathbb{Z}_3$ embeds as a cyclic
+subgroup of $\mathrm{SU}(2)_L$, acting on the $\mathrm{SU}(2)_L$ Lie algebra by
+cyclic permutation of the three generators $\{W_1, W_2, W_3\}$ — establishing the
+structural identification $N_{\rm gen} = \dim(\mathfrak{su}(2)_L) = 3 = |F_{21}/\mathbb{Z}_7|$.
+A direct embedding $F_{21} \leq \mathrm{SU}(2)$ is excluded: no finite non-abelian
+subgroup of $\mathrm{SU}(2)$ has order divisible by $7$ (eigenvalue obstruction under
+conjugation).  The $\mathrm{SU}(2)_L$ doublets $(\nu_L, e_L)$ and $(u_L, d_L)$ are
+Level-3 structures selected by the chirality projector $P_L = (1-s)/2$; their
+doublet Hilbert space is explicitly constructed from the certified $W_B$ arithmetic
+\mbox{(\lean{su2l\_doublet\_hilbert\_certified}, \CatAL)}.
+
+\FloatBarrier
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{The GTE Polynomial's Five Physical Roles}
+\label{sec:five-roles}
+%─────────────────────────────────────────────────────────────────────────────
+
+The single polynomial $\poly = \polyform$ over $\FF(7)$, the
+19-bit algebraic certificate of the three-tape $\CMCA$, acts
+simultaneously in five physically distinct roles.  Each role is a
+projection or application of the same algebraic object, and together
+they cover spacetime dynamics, matter content, gravity, quantum
+entanglement, and Bell nonlocality — with no further specification.
+We establish each role in turn and then explain why MDL minimality
+forces this five-fold structure.  The full algebraic treatment,
+including the MDL uniqueness proof and the connection to baryon number,
+is developed in the companion paper~\cite{SpivackGTEPolynomialUFT}.
+
+%──────────────────────────────────────────────────────────────────────────
+\subsection{Role~1: Spatial Dynamics --- the CA Update Rule}
+\label{sec:role-spatial}
+
+Restricted to binary inputs $\{0,1\} \subset \FF(7)$, the polynomial
+$\poly = \polyform$ reproduces the Rule~110 truth table exactly.
+
+\begin{theorem}[Polynomial Representation of Rule~110 --- Machine-Certified]
+\label{thm:r110-poly}
+For all $(L,C,R) \in \{0,1\}^3$:
+\[
+  p(L,C,R) \bmod 2 \;=\; \mathrm{R110}(L,C,R).
+\]
+\end{theorem}
+Machine-certified as \lean{rule110\_z7\_poly\_rep} ($\CatAL$, zero sorry,
+\lean{UgpLean.Universality.\allowbreak PhiMDLUniversality}).
+
+Thus the polynomial \emph{is} the Rule~110 update law.  The full
+$\ZS$ generalization — in which cells take values in $\FF(7)$ rather
+than $\{0,1\}$ — gives the $\CMCA$'s winding dynamics.  Role~1 is
+not a coincidence: the polynomial was selected by MDL to encode
+Rule~110 over $\FF(7)$, and Rule~110 is the unique computationally
+universal elementary CA (Cook's theorem~\cite{Cook2004}).
+
+%──────────────────────────────────────────────────────────────────────────
+\subsection{Role~2: Gauge Charge --- Linear Center Projection}
+\label{sec:role-charge}
+
+Setting $L = R = 0$ — the vacuum boundary condition, no neighboring
+winding — all cross terms containing $L$ or $R$ vanish, giving
+\[
+  p(0,\, w,\, 0) \;=\; w.
+\]
+Since the $\ZS$ winding number determines the electric charge by
+$3Q(w) = w$ (Theorem~\ref{thm:charge}), the charge of a particle
+equals the degree-1 linear projection of the polynomial.
+
+\begin{corollary}[Charge from Linear Projection]
+Electric charge is not an independent assignment: it is forced by
+the center projection of the GTE polynomial, $3Q = p(0,w,0)$.
+\end{corollary}
+
+Machine-certified as \lean{gte\_charge\_is\_linear\_projection}
+($\CatAL$, zero sorry).  The
+role asymmetry — that the center projection gives charge while the
+left-tape projection vanishes identically, $p(w,0,0) = 0$ — is
+certified as \lean{l\_tape\_zero\_source} and
+\lean{tape\_role\_asymmetry} ($\CatAL$, zero sorry).
+
+The degree-1 structure has direct physical content.  A degree-1
+coupling corresponds to a massless, long-range force: the linear
+projection encodes the massless photon and the $1/r^2$ Coulomb law.
+
+%──────────────────────────────────────────────────────────────────────────
+\subsection{Role~3: Gravitational Source --- Cubic Cross-Tape Coupling}
+\label{sec:role-gravity}
+
+In the three-tape extension, the three tape centers carry winding
+numbers $w_x(\mathbf{x})$, $w_y(\mathbf{x})$, $w_z(\mathbf{x})$ at
+each position $\mathbf{x} \in \mathbb{Z}^3$.  The PMDL action
+\[
+  \PMDL \;=\; \sum_{\mathbf{x}}
+  p\bigl(w_x(\mathbf{x}),\, w_y(\mathbf{x}),\, w_z(\mathbf{x})\bigr)
+\]
+evaluates the same polynomial with tape centers substituted for
+$(L,C,R)$.  MDL minimization of $\PMDL$ yields the Poisson equation
+$\nabla^2\PHIMDL = G_{\rm eff}\,p(w_x,w_y,w_z)$
+(Theorem~\ref{thm:pmdl-poisson}); the source density is the
+polynomial, and the cross-tape cubic term $-w_x w_y w_z$ is the
+gravitational coupling.
+
+\begin{theorem}[MDL Uniqueness of the Cubic Coupling --- Machine-Certified]
+\label{thm:cubic-unique}
+The cross-tape term $-LCR$ is the unique degree-3 multilinear term
+over $\FF(7)$ consistent with $\ZS$ symmetry and MDL minimality.
+No lower-degree term produces a cross-tape coupling; no higher-degree
+term is MDL-minimal under PSC constraints.
+\end{theorem}
+Certified as \lean{unique\_cubic\_gravity\_coupling} ($\CatAL$, zero
+sorry) and
+\lean{gravity\_requires\_cross\_tape\_coordination}
+($\CatAL$, zero sorry).
+
+This result has a structural consequence.  The cubic term $-w_x w_y
+w_z$ requires simultaneous access to all three tape centers; it
+cannot be encoded by any function of a single tape.  A search over
+all functions $f:\FF(7)^9\to\FF(7)$ (the 9-cell inputs of a single
+3D CA step) confirms that no such function can satisfy both the
+per-axis Rule~110 reduction and the gravitational cross-coupling: the
+two constraints produce a direct contradiction at four values of the
+uniform-winding input.  The three-tape
+architecture is therefore not merely sufficient but \emph{necessary}.
+
+The contrast with Role~2 is the polynomial's principal physical
+content: degree-1 linear projection $\to$ massless, long-range
+electromagnetic force; degree-3 cubic cross-tape term $\to$
+coordinated three-tape gravitational coupling.
+
+%──────────────────────────────────────────────────────────────────────────
+\subsection{Roles~4 and~5: Quantum Entanglement and Bell Nonlocality}
+\label{sec:role-quantum}
+
+The same cubic cross-tape term $-w_x w_y w_z$ that sources gravity
+renders the PMDL action non-separable.
+
+\begin{theorem}[Non-Separability --- Machine-Certified]
+\label{thm:nonsep}
+The polynomial $p(L,C,R)$ is not additively separable: there exist
+no functions $f_1(L)$, $f_2(C)$, $f_3(R)$ such that
+$p(L,C,R) = f_1(L)+f_2(C)+f_3(R)$ for all $(L,C,R) \in \FF(7)^3$.
+\end{theorem}
+Certified as \lean{non\_separability\_witness} ($\CatAL$, zero sorry).
+
+When the PMDL action is non-separable in $(w_x, w_y, w_z)$, the tape
+winding configurations cannot be specified independently: knowledge
+of any two tapes constrains the third through the cubic coupling.
+This is quantum entanglement at the algebraic level.  Numerically,
+with $G_{\rm eff} = 0.5$, the entanglement negativity between tape
+$x$ and tapes $\{y,z\}$ is $\mathcal{N} = 0.38$ ($\CatA$,
+\texttt{entanglement\_analysis.py}).
+
+The entanglement is not a separate postulate; it is an algebraic
+consequence of the gravitational coupling.  The same $-w_x w_y w_z$
+term acts as Role~3 (gravitational attraction via PMDL minimization)
+and as Role~4 (cross-tape entanglement via non-separability).  There
+is one coupling with two physical manifestations.
+
+Bell nonlocality follows directly.  With $G_{\rm eff} = 0.5$, the
+CHSH parameter is
+\begin{equation}
+  S = 2.44, \quad\text{87\% of the Tsirelson bound } S_{\rm max} =
+  2\sqrt{2} \approx 2.828,
+\end{equation}
+exceeding the classical bound $S = 2$ by 22\% ($\CatA$,
+\texttt{bell\_inequality\_test.py}).
+Increasing $G_{\rm eff}$ increases both gravitational attraction and
+the Bell violation simultaneously.  Gravity and quantum nonlocality
+share the same algebraic origin: the $-LCR$ term of the 19-bit
+polynomial.
+
+%──────────────────────────────────────────────────────────────────────────
+\subsection{MDL Forces the Five-Role Structure}
+\label{sec:mdl-forces}
+
+Why does one polynomial encode five physically distinct phenomena
+simultaneously?  The answer is MDL minimality.
+
+The polynomial $\polyform$ over $\FF(7)$ is the unique degree-3
+multilinear polynomial satisfying:
+\begin{enumerate}[label=(\roman*)]
+  \item \textbf{$\ZS$ symmetry}: the coefficient ring is $\FF(7)$,
+        consistent with the PSC orbit structure.
+  \item \textbf{Rule~110 restriction}: the binary restriction
+        $\{0,1\}^3$ recovers Rule~110 (Role~1,
+        Theorem~\ref{thm:r110-poly}).
+  \item \textbf{Correct degree structure}: degree-1 terms present
+        (for the linear force, Role~2); degree-3 cross-term present
+        (for gravitational coupling, Role~3); no degree-2 terms,
+        which have no $\ZS$ justification.
+  \item \textbf{MDL minimality}: four nonzero coefficients
+        $\{+1,+1,-1,-1\}$ over $\FF(7)$, giving a 19-bit
+        specification.  No shorter $\ZS$-symmetric polynomial
+        satisfying (i)--(iii) exists.
+\end{enumerate}
+
+Given these constraints, the polynomial has no free parameters.  The
+physical roles are not assigned to the polynomial; they are
+consequences of the polynomial's forced structure.  The degree-1
+center coefficient encodes electromagnetism because degree-1 polynomials
+generate massless fields; the degree-3 cross-tape coefficient encodes
+gravity because only a product of all three tapes can produce the
+isotropic Poisson source required by the DPP; the non-separability
+encodes entanglement because a polynomial without additively
+separable structure cannot be represented as a product state.
+
+The five roles collapse to one sentence: \emph{MDL selects a degree-3
+multilinear polynomial over $\FF(7)$; that polynomial is the complete
+specification of the physics}.  The full uniqueness argument is given
+in the companion paper~\cite{SpivackGTEPolynomialUFT}.
+
+\FloatBarrier
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Falsifiable Predictions}
+\label{sec:predictions}
+%─────────────────────────────────────────────────────────────────────────────
+
+The three-tape $\CMCA$ produces four falsifiable predictions, all with zero
+free parameters. Table~\ref{tab:predictions} summarizes these predictions
+with their current experimental status and falsification criteria.
+
+\begin{table}[ht]
+\centering
+\caption{Falsifiable predictions of the three-tape $\CMCA$ with zero free
+  parameters.}
+\label{tab:predictions}
+\begin{tabularx}{\textwidth}{@{}llYcY@{}}
+\toprule
+Prediction & Value & Measurement & Tension & Falsification \\
+\midrule
+$r$ (tensor-to-scalar) & $0$ & LiteBIRD: $\sigma(r)\approx 0.001$ &
+  --- (unmeasured) & $r > 0.003$ at $>3\sigma$ \\
+$\delta_{CP}$ & $205.71{\ensuremath{{}^\circ}}$ & NuFIT~6.0 IC24 NH: $212{\ensuremath{{}^\circ}}$ &
+  $-0.15\sigma$ & $|\delta_{CP}-205.71{\ensuremath{{}^\circ}}|>75{\ensuremath{{}^\circ}}$ at $>3\sigma$ \\
+$\Mkink$ & $290.10\ \text{MeV}$ & Algebraic identity &
+  --- & $\Mkink \neq (8/49)\mtau$ at $>3\sigma$ \\
+$n_s$ (partial) & $0.96488$ & Planck: $0.9649\pm 0.0042$ &
+  $-0.005\sigma$ & $n_s < 0.950$ or $> 0.979$ at $>3\sigma$ \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{No Primordial Gravitational Waves: \texorpdfstring{$r = 0$}{r = 0}}
+
+The GTE MDL initial state for the universe is maximally symmetric: uniform,
+isotropic three-tape configuration with $\dot{\Phi}_0 = M_{\rm Pl}$ at the
+Planck bounce. This initial state has no preferred spatial direction and
+therefore produces no tensor perturbations. The tensor-to-scalar ratio
+$r = 0$ is a structural consequence of the DPP initial state, not a
+fine-tuned parameter.
+
+The Level~1 certificate for this initial state is the unique period-$7$ ether orbit
+of the three-tape CMCA: the ether vacuum winding $w = 0$ on all three tapes has no
+predecessor under $f_{\rm MDL}$ (Garden-of-Eden structure, $\CatAL$), directly
+corresponding to the Level~2 conditions $k=0$ (no curvature degree of freedom at
+Level~1) and $\Phi_0 = 0$ (ether vacuum).  This is the Level~1 certificate for the
+Level~2 cosmological initial state established in P44~\cite{SpivackQGR}.
+
+Current LiteBIRD sensitivity will be $\sigma(r) \approx 0.001$; the
+current upper bound is $r < 0.036$. The prediction $r = 0$ will be
+decisively tested by LiteBIRD. Any detection of $r > 0.003$ at $> 3\sigma$
+would falsify the DPP initial state and thus the three-tape architecture.
+
+\subsection{CP Violation: \texorpdfstring{$\delta_{CP}^{\rm PMNS} = 205.71{\ensuremath{{}^\circ}}$}{dCP}}
+
+The three-tape architecture predicts the PMNS neutrino Dirac CP phase from
+the ratio of inner-to-outer clock periods $\tau_{\rm inner}/\tau_{\rm outer} = 3/7$
+(\CatAD, Theorem~\ref{thm:clock-ratio}).
+The complementary tape-phase fraction is $1 - 3/7 = 4/7$ of a full cycle:
+\begin{equation}
+  \delta_{CP}^{\rm PMNS} = \frac{4}{7} \times 360{\ensuremath{{}^\circ}} = 205.71{\ensuremath{{}^\circ}}.
+\end{equation}
+The NuFIT~6.0 IC24 NH best fit is $\delta_{CP} = 212^{+26}_{-41}{}^\circ$~\cite{NuFIT60},
+placing the prediction $-0.15\sigma$ from the central value ($3\sigma$ range
+$124^\circ$--$364^\circ$ encompasses the GTE prediction). This prediction cannot be
+adjusted by any free parameter; it is a pure three-tape clock-ratio identity.
+DUNE and Hyper-K will measure $\delta_{CP}$ to $\sim 5{\ensuremath{{}^\circ}}$ precision; any
+value outside $[130{\ensuremath{{}^\circ}}, 280{\ensuremath{{}^\circ}}]$ at $> 3\sigma$ would falsify the three-tape
+clock-ratio mechanism.
+
+\subsection{Kink Mass: \texorpdfstring{$M_{\rm kink} = (8/49)m_\tau = 290.10\ \text{MeV}$}{kink mass}}
+
+The tau mass is known to $0.001\%$ precision ($\mtau = 1776.86 \pm 0.12\
+\text{MeV}$, PDG). The predicted kink mass $(8/49)\mtau = 290.10\ \text{MeV}$
+follows from the Algebraic Lifting Theorem and the GTE tau cascade. This
+is in the scalar meson region; detection of a sharp scalar resonance near
+$290\ \text{MeV}$ with properties consistent with a $\ZS$ kink would
+constitute positive evidence. Any precision measurement of the kink sector
+giving a mass incompatible with $(8/49)\mtau$ would be a falsification.
+
+\subsection{CMB Spectral Tilt: \texorpdfstring{$n_s = 0.96488$}{ns} (Structural Prediction)}
+
+\begin{equation}
+  n_s = 1 - \frac{\ln 2}{2\pi^2} = 0.96488.
+  \label{eq:ns}
+\end{equation}
+Planck 2018 gives $n_s = 0.9649 \pm 0.0042$, placing the prediction
+$-0.005\sigma$ from the central value.
+
+Two of the four derivation ingredients are machine-certified:
+\begin{itemize}
+  \item $\ln 2$: from \lean{rule110\_center1\_is\_nand} — the Rule~110
+        center cell is a NAND gate with entropy $\ln 2$ ($\CatAL$).
+  \item $2\pi^2 = \mathrm{Vol}(S^3)$: from
+        \lean{three\_tape\_causal\_diamond\_t4} ($\CatAL$).
+\end{itemize}
+The third ingredient — the coupling of the $\ln 2$ entropy to the
+Wald entropy of the $\int R\sqrt{-g}\,d^4x$ action via a $\ZZ_2$-EFT — is
+under investigation. The CMB tilt prediction is therefore reported as a
+structural prediction with partial derivation ($\CatAD$-partial), not as a
+fully certified result.
+The cosmological implications of this architecture, including the derivation of the cosmological constant and the holographic non-renormalization theorem, are developed in the companion paper~\cite{SpivackGTECosmology}.
+
+\FloatBarrier
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Limitations and Open Problems}
+\label{sec:limitations}
+%─────────────────────────────────────────────────────────────────────────────
+
+This section states clearly what the paper has not proved, what remains
+open, and what the open problems require to be resolved.
+
+\subsection{Two-Level Architecture: What Level~1 Provides and What Requires Level~2}
+\label{sec:twolevel}
+
+The three-tape $\CMCA$ establishes a much larger fraction of physics at Level~1
+than earlier single-tape realizations. The following are certified at Level~1:
+all Standard Model quantum numbers and selection rules~($\CatA$); baryon number as a
+topological charge~($\CatAL$); color confinement from MDL~($\CatAL$);
+special-relativistic time dilation~($\CatA$); V--A chirality~($\CatA$);
+gravitational force law via both the Poisson-kernel and CA-native clock-gradient
+implementations~($\CatA$); and quantum entanglement with Bell violation $S=2.44$
+~($\CatA$).
+
+The following remain genuinely at Level~2 ($\PHIMDL$):
+\begin{itemize}[noitemsep]
+  \item \textbf{Absolute mass values.} The kink mass $\Mkink = (8/49)\,\mtau$ is derived
+        algebraically ($\CatAD$) and uses $\mtau$ as the PDG input; the actual mass calculation
+        requires integrating the $\PHIMDL$ stress-energy tensor over the continuum field.
+  \item \textbf{Scattering amplitudes and cross-sections.} The $S$-matrix requires
+        $\PHIMDL$ Feynman rules, propagators, and loop integrals.
+  \item \textbf{Coupling constant absolute values.} Level~1 gives ratios and structural relations;
+        the absolute values of $g$, $g'$, $g_s$ require the $\PHIMDL$ field theory.
+  \item \textbf{Exact Lorentz invariance.} The CA has $O(1/L^2)$ lattice corrections
+        $\epsz(L)=\pi^2/(3L^2)$ to Lorentz invariance; exact SO$(1,3)$ symmetry is
+        recovered only in the $L\to\infty$ continuum limit. This is the discretization limitation:
+        a continuous spectrum of Lorentz-boost angles is not representable on a finite lattice.
+  \item \textbf{Quantum coherence.} The CA is deterministic; full quantum interference
+        requires the $\PHIMDL$ quantum field theory (QFT) path integral.
+\end{itemize}
+
+The Algebraic Lifting Theorem carries all Level~1 \emph{structural} results --- algebraic properties
+over the $\ZS$ orbit algebra (winding conservation, $N_{\rm gen}=3$, GoE stability, confinement,
+scattering vertices, $V$--$A$ fraction) --- to Level~2 physical claims in $\PHIMDL$.
+Dynamical results --- the gravitational force law ($F \propto b^{-2}$ via the PMDL Poisson
+mechanism), the Page-Wootters Born rule (from $\tau_c$ as the semiclassical clock), and the
+Level~1 CHSH Bell violation ($S = 2.4459$) --- are Level~1 \emph{certificates}: they establish
+that $\PHIMDL$ supports the corresponding physical phenomena as structural properties, but the
+specific coupling values and Hamiltonian structure are Level~1 results and are not lifted numerically
+by the Algebraic Lifting Theorem.  (See \S\ref{sec:newtonian-limit} and~\S\ref{sec:bell} for
+the L1$\to$L2 bridge theorems; Level~2 analogs are separately established in
+P43~\cite{SpivackCompleteness} and P44~\cite{SpivackQGR}.)
+The primary remaining limitation is therefore \emph{discretization} --- the finite-$L$ lattice
+approximates but cannot exactly realize the continuous Lorentz group --- rather than a structural
+gap in the physics content.
+
+\paragraph{Yukawa overlap exponent from tape counting.}
+The three-tape structure provides a direct derivation of the Yukawa coupling suppression
+exponent. Three quark-colour tapes ($N_c = 3$) plus one Higgs tape give $N_{\rm tapes} = 4$
+total tapes; the sech overlap products integrate to suppression exponents, yielding
+$\alpha = N_c - 1 = 2$.  Machine-certified: \lean{yukawa\_overlap\_exponent\_catad}
+(\texttt{Gravity/YukawaOverlapExponent.lean}, zero sorry, $\CatAD$).  This connects
+the three-tape colour structure to the fermion mass hierarchy and, via
+\lean{leptogenesis\_kink\_overlap\_catad} ($\CatAL$ conditional), to the baryon-to-photon ratio
+asymptotic upper bound $\eta_B = 6.36\times10^{-10}$ (P47~\cite{SpivackGTECosmology}; $+4.3\sigma$ from
+Planck~2018 CMB+BBN value $(6.10\pm0.06)\times10^{-10}$;
+loop bracket $[6.07,\,6.36]\times10^{-10}$, $\CatAL$-conditional;
+\lean{eta\_B\_loop\_bracket}, \texttt{YukawaOverlapExponent.lean}, zero sorry).
+The FKTT mechanism in P47~\cite{SpivackGTECosmology} is the canonical prediction:
+$\eta_B = 6.109\times10^{-10}$ ($+0.15\sigma$, $\CatAL$, zero sorry, zero axioms).
+The integral evaluations $\int_{\mathbb{R}}\mathrm{sech}^3 = \pi/2$ and
+$\int_{\mathbb{R}}\mathrm{sech} = \pi$ are both Lean-certified from Mathlib FTC
+(\lean{integral\_sech\_cubed}, \lean{integral\_sech}; zero sorry, $\CatAL$).
+
+\subsection{Comparison with Prior Two-Level Realizations}
+\label{sec:twolevel-comparison}
+
+The two-level architecture was introduced in P41~\cite{SpivackCMCA} for the single-tape
+$(R_{110} \oplus R_{124} \oplus \text{inner}_{\tau_c})$ CMCA and extended in P43~\cite{SpivackCompleteness}.
+In those works, the Level~1 (CMCA) certificate established algebraic and symmetry properties ---
+the $\mathbb{Z}_7$ orbit structure, $N_{\rm gen}=3$, $V$--$A$ chirality, and Turing universality ---
+while most physical content (masses, coupling constants, gauge dynamics) resided at Level~2
+($\Phi_{\rm MDL}$).
+
+The three-tape CMCA of this work substantially expands Level~1 certification:
+
+\begin{itemize}[noitemsep]
+  \item \textbf{Standard Model structure:} all 33 SM charged-current vertices conserved ($\CatA$);
+    baryon number $B=\frac{1}{3}\sum_j\chi_q(w_j)$ as a topological charge, $B=\frac{1}{3}$ per quark
+    derived from $N_{\rm tapes}=3$ ($\CatAL$); color confinement $\Delta K=\log_2 N_c^2$ ($\CatAL$);
+    $N_c=3$ from the DPP construction ($\CatAL$). In P41/P43, these were Level~2 results.
+
+  \item \textbf{Gravitational mechanism:} the PMDL coupling $\nabla^2\Phi = G_{\rm eff}\,p(w_x,w_y,w_z)$
+    and Newtonian force scaling $F\propto b^{-2}$ ($\CatA$) are Level~1 certificates.
+    The polynomial's degree structure (degree-1 linear = EM charge source; degree-3 cubic = gravitational
+    mass) is machine-certified ($\CatAL$). In P38/P43, gravity required Level~2 EFT machinery.
+
+  \item \textbf{Holographic structure:} the three 1D arrays of length $L$ encode 3+1D physics with
+    $|\mathcal{S}|=7^{3L}$, exponentially smaller than the naive $7^{L^3}$ for a 3D lattice, with
+    $3/L^2\to 0$ machine-certified ($\CatAL$, \S\ref{sec:holographic}). This holographic
+    structure was not accessible from the single-tape Level~1 of P41/P43.
+
+  \item \textbf{Quantum entanglement and Bell violation:} entanglement negativity $\mathcal{N}=0.38$ and
+    Bell parameter $S=2.44$ ($\CatA$) are Level~1 consequences of the cross-tape PMDL coupling.
+    In P42, entanglement required the Hilbert space structure of $\Phi_{\rm MDL}$.
+\end{itemize}
+
+\noindent The primary remaining Level~2 requirements are: (i)~absolute mass values (the kink energy
+integral over $\Phi_{\rm MDL}$); (ii)~scattering amplitudes; (iii)~exact Lorentz invariance
+(the CA has $O(1/L^2)$ lattice corrections, see \S\ref{sec:twolevel}). Compared to P41/P43,
+the boundary between Levels~1 and~2 has shifted substantially toward Level~1.
+
+\subsection{Gorard Normalization Gap}
+
+The normalization gap $(M_{\rm Pl}/\Mkink)^4 \times C_{\rm Gorard} =
+10^{77.46}$ closes to within $8.5\%$ of the target $10^{77.5}$ from P38
+\cite{SpivackPhiMDLGravity}. The residual traces to the finite-lattice
+correction $\kappa_{\rm SD} = 0.7731$ vs.\ the ideal $3/4$. Closing this
+gap requires:
+\begin{itemize}
+  \item The exact derivation of $C_{\rm Gorard}$ from the Gorard theorem
+        on the Rule~110 CA in the $L \to \infty$ limit.
+  \item The derivation of the fine-end reading of the $\CMCA$ tape at the
+        continuum level: the certificate carries no intrinsic cell size, so
+        the conventional Planck-length identification $a \approx \ell_{\rm Pl}$
+        is a working-hypothesis calibration reading whose first-principles
+        derivation (the calibration map at the gravitational sector) remains
+        open (\S\ref{ssec:planck-gap}).
+\end{itemize}
+
+\subsection{SO(1,3) Full Group Generation}
+
+All 12 so$(1,3)$ Lie algebra commutation relations are machine-certified.
+However, the generation of the full Lie group SO$(1,3)$ from its Lie algebra
+(Lie's second theorem, Mathlib gap) is not Lean-certified. This requires
+the Lorentzian library under development.
+
+\subsection{Fermionic Statistics at Level~3}
+
+The Level~1 algebraic fingerprint of fermionic statistics (non-primitive
+roots of $\ZS^*$) is machine-certified. The Level~2 spin-statistics
+connection requires the Braid Atlas mechanism (exchange phase $-1$ from
+$2\pi$ rotation of the winding configuration). This in turn requires the
+Lorentzian library and the $\ZZ_2$-EFT construction.
+
+\subsection{SU(2)\texorpdfstring{$_L$}{L} Full Derivation}
+
+The SU$(2)_L$ MDL gauging chain is machine-certified ($\CatAL$, zero named axioms;
+\lean{su2l\_l2\_from\_phimdl\_potential\_catad}).
+The $\mathrm{SU}(2)_L$ doublet Hilbert space is explicitly constructed from the GTE
+discrete data: the two-dimensional complex representation space $(\nu_L, e_L)$
+carries isospin-$\tfrac{1}{2}$ with $T_3$ eigenvalues $\pm\tfrac{1}{2}$ and $W^\pm$
+raising/lowering actions derived from the certified $W_B$ arithmetic.
+\mbox{(\lean{su2l\_doublet\_hilbert\_certified}, \CatAL)}.
+The remaining open step is a full Level~2 weak-sector QFT account.
+
+\subsection{CMB Tilt Full Derivation}
+
+All ingredients for $n_s = 1 - \ln 2/(2\pi^2) \approx 0.96488$ are now
+machine-certified in Lean~4 (14 zero-sorry theorems;
+\lean{ns\_from\_binary\_holographic\_rate} and related; $-0.005\sigma$ from
+Planck~2018 $0.9649 \pm 0.0042$; $\CatAL$).
+
+\subsection{Level~1 Solitons with Conserved \texorpdfstring{$w \neq 0$}{w≠0}}
+
+Permanent ether-resonance solitons exist (stable to $T = 500$), but
+their $\ZS$ winding oscillates. Solitons with permanently conserved
+$w \neq 0$ winding at all times — the Level~1 analog of topologically
+stable particles — have not been found in the current scan. A wider
+parameter scan across more general initial conditions is ongoing.
+
+\subsection{Summary of Open Problems}
+
+\begin{openprob}
+Full SO$(1,3)$ group generation from the certified so$(1,3)$ algebra
+(Lie's second theorem, Mathlib gap).
+\end{openprob}
+
+\begin{openprob}
+The current Lean state is $\CatAL$ + one remaining axiom:
+\lean{spinor\_exchange\_equals\_2pi\_rotation}, the identification of spinor
+exchange with $2\pi$ rotation (equivalent to $\pi_1(\mathrm{SO}(3)) \cong \mathbb{Z}/2\mathbb{Z}$).
+The $F_{21}$ Berry-holonomy route yields a negative result: $F_{21}$ has odd order~21,
+so it contains no $\mathbb{Z}_2$ element capable of acting as a particle-exchange map;
+the $\mathrm{AGL}(1,7)$ chirality $\mathbb{Z}_2$ maps winding sectors out of the PSC
+and so is not a particle-exchange map.  The principled zero-axiom route is
+$\mathrm{DPP} \to \text{Minkowski} \to \text{PCT} \to \lean{spinor\_exchange\_equals\_2pi\_rotation}$
+as a theorem (Lean target; $\CatD$).  The five-theorem certification
+(\texttt{Gravity/FermionicStatistics.lean}, $\CatAL$) establishes the algebraic
+fingerprint of fermionic exchange statistics at Level~1.
+\end{openprob}
+
+\begin{openprob}
+Closing the Gorard normalization gap to $< 1\%$ in the exponent
+(exponent-closure gap; vacuum spatial GH convergence is \CatAL{} and is a separate
+closed result).
+\end{openprob}
+
+\begin{openprob}
+Level~1 $\CMCA$ soliton with permanently conserved $w \neq 0$ $\ZS$
+winding charge.
+\end{openprob}
+
+\begin{openprob}
+Third ingredient of CMB tilt: $\ZZ_2$-EFT coupling to Wald entropy.
+\end{openprob}
+
+\FloatBarrier
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Discussion and Conclusion}
+\label{sec:conclusion}
+%─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Summary of Results}
+
+The three-tape $\CMCA$ — three chiral Minkowski cellular automata sharing
+a single outer clock $\taucout$ — generates, from a single 19-bit
+polynomial specification, the following physical structures simultaneously
+and without additional parameters:
+
+\begin{enumerate}[label=(\arabic*)]
+  \item \textbf{3+1D spacetime} (DPP, machine-certified), with the shared
+        clock as the unique mechanism for dimensional emergence.
+  \item \textbf{SO$(1,1)^3 \times S_3$ exact symmetry} and all 12 so$(1,3)$
+        commutation relations including Thomas precession (machine-certified).
+  \item \textbf{Standard Model particle spectrum}: $\ZS$ winding assignments
+        recover all SM particles; all 33 charged-current vertices conserved
+        (computationally verified).
+  \item \textbf{V--A chirality}: Rule~110/Rule~124 chiral asymmetry
+        (machine-certified).
+  \item \textbf{Newtonian-regime gravity}: PMDL Poisson equation, vacuum
+        fixed-point theorem (machine-certified); force law $F \propto
+        b^{-2.23}$ via explicit gradient architecture and $F \propto
+        b^{-2.46}$ via CA-native clock-gradient architecture, both with
+        $\sigma\to 0$ limit $b^{-2.00}$ (all computationally verified).
+  \item \textbf{Ricci-flat vacuum} with matter-sourced positive curvature
+        (machine-certified / computationally verified).
+  \item \textbf{3D Born rule} from tensor product; Bell $S = 2.44$ from
+        gravitational coupling (computationally verified).
+  \item \textbf{Permanent solitons} via ether-period-14 resonance
+        (computationally verified).
+  \item \textbf{Two falsifiable predictions}: $r = 0$ and $\delta_{CP} =
+        205.71{\ensuremath{{}^\circ}}$ (zero free parameters).
+\end{enumerate}
+
+\subsection{The Dimensional Protocol Principle as a Structural Theorem}
+
+The DPP is not a detail of the construction but the foundational structural
+theorem of 3+1D emergence. The shared clock is the unique mechanism consistent
+with PSC isotropy and MDL minimality for three tapes. Without it, there is no
+3+1D spacetime; with it, there is exactly one. The DPP establishes that the
+question ``why does the universe have 3+1 dimensions?'' has a precise answer
+in the GTE/$\PHIMDL$ framework: because the MDL-minimal architecture for
+three spatial degrees of freedom requires a shared clock, and three tapes
+with a shared clock generate exactly the 3+1D structure of Minkowski
+spacetime.
+
+The DPP also reveals a structural asymmetry between temporal and spatial
+degrees of freedom that is absent in the Minkowski description of the
+outcome. In standard Minkowski spacetime the time coordinate and the three
+spatial coordinates appear as parameters on an equal footing. In the
+three-tape $\CMCA$, temporal structure is logically prior: without the
+shared outer clock $\taucout$, the system state
+$\mathcal{S}_x \otimes \mathcal{S}_y \otimes \mathcal{S}_z$ factorizes as
+a product over independent tapes, simultaneity across tapes is undefined,
+and no spatial metric connecting the tapes can be constructed.
+The shared clock is not a bookkeeping device but the condition that makes
+simultaneity --- and therefore spatial geometry --- meaningful across three
+independent 1+1D systems. In the language of special relativity,
+$\taucout$ is a simultaneity structure, and the DPP states that this
+temporal structure is the prerequisite for spatial structure, not its
+coordinate companion.
+
+\subsection{The Single-Source Principle}
+
+The deepest result of this paper is what might be called the
+\emph{Single-Source Principle}: spacetime, matter, gravity, and
+quantum mechanics all emerge from the same 19-bit polynomial
+$p(L,C,R) = C+R-CR-LCR$ over $\FF(7)$, applied in different roles.
+The five roles — spatial dynamics (Rule~110), gauge charge
+(degree-1 linear projection), gravitational source (degree-3 cubic
+cross-tape coupling), quantum entanglement (non-separability of the
+same cubic term), and Bell nonlocality ($S = 2.44$) — are established
+in full in \S\ref{sec:five-roles}.  Here we note the structural
+implication: the five-fold unification is not a formal coincidence
+but a consequence of MDL minimality, which selects the unique
+$\ZS$-symmetric degree-3 multilinear polynomial consistent with
+PSC constraints and the Rule~110 binary restriction.  The degree
+structure of the polynomial determines the force law; there is no
+free choice.
+
+\subsection{Relation to P41--P44 and the Companion Paper}
+
+Papers P41--P44 established the one-tape $\CMCA$, the $\PHIMDL$ field, the
+complete $\PHIMDL$ framework, and the quantum gravity sector. This paper
+(P45) establishes the three-tape 3+1D extension: the DPP, the full SM
+spectrum, SR, gravity, and quantum structure. The companion paper addresses
+the deep algebraic reasons why the polynomial has five physical roles: the
+MDL uniqueness proof, the color confinement derivation, the baryon number
+calculation, and the PMDL-$\Lambda$ duality explaining dark energy from the
+same mechanism as gravity. Together, P43 + P44 + P45 + the companion paper
+constitute the first complete constructive account of 3+1D physics from a
+single 19-bit specification.
+
+\subsection{Relation to Digital Physics and Cellular-Automaton Approaches}
+\label{sec:digital-physics}
+
+The hypothesis that the universe is computed by a discrete rule has a sustained
+history.
+Von Neumann's \emph{Theory of Self-Reproducing Automata}~\cite{vonNeumann1966},
+completed posthumously by Burks, established the formal framework of cellular
+automata and demonstrated that a sufficiently rich local rule can generate
+arbitrary structural complexity, including self-reproduction.
+Zuse's \emph{Rechnender Raum} (``Calculating Space'')~\cite{Zuse1969}
+argued in 1969 that the physical universe is computed by a cellular
+automaton---the first sustained physical proposal for what is now called
+digital physics.
+Fredkin and Toffoli showed in 1982 that reversible, information-conserving CA
+rules are sufficient for universal computation~\cite{fredkin1982conservative},
+placing the information-mechanical approach on firm logical ground.
+Toffoli and Margolus's \emph{Cellular Automata Machines}~\cite{ToffoliMargolus1987}
+systematized the computational infrastructure of the field and demonstrated that
+CA models faithfully simulate a wide range of physical phenomena.
+Wolfram's \emph{A New Kind of Science}~\cite{Wolfram2002} catalogued the
+computational diversity of elementary CA rules as candidates for physical models,
+with Rule~110's proven universality providing the direct antecedent of the
+CMCA construction.
+'t~Hooft's \emph{The Cellular Automaton Interpretation of Quantum
+Mechanics}~\cite{tHooft2016CA} gave a careful quantum-mechanical analysis of
+how Born-rule probabilities and quantum interference can emerge from a
+deterministic CA at the Planck scale.
+The Wolfram Physics Project~\cite{Wolfram2020Tech}, with Gorard's
+contributions~\cite{Gorard2020Rel}, extended the program to hypergraph
+rewriting rules and established that Ricci curvature and aspects of general
+relativity emerge from such rules; the Gorard curvature machinery is applied
+directly in~\S\ref{sec:gorard}.
+
+The three-tape $\CMCA$ belongs to this tradition but occupies a structurally
+distinct position within it.
+Prior digital-physics proposals share a common schematic: the universe
+\emph{is} (or is generated by) a CA or rewriting rule.
+The $\CMCA$ framework makes no such identification.
+As stated in~\S\ref{sec:guide} and~\S\ref{sec:twolevel}, the CMCA is a
+Level~1 \emph{algebraic certificate}: a 19-bit polynomial that encodes the
+structural constraints of Standard Model physics---particle spectrum, Lorentz
+symmetry, V--A chirality, and gravity coupling---whose properties are
+established by computational verification and Lean-4-certified proof.
+The physical substrate is $\PHIMDL$, identified at Level~2 by MDL--PSC
+closure.
+The CA is not proposed as the physical world; it is proved to be the minimal
+algebraic structure satisfying the physical constraints.
+
+This distinction carries operational content.
+The Lean-certified theorem \lean{gravity\_requires\_cross\_tape\_coordination}
+shows that the cubic gravity coupling cannot be realized on a single tape:
+cross-tape coordination is not merely convenient but structurally necessary.
+The theorem \lean{unique\_cubic\_gravity\_coupling} certifies that the cubic
+nonlinearity of the PMDL Poisson equation is the unique MDL-minimal coupling
+consistent with the gauge structure of the polynomial.
+These are not plausibility arguments but machine-verified proofs.
+The step of identifying the CA with the physical substrate is not merely
+unproved --- it is proved impossible by~\cite{SpivackCompleteness}: for every
+finite-$M$ CA, the Lorentz dispersion residual satisfies
+$\varepsilon(M)=\pi^2/(3M^2)>0$ (\lean{no\_finite\_ca\_exact\_lorentz\_replica},
+$\CatAL$, zero sorry); $\PHIMDL$ is the unique zero-error continuum limit.
+The CMCA accordingly occupies a structurally distinct and precisely delimited
+role: the unique minimal algebraic certificate for Standard Model physics at
+Level~1, with the physical substrate identified as $\PHIMDL$ at Level~2 by
+machine-certified proof.
+
+\subsection{Outlook}
+
+The most important open directions are:
+\begin{itemize}
+  \item The Lorentzian library (SO$(1,3)$ group generation and
+        spin-statistics connection), which will close several open
+        problems simultaneously.
+  \item The CMB tilt third ingredient ($\ZZ_2$-EFT coupling), which will
+        complete the derivation of $n_s = 0.96488$.
+  \item Matter-sector and Lorentzian Gromov--Hausdorff convergence, open formal
+        certificates (OQ-QG-1b/1c; Cheeger--Colding regularity theory for OQ-QG-1b;
+        Lorentzian GH theory for OQ-QG-1c; vacuum spatial case \CatAL:
+        \lean{vacuum\_cmca\_gh\_converges\_to\_flat\_space}), which will close the
+        Planck normalization gap.
+  \item The Level~2 $\PHIMDL$ path integral in 3+1D, which will provide
+        the physical cross sections and decay rates needed for direct
+        experimental tests.
+\end{itemize}
+
+The three-tape $\CMCA$ provides a concrete, computationally tractable,
+and mathematically rigorous foundation for these investigations.
+
+%─────────────────────────────────────────────────────────────────────────────
+\begin{appendices}
+
+\section{Lean Certification Inventory}
+\label{app:lean}
+
+Table~\ref{tab:lean} lists all machine-certified (Lean~4, zero \texttt{sorry})
+theorems relevant to this paper.
+
+{\footnotesize
+\begin{longtable}{P{5.6cm}P{4.1cm}P{1.2cm}P{3.5cm}}
+\caption{Lean~4 certification inventory for P45 ($\CatAL$ = machine-certified,
+  zero sorry). Repository: \texttt{ugp-lean}.}
+\label{tab:lean} \\
+\toprule
+Theorem & Module & Commit & Physical role \\
+\midrule
+\endfirsthead
+\multicolumn{4}{c}{\textit{(Continued from previous page)}} \\
+\toprule
+Theorem & Module & Commit & Physical role \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+\lean{dimensional\_protocol\_principle\_master}
+  & \texttt{Gravity/\allowbreak RelationalTime} & ---
+  & DPP: shared clock $\leftrightarrow$ 3+1D \\
+\lean{cmca\_tensor\_product\_\allowbreak gives\_31d\_minkowski}
+  & \texttt{Gravity/\allowbreak RelationalTime} & ---
+  & Tensor product $\to$ Minkowski \\
+\lean{vacuum\_unique\_\allowbreak fixed\_point\_z7}
+  & \texttt{Gravity/\allowbreak PMDLGravityTheorems} & \texttt{425e21a}
+  & $w{=}0$ unique gravitational fixed point \\
+\lean{unique\_cubic\_\allowbreak gravity\_coupling}
+  & \texttt{Gravity/\allowbreak PMDLGravityTheorems} & \texttt{425e21a}
+  & PMDL Poisson equation MDL-unique \\
+\lean{three\_tape\_gorard\_\allowbreak vacuum\_ricci\_flat}
+  & \texttt{Gravity/\allowbreak GorardRicciFlatVacuum} & \texttt{a32ab33}
+  & Vacuum Ricci-flat \\
+\lean{three\_tape\_causal\_\allowbreak diamond\_t4}
+  & \texttt{Gravity/\allowbreak GorardRicciFlatVacuum} & \texttt{0b17663}
+  & $V(T) = T^4/4$; $\partial = 2\pi^2$ \\
+\lean{lorentz\_algebra\_complete}
+  & \texttt{Gravity/\allowbreak LorentzGroupSO13} & \texttt{0dc2cfd}
+  & All 12 so$(1,3)$ commutators \\
+\lean{gte\_winding\_\allowbreak identifies\_charged\_fermions}
+  & \texttt{BraidAtlas/\allowbreak WindingToBraidRep} & \texttt{ee16be9}
+  & Fermion/boson split from $\ZS^*$ \\
+\lean{gte\_triple\_kink\_\allowbreak exchange\_statistics}
+  & \texttt{Gravity/\allowbreak FermionicStatistics} & \texttt{055ae51}
+  & Level~1 fermionic statistics chain \\
+\lean{rule124\_eq\_rule110\_reflected}
+  & \texttt{Algebra/\allowbreak ChiralDoublet} & \texttt{c654f32}
+  & V--A chirality; R124 = R110 reflected \\
+\lean{color\_confinement\_k\_extra\_pos}
+  & \texttt{Algebra/\allowbreak ColorConfinementMDL} & \texttt{97ca987}
+  & Color confinement: $\Delta K = \log_2 9$ \\
+\lean{gte\_baryon\_number\_\allowbreak topological\_charge}
+  & \texttt{Algebra/\allowbreak BaryonNumber} & \texttt{89d009e}
+  & $B = (1/3)\sum\chi_q$ topological \\
+\lean{gte\_charge\_is\_linear\_projection}
+  & \texttt{Algebra/\allowbreak ChargeFromPolynomial} & \texttt{2637246}
+  & $3Q = p(0,w,0) = w$ \\
+\lean{l\_tape\_zero\_source}
+  & \texttt{Algebra/\allowbreak ChargeFromPolynomial} & \texttt{243764d}
+  & $p(w,0,0)=0$ for all $w$ \\
+\lean{tape\_role\_asymmetry}
+  & \texttt{Algebra/\allowbreak ChargeFromPolynomial} & \texttt{243764d}
+  & $p(0,w,0)=p(0,0,w)=w$ \\
+\lean{non\_separability\_witness}
+  & \texttt{Algebra/\allowbreak ChargeFromPolynomial} & \texttt{243764d}
+  & $p$ not additively separable \\
+\lean{gravity\_requires\_\allowbreak cross\_tape\_coordination}
+  & \texttt{Algebra/\allowbreak ChargeFromPolynomial} & \texttt{243764d}
+  & $p(w,0,0)=0$; gravity $\ne$ single-tape \\
+\lean{su3\_cmca\_master\_bundle}
+  & \texttt{Algebra/\allowbreak SU3GluonCount} & \texttt{f4167a8}
+  & 8 gluons from $\Delta w = \pm 1$ \\
+\lean{psc\_undecidability\_residual\_pos}
+  & \texttt{Gravity/\allowbreak PSCEpochSelection} & \texttt{e72b958}
+  & $D_{\rm res} > 0$ from PSC undecidability \\
+\lean{d\_res\_determines\_omega\_lambda}
+  & \texttt{Gravity/\allowbreak PSCEpochSelection} & \texttt{e72b958}
+  & $\Omega_\Lambda$ uniquely fixed by $D_{\rm res}$ \\
+\lean{psp\_epoch\_selection\_master}
+  & \texttt{Gravity/\allowbreak PSCEpochSelection} & \texttt{e72b958}
+  & Master bundle: $D_{\rm res}$, $\Omega_\Lambda$, uniqueness \\
+\lean{rule110\_center1\_is\_nand}
+  & Rule110 module & (P41)
+  & $\ln 2$ from Z$_2$ binary gate entropy \\
+\lean{three\_tape\_state\_card}
+  & \texttt{Spacetime/\allowbreak HolographicScaling} & \texttt{4ac790a}
+  & $|\mathcal{S}_{\rm 3\text{-}tape}| = 7^{3L}$ \\
+\lean{naive\_3d\_state\_card}
+  & \texttt{Spacetime/\allowbreak HolographicScaling} & \texttt{4ac790a}
+  & Naive 3D state count $7^{L^3}$ \\
+\lean{three\_tape\_smaller\_than\_3d}
+  & \texttt{Spacetime/\allowbreak HolographicScaling} & \texttt{4ac790a}
+  & $7^{3L} < 7^{L^3}$ for $L \geq 2$ \\
+\lean{holographic\_ratio\_formula}
+  & \texttt{Spacetime/\allowbreak HolographicScaling} & \texttt{4ac790a}
+  & $3L/L^3 = 3/L^2$ \\
+\lean{holographic\_ratio\_vanishes}
+  & \texttt{Spacetime/\allowbreak HolographicScaling} & \texttt{4ac790a}
+  & $3/L^2 \to 0$ along Filter.atTop \\
+\lean{three\_tape\_holographic\_L7}
+  & \texttt{Spacetime/\allowbreak HolographicScaling} & \texttt{4ac790a}
+  & $L=7$ holographic ratio instance \\
+\lean{particles\_computation\_spacetime\_trinity}
+  & {\small\texttt{Universality/\allowbreak{}Particles\allowbreak{}Computation\allowbreak{}Spacetime\allowbreak{}Trinity}} & \texttt{63c015b}
+  & Particles--computation--spacetime trinity ($\CatAL$) \\
+\lean{phimdl\_potential\_su2l\_invariant}
+  & \texttt{Algebra/\allowbreak GaugeMDL} & \texttt{378ff20}
+  & $L_2$ norm preserved under $SU(2)_L$ ($\CatAL$) \\
+\lean{su2l\_covariant\_derivative\_minimal}
+  & \texttt{Algebra/\allowbreak GaugeMDL} & \texttt{378ff20}
+  & Covariant derivative MDL-minimal ($\CatAL$) \\
+\lean{su2l\_wpm\_generator\_algebra}
+  & \texttt{Algebra/\allowbreak GaugeMDL} & \texttt{378ff20}
+  & $W^\pm$ satisfy $SU(2)$ Lie algebra ($\CatAL$) \\
+\lean{su2l\_l2\_from\_phimdl\_potential\_catad}
+  & \texttt{Algebra/\allowbreak GaugeMDL} & \texttt{378ff20}
+  & Master bundle: $SU(2)_L$ from PMDL; zero named axioms ($\CatAL$) \\
+\midrule
+\multicolumn{4}{l}{\textit{Open (pending Lorentzian library):}} \\
+\lean{three\_tape\_so13\_from\_\allowbreak so11\_cubed\_and\_so3}
+  & Lorentzian lib. & ---
+  & SO$(1,3)$ group from Lie algebra (stub; pending Lorentzian library) \\
+\lean{gte\_spin\_statistics}
+  & Braid Atlas & ---
+  & Exchange phase $-1$ \\
+\lean{yukawa\_overlap\_exponent\_catad}
+  & \texttt{Gravity/\allowbreak YukawaOverlapExponent} & ---
+  & Yukawa overlap $\alpha = N_c - 1 = 2$ from DPP tape count (\CatAD) \\
+\lean{yukawa\_total\_tapes}
+  & \texttt{Gravity/\allowbreak YukawaOverlapExponent} & ---
+  & $N_{\rm tapes} = N_c + 1 = 4$ total tapes \\
+\lean{yukawa\_dirac\_scaling\_exponent\_eq}
+  & \texttt{Gravity/\allowbreak YukawaOverlapExponent} & ---
+  & Dirac scaling exponent = 2 \\
+\lean{leptogenesis\_kink\_overlap\_catad}
+  & \texttt{Gravity/\allowbreak YukawaOverlapExponent} & ---
+  & Leptogenesis suppression bundle: FKTT $\eta_B = 6.109\times10^{-10}$ ($+0.15\sigma$ Planck 2018; $\CatAL$); asymptotic upper bound $6.36\times10^{-10}$ ($\CatAL$ conditional) \\
+\lean{integral\_sech\_cubed}
+  & \texttt{Substrate/\allowbreak{}PhiMDL\allowbreak{}Fluctuation\allowbreak{}Spectrum} & ---
+  & $\int_{\mathbb{R}} \mathrm{sech}^3 = \pi/2$ (\CatAL, Mathlib FTC) \\
+\lean{integral\_sech}
+  & \texttt{Substrate/\allowbreak{}PhiMDL\allowbreak{}Fluctuation\allowbreak{}Spectrum} & ---
+  & $\int_{\mathbb{R}} \mathrm{sech} = \pi$ (\CatAL, Mathlib FTC) \\
+\end{longtable}}
+
+\section{Numerical Verification Summary}
+\label{app:numerics}
+
+\subsection{Canonical Implementation}
+
+A self-contained canonical implementation of the three-tape CMCA is provided in the
+script directory
+\texttt{papers/45\_three\_tape\_cmca/\allowbreak scripts/}
+(bundled with this paper).
+The implementation is available in two forms:
+
+\begin{itemize}
+  \item \textbf{Python (primary):} \texttt{run\_all\_verifications.py} runs all nine
+    verifications and produces a structured JSON report. Requires Python~3.9+ and
+    \texttt{numpy}, \texttt{scipy}.
+
+    \begin{verbatim}
+    cd papers/45_three_tape_cmca/scripts
+    python3 run_all_verifications.py
+    \end{verbatim}
+
+  \item \textbf{Mathematica (secondary):} \texttt{ThreeTapeCMCA.wl} runs the same
+    verifications using Wolfram Language built-in CA evolution. Requires
+    Mathematica~12+.
+
+    \begin{verbatim}
+    wolfram -script ThreeTapeCMCA.wl
+    \end{verbatim}
+\end{itemize}
+
+Both implementations share identical parameters and produce equivalent results. The
+Python version is the primary reference; the Mathematica version provides an independent
+cross-check using a different computational substrate.
+
+\subsection{Gravity Implementation Flag}
+
+The implementation accepts a \texttt{native\_geodesic} flag (default: \texttt{True})
+that selects between the two gravity architectures established in \S\ref{sec:gravity}:
+
+\begin{itemize}
+  \item \texttt{native\_geodesic=True}: CA-native clock-gradient coupling. The probe
+    reads clock rates at neighboring positions and steps toward the slower clock
+    (toward mass), using only nearest-neighbor comparisons. Cost: $\approx 24$ bits
+    total. Force law: $F\propto b^{-2.46}$ at $\alpha=0.1$ ($\CatA$).
+
+  \item \texttt{native\_geodesic=False}: Explicit Poisson-kernel coupling. The gravitational
+    potential $\phi$ is precomputed by global Poisson convolution; the probe displacement
+    is biased by $\partial\phi/\partial x$. Force law: $F\propto b^{-2.23}$ ($\CatA$).
+\end{itemize}
+
+Both architectures share the same $\sigma\to0$ Newtonian limit $F\propto b^{-2}$ ($\CatAD$).
+
+\subsection{Verification Results}
+
+All nine verifications pass. The following table summarizes the results; scripts
+and parameters are tabulated below.
+
+\begin{table}[H]
+\centering\small
+\begin{tabular}{P{0.05\linewidth}P{0.18\linewidth}P{0.28\linewidth}P{0.34\linewidth}}
+\toprule
+\# & Verification & Result & Cert.\ level \\
+\midrule
+1 & SR time dilation & $\tau_{\rm inner}/\tau_{\rm outer} = 3/7 \approx 0.4286$ & $\CatAD$ [\lean{tau\_three\_sevenths\_from\_ether}, \texttt{EtherProperTimeRate.lean}] \\
+2 & V--A chirality & R110 right, R124 left & $\CatA$ \\
+3 & SM vertices (33) & 33/33 conserved & $\CatA$ \\
+4a & Gravity (CA-native) & $b^{-2.46}$, 5/5 attracted & $\CatA$ \\
+4b & Gravity (Poisson-kernel) & $b^{-2.23}$, 5/5 attracted & $\CatA$ \\
+5 & Gorard vacuum Ricci-flat & $\kappa = 0$ & $\CatAL$ \\
+6 & Bell inequality & $S = 2.44 > 2$ & $\CatA$ \\
+7 & Baryon conservation & 33/33 vertices & $\CatAL$ \\
+8 & Kink mass & $(8/49)\,m_\tau = 290.10\,\text{MeV}$ & $\CatAD$ \\
+9 & Permanent soliton & active $< 30$ cells at $T=400$ & $\CatA$ \\
+\bottomrule
+\end{tabular}
+\caption{Nine canonical verifications of the three-tape CMCA. All pass. $\CatAL$ entries
+are independently machine-certified in Lean~4 (zero sorry); $\CatA$ entries are
+computationally verified; $\CatAD$ entries are derived analytically.}
+\label{tab:verifications}
+\end{table}
+
+\subsection{Script Index}
+
+\begin{table}[H]
+\centering\footnotesize
+\begin{tabular}{P{4.2cm}P{4.6cm}P{4.6cm}}
+\toprule
+File & Purpose & Key result \\
+\midrule
+\texttt{three\_tape\_cmca.py} & Core \texttt{ThreeTapeCMCA} class & All verifications \\
+\texttt{initial\_conditions.py} & Canonical initial states & Vacuum, glider, SM source \\
+\texttt{verification\_suite.py} & Nine verification functions & Table~\ref{tab:verifications} \\
+\texttt{run\_all\_\allowbreak verifications.py} & Main entry point &
+  \texttt{verification\_\allowbreak report.json} \\
+\texttt{ThreeTapeCMCA.wl} & Mathematica implementation & Independent cross-check \\
+\texttt{README.md} & Usage instructions & --- \\
+\texttt{gradient\_\allowbreak kick\_\allowbreak gravity.py} & Analytical $1/r$ gradient-kick force law &
+  $F\propto b^{-2.30}$, 10/10 attracted ($\CatA$) \\
+\texttt{coulomb\_\allowbreak regime\_\allowbreak gravity.py} & Z7 Poisson Coulomb-regime force law &
+  $F\propto b^{-2.23}$ instantaneous; $b^{-2.41}$ drift ($\CatA$) \\
+\texttt{gorard\_\allowbreak coefficient\_\allowbreak rule110.py} & Gorard coarse-graining coefficient &
+  $C_{\rm Gorard} = 0.0923$; $\log_{10}({\rm gap}) = 77.46$ ($\CatAD$) \\
+\texttt{three\_tape\_\allowbreak sm\_\allowbreak particles.py} & SM spectrum, vertex conservation &
+  33/33 Z$_7$ vertices; uniform triples ($\CatA$) \\
+\texttt{clock\_\allowbreak gradient\_\allowbreak geodesic.py} & CA-native gravity test &
+  $F\propto b^{-2.46}$ at $\alpha{=}0.1$ ($\CatA$) \\
+\texttt{selfconsistent\_gravity.py} & Self-consistent source & 5/5 attracted ($\CatA$) \\
+\texttt{positional\_\allowbreak nonlocality\_\allowbreak analysis.py} & Tape role asymmetry &
+  Non-separability ($\CatA$) \\
+\texttt{sr\_ratio\_measurement.py} & SR clock ratio & $3/7 \approx 0.4286$ exact \\
+\bottomrule
+\end{tabular}
+\caption{Script index for \texttt{papers/45\_three\_tape\_cmca/\allowbreak scripts/}.}
+\end{table}
+
+\paragraph{Gravity source.}
+The gravity verifications use a compact $\mathbb{Z}_7$ winding source: three independently
+offset ether tapes initialized with particles $u$ ($w=2$), $d$ ($w=6$), and $W^+$ ($w=3$).
+The source field is pre-smoothed with a Gaussian ($\sigma=5$ lattice cells, Algebraic
+Lifting pre-smooth). The Poisson kernel uses regularization $\varepsilon=1$ lattice unit.
+
+\paragraph{Running time.}
+All nine verifications complete in under two minutes on a standard laptop.
+The gravity verifications are the most expensive ($T=150$ probe steps, $N_{\rm avg}=4$).
+
+\end{appendices}
+
+%─────────────────────────────────────────────────────────────────────────────
+\section*{Computational Tools}
+
+Numerical computations use Python~3.9+ with NumPy for linear algebra and
+array operations, and SciPy for filtering and integration.
+A Wolfram Language (Mathematica) implementation is provided alongside the
+Python scripts in \texttt{papers/45\_three\_tape\_cmca/\allowbreak scripts/}.
+
+The machine-checked formalisation is written in Lean~4 with Mathlib.
+All theorems cited as $\CatAL$ carry zero \texttt{sorry} and zero custom
+axioms beyond Lean's standard foundations; named physics axioms are
+explicitly disclosed wherever used. The full theorem inventory is in
+Appendix~\ref{app:lean}.
+
+Full reproduction instructions are provided in \texttt{REPRODUCE.md} co-located with this paper's source.
+
+AI coding assistants were used for LaTeX formatting, coding assistance, and adversarial review during manuscript preparation. All mathematical derivations, numerical computations, and Lean~4 certifications were independently verified by deterministic scripts and the Lean~4 kernel.
+
+%─────────────────────────────────────────────────────────────────────────────
+\bibliographystyle{plain}
+\bibliography{../bib/Spivack_Papers_Bibliography}
+
+\end{document}

@@ -1,0 +1,31 @@
+experiment:
+  name: lambda_claims_gate
+  description: "Implements three-stage Claims-Gate validation protocol for residual Kraft codeword length L using two independent encoders and comprehensive statistical validation (Phase 10.2.2)."
+  inputs:
+    runs:
+      - "foundational_validation_results.json"  # For consistency with framework
+  analysis:
+    stages:
+      - "independent_derivations"    # Stage 1: Two independent encoders
+      - "persistence_cv"            # Stage 2: Quotient-stability validation
+      - "null_surrogates"           # Stage 3: Robustness against perturbations
+    validation_parameters:
+      tolerance_stage1: 1e-4        # Independent derivations tolerance
+      tolerance_stage2: 1e-4        # Persistence CV tolerance
+      tolerance_stage3: 1e-4        # Null surrogates tolerance
+      cv_folds: 10                  # Cross-validation folds
+      null_surrogate_count: 1000    # Number of null surrogates
+      random_seed: 42               # For reproducibility
+    encoders:
+      encoder_a: "analytic_wedge_factor"    # Direct log2 calculation
+      encoder_b: "prefix_probability_tree"  # Probability-based calculation
+  report:
+    export_md: true
+    export_json: true
+    plots: true                     # Generate validation plots
+    csv_export: true               # Export CV and surrogate results
+  integrity:
+    fail_on_warning: true
+    require_real_data: false       # This is a theoretical validation
+    validate_statistical_significance: true
+    check_machine_precision: true

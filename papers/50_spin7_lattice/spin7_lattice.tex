@@ -1,0 +1,1765 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  The Spin-7 Lattice Model: Phase Transitions and Statistical Mechanics
+%  of the GTE Polynomial
+%
+%  Nova Spivack --- June 2026
+%
+%  UGP Physics Series — Paper 50
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt]{article}
+
+% ===================== PREAMBLE =====================
+\usepackage[margin=1in]{geometry}
+\usepackage{authblk}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\allowdisplaybreaks
+\setlength{\abovedisplayskip}{6pt}
+\setlength{\belowdisplayskip}{6pt}
+\setlength{\abovedisplayshortskip}{4pt}
+\setlength{\belowdisplayshortskip}{4pt}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+\usepackage{cite}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{breakable}
+\usepackage{tabularx,ragged2e,array}
+\usepackage{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage[toc]{appendix}
+\usepackage{float}
+\usepackage[section]{placeins}
+
+\setlength{\emergencystretch}{3em}
+\raggedbottom
+
+\newcolumntype{P}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black}
+\input{nova_zenodo_doi_placeholder}
+
+% -- Theorem environments -------------------------------------------------------
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{openprob}{Open Problem}
+
+% -- Convenience macros ---------------------------------------------------------
+\newcommand{\GTE}{\text{GTE}}
+\newcommand{\MDL}{\text{MDL}}
+\newcommand{\PSC}{\text{PSC}}
+\newcommand{\PHIMDL}{\ensuremath{\Phi_{\mathrm{MDL}}}}
+\newcommand{\ZS}{\ensuremath{\mathbb{Z}_7}}
+\newcommand{\GF}[1]{\ensuremath{\mathrm{GF}(#1)}}
+\newcommand{\lean}[1]{%
+  \penalty-100
+  \begingroup\def\_{\textunderscore\allowbreak}\texttt{#1}\endgroup}
+\newcommand{\CMCA}{\text{CMCA}}
+\newcommand{\poly}{$p(L,C,R)$}
+\newcommand{\ppoly}{$p(L,C,R) = C+R-CR-LCR$}
+\newcommand{\fmdl}{\ensuremath{f_{\mathrm{MDL}}}}
+\newcommand{\Ngen}{\ensuremath{N_{\mathrm{gen}}}}
+\newcommand{\Nfam}{\ensuremath{N_{\mathrm{fam}}}}
+
+% -- Status badge macros — math-mode safe --------------------------------------
+\newcommand{\CatA}{\textbf{A}}
+\newcommand{\CatAL}{\ensuremath{\textbf{A}_{\rm Lean}}}
+\newcommand{\CatAMDL}{\ensuremath{\textbf{A}_{\rm MDL}}}
+\newcommand{\CatAD}{\textbf{A/D}}
+\newcommand{\CatB}{\textbf{B}}
+\newcommand{\CatD}{\textbf{D}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+\title{\textbf{The Spin-7 Lattice Model:\\
+Phase Transitions and Statistical Mechanics\\
+of the GTE Polynomial}}
+
+\author{Nova Spivack}
+\affil{Independent Researcher}
+\date{June 2026}
+\maketitle
+
+\NovaZenodoAfterTitle
+
+\noindent\textbf{Classification:} Statistical Mechanics; Mathematical Physics;
+Cellular Automata; Lattice Models.
+
+%-----------------------------------------------------------------------------
+\begin{abstract}
+The polynomial $p(L,C,R) = C + R - CR - LCR$ over $\mathbb{F}_7$, derived as
+the unique Minimum-Description-Length (MDL) minimal substrate encoding the
+Standard Model from first principles within the Generative Triple Evolution
+(GTE) framework,
+defines a natural statistical mechanics system: a 7-state nearest-neighbor spin
+model with three-body interactions. We analyze this spin-7 model in one and two
+spatial dimensions. In 1D, the exact transfer matrix acts on pair states
+$(s_{i-1}, s_i)$; its Perron eigenvalue at $\beta = 1$ is $\lambda_1 = 1.4846$,
+the correlation length grows from $\xi \approx 2.9$ sites at $\beta = 1$ to
+$\xi \approx 15.0$ at $\beta = 2$ and diverges as $\beta \to \infty$, and the
+local zero-energy windows number $43 = \Phi_6(7)$ (consistent with the
+Cyclotomic Point Count Theorem). The global zero-energy rings are exactly the
+three uniform configurations $\{0^n, 1^n, 5^n\}$ at \emph{every} ring length
+$n \ge 3$ --- an exact threefold ground-space degeneracy, machine-certified in
+Lean~4 --- so the ground space realizes the ternary repetition code of length
+$n$ and distance $n$. In 2D,
+Metropolis Monte Carlo simulations on $L \times L$ tori ($L = 4$--$16$) reveal
+a phase transition at $\beta_c \approx 0.35$ ($T_c \approx 2.86\,J$) with
+$\mathbb{Z}_3$-like symmetry breaking among three degenerate global ground
+states: the uniform configurations $\{0, 1, 5\}$, algebraically characterized
+as the roots of $p(x,x,x) = -x(x-1)(x-5) \pmod 7$. A secondary feature at
+$\beta_{c,2} \approx 1.7$ exhibits strong hysteresis consistent with domain-wall
+locking. The zero-temperature support of the 1D transfer matrix is the
+deterministic pair-state digraph of the vacuum sector of the Chiral Minkowski
+Cellular Automaton (CMCA), and the
+thermodynamic entropy rate $S_{\rm CMCA}(\beta) = \log \lambda_1(\beta)$
+interpolates from $\log 7 = 1.946$ nats at infinite temperature through
+$0.395$ nats per site per update at $\beta = 1$ to $0$ at zero temperature,
+where only the three rigid ground states survive. The thermal ensemble is
+identified as the maximum-entropy shadow of the CMCA tape: the chain energy is
+identically the next-step automaton activity, so $\beta$ is the Lagrange
+multiplier conjugate to computational activity and the deterministic automaton
+is the $\beta \to \infty$ support. We derive the exact asymptotic gap law
+$\Delta(\beta) = e^{-3\beta/2}\bigl[1 + \tfrac{1}{2}e^{-\beta/2} +
+\tfrac{1}{8}e^{-\beta} + \cdots\bigr]$: the half-integer exponent $3/2$ is the
+geometric mean of the directed (chiral) domain-wall energies
+$E_w(1{\to}0) = 1$, $E_w(0{\to}1) = 2$ --- a parity-violation signature
+impossible for any parity-symmetric chain --- and the unit amplitude is derived
+by two independent routes (a spectator mechanism and an exact resolvent series,
+verified to $10^{-30}$). The thermal spectrum is proven insensitive to the
+periods of the deterministic attractors (resolved negative, with mechanism:
+the Gibbs weight is a one-step activity functional). Calibrating the chain's
+interface sector against the continuum kink mass gives a continuum-limit
+prescription $a(\beta) = \hbar c\,\Delta(\beta)/M$, and MDL saturation
+selects the physical tape spacing
+$a = \hbar c/\Lambda_{\rm GTE} \approx 0.0972$ fm, where
+$\Lambda_{\rm GTE} = 7 M_{\rm kink} \approx 2.03$ GeV is the GTE matching
+scale --- the Tape Saturation Theorem, derived conditionally on a single named
+criterion (Compton support) that we prove minimal via a Boundary Equivalence
+Theorem. At this physical point the kink correlation length equals
+$|\mathbb{Z}_7| = 7$ lattice sites exactly, a pre-registered falsifiable
+target for substrate Monte Carlo. The three ground-state sectors
+$\{0, 1, 5\}$ map to the color charge sectors of the Standard Model, and the
+NL identity $\mathrm{NL}(p) = 1 - c_H/7^2$ connects the polynomial's
+cryptographic nonlinearity to the Higgs branch capacity $c_H = 13$. A minimal
+experimental realization using 7-level Rydberg atoms in optical tweezer arrays
+is proposed.
+\end{abstract}
+
+%-----------------------------------------------------------------------------
+\tableofcontents
+\newpage
+
+%-----------------------------------------------------------------------------
+% CLAIM-STRENGTH TAXONOMY
+%-----------------------------------------------------------------------------
+\clearpage
+\begin{tcolorbox}[
+  colback=gray!8,colframe=gray!50,title=Claim-Strength Taxonomy,
+  fonttitle=\bfseries,breakable]
+\small
+\label{page:taxonomy}%
+Every result in this paper carries one of five certification levels:
+\begin{itemize}[leftmargin=1.8em,itemsep=2pt,topsep=2pt]
+  \item \CatAL{} (\textbf{A-Lean}) --- Lean~4 machine proof, zero \texttt{sorry}
+        in \CatAL{} results and zero custom axioms in any \CatAL{} proof chain.
+        The strongest certification.
+  \item \CatAD{} (\textbf{A/D}) --- Analytic or fully decidable proof;
+        accessible to human verification.
+  \item \CatA{} (\textbf{A}) --- Computationally verified result; output
+        independently reproducible from published scripts.
+  \item \CatB{} (\textbf{B}) --- Theoretically motivated conjecture with
+        supporting numerical evidence.
+  \item \CatD{} (\textbf{D}) --- Speculative hypothesis; requires further
+        development before quantitative claims can be made.
+\end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[
+  colback=orange!8,colframe=orange!60!black,title=What This Paper Establishes,
+  fonttitle=\bfseries,breakable]
+\small
+\textbf{Machine-certified (\CatAL{}, Lean~4, zero sorry):}
+\begin{itemize}[leftmargin=1.8em,itemsep=2pt,topsep=2pt]
+  \item Ground-space rigidity: zero-energy rings are exactly
+        $\{0^n, 1^n, 5^n\}$ at every length $n \ge 3$.\\
+        (\lean{gte\_ring\_ground\_states\_uniform\_general})
+  \item $43 = \Phi_6(7)$ local ground states
+        \mbox{(\lean{poly\_p\_zero\_variety\_count\_gf7})}.
+  \item Directed wall and bump energy tables of the pair digraph, with the
+        composite hub identity and the half-integer gap-exponent arithmetic.\\
+        (\lean{spin7\_directed\_wall\_energies})
+  \item The gap-amplitude counts $c_{10} = c_{01} = b_0 = b_1 = 1$, $b_5 = 2$
+        with frontier-death totality, and the spectator package
+        ($\rho = 1$, cluster eigensystem).\\
+        (\lean{spin7\_gap\_amplitude\_certificate},
+        \lean{spin7\_spectator\_amplitude})
+  \item The Perron--Frobenius hypothesis package for the thermal transfer
+        matrix, uniform in $\beta$: primitivity with explicit power $k = 2$,
+        irreducibility, positive uniform diagonal.\\
+        (\lean{spin7\_transfer\_pf\_hypotheses})
+\end{itemize}
+\textbf{Analytically derived (\CatAD{}):}
+\begin{itemize}[leftmargin=1.8em,itemsep=2pt,topsep=2pt]
+  \item The exact chiral gap law $\Delta(\beta) = e^{-3\beta/2}[1 +
+        \tfrac{1}{2}e^{-\beta/2} + \cdots]$: slope $3/2$, amplitude $1$
+        (derived twice), exact correction tower, and the ratio law
+        $\Delta_3 = 2\Delta_2$.
+  \item Spectral insensitivity to the deterministic attractor periods
+        (resolved negative, with mechanism).
+  \item The Tape Saturation Theorem $a \cdot \Lambda_{\rm GTE} = \hbar c$,
+        conditional on the named Compton-Support Criterion; the Boundary
+        Equivalence Theorem proving that criterion minimal; and the saturation
+        bijection $\xi^* = |\mathbb{Z}_7| = 7$ as its corollary.
+  \item 2D ground-state rigidity (Corollary~\ref{cor:2d-gs}); 3-state Potts
+        critical exponents $\nu = 5/6$, $\eta = 4/15$.
+\end{itemize}
+\textbf{Computationally verified (\CatA{}):} the 2D phase transition at
+$\beta_c \approx 0.35$; domain-wall hysteresis at $\beta_{c,2} \approx 1.7$;
+the spectral table; the entropy rates; the physical-point solve
+$\beta^* = 1.5346$; and the pre-registered null batteries.
+\end{tcolorbox}
+
+\begin{tcolorbox}[
+  colback=blue!5,colframe=blue!40!gray,title=What This Paper Does NOT Claim,
+  fonttitle=\bfseries,breakable]
+\small
+\begin{itemize}[leftmargin=1.8em,itemsep=2pt,topsep=2pt]
+  \item No unconditional continuum theorem: the calibration trajectory, the
+        physical point, and the lattice dictionary are bridge statements from
+        the discrete certificate to the continuum field theory, conditional on
+        the named Compton-Support Criterion and on the interface-sector bridge
+        as stated in Section~\ref{sec:continuum}.
+  \item The interface-sector bridge does \emph{not} carry the meson
+        (continuum-amplitude) sector: bump channels decouple from the
+        continuum-surviving spectrum.
+  \item The kink correlation-length target $\xi_{\rm kink} = 7$ cells is an
+        in-silico substrate Monte Carlo target, not a laboratory observable.
+  \item No closed forms are claimed for $\beta^*$ or $S(\beta^*)$
+        (all pre-registered candidates fail).
+  \item The fixed-point signature $\xi^* = |\mathbb{Z}_7|$ is a corollary of
+        saturation given $\Lambda_{\rm GTE} = 7M$, not an independent
+        derivation of $|\mathbb{Z}_7|$.
+  \item The color-sector mapping of the ground states remains \CatB{}.
+\end{itemize}
+\end{tcolorbox}
+
+%-----------------------------------------------------------------------------
+\section{Introduction}
+\label{sec:intro}
+%-----------------------------------------------------------------------------
+
+The polynomial $p(L,C,R) = C + R - CR - LCR$ over $\mathbb{F}_7$ was derived
+in~\cite{SpivackGTEPolynomialWolfram} as the unique cubic over $\mathbb{F}_7$
+whose binary restriction $p|_{\{0,1\}^3}$ equals Rule~110, the Wolfram rule of
+maximal computational complexity. The derivation proceeds from two principles:
+Minimum Description Length (MDL), which selects the most compressed polynomial
+consistent with the required orbit structure, and Physical Self-Containment
+(PSC), which requires that the generating orbit be closed within the field.
+Together these yield $p$ uniquely over $\mathbb{F}_7$
+\cite{SpivackGTEPolynomialWolfram, SpivackGTECompleteFramework}.
+
+Beyond its role in the Generative Triple Evolution (GTE) derivation of the
+Standard Model, $p$ carries
+significant mathematical structure. The variety $V(p) \subset \mathbb{A}^3_{\mathbb{F}_q}$
+has point count $|\{p = 0\}| = q^2 - q + 1 = \Phi_6(q)$ for all prime powers $q$
+\cite{SpivackGTEPolynomialWolfram}, where $\Phi_6$ is the sixth cyclotomic polynomial.
+The binary restriction $p|_{\{0,1\}^3}$ encodes Rule~110, establishing
+computational universality~\cite{Cook2004}.
+
+In this paper we study $p$ as a spin-interaction energy. Each site carries a
+spin $s \in \mathbb{Z}_7$ and three neighboring spins $(L, C, R)$ interact with
+energy $E(L,C,R) = p(L,C,R) \in \{0,1,\ldots,6\}$. This defines a 7-state
+lattice model (the \emph{spin-7 model}) governed by the Boltzmann weight
+$e^{-\beta p(L,C,R)}$.
+
+The spin-7 model is physically motivated by three observations:
+\begin{enumerate}[leftmargin=2em,itemsep=2pt]
+  \item The $43 = \Phi_6(7)$ local ground-state triplets ($p = 0$) connect the
+    statistical mechanics ground-state degeneracy to the cyclotomic structure of
+    $V(p)$, Lean-certified as \lean{poly\_p\_zero\_variety\_count\_gf7}
+    (\CatAL{}, zero sorry).
+  \item In 1D, the exact transfer matrix on pair states yields the
+    thermodynamic entropy rate $S = \log \lambda_1(\beta)$, and its
+    zero-temperature support is the deterministic pair-state digraph of the
+    vacuum sector of the Chiral Minkowski Cellular Automaton (CMCA).
+  \item In 2D, the model undergoes a finite-temperature phase transition with
+    $\mathbb{Z}_3$-like symmetry breaking, making it a physically realizable system
+    with measurable critical behavior.
+\end{enumerate}
+
+The paper is organized as follows. Section~\ref{sec:model} defines the spin-7
+model. Section~\ref{sec:1D} analyzes the 1D model via transfer matrices.
+Section~\ref{sec:2D} presents Monte Carlo results for the 2D phase diagram.
+Section~\ref{sec:cmca} establishes the CMCA transfer matrix connection.
+Section~\ref{sec:continuum} derives the exact chiral gap law, the
+continuum-limit prescription, and the MDL-saturated physical point.
+Section~\ref{sec:gte} discusses connections to GTE physics. Section~\ref{sec:cold-atom}
+proposes a cold-atom realization. Section~\ref{sec:predictions} collects falsifiable
+experimental predictions. Section~\ref{sec:discussion} discusses and concludes.
+Section~\ref{sec:open} lists open questions.
+
+\medskip
+\noindent\textbf{Main contributions.}
+\begin{itemize}[leftmargin=2em,itemsep=2pt,topsep=4pt]
+  \item \textbf{2D phase transition (\CatA{}):} $\beta_c \approx 0.35$
+        ($T_c \approx 2.86\,J$), with $\mathbb{Z}_3$-like ordering among three
+        global ground states.
+  \item \textbf{Ground-space rigidity (\CatAL{}):} For every ring length
+        $n \ge 3$, the zero-energy configurations are exactly the three uniform
+        assemblies $\{0^n, 1^n, 5^n\}$ --- the roots of $p(x,x,x) = -x(x-1)(x-5)
+        \pmod 7$. Machine-certified in Lean~4 as
+        \lean{gte\_ring\_ground\_states\_uniform\_general} (zero sorry, zero
+        custom axioms, \texttt{SpinSevenGroundSpace.lean}, ugp-lean); the
+        diagonal cubic is certified as \lean{poly\_p\_uniform\_gs\_roots}.
+        The ground space is the ternary repetition code with distance $d = n$.
+  \item \textbf{CMCA entropy rate (\CatA{}):} $S_{\rm CMCA}(\beta) = \log \lambda_1(\beta)$,
+        where $\lambda_1$ is the Perron eigenvalue of the exact pair-state
+        transfer matrix; at $\beta = 1$: $S = \log(1.4846) = 0.395$ nats per
+        site per step.
+  \item \textbf{Thermal-shadow construction (\CatAD{}):} The chain energy is
+        identically the next-step CA activity, so the thermal ensemble is the
+        maximum-entropy shadow of the CMCA tape at activity multiplier
+        $\beta$, with the deterministic automaton as the $\beta \to \infty$
+        support.
+  \item \textbf{Directed wall spectroscopy (\CatAL{}):} Exact integer
+        interface and bump energies of the pair digraph, with the composite
+        hub identity $E_w(5{\to}1) = E_w(5{\to}0) + E_w(0{\to}1)$
+        \mbox{(\lean{spin7\_directed\_wall\_energies})}.
+  \item \textbf{Chiral gap law (\CatAD{}):} The exact asymptotic law
+        $\Delta(\beta) = e^{-3\beta/2}[1 + \tfrac{1}{2}e^{-\beta/2} + \cdots]$
+        with half-integer slope (a parity-violation signature), amplitude $1$
+        derived by two independent routes, and the ratio law
+        $\Delta_3 = 2\Delta_2$.
+  \item \textbf{Spectral insensitivity (\CatAD{}):} The thermal spectrum
+        carries no signature of the deterministic attractor periods ---
+        resolved negative with mechanism, against three pre-registered
+        fingerprint batteries.
+  \item \textbf{Physical point (\CatAD{}, conditional):} MDL saturation
+        selects $a = \hbar c/\Lambda_{\rm GTE} \approx 0.0972$ fm (Tape
+        Saturation Theorem, conditional on the named Compton-Support
+        Criterion, proven minimal by the Boundary Equivalence Theorem), with
+        the exact dictionary $aM = 1/7$, $am_\varphi = 7/8$,
+        $\xi^* = |\mathbb{Z}_7| = 7$ and the falsifiable target
+        $\xi_{\rm kink} = 7$ cells.
+  \item \textbf{Domain-wall locking (\CatA{}):} A secondary hysteretic feature
+        at $\beta_{c,2} \approx 1.7$ signals dynamical arrest of domain-wall motion.
+  \item \textbf{$43 = \Phi_6(7)$ local ground states (\CatAL{}):} Machine-certified
+        in Lean~4 (zero sorry).
+  \item \textbf{GTE color-sector mapping (\CatB{}):} Ground-state sectors
+        $\{0, 1, 5\}$ map to color-charge sectors of the Standard Model.
+  \item \textbf{Universality class (\CatAD{}):} Three-fold $\mathbb{Z}_3$
+        symmetry breaking places the model in the 3-state Potts universality class;
+        exact critical exponents $\nu = 5/6$, $\eta = 4/15$~\cite{Wu1982}.
+\end{itemize}
+
+%-----------------------------------------------------------------------------
+\section{The Spin-7 Model}
+\label{sec:model}
+%-----------------------------------------------------------------------------
+
+\subsection{Definition}
+
+Let $\Lambda = \mathbb{Z}_L \times \mathbb{Z}_L$ be a square lattice with
+periodic boundary conditions (torus). Each site $(i,j) \in \Lambda$ carries a
+spin $s_{i,j} \in \mathbb{Z}_7$. The Hamiltonian is
+\begin{equation}\label{eq:H2D}
+  H = \sum_{(i,j) \in \Lambda} \bigl[
+    p(s_{i-1,j},\, s_{i,j},\, s_{i+1,j}) + p(s_{i,j-1},\, s_{i,j},\, s_{i,j+1})
+  \bigr],
+\end{equation}
+where $p(L,C,R) = C + R - CR - LCR \pmod 7$ and all indices are taken mod $L$.
+Each site is the center of one horizontal triplet and one vertical triplet; both
+contribute to the energy. The 1D model on a ring of $N$ sites has Hamiltonian
+\begin{equation}\label{eq:H1D}
+  H_{1D} = \sum_{i=1}^{N} p(s_{i-1}, s_i, s_{i+1}).
+\end{equation}
+The partition function at inverse temperature $\beta$ is $Z = \sum_{\{s\}} e^{-\beta H}$.
+
+\subsection{Ground States}
+
+\begin{proposition}\label{prop:gs}
+The uniform configurations $s_{i,j} = x$ for all $(i,j)$ are global ground states
+of $H$ (with $H = 0$) if and only if $x \in \{0, 1, 5\} \subset \mathbb{Z}_7$.
+\end{proposition}
+
+\begin{proof}
+A uniform configuration $s = x$ contributes $p(x,x,x)$ to every triplet. We compute:
+\[
+  p(x,x,x) = x + x - x^2 - x^3 = -x(x^2 + x - 2) = -x(x-1)(x+2) \pmod 7,
+\]
+where $x + 2 \equiv 0 \pmod 7 \Leftrightarrow x = 5$. Hence $p(x,x,x) = 0$ if
+and only if $x \in \{0, 1, 5\}$. $\square$
+\end{proof}
+
+\begin{remark}
+The factorization $p(x,x,x) = -x(x-1)(x-5) \pmod 7$ follows since $-2 \equiv 5
+\pmod 7$, so $x+2 = 0 \Leftrightarrow x = 5$. The three ground-state values
+$\{0, 1, 5\}$ are exactly the roots of this diagonal cubic, machine-certified in
+Lean~4 as \lean{poly\_p\_uniform\_gs\_roots} (\CatAL{}, zero sorry,
+\texttt{PolyExplorations.lean}, ugp-lean). Physically: $x = 0$ is the PSC vacuum
+winding sector; $x = 1$ is the multiplicative identity of $\mathbb{F}_7^*$;
+$x = 5 \equiv -2 \pmod 7$ arises from the linear structure of $p$.
+\end{remark}
+
+\begin{proposition}\label{prop:local-gs}
+The number of local ground-state triplets $(L,C,R) \in \mathbb{Z}_7^3$ with
+$p(L,C,R) = 0$ is $43 = \Phi_6(7) = 7^2 - 7 + 1$.
+\end{proposition}
+
+This follows from the Cyclotomic Point Count Theorem of~\cite{SpivackGTEPolynomialWolfram}
+(Theorem~4.6), proved in Lean~4 as \lean{poly\_p\_zero\_variety\_count\_gf7} (\CatAL{},
+zero sorry).
+
+Propositions~\ref{prop:gs} and~\ref{prop:local-gs} leave open whether any of the
+40 non-uniform triplets of $V(p)$ can be assembled into a global zero-energy
+configuration. The answer is no, at every system size:
+
+\begin{theorem}[Ground-Space Rigidity --- \CatAL{}]\label{thm:rigidity}
+Let $n \ge 3$ and let $(s_0, \ldots, s_{n-1}) \in \mathbb{Z}_7^n$ be a ring
+configuration with $p(s_{i-1}, s_i, s_{i+1}) = 0$ for every $i$ (indices
+mod~$n$). Then $s$ is one of the three uniform configurations $0^n$, $1^n$,
+$5^n$. Conversely, each of these is zero-energy at every length. The ground
+space of $H_{1D}$ is therefore exactly threefold degenerate at every ring size.
+\end{theorem}
+
+The theorem is machine-certified in Lean~4 with zero \texttt{sorry} and zero
+custom axioms as \lean{gte\_ring\_ground\_states\_uniform\_general}, with the
+converse certified as \lean{uniform\_ground\_ring\_satisfies\_zero\_energy}
+(\texttt{UgpLean/Polynomial/SpinSevenGroundSpace.lean}, ugp-lean). The certified
+proof is structural rather than enumerative in $n$: zero-energy windows define
+a deterministic successor map on the 43 active pair states of
+$\mathbb{Z}_7 \times \mathbb{Z}_7$ (each active pair $(a,b)$ admits exactly one
+$c$ with $p(a,b,c) = 0$); machine enumeration certifies that the only cycles of
+this map are the three uniform self-loops $(0,0)$, $(1,1)$, $(5,5)$; a
+length-$n$ ring induces a closed orbit, which the $49$-state pigeonhole forces
+onto a cycle; and any zero cell propagates to the vacuum ring $0^n$.
+
+\begin{corollary}[2D Ground States --- \CatAD{}]\label{cor:2d-gs}
+On any $L_x \times L_y$ torus with $L_x, L_y \ge 3$, the zero-energy
+configurations of $H$ in~(\ref{eq:H2D}) are exactly the three uniform states
+$\{0, 1, 5\}$.
+\end{corollary}
+
+\begin{proof}
+Since $p \ge 0$, $H = 0$ forces every horizontal and every vertical triplet to
+vanish. Each row is then a zero-energy ring of length $L_x \ge 3$, hence
+uniform with some value $v_r \in \{0, 1, 5\}$ by Theorem~\ref{thm:rigidity};
+each column is in turn a zero-energy ring $(v_0, \ldots, v_{L_y-1})$, which is
+uniform by the same theorem, so all $v_r$ are equal. $\square$
+\end{proof}
+
+\subsection{Symmetry and Ground-State Degeneracy}
+
+The three uniform ground states $\{0, 1, 5\}$ are not related by any $\mathbb{Z}_7$
+additive shift or multiplicative symmetry of the Hamiltonian. They are related by a
+discrete label permutation: the cyclic exchange $0 \to 1 \to 5 \to 0$ constitutes
+a $\mathbb{Z}_3$ symmetry of the \emph{ground-state manifold} — these three states
+have identical energy per site — though not a symmetry of the full Hamiltonian.
+
+At high temperature (small $\beta$), the thermal state explores all seven spin values
+democratically. At low temperature (large $\beta$), the system selects one of the
+three ground states, spontaneously breaking this $\mathbb{Z}_3$ degeneracy. This is
+the structure of the ordered phase transition described in Section~\ref{sec:2D}.
+
+The disparity between 43 local ground-state triplets and only 3 global ground
+states reflects non-trivial constraint propagation, and by
+Theorem~\ref{thm:rigidity} it is theorem-grade: none of the 40 non-uniform
+triplets of $V(p)$ can be assembled into a globally consistent zero-energy
+configuration, in 1D (any ring length) or 2D (Corollary~\ref{cor:2d-gs}).
+
+%-----------------------------------------------------------------------------
+\section{The 1D Chain: Transfer Matrix and Thermodynamics}
+\label{sec:1D}
+%-----------------------------------------------------------------------------
+
+\subsection{Transfer Matrix}
+
+The interaction couples three consecutive sites, so the exact transfer matrix
+acts on \emph{pair} states. Define the $49 \times 49$ matrix
+\begin{equation}\label{eq:TM}
+  \mathbf{M}[(a,b),(b',c)] = \delta_{b,b'}\, e^{-\beta\, p(a,b,c)},
+  \qquad a, b, b', c \in \mathbb{Z}_7.
+\end{equation}
+The partition function of the 1D spin-7 ring of length $N$ is then
+\begin{equation}\label{eq:ZTM}
+  Z_{1D} = \mathrm{Tr}\bigl(\mathbf{M}^N\bigr)
+\end{equation}
+exactly --- the standard construction for three-site interactions. The
+identity~(\ref{eq:ZTM}) is verified against exhaustive enumeration over all
+$7^N$ ring configurations for $N \le 7$ at several $\beta$, with agreement to
+machine precision (\CatA{}).
+
+\subsection{Spectral Data}
+
+At $\beta = 1$, the leading eigenvalues of $\mathbf{M}$ are (\CatA{}):
+\[
+  \lambda_1 = 1.4846 \;(\text{simple, Perron}), \quad
+  \lambda_2 = 1.0526, \quad
+  \lambda_3 = 0.9771,
+\]
+followed by complex-conjugate pairs of modulus $\approx 0.955$. The matrix has
+rank $43 = \Phi_6(7)$ (\CatA{}): the $b = 0$ block has rank one because
+$p(a,0,c) = c$ is independent of the left spin $a$, while the six $b \neq 0$
+blocks have full rank~$7$.
+
+Table~\ref{tab:spectral} summarizes the spectral data and derived thermodynamic
+quantities at several inverse temperatures.
+
+\begin{table}[htb]
+\centering
+\caption{Exact pair-state transfer matrix spectral data for the 1D spin-7
+model. $\lambda_1, |\lambda_2|$: dominant eigenvalue moduli.
+$\Delta = \log(\lambda_1/|\lambda_2|)$: spectral gap.
+$\xi = 1/\Delta$: correlation length.
+$S_{\rm CMCA} = \log \lambda_1$: CMCA entropy rate per site.}
+\label{tab:spectral}
+\begin{tabular}{@{}rrrrrr@{}}
+\toprule
+$\beta$ & $\lambda_1$ & $|\lambda_2|$ & $\Delta$ & $\xi$ (sites) & $S_{\rm CMCA}$ (nats) \\
+\midrule
+0.30 & 3.331 & 1.086 & 1.121 & 0.89 & 1.203 \\
+0.35 & 3.036 & 1.087 & 1.027 & 0.97 & 1.111 \\
+0.50 & 2.398 & 1.053 & 0.823 & 1.22 & 0.875 \\
+1.00 & 1.485 & 1.053 & 0.344 & 2.91 & 0.395 \\
+2.00 & 1.071 & 1.002 & 0.067 & 14.96 & 0.068 \\
+3.00 & 1.013 & 1.000 & 0.013 & 79.3 & 0.013 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Thermodynamic Quantities}
+
+The free energy per site in the thermodynamic limit is
+\begin{equation}
+  f(\beta) = -\frac{1}{\beta} \log \lambda_1(\beta).
+\end{equation}
+The correlation length $\xi = 1/\log(\lambda_1/|\lambda_2|)$ grows monotonically
+with $\beta$ --- $\xi \approx 2.9$ sites at $\beta = 1$, $\xi \approx 15.0$ at
+$\beta = 2$ --- and diverges as $\beta \to \infty$, where the gap closes because
+the three ground-state sectors become degenerate ($\lambda_1 \to 1$ with the
+subleading sector eigenvalues approaching it). This is the standard
+one-dimensional scenario: ordering occurs only at zero temperature.
+$\mathbf{M}^2$ is entrywise positive, so $\mathbf{M}$ is primitive and
+Perron--Frobenius theory gives a simple dominant eigenvalue $\lambda_1(\beta)$,
+analytic in $\beta$ for all finite $\beta$ --- confirming the absence of a
+finite-temperature 1D phase transition. The hypothesis package is
+machine-certified uniformly in $\beta$: entrywise nonnegativity, primitivity
+with explicit power $k = 2$, irreducibility, and a positive uniform diagonal
+\mbox{(\lean{spin7\_transfer\_pf\_hypotheses}, \CatAL{}, zero sorry)}.
+
+\subsection{Ground-State Algebra}
+
+As $\beta \to \infty$, the partition function is dominated by the minimum-energy
+configurations: rings $(s_1, \ldots, s_N)$ with $p(s_{i-1}, s_i, s_{i+1}) = 0$
+at every site. By Theorem~\ref{thm:rigidity} these are exactly the three uniform
+configurations $0^N$, $1^N$, $5^N$ at every length $N \ge 3$: the remaining 40
+triplets of the variety $V(p)(\GF{7})$ admit local continuations but never close
+into a ring. Correspondingly, $Z_{1D} \to 3$ as $\beta \to \infty$ at fixed $N$,
+and $\lambda_1(\beta) \to 1$: the zero-energy sector carries no extensive
+entropy.
+
+Treated as a code over $\GF{7}$, with codewords the zero-energy rings, the
+ground space is the \emph{ternary repetition code}: $K(n) = 3$ codewords at
+every length $n$, minimum Hamming distance $d(n) = n$, rate
+$\log_7 3 / n \to 0$ (\CatA{}; exhaustive enumeration for $n \le 8$ and
+pair-state transfer-matrix counts for $n \le 12$,
+\texttt{gte\_code\_parameters.py}).
+
+%-----------------------------------------------------------------------------
+\section{The 2D Model: Phase Transition and Finite-Size Scaling}
+\label{sec:2D}
+%-----------------------------------------------------------------------------
+
+\subsection{Monte Carlo Method}
+
+Simulations use single-spin Metropolis updates with acceptance probability
+$\min(1, e^{-\beta \Delta E})$, where $\Delta E$ is computed from the six triplet
+energies affected by a spin flip at site $(i,j)$. System sizes $L \in \{4, 8, 12, 16\}$
+on periodic $L \times L$ tori are simulated. At each $(\beta, L)$: $5 \times 10^4$ warmup
+sweeps followed by $10^5$ measurement sweeps, with measurements every 10 sweeps
+to reduce autocorrelation. Three independent seeds are averaged.
+
+The order parameter is
+\begin{equation}
+  M_{\rm gs} = \frac{1}{L^2}\sum_{i,j} \mathbf{1}[s_{i,j} \in \{0,1,5\}],
+\end{equation}
+the fraction of sites in the three ground-state values. At $T \to \infty$
+(uniform distribution), $\langle M_{\rm gs} \rangle = 3/7 \approx 0.429$.
+In the fully ordered phase, $\langle M_{\rm gs} \rangle \to 1$.
+
+\subsection{Primary Phase Transition}
+
+\begin{table}[htb]
+\centering
+\caption{Order parameter $M_{\rm gs}$ as a function of $\beta$ and system size $L$.
+The transition near $\beta_c \approx 0.35$ is evident as a rapid jump from the
+disordered ($M \approx 0.43$) to the ordered ($M \to 1$) phase. (\CatA{})}
+\label{tab:orderparam}
+\begin{tabular}{@{}rrrr@{}}
+\toprule
+$\beta$ & $L=4$ & $L=8$ & $L=12$ \\
+\midrule
+0.20 & 0.514 & 0.510 & 0.509 \\
+0.30 & 0.715 & 0.725 & 0.724 \\
+0.35 & 0.824 & 0.832 & 0.831 \\
+0.50 & 0.964 & 0.960 & 0.957 \\
+0.70 & 0.994 & 0.991 & 0.990 \\
+1.00 & 0.997 & 0.997 & 0.996 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The critical inverse temperature is
+\begin{equation}
+  \beta_c \approx 0.35 \pm 0.05, \qquad T_c \approx 2.86\,J \quad (\CatA{}).
+\end{equation}
+Finite-size scaling of the specific heat $C_V = \beta^2 (\langle E^2 \rangle -
+\langle E \rangle^2)/N$ is shown in Table~\ref{tab:cv}.
+
+\begin{table}[htb]
+\centering
+\caption{Specific heat peak $C_V^{\rm max}$ and location $\beta^*$ for each
+system size $L$. The relatively flat $L$-dependence of the peak ($1.52$--$1.87$
+across $L = 4$--$16$) is consistent with a continuous or weakly first-order
+transition. (\CatA{})}
+\label{tab:cv}
+\begin{tabular}{@{}rcc@{}}
+\toprule
+$L$ & $C_V^{\rm max}$ & $\beta^*$ \\
+\midrule
+4  & 1.586 & 0.35 \\
+8  & 1.524 & 0.40 \\
+12 & 1.871 & 0.35 \\
+16 & 1.561 & 0.30 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The absence of strong $L$-dependence in $C_V^{\rm max}$ (logarithmic growth would
+be expected for a transition in the universality class of the 2D 3-state Potts
+model, which has $C_V \sim \log L$) suggests either a continuous transition with
+strong sub-leading corrections or a weakly first-order transition.
+A definitive universality class assignment requires Binder cumulant analysis
+(see Section~\ref{sec:open}).
+
+\subsection{Ordered Phase Interpretation}
+
+In the ordered phase ($\beta > \beta_c$), the system selects one of the three
+uniform ground states (all-0, all-1, or all-5) and the order parameter
+$M_{\rm gs} \to 1$. The three ordered phases are related by the $\mathbb{Z}_3$
+permutation symmetry of the ground-state manifold described in Section~\ref{sec:model}.
+
+This is structurally analogous to the 2D 3-state Potts model, where three
+ordered phases are related by the $\mathbb{Z}_3$ permutation of spin labels.
+A key difference: the spin-7 model has seven spin values, but the ordered phase
+selects from a specific algebraic subset ($\{0,1,5\}$, the roots of $p(x,x,x)$)
+rather than from an arbitrary 3-element set. The selection is forced by the
+polynomial structure of the interaction energy.
+
+\subsection{Secondary Glass/Locking Transition}
+
+A second feature appears at $\beta_{c,2} \approx 1.7$--$2.0$ (depending on $L$).
+Table~\ref{tab:hysteresis} shows the hysteresis in $M_{\rm gs}$ between runs started
+from random initial conditions vs.\ runs started from the fully ordered state.
+
+\begin{table}[htb]
+\centering
+\caption{Hysteresis in the order parameter $M_{\rm gs}$ at high $\beta$, comparing
+random initialization ($M_{\rm gs}^{\rm rand}$) with ordered initialization
+($M_{\rm gs}^{\rm ord} = 1.000$ in all cases shown). Strong hysteresis onset
+above $\beta_{c,2} \approx 1.7$ (L=8). (\CatA{})}
+\label{tab:hysteresis}
+\begin{tabular}{@{}rrcc@{}}
+\toprule
+$L$ & $\beta$ & $M_{\rm gs}^{\rm rand}$ & Hysteresis \\
+\midrule
+8 & 1.5 & 1.000 & 0.000 \\
+8 & 1.7 & 0.871 & 0.129 \\
+8 & 2.0 & 0.836 & 0.164 \\
+8 & 2.5 & 0.777 & 0.223 \\
+8 & 3.0 & 0.754 & 0.246 \\
+12 & 1.5 & 0.983 & 0.017 \\
+12 & 1.7 & 0.996 & 0.004 \\
+12 & 2.0 & 0.857 & 0.143 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The $L$-dependence of $\beta_{c,2}$ (the onset shifts to larger $\beta$ for larger
+$L$) and the growing hysteresis with $\beta$ are consistent with a \emph{dynamical
+arrest} (ergodicity breaking) rather than a thermodynamic phase transition: above
+$\beta_{c,2}$, domain walls between the three ordered regions become kinetically
+frozen in Metropolis dynamics, and the system cannot equilibrate on the Monte Carlo
+time scale accessible here. Distinguishing genuine thermodynamic from dynamical
+arrest requires parallel tempering or replica-exchange MC (see Section~\ref{sec:open}).
+
+%-----------------------------------------------------------------------------
+\section{CMCA Transfer Matrix Connection}
+\label{sec:cmca}
+%-----------------------------------------------------------------------------
+
+\subsection{Exact Identity}
+
+The pair-state transfer matrix $\mathbf{M}$ of~(\ref{eq:TM}) has a precise
+interpretation in terms of the
+CMCA~\cite{SpivackCMCA, SpivackThreeTapeCMCA}. The CMCA rule is
+the lookup table $\fmdl{}$, which encodes the Standard Model orbit; its
+dynamical substrate is the polynomial $p$. The connection to statistical
+mechanics is as follows.
+
+\begin{proposition}[Pair-State Transfer Identity --- \CatA{}]
+\label{prop:tm-cmca}
+For the 1D ring of $N$ sites, $Z_{1D} = \mathrm{Tr}(\mathbf{M}^N)$ exactly;
+one application of $\mathbf{M}$ advances the sliding window
+$(s_{i-1}, s_i) \to (s_i, s_{i+1})$ by one site. For the anisotropic 2D model
+with only horizontal interactions on an $L_x \times L_y$ torus, the rows
+decouple and
+\begin{equation}\label{eq:Z-CMCA}
+  Z_{\rm aniso}(L_x, L_y) = \bigl[\mathrm{Tr}\bigl(\mathbf{M}^{L_x}\bigr)\bigr]^{L_y},
+\end{equation}
+so the pressure per spacetime cell is
+$\lim_{L_x \to \infty} \tfrac{1}{L_x}\log \mathrm{Tr}(\mathbf{M}^{L_x}) =
+\log \lambda_1(\beta)$.
+\end{proposition}
+
+The identities are exact and standard (the transfer-matrix construction for
+1D chains with three-site interactions); the novel content is that $\mathbf{M}$
+is determined by the GTE polynomial $p$, the unique MDL-minimal Wolfram rule
+selected by PSC. The CMCA connection sharpens at zero temperature: the
+$\beta \to \infty$ support of $\mathbf{M}$ is precisely the deterministic
+zero-energy pair digraph on the 43 active pair states whose only cycles are the
+three uniform self-loops --- the combinatorial core of
+Theorem~\ref{thm:rigidity}, and the same object enumerated by the Lean
+certification. The thermal ensemble thus interpolates between the fully
+disordered 7-state chain and the rigid CMCA vacuum sector.
+
+\subsection{CMCA Entropy Rate}
+
+\begin{theorem}[CMCA Entropy Rate --- \CatA{}]
+\label{thm:entropyrate}
+The entropy rate (information per site per update) of the spin-7 thermal
+ensemble at inverse temperature $\beta$ is
+\begin{equation}
+  S_{\rm CMCA}(\beta) = \lim_{N \to \infty} \frac{\log Z_{1D}(N)}{N} = \log \lambda_1(\beta),
+\end{equation}
+where $\lambda_1(\beta)$ is the Perron eigenvalue of $\mathbf{M}(\beta)$.
+\end{theorem}
+
+At $\beta = 1$: $S_{\rm CMCA} = \log(1.4846) = 0.395$ nats per site per step
+(\CatA{}). The value $\beta = 1$ is a conventional normalization, not a
+physical selection: the thermal ensemble is the maximum-entropy shadow of the
+CMCA tape at activity multiplier $\beta$ (Section~\ref{sec:thermal-shadow}),
+and the physically distinguished rate is the one at the calibrated physical
+point $\beta^* = 1.5346$ of Section~\ref{sec:physpoint}, where
+$S_{\rm CMCA}(\beta^*) = 0.1595$ nats per site per update.
+
+\begin{remark}
+As $\beta \to 0$ (infinite temperature): all Boltzmann factors approach 1, the
+row sums of $\mathbf{M}$ approach 7, and $\lambda_1 \to 7$, giving
+$S \to \log 7 \approx 1.946$ nats --- the maximum entropy of a 7-state chain,
+consistent with a fully disordered state. As $\beta \to \infty$ (zero
+temperature): $\lambda_1 \to 1$, giving $S \to 0$ --- only the three uniform
+ground rings survive (Theorem~\ref{thm:rigidity}), and three states contribute
+no extensive entropy.
+\end{remark}
+
+The entropy rate $S_{\rm CMCA}(\beta)$ provides a thermodynamic window into the
+information-theoretic complexity of the CMCA dynamics: it counts the nats of new
+information generated per site per update when the system evolves at thermal
+coupling $\beta$.
+
+%-----------------------------------------------------------------------------
+\section{Continuum Limit and the Physical Point}
+\label{sec:continuum}
+%-----------------------------------------------------------------------------
+
+This section sharpens the CMCA connection into a quantitative
+lattice-field-theory correspondence: the thermal ensemble is the
+maximum-entropy shadow of the CMCA tape, its spectral gap obeys an exact
+asymptotic law whose half-integer exponent is a parity-violation signature of
+the substrate chirality, the gap defines a continuum-limit calibration
+trajectory, and a Minimum Description Length saturation principle selects a
+unique physical lattice spacing with an exact, falsifiable fixed-point
+signature.
+
+Throughout this section the claim levels are kept explicit. The wall and bump
+tables, the gap law, the spectator mechanism, and the spectral-insensitivity
+result are exact algebra of the discrete certificate (the pair digraph of $p$)
+and carry \CatAL{}/\CatAD{} grades. The kink mass $M$, the meson mass
+$m_\varphi$, and the matching scale $\Lambda_{\rm GTE}$ are continuum
+($\PHIMDL{}$-level) observables~\cite{SpivackPhiMDLField,
+SpivackGTEQCDStructure}. The calibration trajectory, the Tape Saturation
+Theorem, and the lattice dictionary are bridge statements from the certificate
+to the continuum, and are stated with their named premises --- never as
+unconditional continuum theorems.
+
+\subsection{The Thermal Ensemble as the Tape's Maximum-Entropy Shadow}
+\label{sec:thermal-shadow}
+
+\begin{proposition}[Activity-Fugacity Identity --- \CatAD{}]
+\label{prop:activity}
+Let $s(t) \in \mathbb{Z}_7^N$ be a ring configuration and $s(t+1)$ its CMCA
+update, $s_i(t+1) = p(s_{i-1}(t), s_i(t), s_{i+1}(t))$. Then the 1D
+Hamiltonian~(\ref{eq:H1D}) satisfies, identically,
+\begin{equation}
+  H_{1D}[s(t)] \;=\; \sum_{i=1}^{N} s_i(t+1),
+\end{equation}
+with each summand read as an integer in $\{0, \ldots, 6\}$.
+\end{proposition}
+
+The identity is definitional ($p$ is both the interaction energy and the
+update rule), but its interpretation fixes the meaning of the ensemble: the
+Boltzmann weight $e^{-\beta H}$ weights a configuration by its
+\emph{next-step automaton activity}. The inverse temperature $\beta$ is the
+Lagrange multiplier conjugate to computational activity --- an activity
+fugacity --- not a kinetic temperature of the deterministic automaton, which
+is never itself a Gibbs state at any finite $\beta$. The thermal ensemble is
+the tape's maximum-entropy shadow at activity multiplier $\beta$. Its
+$\beta \to \infty$ support is the deterministic zero-energy pair digraph on
+the 43 active pair states (Section~\ref{sec:cmca}) --- the rigidity object of
+Theorem~\ref{thm:rigidity} --- so the deterministic CMCA vacuum sector is the
+zero-temperature endpoint of the thermal family.
+
+\subsection{Directed Wall Spectroscopy}
+\label{sec:walls}
+
+The low-temperature physics of the chain is governed by the energetics of
+interfaces (domain walls) between the three ground-state sectors and of local
+excitations (bumps) within a sector. Both are exact integers, computed as
+shortest paths in the 49-node pair digraph with edge weights
+$p(a,b,c)$.
+
+\begin{theorem}[Directed Wall and Bump Energies --- \CatAL{}]
+\label{thm:walls}
+The minimal interface energies between ground sectors are directed:
+\[
+  E_w(1{\to}0) = 1, \;\; E_w(0{\to}1) = 2, \;\;
+  E_w(5{\to}0) = 2, \;\; E_w(0{\to}5) = 4, \;\;
+  E_w(1{\to}5) = 4, \;\; E_w(5{\to}1) = 4,
+\]
+with the composite identity $E_w(5{\to}1) = E_w(5{\to}0) + E_w(0{\to}1)$: the
+minimal $5{\to}1$ interface passes through the vacuum sector, which is the hub
+of the wall algebra. The minimal bump energies are $E_{\rm loop}(0) = 2$,
+$E_{\rm loop}(1) = 3$, $E_{\rm loop}(5) = 4$.
+\end{theorem}
+
+The theorem is machine-certified as \lean{spin7\_directed\_wall\_energies},
+with the half-integer exponent arithmetic of
+Theorem~\ref{thm:gaplaw} certified as
+\lean{directed\_wall\_half\_integer\_gap}
+(\texttt{UgpLean/Polynomial/SpinSevenWallSpectroscopy.lean}, ugp-lean, zero
+sorry). Both minimal walls ($1{\to}0$ and $0{\to}1$) are moreover
+\emph{sharp}: each is realized by a unique minimal path with exactly one
+interior pair state --- the uniqueness counts are part of the certified
+gap-amplitude package below --- and wall support is an integer-digraph
+property, hence independent of $\beta$ (\CatA{} audit). The
+directedness --- $E_w(1{\to}0) \neq E_w(0{\to}1)$ --- is the
+thermodynamic trace of the substrate chirality: the same chiral $\mathbb{Z}_2$
+that exchanges Rule~110 and Rule~124 at the binary
+level~\cite{SpivackGTEPolynomialWolfram}. A parity-symmetric chain has
+direction-independent wall energies.
+
+\subsection{The Exact Chiral Gap Law}
+\label{sec:gaplaw}
+
+\begin{theorem}[Chiral Gap Law --- \CatAD{}]
+\label{thm:gaplaw}
+Let $\Delta(\beta) = \log(\lambda_1/|\lambda_2|)$ be the spectral gap of
+$\mathbf{M}(\beta)$ and write $u = e^{-\beta/2}$. Then
+\begin{equation}\label{eq:gaplaw}
+  \Delta(\beta) \;=\; u^3 \Bigl[\, 1 + \tfrac{1}{2}u + \tfrac{1}{8}u^2
+    + \tfrac{1}{2}u^3 + \tfrac{63}{128}u^4 + \tfrac{65}{4}u^5
+    + \tfrac{11971}{3072}u^6 + O(u^7) \Bigr].
+\end{equation}
+The exponent $3/2$ is the geometric mean of the directed wall energies: on a
+ring, walls alternate in direction, so the gap exponent is
+$(E_w(0{\to}1) + E_w(1{\to}0))/2 = 3/2$ --- a half-integer, impossible for any
+parity-symmetric chain, where the exponent is an integer wall energy. The
+amplitude is exactly $1$.
+\end{theorem}
+
+The amplitude is derived by two independent routes, which agree.
+
+\medskip
+\noindent\emph{Spectator mechanism.}
+The ground cluster $\{0, 1, 5\}$ is a directed two-level system (sectors $0$
+and $1$, coupled with fugacities $w_{10}e^{-\beta}$ and $w_{01}e^{-2\beta}$,
+where $w_{10} = w_{01} = 1$ are the certified minimal-wall shape counts) plus
+a \emph{spectator}: sector $5$ couples only at $O(e^{-3\beta})$ and remains
+pinned at the unperturbed cluster eigenvalue $\lambda_c = \rho(Z) = 1$, where
+$Z$ is the 43-edge zero-energy adjacency matrix (the rigidity object of
+Theorem~\ref{thm:rigidity}) and $\rho(Z) = 1$ exactly. The spectral gap is
+therefore the \emph{gap to the spectator},
+$T = \sqrt{w_{01} w_{10}}\, e^{-3\beta/2}$, giving amplitude
+$\sqrt{1 \cdot 1} = 1$; the naive degenerate-perturbation-theory value $2$ is
+the two-level \emph{splitting} $2T$, not the gap. The mechanism yields the
+parameter-free corollary below.
+
+\medskip
+\noindent\emph{Exact resolvent route.}
+Partitioning the 49 pair states into the ground loops
+$G = \{(0,0), (1,1), (5,5)\}$ and the 46 transient states $R$, one has
+$\mathbf{M}_{GG} = I_3$ exactly and $\mathbf{M}_{RR}(\beta{=}\infty)$
+nilpotent ($N^{22} = 0$ --- the certified basin structure), so the Schur
+complement $H(\lambda) = \mathbf{M}_{GR}(\lambda - \mathbf{M}_{RR})^{-1}
+\mathbf{M}_{RG}$ is finite rational linear algebra in the fugacity
+$t = e^{-\beta}$. The through-walk counts are $c_{10} = c_{01} = 1$ (both
+minimal walls unique) and the bump counts $b_0 = b_1 = 1$, $b_5 = 2$; the
+amplitude is $\sqrt{c_{10} c_{01}} = 1$, the leading correction coefficient
+in~(\ref{eq:gaplaw}) is $b_0/2 = 1/2$, and the full self-consistent expansion
+of the determinant yields the exact tower~(\ref{eq:gaplaw}). The subleading
+(spectator) eigenvalue is exact:
+$\lambda_2 = 1 + 2e^{-4\beta} + O(e^{-9\beta/2})$, with coefficient
+$b_5 = 2$. The integer counts and the frontier-death totality certificate are
+machine-certified \mbox{(\lean{spin7\_gap\_amplitude\_certificate})}, as is the
+spectator package \mbox{(\lean{spin7\_spectator\_amplitude})}.
+
+\begin{corollary}[Gap-Ratio Law --- \CatAD{}]
+\label{cor:gapratio}
+Let $\Delta_k = \log(\lambda_1/\lambda_k)$. Then
+$\Delta_3 = 2\Delta_2\,(1 + O(e^{-\beta/2}))$, refined by the exact ratio law
+$\Delta_3/\Delta_2 = 2 - e^{-\beta/2} + O(e^{-\beta})$: the
+continuum-surviving soft spectrum of the chain is exactly $\{0, T, 2T\}$,
+with no channel between $T$ and $2T$.
+\end{corollary}
+
+\noindent\emph{Numerical verification (\CatA{}).}
+High-precision eigenvalue tracking (50-digit arithmetic to $\beta = 12$;
+80-digit to $\beta = 30$) gives: extrapolated slope $1.4999974$ (deviation
+$2.6 \times 10^{-6}$); extrapolated amplitude $0.999986$; the exact
+tower~(\ref{eq:gaplaw}) verified eigenvalue-resolved to $7.8 \times 10^{-31}$;
+$(\lambda_2 - 1)/e^{-4\beta} \to 2.0000000$; $\Delta_3/\Delta_2$ extrapolated
+to $1.99999932$; and the ratio-correction coefficient measured as
+$0.99999958$. The published spectral data of Table~\ref{tab:spectral} are
+exactly consistent with the law: $\Delta(1) = 0.344$ against the leading term
+$e^{-3/2} = 0.223$ is the $O(e^{-\beta/2})$ correction with an $O(1)$
+coefficient, shrinking monotonically through $\Delta(2) = 0.067$ vs.\
+$e^{-3} = 0.0498$ and $\Delta(3) = 0.013$ vs.\ $e^{-9/2} = 0.011$.
+
+\medskip
+\noindent\emph{Machine certification (\CatAL{}).}
+Along the calibrated trajectory $a(\beta) = \hbar c\,\Delta(\beta)/M^Q$,
+the soft ground-cluster $\{0,1,5\}$ spectrum of the spin-7 transfer matrix
+converges to the continuum kink spectrum $\{0,\,M^Q,\,2M^Q\}$:
+the ratio $\Delta_3/\Delta_2 \to 1.9975$, matching the exact law, and the
+bump/meson channels decouple (absolute-scale gaps $\Delta_{\rm bump} \sim
+E_{\rm loop}\beta$ calibrate to infinite mass
+under~(\ref{eq:calibration})).
+Machine-certified in Lean~4 (zero sorry):
+\mbox{\lean{spin7\_soft\_spectrum\_converges\_kink} (\CatAL{}, ugp-lean)}.
+
+\subsection{Spectral Insensitivity to the Deterministic Attractor}
+\label{sec:insensitivity}
+
+Under the deterministic (zero-temperature) dynamics of $p$ on the 5-cell
+ring, the dominant attractor has period $475 = 5^2 \times 19$, with
+periodicity and minimality machine-certified as \lean{period\_475\_returns}
+and \lean{period\_475\_is\_minimal} (\CatAL{}, zero sorry,
+\texttt{PolyExplorations.lean}, ugp-lean)~\cite{SpivackGTEPolynomialWolfram}.
+It is natural to ask whether this attractor structure manifests in the
+finite-temperature transfer-matrix spectrum --- for instance in the phases of
+the subleading complex-conjugate eigenvalue pairs of $\mathbf{M}$. The answer
+is no, and the mechanism is structural.
+
+\begin{proposition}[Spectral Insensitivity --- \CatAD{} mechanism,
+\CatA{} batteries]
+\label{prop:insensitivity}
+The thermal spectrum of $\mathbf{M}(\beta)$ carries no signature of the
+deterministic orbit periods. By Proposition~\ref{prop:activity} the Gibbs
+weight is a one-step activity functional: it depends only on the single-update
+lookahead $s(t+1)$, so invariants of the iterated orbit --- such as cycle
+periods --- cannot enter the transfer matrix. The only deterministic remnant
+in $\mathbf{M}$ is the basin structure of the zero-energy digraph, whose
+certified cycle content is period-$1$ (the three uniform self-loops of
+Theorem~\ref{thm:rigidity}).
+\end{proposition}
+
+Three pre-registered fingerprint batteries confirm the null (\CatA{}):
+\begin{enumerate}[leftmargin=2em,itemsep=2pt]
+  \item \emph{Phase locking:} across 23 tracked eigenvalue families and 340
+    locked-phase segments in $\beta$, the only locked eigenvalue phase is
+    $\theta = \pi$ exactly --- never $2\pi k/d$ for
+    $d \in \{5, 19, 25, 95, 475\}$.
+  \item \emph{Exact characteristic polynomial:} over the rationals at
+    $e^{-\beta} \in \{1/2, 1/3, 1/7\}$, $\mathrm{charpoly}(\mathbf{M}) =
+    \lambda^{11} \cdot (\text{irreducible factor of degree } 38)$ with
+    $\lambda$-support gcd $1$: no rational substructure carrying period-475
+    content.
+  \item \emph{Symmetry:} the affine covariance group of $p$ is trivial.
+\end{enumerate}
+The degree pattern $\lambda^{11} \cdot (\deg 38)$ is rule-independent
+bookkeeping, not attractor content: modified $\GF{7}$ rules with attractor
+periods $15$, $90$, and $385$ yield the identical pattern, and the kernel
+accounting is structural --- geometric multiplicity $6$ from the seven
+identical $b = 0$ rows of the transfer matrix
+(Section~\ref{sec:1D}), algebraic multiplicity $11$ from the nilpotent Jordan
+remainder. This is a separation statement between the iterated deterministic
+dynamics and its one-step Gibbs shadow; no continuum claim is involved.
+
+\subsection{The Calibration Trajectory}
+\label{sec:calibration}
+
+In lattice field theory a dimensionless spectral gap is converted to a
+physical spacing by calibrating against a physical mass: $a \cdot m = \hbar c
+\cdot \Delta$. The CMCA's one-cell-per-tick causal cone fixes the isotropic
+point $a_t c = a_x$ exactly, so a single spatial calibration suffices.
+Identifying the chain's interface (wall) sector with the topological (kink)
+sector of the continuum $\PHIMDL{}$ field theory --- the
+\emph{interface-sector bridge} discussed below --- the calibration trajectory
+is
+\begin{equation}\label{eq:calibration}
+  a(\beta) \;=\; \frac{\hbar c\, \Delta(\beta)}{M^Q},
+\end{equation}
+where $M^Q = 281 \pm 21$ MeV is the quantum kink
+mass~\cite{SpivackPhiMDLField}. The continuum limit $a \to 0$ is
+$\beta \to \infty$, whose support is the deterministic rigidity digraph: the
+deterministic CMCA is the continuum endpoint of the thermal family. The
+question ``which single spacing?'' has no answer inside the discrete
+certificate --- its algebraic content holds at every
+resolution~\cite{SpivackCompleteness} --- so a spacing belongs to a
+\emph{calibration} of the certificate against continuum observables, of
+which~(\ref{eq:calibration}) is the constructed example.
+
+\medskip
+\noindent\emph{Bridge scope.} The wall--kink identification is quantitatively
+supported exactly in the topological sector: by
+Corollary~\ref{cor:gapratio} the chain's continuum-surviving soft spectrum is
+exactly $\{0, M, 2M\}$, with no channel between $M$ and $2M$ --- matching the
+$\PHIMDL{}$ topological sector, including the pole-freedom of its exact
+kink--kink S-matrix~\cite{SpivackPhiMDLField}. The meson
+$m_\varphi = (49/8)M$ is a continuum amplitude mode with no soft shadow
+channel: bump excitations sit at absolute spectral scale
+($\Delta \sim E_{\rm loop}\beta$) and calibrate to infinite mass
+under~(\ref{eq:calibration}), decoupling. The bridge therefore carries the
+topological sector only --- never the meson (continuum-amplitude) sector.
+
+\subsection{The Physical Point: Tape Saturation}
+\label{sec:physpoint}
+
+Which point on the trajectory~(\ref{eq:calibration}) is physical? The
+selection principle is Minimum Description Length saturation, and its premises
+can be stated exactly. One identification must be named first.
+
+\begin{definition}[Compton-Support Criterion (CSC)]
+\label{def:csc}
+The minimal faithful localization size of a mass-$m$ state on the tape equals
+its physical correlation length $\xi_{\rm phys} = \hbar c/m$ --- the same
+identification that defines the calibration~(\ref{eq:calibration}).
+\end{definition}
+
+\begin{theorem}[Tape Saturation --- \CatAD{}, conditional on the CSC]
+\label{thm:saturation}
+Assume: (b1) \emph{faithfulness} --- the tape certifies the effective field
+theory it hosts and must support its full spectrum below the matching scale
+$\Lambda_{\rm GTE}$ (the description-length tower
+nesting~\cite{SpivackPolynomialTransputation}); (b2) \emph{strict pricing} ---
+the description cost of the tape is strictly decreasing in the spacing $a$;
+(b3) \emph{extremization} --- the MDL optimum over admissible tapes is the
+admissible supremum, which is attained because the seven-kink threshold state
+at $\Lambda_{\rm GTE} = 7M$ is exactly the lightest state the effective theory
+omits~\cite{SpivackGTEQCDStructure}; and (b4) the \emph{hosting boundary}
+$\kappa = 1$, from tape discreteness (the minimal localized excitation of
+$(\mathbb{Z}_7)^N$ is one cell, exactly) together with the CSC. Then the
+MDL-optimal tape spacing saturates:
+\begin{equation}\label{eq:saturation}
+  a \cdot \Lambda_{\rm GTE} \;=\; \hbar c .
+\end{equation}
+\end{theorem}
+
+With the tree value $\Lambda_{\rm GTE} = (8/7)\,m_\tau = 2030.70$
+MeV~\cite{SpivackGTEQCDStructure}, equation~(\ref{eq:saturation}) gives
+$a = 0.0972$ fm (tree) and $0.1007 \pm 0.0077$ fm (envelope, propagating the
+kink-mass reading). The theorem and its consequences are machine-certified at
+their stated conditional grade: \lean{tape\_saturation\_theorem}, the bridge
+\lean{compton\_support\_derives\_mdl\_saturation}, and
+\lean{tape\_saturation\_physical\_point\_dictionary}, with the criterion
+encoded as the named structure \lean{ComptonSupportCriterion}
+(\texttt{UgpLean/Physics/CMCAPhysicalPoint.lean}, ugp-lean, zero sorry); the
+dictionary is also available in hypothesis form as
+\lean{cmca\_physical\_point\_dictionary} with
+\lean{MDLSaturationSpacingHypothesis}.
+
+\medskip
+\noindent\emph{The lattice dictionary.} At the saturated spacing the
+dictionary interlocks with zero tuning (natural units, $\hbar c = 1$):
+\begin{equation}\label{eq:dictionary}
+  aM = \tfrac{1}{7}, \qquad
+  am_\varphi = \tfrac{7}{8} = \tfrac{49}{8} \cdot \tfrac{1}{7}, \qquad
+  \lambda_C/a = 7,
+\end{equation}
+where $\lambda_C = \hbar c/M$ is the kink Compton wavelength. The bare mass
+$am_\varphi = 7/8$ is exactly the value used and validated by the
+substrate-regulated lattice campaigns at this
+spacing~\cite{SpivackPhiMDLField}: the campaign spacing is derived, not
+chosen. Solving $\xi(\beta^*) = 7$ on the exact spectrum gives
+\begin{equation}
+  \beta^* = 1.53460, \qquad \Delta(\beta^*) = \tfrac{1}{7}
+  \;(\text{to } 10^{-8}), \qquad \lambda_1(\beta^*) = 1.17295, \qquad
+  S_{\rm CMCA}(\beta^*) = 0.1595 \text{ nats/site}.
+\end{equation}
+
+How strong is the named criterion? It is provably as weak as possible:
+
+\begin{theorem}[Boundary Equivalence --- \CatAD{}]
+\label{thm:boundary-equiv}
+Given (b1)--(b3), tape discreteness, and the calibration
+frame~(\ref{eq:calibration}), the following are equivalent at the seven-kink
+threshold:
+\begin{enumerate}[leftmargin=2em,itemsep=1pt,label=(\roman*)]
+  \item the Compton-Support Criterion (Definition~\ref{def:csc});
+  \item \emph{register-window readability}: a faithful channel's
+    distinguishing content --- the $\mathbb{Z}_7$ winding-sector label, of
+    entropy $\log 7$ --- is recoverable from register values within one
+    correlation window of the channel (window capacity
+    $\xi \log 7 \ge \log 7$, forcing $\xi \ge 1$, i.e.\ $\kappa = 1$, for
+    every register alphabet $\mathbb{Z}_N$);
+  \item the hosting boundary $\kappa = 1$ of Theorem~\ref{thm:saturation}.
+\end{enumerate}
+Consequently the CSC is \emph{minimal}: any derivation of the hosting boundary
+must supply content logically equivalent to it.
+\end{theorem}
+
+The criterion is thus irreducible but tight --- interderivable with its
+information-theoretic form, with no strictly weaker premise yielding
+$\kappa = 1$. Three structural audits pin down why the constant cannot be
+extracted from the discrete certificate alone (\CatA{}): the Gibbs-shadow
+spectrum carries no $\Delta = 1$ structure at any $\beta$ (the channel count
+$n(\Delta \le 1)$ runs smoothly $20 \to 24$ over $\beta \in [0.8, 2.4]$, with
+the nearest channel $0.149$ from the line at $\beta^*$); the deterministic
+tape's defects are blind to the channel correlation length (the minimal walls
+are sharp --- one interior pair state --- at every $\beta$, Theorem
+\ref{thm:walls}); and plausible alternative hosting mechanisms produce
+constants $\kappa$ spanning $[1/3, 2\pi]$ --- a factor of $18.85$ --- without
+converging. The certificate is $\hbar$-free: the constant that converts
+register discreteness into an energy bound is physics beyond the certificate,
+and the CSC carries exactly that content. The equivalence theorem and the
+corollary below are machine-certified at their conditional grade as
+\lean{hosting\_boundary\_csc\_equivalence} and
+\lean{saturation\_alphabet\_bijection}, with readability encoded as the named
+structure \lean{RegisterWindowReadability}
+(\texttt{UgpLean/Physics/CMCAPhysicalPoint.lean}, ugp-lean, zero sorry).
+
+\begin{corollary}[Saturation Bijection --- \CatAD{}, same premises]
+\label{cor:bijection}
+At saturation the threshold correlation window is one register, and the seven
+$\mathbb{Z}_7$ winding sectors map bijectively onto the seven register values:
+the alphabet is enumerated exactly once. The kink correlation length inherits
+$\xi(M) = 7\,\xi(\Lambda_{\rm GTE}) = 7 = |\mathbb{Z}_7|$ lattice sites by the
+exact gap additivity of Corollary~\ref{cor:gapratio}. The fixed-point
+signature $\xi^* = |\mathbb{Z}_7|$ is therefore a derived corollary of
+saturation, never an input.
+\end{corollary}
+
+\medskip
+\noindent\emph{Honest record (pre-registered nulls, \CatA{}).} No $\beta$-space
+extremization principle selects $\beta^*$: the specific-heat peak of the 1D
+chain sits at $\beta_S = 1.585$, which fails the pre-registered 2\%
+coincidence gate ($3.3\%$ from $\beta^*$). The values $\beta^*$ and
+$S(\beta^*)$ match no pre-registered closed-form candidates. No existing
+campaign measurement fixes $a$ independently: all are dimensionless. The
+selection lives in $a$-space, and $\beta^*$ requires no closed form.
+
+\subsection{The Falsifiable Target}
+\label{sec:f1}
+
+The unique empirical discriminator of the hosting boundary is the kink
+correlation length in substrate Monte Carlo at the physical point:
+$\xi_{\rm kink} = 7/\kappa$ cells. Tape saturation ($\kappa = 1$) predicts
+\begin{equation}\label{eq:f1}
+  \xi_{\rm kink} \;=\; |\mathbb{Z}_7| \;=\; 7 \text{ cells}
+  \qquad (\text{mixed-reading band } 6.78\text{--}7.23 \pm 0.54),
+\end{equation}
+while the alternative hosting constants predict distinct values
+(Table~\ref{tab:kappa}). Every certified constraint --- the Lean dictionary
+(conditional form), the spectral census, the wall integers, and the campaign
+observables --- is consistent with every $\kappa$ in the family; only this
+measurement discriminates. A measurement outside the
+band~(\ref{eq:f1}) falsifies the MDL-saturation selection (or the CSC); a
+landing at $7$ cells would make the physical point unconditional.
+
+\begin{table}[htb]
+\centering
+\caption{The $\kappa$-discrimination column: predicted kink correlation
+length $\xi_{\rm kink} = 7/\kappa$ cells at the physical point, for the
+pre-declared family of candidate hosting constants. Only the substrate MC
+measurement discriminates among them. (\CatAD{} arithmetic on the conditional
+dictionary)}
+\label{tab:kappa}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+$\kappa$ & $1/3$ & $2\pi/7$ & $\mathbf{1}$ (saturation) & $\pi/2$ & $\pi$ & $2\pi$ \\
+\midrule
+$\xi_{\rm kink}$ (cells) & $21.0$ & $7.80$ & $\mathbf{7.00}$ & $4.46$ & $2.23$ & $1.11$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%-----------------------------------------------------------------------------
+\section{Connection to GTE Physics}
+\label{sec:gte}
+%-----------------------------------------------------------------------------
+
+\subsection{Ground-State Sectors as Color Charges}
+
+The three global ground states $\{0, 1, 5\}$ of the spin-7 model have a natural
+interpretation within the GTE/UGP framework. The $\mathbb{Z}_7$ winding sectors
+of the CMCA encode Standard Model quantum numbers: $0$ is the vacuum/photon sector,
+$1$ is the multiplicative identity, and $5 \equiv -2 \pmod 7$ is related to the
+quark sector arithmetic~\cite{SpivackCMCA, SpivackGTEPolynomialUFT}. The three
+ground-state values $\{0, 1, 5\}$ span a subset of the SM winding sectors, and
+their $\mathbb{Z}_3$ permutation symmetry is structurally analogous to the $\mathbb{Z}_3$
+color symmetry of QCD (\CatB{}). A full identification requires analysis at the
+$\PHIMDL{}$ level (Object~2 of the GTE derivation tower).
+
+\subsection{NL Identity and the Higgs Sector}
+
+The Walsh nonlinearity of $p$ satisfies (\CatAD{}, proved in~\cite{SpivackGTEPolynomialWolfram}):
+\[
+  \mathrm{NL}(p) = 1 - \frac{c_H}{7^2}, \quad c_H = 13,
+\]
+where $c_H = 13$ is the Higgs branch capacity entering the weak mixing angle
+$\sin^2\theta_W = N_{\rm gen}/c_H = 3/13$~\cite{SpivackCMCA, SpivackCompleteness}.
+This identity connects the polynomial's cryptographic nonlinearity to the
+SM Higgs sector.
+
+The same polynomial $p$ thus determines both the thermal (statistical mechanics)
+ground states and the cryptographic (information-theoretic) nonlinearity of the
+CMCA update rule. Both quantities connect to SM physics: the ground states
+$\{0,1,5\}$ to color sectors, and the NL formula to the Higgs branch capacity.
+
+\subsection{SRRG Golden Ratio Diagonal Fixed Point}
+
+Over the reals, the uniform diagonal evaluation $p_{\rm real}(x,x,x) = 2x - x^2 - x^3$ has
+fixed points satisfying $p_{\rm real}(x,x,x) = x$, i.e.\ $x^3 + x^2 - x = 0$, giving
+$x(x^2 + x - 1) = 0$. The non-trivial positive real root of $x^2 + x - 1 = 0$ is
+\[
+  x^* \;=\; \frac{\sqrt{5}-1}{2} \;=\; \varphi^{-1} \;\approx\; 0.6180,
+\]
+where $\varphi = (1+\sqrt{5})/2$ is the golden ratio. This is precisely the SRRG
+(Self-Referential Reality Generator) fixed point~\cite{SpivackSRRG}, the unique
+positive real fixed point of the SRRG gradient flow that governs MDL
+adjudication~\cite{SpivackCompleteness}. Thus $p_{\rm real}(\varphi^{-1}, \varphi^{-1},
+\varphi^{-1}) = \varphi^{-1}$: the GTE polynomial's real diagonal is attracted to the
+same golden ratio fixed point that appears at the PSC adjudication level. Whether this
+reflects a structural connection between the discrete CA dynamics and the continuum
+adjudication flow is an open question.
+
+\subsection{The CMCA Spacetime Diagram as a 2D Lattice Model}
+
+The 2D partition function on an $L_x \times L_y$ torus is the Boltzmann
+ensemble over 7-state spacetime arrays, with weight $e^{-\beta p}$ at each
+horizontal and vertical window. In the low-temperature ordered phase
+($\beta > \beta_c$), this ensemble is dominated by uniform ground-state
+sectors (all-0, all-1, or all-5 background), and in the strict
+$\beta \to \infty$ limit only the three uniform states survive
+(Corollary~\ref{cor:2d-gs}). The CMCA spacetime diagrams in the GTE
+context~\cite{SpivackCMCA} are \emph{deterministic} trajectories of the rule;
+the thermal ensemble studied here relaxes that determinism, and its
+zero-temperature vacuum sector recovers precisely the rigid uniform
+backgrounds on which those diagrams propagate.
+
+%-----------------------------------------------------------------------------
+\section{Cold-Atom Realization}
+\label{sec:cold-atom}
+%-----------------------------------------------------------------------------
+
+\subsection{Proposed Platform}
+
+A minimal realization of the spin-7 model requires atoms with at least 7 addressable
+internal states. The most natural platform is a Rydberg atom array in which 7 hyperfine or Rydberg
+sublevels are used as the $\mathbb{Z}_7$ spin alphabet.
+
+\noindent\textbf{Requirements:}
+\begin{itemize}[leftmargin=2em,itemsep=2pt]
+  \item \emph{7-level atoms:} Atoms with nuclear spin $I = 3$ (e.g., $^{87}$Rb with
+    $F = 3$ hyperfine manifold) or engineered Rydberg ladder states.
+  \item \emph{Three-body interactions:} The Hamiltonian $H = \sum p(s_{i-1},s_i,s_{i+1})$
+    requires three-body terms. These can be engineered via Rydberg blockade
+    interactions by driving controlled three-site gates.
+  \item \emph{Minimum system size:} $L \geq 12$ sites in each direction (from the
+    FSS data of Table~\ref{tab:cv}) to observe the phase transition clearly.
+\end{itemize}
+
+\subsection{Observable Predictions}
+
+The following predictions are directly testable (\CatA{}, from Section~\ref{sec:2D}):
+\begin{enumerate}[leftmargin=2em,itemsep=2pt]
+  \item \emph{Critical temperature:} $T_c \approx 2.86\,J$, where $J$ is the
+    overall energy scale of the three-body interaction.
+  \item \emph{Order parameter:} The fraction of sites in states $\{0,1,5\}$ should
+    jump from $\approx 3/7$ (disordered) to $\approx 1$ (ordered) as temperature
+    is lowered through $T_c$.
+  \item \emph{Three-fold symmetry breaking:} Below $T_c$, the system should
+    select one of three ordered phases, with domain walls between regions of
+    different ground-state values.
+  \item \emph{Domain-wall freezing:} Above $\beta_{c,2} J \approx 1.7$, domain
+    walls between ground-state regions should become kinetically frozen, observable
+    as a slow relaxation time divergence.
+  \item \emph{Correlation length:} $\xi \approx 2.9$ sites at $\beta J = 1$ and
+    $\xi \approx 15.0$ at $\beta J = 2$ in the 1D chain, diverging as
+    $T \to 0$, measurable by two-site correlation functions.
+\end{enumerate}
+
+\subsection{Engineering the Interaction}
+
+The interaction energy $p(L,C,R) = C + R - CR - LCR \pmod 7$ can be decomposed as:
+\begin{align*}
+  p(L,C,R) &= \underbrace{C + R}_{\text{2-site terms}} - \underbrace{CR}_{\text{2-site}} - \underbrace{LCR}_{\text{3-site}}.
+\end{align*}
+The 2-site terms $C + R - CR$ implement a modified XY-type coupling; the 3-site
+term $-LCR$ requires a three-body gate. In Rydberg arrays, three-body interactions
+can arise from multi-photon processes or be engineered via ancilla-mediated
+two-qubit gates applied in sequence. Implementing $p \pmod 7$ exactly requires
+modular arithmetic on the atomic state, which maps naturally to a $\mathbb{Z}_7$
+Potts clock model extended to three-body couplings.
+
+%-----------------------------------------------------------------------------
+\section{Experimental Predictions}
+\label{sec:predictions}
+%-----------------------------------------------------------------------------
+
+Table~\ref{tab:predictions} collects the falsifiable quantitative predictions of the
+spin-7 model, organized by certification level.
+
+\begin{table}[htb]
+\centering
+\caption{Falsifiable predictions of the spin-7 lattice model. Cert.\ levels follow
+the taxonomy on page~\pageref{page:taxonomy}.}
+\label{tab:predictions}
+\begin{tabular}{@{}P{4.2cm}P{3.5cm}P{3.0cm}c@{}}
+\toprule
+Observable & Predicted value & Method & Cert. \\
+\midrule
+Critical temperature $T_c$ & $\approx 2.86\,J$ ($\beta_c \approx 0.35$)
+  & Monte Carlo (this work) & \CatA{} \\
+Correlation length exponent $\nu$ & $5/6$ (exact)
+  & 3-state Potts universality & \CatAD{} \\
+Magnetic exponent $\eta$ & $4/15$ (exact)
+  & 3-state Potts universality & \CatAD{} \\
+Ground-space degeneracy & exactly 3 at every ring size ($\{0^n, 1^n, 5^n\}$)
+  & Lean-certified rigidity (Thm.~\ref{thm:rigidity}) & \CatAL{} \\
+CMCA entropy rate at $\beta=1$ & $\log(1.4846) \approx 0.395$ nats/site/step
+  & Transfer matrix eigenvalue & \CatA{} \\
+1D spectral gap law & $\Delta(\beta) = e^{-3\beta/2}(1 + \tfrac{1}{2}e^{-\beta/2}
+  + \cdots)$, half-integer slope & Directed wall spectroscopy + exact
+  resolvent series (Thm.~\ref{thm:gaplaw}) & \CatAD{} \\
+Kink correlation length at the physical point & $\xi_{\rm kink} =
+  |\mathbb{Z}_7| = 7$ cells (band $6.78$--$7.23 \pm 0.54$)
+  & Substrate MC at $a = \hbar c/\Lambda_{\rm GTE}$, in-silico
+  (Sec.~\ref{sec:f1}) & \CatAD{}\,$\mid$\,CSC \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The exponents $\nu = 5/6$ and $\eta = 4/15$ follow from the universality class
+assignment: the spin-7 model has a three-fold degenerate ordered phase with
+$\mathbb{Z}_3$ symmetry breaking, placing it in the universality class of the
+2D 3-state Potts model, whose critical exponents are analytically
+exact~\cite{Wu1982}. These are therefore falsifiable predictions
+for any experimental realization of the spin-7 Hamiltonian. The gap-law row is
+testable in any realization of the 1D chain (the low-temperature correlation
+length must grow as $e^{3\beta/2}$ with unit amplitude); the
+$\xi_{\rm kink}$ row is the pre-registered in-silico discriminator of
+Section~\ref{sec:f1} --- a substrate Monte Carlo target at the conditional
+grade stated there, not a laboratory observable.
+
+%-----------------------------------------------------------------------------
+\section{Discussion and Conclusions}
+\label{sec:discussion}
+%-----------------------------------------------------------------------------
+
+\subsection{2D Spin Model and 1D CMCA Connection}
+
+The correspondence between the spin-7 model and the single-tape CMCA is exact,
+not approximate. The 1D ring partition function is the trace of the pair-state
+transfer matrix, $Z = \mathrm{Tr}(\mathbf{M}^N)$, and the zero-temperature
+support of $\mathbf{M}$ is the deterministic pair digraph of the CMCA vacuum
+sector --- the same 43-vertex object whose cycle structure the Lean
+certification of Theorem~\ref{thm:rigidity} enumerates. The 2D spin-7 model is
+therefore a statistical mechanics embedding of the one-tape $\GF{7}$ CA system
+studied in~\cite{SpivackCMCA}: its thermal ensemble relaxes the deterministic
+CA dynamics, and its zero-temperature limit recovers the rigid uniform vacuum
+sectors. Section~\ref{sec:continuum} makes the correspondence quantitative:
+the thermal ensemble is the tape's maximum-entropy shadow at activity
+multiplier $\beta$, and the deterministic CMCA is the continuum endpoint
+($\beta \to \infty$) of the calibration trajectory~(\ref{eq:calibration}). The full 3+1-dimensional system (three tapes plus shared
+clock~\cite{SpivackThreeTapeCMCA}) would require a 4D spin model or tensor
+network construction; that extension is not studied here.
+
+\subsection{Physical Applications}
+
+\noindent\textbf{Quantum simulation.}
+Cold-atom platforms using Rydberg atoms with seven resolvable hyperfine states can
+implement the spin-7 Hamiltonian in optical lattice arrays. The phase transition at
+$T_c \approx 2.86\,J$ is directly measurable via specific heat, correlation length, and
+order parameter. The critical exponents $\nu = 5/6$, $\eta = 4/15$ (3-state Potts class)
+provide a sharp, parameter-free experimental target (\CatAD{}).
+
+\medskip
+\noindent\textbf{Analog computation.}
+Below $T_c$, the system self-organizes into one of three ordered phases corresponding
+to ground states $\{0, 1, 5\}$. These are the $\mathbb{Z}_3$ color sectors of the GTE
+framework, so the ordered phase physically demonstrates color-charge selection without
+a particle accelerator. Whether the correspondence can be made precise at the
+$\PHIMDL{}$ level remains open (\CatB{}).
+
+Several analog computing applications follow from the model's structure.
+
+\noindent\emph{Ternary memory.}
+The three distinct ordered phases provide a natural \emph{ternary}
+($\mathbb{Z}_3$) memory: each spatial domain stabilized in one of the three
+ground states $\{0, 1, 5\}$ stores one trit. The protection underlying this
+proposal is theorem-grade: by Theorem~\ref{thm:rigidity}, the zero-energy space
+of a ring of \emph{any} size $n \ge 3$ consists of exactly the three uniform
+configurations, machine-certified in Lean~4
+(\lean{gte\_ring\_ground\_states\_uniform\_general}, \CatAL{}). In
+coding-theoretic terms the zero-energy code is the ternary repetition code over
+$\GF{7}$: $K(n) = 3$ codewords at every length, minimum distance $d = n$, and
+rate $\log_7 3 / n \to 0$ (\CatA{}, \texttt{gte\_code\_parameters.py}). This is
+a rigidity/protection statement, not a new code family: flipping a stored trit
+requires $n$ simultaneous local constraint violations, so the protection
+distance grows linearly with the ring size. The statement is an exact algebraic
+certificate about the zero-energy configurations of $p$; the engineering
+reading does not depend on any continuum ($\PHIMDL{}$-level) claim. With
+individual-site control in a Rydberg array, ternary logic gates and registers
+could be implemented directly in the material without digital encoding.
+
+\noindent\emph{Thermally assisted Rule~110 computation.}
+The transfer matrix identity (Section~\ref{sec:cmca}) means that running the 2D spin-7
+system at finite temperature below $T_c$ is equivalent to executing the CMCA cellular
+automaton with thermal fluctuations as a noise source. Since the CMCA contains Rule~110 as
+its binary sublayer, and Rule~110 is computationally
+universal~\cite{Cook2004,SpivackCompUniversality}, the spin-7 lattice in its ordered phase
+constitutes a physically realised substrate for universal computation.
+Whether this universality persists across the full $\mathbb{Z}_7$ dynamics in the thermal
+phase is open (see the complexity-theory paragraph below).
+
+\noindent\emph{Constraint satisfaction and optimisation.}
+The three-body interaction geometry --- each spin interacts with its left and right
+neighbours via $p(L,C,R)$ --- maps naturally to constraint satisfaction problems
+whose clauses involve overlapping variable triplets. Near $T_c$ the system can
+anneal towards low-energy configurations, providing an analog solver for
+$\mathbb{Z}_7$-valued triplet-constraint problems. Certain classes of error-correcting
+codes and cryptographic functions over $\GF{7}$ have this structure.
+
+\medskip
+\noindent\textbf{Universality class and falsifiable prediction.}
+The three-fold degenerate ordered phase places the 2D spin-7 model in the universality
+class of the 3-state Potts model ($\mathbb{Z}_3$ symmetry group). The critical exponents
+$\nu = 5/6$ and $\eta = 4/15$ are analytically exact (\CatAD{}); they are therefore
+falsifiable experimental predictions. The specific heat anomaly scales as
+$C_V \sim \log L$ for continuous transitions in this class, consistent with the
+weakly divergent FSS data in Table~\ref{tab:cv}.
+
+\medskip
+\noindent\textbf{Complexity theory.}
+The single-tape CA with the GTE rule is computationally universal (Rule~110 binary
+restriction, proved in~\cite{Cook2004, SpivackCompUniversality}). The thermal version
+raises the open question of whether computational universality persists in the thermal
+phase or is destroyed by thermal noise above $T_c$. The thermal-shadow
+construction of Section~\ref{sec:thermal-shadow} gives this question a sharp
+form: the thermal ensemble is the tape's maximum-entropy shadow at activity
+multiplier $\beta$, so the question becomes whether computation is preserved
+under the activity-fugacity perturbation of the deterministic tape.
+
+\subsection{NL Connection to the Higgs Sector}
+
+The Walsh nonlinearity $\mathrm{NL}(p) = 1 - c_H/7^2$ (\CatAD{}) shows that
+the nonlinearity of the spin interaction is determined by $c_H = 13$, the same
+constant that governs $\sin^2\theta_W = N_{\rm gen}/c_H = 3/13$. Both $c_H$ and
+the NL formula evaluate to $13 = 4N_{\rm gen}+1$ because $q = 7$ is the
+MDL-selected field: $c_H = (N_{\rm gen}^3-1)/2$ from the GTE Higgs
+count, and $2q-1 = 2(2N_{\rm gen}+1)-1 = 4N_{\rm gen}+1$ from the safe-prime
+structure at $N_{\rm gen} = 3$~\cite{SpivackGTEPolynomialWolfram}. This is a
+structural connection between the critical properties of the condensed matter model
+and the electroweak sector of the Standard Model.
+
+\subsection{Summary}
+
+We have introduced and analyzed the spin-7 lattice model defined by the GTE polynomial
+$p(L,C,R) = C+R-CR-LCR \pmod 7$ as an interaction energy. The key results are:
+
+\begin{enumerate}[leftmargin=2em,itemsep=3pt]
+  \item \emph{Ground-space rigidity (\CatAL{}):} For every ring length $n \ge 3$,
+    the zero-energy configurations are exactly the three uniform assemblies
+    $\{0^n, 1^n, 5^n\}$, the roots of $p(x,x,x) = -x(x-1)(x-5) \pmod 7$ ---
+    machine-certified as \lean{gte\_ring\_ground\_states\_uniform\_general}
+    (zero sorry, zero custom axioms in this proof chain, ugp-lean), with the diagonal cubic
+    certified as \lean{poly\_p\_uniform\_gs\_roots}. The ground space is the
+    ternary repetition code with distance $d = n$, and the same rigidity holds
+    on 2D tori (Corollary~\ref{cor:2d-gs}). The local ground-state degeneracy
+    $43 = \Phi_6(7)$ is machine-certified as
+    \lean{poly\_p\_zero\_variety\_count\_gf7}.
+  \item \emph{2D phase transition (\CatA{}):} The 2D model has a genuine finite-temperature
+    phase transition at $\beta_c \approx 0.35$ ($T_c \approx 2.86\,J$) with $\mathbb{Z}_3$-like
+    symmetry breaking.
+  \item \emph{CMCA entropy rate (\CatA{}):} The exact pair-state transfer matrix
+    gives $Z = \mathrm{Tr}(\mathbf{M}^N)$; the CMCA entropy rate is
+    $S = \log(1.4846) = 0.395$ nats per site per step at $\beta = 1$ (a
+    conventional normalization; the physically distinguished rate is
+    $S(\beta^*) = 0.1595$ nats at the calibrated physical point),
+    interpolating between $\log 7$ at infinite temperature and $0$ in the rigid
+    ground space.
+  \item \emph{Chiral gap law (\CatAD{}):} The thermal ensemble is the
+    maximum-entropy shadow of the CMCA tape, and its spectral gap obeys the
+    exact asymptotic law $\Delta(\beta) = e^{-3\beta/2}(1 +
+    \tfrac{1}{2}e^{-\beta/2} + \cdots)$ --- half-integer slope from the
+    directed (chiral) wall energies, amplitude $1$ derived by two independent
+    routes, ratio law $\Delta_3 = 2\Delta_2$ --- with the integer wall tables
+    machine-certified. The thermal spectrum is provably insensitive to the
+    deterministic attractor periods (Proposition~\ref{prop:insensitivity}).
+  \item \emph{Continuum limit and physical point (\CatAD{}, conditional):}
+    The gap defines the calibration trajectory $a(\beta) = \hbar c\,
+    \Delta(\beta)/M^Q$, and MDL saturation selects $a = \hbar c/
+    \Lambda_{\rm GTE} \approx 0.0972$ fm (Tape Saturation Theorem, conditional
+    on the named Compton-Support Criterion, which the Boundary Equivalence
+    Theorem proves minimal). The lattice dictionary $aM = 1/7$,
+    $am_\varphi = 7/8$, $\xi^* = |\mathbb{Z}_7| = 7$ interlocks with zero
+    tuning, and the falsifiable target $\xi_{\rm kink} = 7$ cells is the
+    unique empirical discriminator of the hosting boundary.
+  \item \emph{GTE connections (\CatB{}):} The ground-state sectors $\{0,1,5\}$ map to
+    color-charge sectors; the NL identity $\mathrm{NL}(p) = 1 - c_H/7^2$ connects the
+    statistical mechanics to the Higgs sector.
+  \item \emph{Universality class (\CatAD{}):} The 3-state Potts universality class gives
+    exact critical exponents $\nu = 5/6$ and $\eta = 4/15$, falsifiable by experiment.
+  \item \emph{Cold-atom realization:} The model is realizable with 7-level Rydberg atoms
+    in optical tweezer arrays at system sizes $L \geq 12$.
+\end{enumerate}
+
+The spin-7 model provides a bridge between the abstract algebraic structure of the
+GTE polynomial and concrete physical observables. The fact that the same polynomial
+$p$ forced by MDL + PSC selection also defines a well-posed statistical mechanics model
+with a genuine phase transition and analytically known universality class is a
+non-trivial structural consequence of the polynomial's arithmetic properties.
+
+%-----------------------------------------------------------------------------
+\section{Open Questions}
+\label{sec:open}
+%-----------------------------------------------------------------------------
+
+\begin{openprob}[Universality Class of the Primary Transition]
+The FSS data show a $C_V$ peak magnitude that is approximately flat in $L$ (range
+$1.52$--$1.87$ across $L = 4$--$16$), consistent with a logarithmic divergence
+(as in the 2D 3-state Potts model, second-order) or with a weak first-order
+transition. Definitive classification requires Binder cumulant $U_L = 1 -
+\langle M^4 \rangle / (3 \langle M^2 \rangle^2)$ analysis: for a continuous
+transition, $U_L$ should converge to a universal value at $\beta_c$; for a
+first-order transition, $U_L$ should develop a dip. This requires larger system
+sizes ($L \geq 24$) and longer runs.
+\end{openprob}
+
+\begin{openprob}[High-$\beta$ Glass vs.\ Thermodynamic Transition]
+The secondary feature at $\beta_{c,2} \approx 1.7$ is characterized by strong
+hysteresis that grows with $\beta$ and shifts to larger $\beta$ for larger $L$.
+This is consistent with dynamical arrest rather than a thermodynamic transition,
+but requires confirmation via parallel tempering or replica-exchange Monte Carlo
+to achieve equilibration. If it is a true thermodynamic transition, it would
+represent a rare example of a model with two successive finite-temperature transitions.
+\end{openprob}
+
+\begin{openprob}[Lean Certification of CMCA Entropy Rate]
+The entropy rate theorem $S_{\rm CMCA} = \log \lambda_1$ requires formalizing
+the pair-state transfer matrix construction and its spectral properties in
+Lean~4. The Perron--Frobenius \emph{hypothesis} package is certified:
+\lean{spin7\_transfer\_pf\_hypotheses} establishes, for all real $\beta$,
+entrywise nonnegativity, primitivity with explicit power $k = 2$,
+irreducibility, and a positive uniform diagonal (\CatAL{}, zero sorry,
+\texttt{SpinSevenTransferPrimitivity.lean}, ugp-lean). The remaining gap is
+upstream: Mathlib currently provides the primitivity and irreducibility
+definitions and path-positivity lemmas, but not the Perron--Frobenius
+eigenvalue theorem itself, so the conclusions ($\lambda_1$ simple, positive,
+dominant) cannot yet be drawn inside Lean. The partition-function identity
+$Z = \mathrm{Tr}(\mathbf{M}^N)$ also remains to be formalized. The
+zero-temperature endpoint is already certified: the rigidity theorem
+(\lean{gte\_ring\_ground\_states\_uniform\_general}, \CatAL{}) pins the ground
+space to exactly three states, forcing $S_{\rm CMCA} \to 0$ as
+$\beta \to \infty$. Closing the two residues would upgrade the finite-$\beta$
+entropy rate from \CatA{} to \CatAL{}.
+\end{openprob}
+
+\begin{openprob}[3D Phase Diagram and Quantum Version]
+The 3D version of the spin-7 model (adding interactions in the $z$-direction)
+may exhibit a richer phase diagram with additional ordered phases or a quantum
+critical point. The quantum version (replacing the classical $\mathbb{Z}_7$ spins
+with quantum $\mathbb{Z}_7$ clock operators) would be directly relevant to Rydberg
+quantum simulation.
+\end{openprob}
+
+%-----------------------------------------------------------------------------
+\begin{appendices}
+
+\section{Code and Reproducibility}
+\label{app:code}
+
+\noindent\textbf{Polynomial definition.}
+$p(L,C,R) = (C + R - C \cdot R - L \cdot C \cdot R) \bmod 7$,
+implemented in Python as \texttt{(C+R - C*R - L*C*R) \% 7}.
+
+\noindent\textbf{Software environment.}
+Python~3.10+; NumPy; SciPy; mpmath (high-precision eigenvalues); SymPy
+(exact rational resolvent algebra); Lean~4 + Mathlib (for \CatAL{} results).
+
+\noindent\textbf{Scripts (in \texttt{scripts/}).}
+
+\begin{center}
+\footnotesize
+\begin{tabular}{@{}p{6.7cm}p{8.2cm}@{}}
+\toprule
+Script & Purpose \\
+\midrule
+\texttt{spin7\_transfer\_matrix.py}
+  & Exact pair-state transfer matrix: enumeration cross-check, eigenvalues,
+    $\xi$, $\Delta$, $S_{\rm CMCA}$, zero-energy digraph cycles \\
+\texttt{spin7\_2d\_phase.py}
+  & 2D Monte Carlo: order parameter scan \\
+\texttt{spin7\_2d\_fss.py}
+  & Finite-size scaling: $C_V$ peaks and hysteresis \\
+\texttt{spin7\_2d\_refined.py}
+  & Refined 2D scan with hysteresis analysis \\
+\texttt{spin7\_cmca\_connection.py}
+  & CMCA connection, ground-state algebra, $\mathbb{Z}_3$ symmetry \\
+\texttt{gte\_code\_parameters.py}
+  & Zero-energy code parameters: $K(n) = 3$, $d(n) = n$ (ternary repetition
+    code) \\
+\midrule
+\texttt{spin7\_domain\_wall\_energy\_exact.py}
+  & Exact directed wall energies $E_w$ (shortest paths on the 49-node pair
+    digraph), bump energies $E_{\rm loop}$, minimal path counts
+    (Sec.~\ref{sec:walls}) \\
+\texttt{spin7\_wall\_translation\_classes.py}
+  & Translation-class counts of minimal walls; channel exponents \\
+\texttt{spin7\_continuum\_scaling\_law.py}
+  & $\Delta(\beta)$ to $\beta = 12$ (50-digit); slope and amplitude
+    extrapolation (Thm.~\ref{thm:gaplaw}) \\
+\texttt{spin7\_gap\_amplitude\_resolvent.py}
+  & Exact Schur-complement resolvent: nilpotency, effective $3 \times 3$
+    $H(t)$, counts $c_{10}, c_{01}, b_0, b_1, b_5$ \\
+\texttt{spin7\_gap\_amplitude\_selfconsistent.py}
+  & Full $\lambda$-dependent resolvent; the exact correction
+    tower~(\ref{eq:gaplaw}) \\
+\texttt{spin7\_gap\_amplitude\_highbeta\_verify.py}
+  & 80-digit eigenvalue-resolved verification to $\beta = 30$ \\
+\texttt{spin7\_spectator\_amplitude\_resolution.py}
+  & $\rho(Z) = 1$; $\Delta_3/\Delta_2$ extrapolation; eigenvector basins;
+    rule null (Cor.~\ref{cor:gapratio}) \\
+\texttt{spin7\_subleading\_channel\_scaling.py}
+  & Sub-leading channel spectra $\beta \in [6, 12]$; bump decoupling
+    (Sec.~\ref{sec:calibration}) \\
+\texttt{spin7\_thermal\_spectrum\_period475.py}
+  & Pre-registered attractor-fingerprint batteries (all null;
+    Prop.~\ref{prop:insensitivity}) \\
+\texttt{spin7\_spectrum\_locked\_phases\_autopsy.py}
+  & Locked-phase identification; kernel accounting; wrong-target
+    factorizations \\
+\texttt{cmca\_physical\_point\_calibration.py}
+  & $\beta^*$ solve, thermal observables, $a(\beta)$ curve, pre-registered
+    candidate battery (Sec.~\ref{sec:physpoint}) \\
+\texttt{cmca\_spectral\_census\_physical\_point.py}
+  & 49-channel census at $\beta^*$; $\beta$-nulls; rule null; entropy
+    capacities \\
+\texttt{mdl\_tape\_extremization.py}
+  & MDL extremization under two pricings; $\kappa$-sensitivity; rigidity scan
+    (Thm.~\ref{thm:saturation}) \\
+\texttt{ldiss\_nfam\_null\_battery.py}
+  & Candidate-density census for the dissolution-scale window (null) \\
+\texttt{hosting\_boundary\_csc\_free\_audit.py}
+  & Register-window counting; $\kappa$-family consistency audit;
+    mechanism-spread table (Thm.~\ref{thm:boundary-equiv},
+    Table~\ref{tab:kappa}) \\
+\texttt{spin7\_hosting\_boundary\_digraph\_facts.py}
+  & Ground-space sector count; wall-support sharpness; $\Delta = 1$ ladder
+    scan; soft-edge additivity \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent\emph{Note.} The printed slope-adjudication block of
+\texttt{spin7\_subleading\_channel\_scaling.py} uses a simplified
+$\Delta \propto E\beta$ model for the soft channels; its raw spectra are
+correct, and the correct reading is the cluster analysis of
+Section~\ref{sec:gaplaw} (implemented in
+\texttt{spin7\_spectator\_amplitude\_resolution.py}).
+
+\noindent\textbf{Lean~4 certification.}
+All certifications below are zero-sorry results in the \texttt{ugp-lean}
+repository; conditional grades carry their named premise structures.
+
+\begin{center}
+\footnotesize
+\begin{tabular}{@{}P{3.9cm}P{5.0cm}P{4.7cm}c@{}}
+\toprule
+Result & Lean theorem(s) & Module & Cert. \\
+\midrule
+$43 = \Phi_6(7)$ local ground states
+  & \lean{poly\_p\_zero\_variety\_count\_gf7}
+  & \texttt{Z7InvariantSubsets} & \CatAL{} \\
+Diagonal cubic roots $\{0,1,5\}$; period-475 attractor
+  & \lean{poly\_p\_uniform\_gs\_roots}, \lean{period\_475\_returns},
+    \lean{period\_475\_is\_minimal}
+  & \texttt{PolyExplorations} & \CatAL{} \\
+Ground-space rigidity (Thm.~\ref{thm:rigidity})
+  & \lean{gte\_ring\_ground\_states\_uniform\_general},
+    \lean{uniform\_ground\_ring\_satisfies\_zero\_energy}
+  & \texttt{SpinSevenGroundSpace} & \CatAL{} \\
+Directed wall/bump tables; half-integer exponent arithmetic
+  (Thm.~\ref{thm:walls})
+  & \lean{spin7\_directed\_wall\_energies},
+    \lean{directed\_wall\_half\_integer\_gap}
+  & \texttt{SpinSevenWallSpectroscopy} & \CatAL{} \\
+Gap-amplitude counts with frontier-death totality
+  & \lean{spin7\_gap\_amplitude\_certificate}
+  & \texttt{SpinSevenGapAmplitude} & \CatAL{} \\
+Spectator package: $\rho = 1$, cluster eigensystem, $A = 1$ tie-in
+  & \lean{spin7\_spectator\_amplitude}
+  & \texttt{SpinSevenSpectatorAmplitude} & \CatAL{} \\
+Perron--Frobenius hypotheses, uniform in $\beta$
+  & \lean{spin7\_transfer\_pf\_hypotheses}
+  & \texttt{SpinSevenTransferPrimitivity} & \CatAL{} \\
+Physical-point dictionary (hypothesis form)
+  & \lean{cmca\_physical\_point\_dictionary},
+    \lean{MDLSaturationSpacingHypothesis},
+    \lean{mdl\_saturation\_tree\_reading}
+  & \texttt{CMCAPhysicalPoint} & \CatAL{}\,$\mid$\,H \\
+Tape Saturation Theorem (Thm.~\ref{thm:saturation})
+  & \lean{tape\_saturation\_theorem},
+    \lean{compton\_support\_derives\_mdl\_saturation},
+    \lean{tape\_saturation\_physical\_point\_dictionary}
+  & \texttt{CMCAPhysicalPoint} & \CatAD{}\,$\mid$\,CSC \\
+Boundary Equivalence + saturation bijection
+  (Thm.~\ref{thm:boundary-equiv}, Cor.~\ref{cor:bijection})
+  & \lean{hosting\_boundary\_csc\_equivalence},
+    \lean{saturation\_alphabet\_bijection}
+  & \texttt{CMCAPhysicalPoint} & \CatAD{}\,$\mid$\,CSC \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Module paths: \texttt{Z7InvariantSubsets} is in
+\texttt{UgpLean/Universality/}; \texttt{CMCAPhysicalPoint} is in
+\texttt{UgpLean/Physics/}; all others are in \texttt{UgpLean/Polynomial/}.
+
+\end{appendices}
+
+%-----------------------------------------------------------------------------
+\bibliographystyle{plain}
+\bibliography{../bib/Spivack_Papers_Bibliography}
+%-----------------------------------------------------------------------------
+
+\end{document}

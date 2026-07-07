@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L10: The 19-Bit Accounting — UGP Physics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="../../common/style.css">
+  <style>
+    /* ── Bit breakdown display ──────────────────────────────────────── */
+    .bit-segment {
+      display: flex;
+      align-items: stretch;
+      gap: 3px;
+      margin: 1rem 0;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+    }
+    .bit-block {
+      border-radius: 6px;
+      padding: 0.5rem 0.4rem;
+      text-align: center;
+      min-width: 0;
+      position: relative;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+      border: 2px solid transparent;
+    }
+    .bit-block:hover { transform: translateY(-2px); }
+    .bit-block.active { border-color: #fff; transform: translateY(-3px); }
+    .bit-block .bb-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 1.3rem;
+      line-height: 1;
+    }
+    .bit-block .bb-label {
+      font-size: 0.62rem;
+      margin-top: 0.25rem;
+      line-height: 1.2;
+      color: rgba(255,255,255,0.8);
+    }
+    .bb-rule  { background: #3B82F6; flex: 8; }
+    .bb-mod   { background: #8B5CF6; flex: 3; }
+    .bb-form  { background: #10B981; flex: 5; }
+    .bb-chir  { background: #F59E0B; flex: 1; }
+    .bb-sign  { background: #EF4444; flex: 2; }
+    .bb-total { background: var(--bg-card); border: 2px solid var(--accent); flex: 4; cursor: default; }
+    .bb-total .bb-count { color: var(--accent); font-size: 1.5rem; }
+    .bb-total .bb-label { color: var(--text-secondary); }
+
+    /* ── Annotation panel ──────────────────────────────────────────── */
+    .bit-annotation {
+      background: var(--bg-elevated);
+      border: 1.5px solid var(--stroke-primary);
+      border-radius: var(--r-md);
+      padding: 1rem 1.25rem;
+      min-height: 120px;
+      transition: border-color 0.2s;
+      margin-top: 0.5rem;
+    }
+    .bit-annotation .ann-name { font-weight: 700; font-size: 1rem; margin-bottom: 0.4rem; }
+    .bit-annotation .ann-count { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 1.5rem; color: var(--accent); }
+
+    /* ── Comparison table ───────────────────────────────────────────── */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.25rem 0;
+    }
+    .compare-item {
+      background: var(--bg-elevated);
+      border: 1.5px solid var(--stroke-primary);
+      border-radius: var(--r-md);
+      padding: 1rem;
+      text-align: center;
+    }
+    .compare-item.ci-bad  { border-color: rgba(239,68,68,0.3); }
+    .compare-item.ci-good { border-color: var(--cert-lean); background: rgba(34,197,94,0.06); }
+    .compare-big {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 2rem;
+      margin: 0.5rem 0;
+    }
+    .compare-desc { font-size: 0.82rem; color: var(--text-secondary); }
+
+    /* ── Bit counter bar ─────────────────────────────────────────────── */
+    .bit-bar-container { margin: 1rem 0; }
+    .bit-bar-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem; }
+    .bit-bar-name { font-size: 0.82rem; min-width: 140px; color: var(--text-secondary); }
+    .bit-bar-track { flex: 1; height: 18px; background: var(--bg-elevated); border-radius: var(--r-full); overflow: hidden; }
+    .bit-bar-fill  { height: 100%; border-radius: var(--r-full); }
+    .bit-bar-num { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; min-width: 50px; color: var(--text-primary); text-align: right; }
+
+    /* ── Lookup table preview ───────────────────────────────────────── */
+    .lut-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+      margin: 0.75rem 0;
+    }
+    .lut-cell {
+      background: var(--bg-elevated);
+      border: 1px solid var(--stroke-secondary);
+      border-radius: 3px;
+      padding: 0.25rem;
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+    }
+    .lut-cell.lc-head { background: var(--bg-card); font-weight: 700; font-size: 0.65rem; color: var(--text-tertiary); font-family: inherit; }
+    .lut-cell.lc-dots { font-size: 0.65rem; color: var(--text-tertiary); }
+  </style>
+</head>
+<body style="--path-current: var(--path-2)" data-path="2" data-lesson="3" data-total="4">
+
+  <header class="site-header">
+    <a href="../../index.html" class="site-logo">UGP Physics</a>
+    <nav class="breadcrumb">
+      <a href="../../index.html">Tutorial Series</a>
+      <span class="bc-sep">›</span>
+      <a href="../index.html">Path 2: Selection</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">L10: 19-Bit Accounting</span>
+    </nav>
+  </header>
+
+  <main class="page-wrapper">
+
+    <!-- ═══ Lesson Header ═══ -->
+    <div class="lesson-header">
+      <div class="path-label">Path 2 — Selection · Lesson 10 of 11</div>
+      <h1>The 19-Bit Accounting</h1>
+      <p class="lesson-subtitle">
+        The polynomial needs exactly 19 bits to specify completely. 
+        An exhaustive lookup table for the same rule would take 963 bits — 
+        50× more. MDL says pick the shortest. The polynomial wins.
+      </p>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:75%"></div>
+      </div>
+    </div>
+
+    <!-- ═══ Section 1: What does "19 bits" mean? ═══ -->
+    <section class="lesson-section" id="what-it-means">
+      <h2>What "19 Bits to Specify" Means</h2>
+      <p>
+        MDL compares the <em>description lengths</em> of competing theories: which one requires 
+        fewer bits to specify completely? "19 bits to specify the polynomial" means that if 
+        you wanted to communicate the complete rule 
+        <code>p(L,C,R) = C+R−CR−LCR over GF(7)</code> to someone who knew only the framework 
+        but not the specific rule, you could do it in 19 binary digits.
+      </p>
+      <p>
+        Compare this to an alternative: just write down all 7³ = 343 possible 
+        input triples (L,C,R) ∈ {0,…,6}³ and the corresponding output for each. 
+        That lookup table approach requires 963 bits — 50× more.
+      </p>
+
+      <div class="compare-grid">
+        <div class="compare-item ci-bad">
+          <div class="compare-desc">Full lookup table</div>
+          <div class="compare-big" style="color:#EF4444">963</div>
+          <div class="compare-desc">343 entries × log₂(7) ≈ 2.81 bits each</div>
+        </div>
+        <div class="compare-item ci-good">
+          <div class="compare-desc">The polynomial formula</div>
+          <div class="compare-big" style="color:var(--cert-lean)">19</div>
+          <div class="compare-desc">Complete specification</div>
+        </div>
+      </div>
+
+      <div class="callout callout--success">
+        <div class="callout-title">The MDL argument in one sentence</div>
+        <p>
+          Among all rules that behave identically on the orbit data, 
+          the polynomial has the shortest description. MDL says choose that one. 
+          19 &lt; 963 — the polynomial wins.
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══ Section 2: Interactive bit breakdown ═══ -->
+    <section class="lesson-section" id="breakdown">
+      <h2>The 19-Bit Breakdown</h2>
+      <p>
+        The 19 bits break into five components. Click each block to see what it specifies:
+      </p>
+
+      <div class="bit-segment" id="bit-blocks">
+        <div class="bit-block bb-rule" data-idx="0">
+          <div class="bb-count">8</div>
+          <div class="bb-label">Rule 110<br>binary floor</div>
+        </div>
+        <div class="bit-block bb-mod" data-idx="1">
+          <div class="bb-count">3</div>
+          <div class="bb-label">Modulus<br>spec</div>
+        </div>
+        <div class="bit-block bb-form" data-idx="2">
+          <div class="bb-count">5</div>
+          <div class="bb-label">Algebraic<br>form</div>
+        </div>
+        <div class="bit-block bb-chir" data-idx="3">
+          <div class="bb-count">1</div>
+          <div class="bb-label">Chirality<br>selector</div>
+        </div>
+        <div class="bit-block bb-sign" data-idx="4">
+          <div class="bb-count">2</div>
+          <div class="bb-label">Sign<br>pattern</div>
+        </div>
+        <div style="display:flex;align-items:center;padding:0 0.3rem;color:var(--text-tertiary);font-size:1.2rem;flex-shrink:0">=</div>
+        <div class="bit-block bb-total">
+          <div class="bb-count">19</div>
+          <div class="bb-label">Total bits</div>
+        </div>
+      </div>
+
+      <div class="bit-annotation" id="bit-annotation">
+        <div class="ann-name" id="ann-name">Click a block above to learn what it specifies</div>
+        <div id="ann-body" style="color:var(--text-secondary);font-size:0.88rem;margin-top:0.5rem">
+          Each colored segment represents one component of the 19-bit description. 
+          The components are independent — knowing one tells you nothing about the others.
+        </div>
+      </div>
+
+      <h3>The breakdown in detail</h3>
+      <div class="bit-bar-container">
+
+        <div class="bit-bar-row">
+          <div class="bit-bar-name">Rule 110 binary floor</div>
+          <div class="bit-bar-track">
+            <div class="bit-bar-fill" style="width:42%;background:#3B82F6"></div>
+          </div>
+          <div class="bit-bar-num">8 bits</div>
+        </div>
+
+        <div class="bit-bar-row">
+          <div class="bit-bar-name">Modulus specification</div>
+          <div class="bit-bar-track">
+            <div class="bit-bar-fill" style="width:16%;background:#8B5CF6"></div>
+          </div>
+          <div class="bit-bar-num">3 bits</div>
+        </div>
+
+        <div class="bit-bar-row">
+          <div class="bit-bar-name">Algebraic form selector</div>
+          <div class="bit-bar-track">
+            <div class="bit-bar-fill" style="width:26%;background:#10B981"></div>
+          </div>
+          <div class="bit-bar-num">5 bits</div>
+        </div>
+
+        <div class="bit-bar-row">
+          <div class="bit-bar-name">Chirality selector</div>
+          <div class="bit-bar-track">
+            <div class="bit-bar-fill" style="width:5%;background:#F59E0B"></div>
+          </div>
+          <div class="bit-bar-num">1 bit</div>
+        </div>
+
+        <div class="bit-bar-row">
+          <div class="bit-bar-name">Modular reduction signs</div>
+          <div class="bit-bar-track">
+            <div class="bit-bar-fill" style="width:11%;background:#EF4444"></div>
+          </div>
+          <div class="bit-bar-num">2 bits</div>
+        </div>
+
+        <div class="bit-bar-row" style="margin-top:0.5rem;border-top:1px solid var(--stroke-secondary);padding-top:0.5rem">
+          <div class="bit-bar-name" style="font-weight:700;color:var(--text-primary)">Total</div>
+          <div class="bit-bar-track">
+            <div class="bit-bar-fill" style="width:100%;background:var(--accent)"></div>
+          </div>
+          <div class="bit-bar-num" style="font-weight:700;color:var(--accent)">19 bits</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══ Section 3: Step-through each component ═══ -->
+    <section class="lesson-section" id="components">
+      <h2>Each Component Explained</h2>
+
+      <div class="steps" id="steps-bits">
+        <div class="steps-nav">
+          <button class="step-pill">8 bits: Rule 110 floor</button>
+          <button class="step-pill">3 bits: Modulus</button>
+          <button class="step-pill">5 bits: Algebraic form</button>
+          <button class="step-pill">1 bit: Chirality</button>
+          <button class="step-pill">2 bits: Sign pattern</button>
+          <button class="step-pill">Total: 19</button>
+        </div>
+
+        <div class="step-panel">
+          <h3>8 bits — the Rule 110 binary floor</h3>
+          <p>
+            Rule 110 is specified by its 8-row truth table: one output bit for each of the 
+            8 binary input triples (L,C,R) ∈ {0,1}³. Each output is either 0 or 1, so 
+            each row costs 1 bit. Total: 8 × 1 = <strong>8 bits</strong>.
+          </p>
+          <div class="lut-grid" style="max-width:340px;margin:1rem auto">
+            <div class="lut-cell lc-head">(L,C,R)</div><div class="lut-cell lc-head">Output</div>
+            <div class="lut-cell lc-head">Bit cost</div><div class="lut-cell lc-head">Cumulative</div>
+            <div class="lut-cell">(1,1,1)</div><div class="lut-cell">0</div><div class="lut-cell">1 bit</div><div class="lut-cell">1</div>
+            <div class="lut-cell">(1,1,0)</div><div class="lut-cell">1</div><div class="lut-cell">1 bit</div><div class="lut-cell">2</div>
+            <div class="lut-cell">(1,0,1)</div><div class="lut-cell">1</div><div class="lut-cell">1 bit</div><div class="lut-cell">3</div>
+            <div class="lut-cell">(1,0,0)</div><div class="lut-cell">0</div><div class="lut-cell">1 bit</div><div class="lut-cell">4</div>
+            <div class="lut-cell">(0,1,1)</div><div class="lut-cell">1</div><div class="lut-cell">1 bit</div><div class="lut-cell">5</div>
+            <div class="lut-cell">(0,1,0)</div><div class="lut-cell">1</div><div class="lut-cell">1 bit</div><div class="lut-cell">6</div>
+            <div class="lut-cell">(0,0,1)</div><div class="lut-cell">1</div><div class="lut-cell">1 bit</div><div class="lut-cell">7</div>
+            <div class="lut-cell">(0,0,0)</div><div class="lut-cell">0</div><div class="lut-cell">1 bit</div><div class="lut-cell"><strong>8</strong></div>
+          </div>
+          <p>
+            This is the binary floor established in Step 1 of the funnel: 
+            any valid GTE rule must match Rule 110 on all 8 binary inputs.
+            Since the outputs are 0 or 1, each costs exactly 1 bit.
+          </p>
+          <div class="callout callout--info" style="margin-top:1rem">
+            <div class="callout-title">Why not just Rule 110?</div>
+            <p style="margin:0">
+              Eight bits is the minimum needed to specify any binary CA rule. Rule 110, 
+              taken alone, costs just 8 bits — and certifies exactly one thing: 
+              <strong>Turing universality</strong>. It proves the substrate can compute anything. 
+              But Rule 110 alone cannot certify particle generations, charge quantization, 
+              color charge, chirality, or baryon number — because those structures require 
+              the non-binary, 7-state algebraic field GF(7) to even express.
+              The additional 11 bits (the GF(7) field specification) are what allow the 
+              certificate to encompass the full Standard Model structure. 
+              More compact does not mean more powerful: a 19-bit GF(7) polynomial does 
+              strictly more physics than any 8-bit binary rule.
+            </p>
+          </div>
+        </div>
+
+        <div class="step-panel">
+          <h3>3 bits — modulus specification</h3>
+          <p>
+            After pinning the 8 binary corners via Rule 110, we need to specify that 
+            the rule operates <em>mod 7</em> — not mod 5 or mod 11. 
+            The modulus is the prime 7.
+          </p>
+          <p>
+            How many bits does it take to specify "the prime is 7"? 
+            The smallest prime is 2, and 7 is the 4th prime. To pick from all 
+            primes, we need ⌈log₂7⌉ = 3 bits (since 2³ = 8 ≥ 7).
+          </p>
+          <div class="example-box">
+            <div class="example-header">⌈log₂7⌉ = 3 bits</div>
+            <p style="font-family:'JetBrains Mono',monospace;margin:0;font-size:0.88rem">
+              2 bits covers values 0–3 (4 options)<br>
+              3 bits covers values 0–7 (8 options) → includes 7 ✓<br><br>
+              Specifying "prime = 7" costs <strong>3 bits</strong>
+            </p>
+          </div>
+          <p class="small">
+            Running total: 8 + 3 = 11 bits so far.
+          </p>
+        </div>
+
+        <div class="step-panel">
+          <h3>5 bits — algebraic form selector</h3>
+          <p>
+            After specifying that the rule operates over GF(7), we need to say 
+            which algebraic form it takes. Among all multilinear polynomials of 
+            degree ≤ 3 in three variables over GF(7), how many are there?
+          </p>
+          <p>
+            A multilinear polynomial in L, C, R of degree ≤ 3 has the form:
+          </p>
+          <div class="example-box">
+            <div class="example-header">General multilinear form</div>
+            <p style="font-family:'JetBrains Mono',monospace;margin:0;font-size:0.85rem">
+              a₀ + a₁L + a₂C + a₃R + a₄LC + a₅LR + a₆CR + a₇LCR
+            </p>
+          </div>
+          <p>
+            That's 8 coefficients, each from GF(7). But the constraint that the 
+            rule must be the unique multilinear interpolant pinned by the orbit data 
+            eliminates all but one choice — the only remaining freedom is 
+            which of the ~32 possible algebraic "shapes" (patterns of nonzero terms) 
+            is present. This selection costs 5 bits (2⁵ = 32 options).
+          </p>
+          <p class="small">Running total: 8 + 3 + 5 = 16 bits so far.</p>
+        </div>
+
+        <div class="step-panel">
+          <h3>1 bit — chirality selector</h3>
+          <p>
+            The polynomial could run in two chiral orientations. The GTE framework 
+            distinguishes "right-moving" and "left-moving" excitations — this corresponds 
+            to the chirality symmetry ℤ₂ ⊂ GF(7)*.
+          </p>
+          <p>
+            One bit selects which chirality: <code>0</code> = standard orientation 
+            (as in the PSC-admissible orbit), <code>1</code> = mirror orientation.
+            The standard orientation is selected by the orbit structure.
+          </p>
+          <div class="example-box">
+            <div class="example-header">Chirality bit</div>
+            <p style="font-family:'JetBrains Mono',monospace;margin:0;font-size:0.88rem">
+              0 → p(L,C,R) = C + R − CR − LCR<br>
+              1 → p(L,C,R) = C + L − CL − LCR &nbsp;(mirror)
+            </p>
+          </div>
+          <p class="small">Running total: 8 + 3 + 5 + 1 = 17 bits so far.</p>
+        </div>
+
+        <div class="step-panel">
+          <h3>2 bits — modular reduction signs</h3>
+          <p>
+            The last 2 bits specify the sign pattern on the product terms. 
+            The polynomial has the form <code>C + R ∓ CR ∓ LCR</code>. 
+            Each of the two product terms can carry a + or − sign independently.
+          </p>
+          <p>
+            The orbit interpolation forces the signs to be <code>(−CR, −LCR)</code>. 
+            This uses 2 bits: 1 bit for the sign of CR, 1 bit for the sign of LCR.
+          </p>
+          <div class="example-box">
+            <div class="example-header">Sign pattern: (−CR, −LCR)</div>
+            <p style="font-family:'JetBrains Mono',monospace;margin:0;font-size:0.88rem">
+              Bit 1: 1 → sign of CR is negative (−CR)<br>
+              Bit 2: 1 → sign of LCR is negative (−LCR)<br><br>
+              Result: p = C + R <strong>−</strong>CR <strong>−</strong>LCR ✓
+            </p>
+          </div>
+          <p class="small">Final total: 8 + 3 + 5 + 1 + 2 = <strong>19 bits</strong>.</p>
+        </div>
+
+        <div class="step-panel">
+          <h3>Summary: the complete 19-bit specification</h3>
+          <div class="bit-segment" style="pointer-events:none;margin-bottom:1rem">
+            <div class="bit-block bb-rule" style="flex:8"><div class="bb-count">8</div><div class="bb-label">Rule 110</div></div>
+            <div class="bit-block bb-mod"  style="flex:3"><div class="bb-count">3</div><div class="bb-label">mod 7</div></div>
+            <div class="bit-block bb-form" style="flex:5"><div class="bb-count">5</div><div class="bb-label">form</div></div>
+            <div class="bit-block bb-chir" style="flex:1"><div class="bb-count">1</div><div class="bb-label">chir.</div></div>
+            <div class="bit-block bb-sign" style="flex:2"><div class="bb-count">2</div><div class="bb-label">signs</div></div>
+          </div>
+          <div class="callout callout--success">
+            <div class="callout-title">Machine certification</div>
+            <p>
+              The 19-bit coding theorem is machine-certified in Lean 4:
+              <span data-lean="mdl_ca_rule_coding_closed"></span>
+              — zero sorry. The polynomial specification is informationally closed: 
+              no bits can be removed without ambiguity.
+            </p>
+          </div>
+        </div>
+
+        <div class="steps-footer">
+          <button class="btn btn--secondary" data-action="prev">← Previous</button>
+          <button class="btn btn--primary"   data-action="next">Next →</button>
+          <span class="steps-counter">Step 1 of 6</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 4: Why 963 ═══ -->
+    <section class="lesson-section" id="comparison">
+      <h2>Why the Lookup Table Costs 963 Bits</h2>
+      <p>
+        A general GF(7) CA rule with radius 1 is a function from {0,…,6}³ to {0,…,6}. 
+        There are 7³ = 343 possible input triples. For each triple, the output is one of 
+        7 values, which takes ⌈log₂7⌉ = 3 bits to specify.
+      </p>
+      <div class="example-box">
+        <div class="example-header">Full lookup table cost (information-theoretic)</div>
+        <p style="font-family:'JetBrains Mono',monospace;margin:0;font-size:0.9rem">
+          343 input triples × log₂(7) bits each<br>
+          = 343 × 2.807…<br>
+          ≈ <strong>963 bits</strong>
+        </p>
+      </div>
+      <p>
+        Using the information-theoretic bit count log₂(7) ≈ 2.807 bits per 
+        output symbol (rather than the ceiling ⌈log₂7⌉ = 3) gives the minimal 
+        prefix-free code for 343 independent 7-valued outputs. This is the 
+        Shannon entropy per entry when outputs are uniform over {0,…,6}.
+      </p>
+      <p>
+        The polynomial expression eliminates all of that redundancy because the 
+        4-term algebraic structure implicitly determines all 343 outputs — 
+        even the 335 non-binary ones — from just 19 bits.
+      </p>
+
+      <div class="card" style="margin:1.5rem 0">
+        <div class="card-body">
+          <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap">
+            <div style="text-align:center;flex:1;min-width:120px">
+              <div style="font-size:0.72rem;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.3rem">Lookup table</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;color:#EF4444">963</div>
+              <div style="font-size:0.78rem;color:var(--text-secondary)">bits</div>
+            </div>
+            <div style="font-size:1.5rem;color:var(--text-tertiary)">÷</div>
+            <div style="text-align:center;flex:1;min-width:120px">
+              <div style="font-size:0.72rem;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.3rem">Polynomial</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--cert-lean)">19</div>
+              <div style="font-size:0.78rem;color:var(--text-secondary)">bits</div>
+            </div>
+            <div style="font-size:1.5rem;color:var(--text-tertiary)">=</div>
+            <div style="text-align:center;flex:1;min-width:120px">
+              <div style="font-size:0.72rem;color:var(--text-tertiary);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.3rem">Compression ratio</div>
+              <div style="font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--accent)">50×</div>
+              <div style="font-size:0.78rem;color:var(--text-secondary)">more compact</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 5: Connection to MDL ═══ -->
+    <section class="lesson-section" id="mdl-connection">
+      <h2>Why This Settles the MDL Argument</h2>
+      <p>
+        The MDL principle says: among all theories consistent with the data, choose the 
+        one with the shortest description. The "data" here is the orbit structure and the 
+        vacuum transparency condition.
+      </p>
+      <p>
+        Both the polynomial and the full lookup table are consistent with that data — 
+        they agree on all 8 binary corners. But the polynomial describes the rule in 19 bits 
+        while the lookup table requires 963 bits.
+      </p>
+      <p>
+        MDL's verdict is unambiguous: the polynomial is the shorter description. 
+        It must be selected. This is not a subjective judgment about "elegance" — 
+        it is a quantitative comparison of bit counts.
+      </p>
+      <div class="callout callout--info">
+        <div class="callout-title">Why this matters beyond elegance</div>
+        <p>
+          A theory with a 963-bit description secretly contains 944 bits of unexplained structure. 
+          Where do those extra bits come from? There is no answer — they would have to be free 
+          parameters, set by hand. The polynomial needs no free parameters: all 19 bits are 
+          derived from the framework constraints. The description is <em>informationally closed</em>.
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══ Key Takeaways ═══ -->
+    <section class="lesson-section" id="takeaways">
+      <h2>Key Takeaways</h2>
+      <ul class="takeaway-list">
+        <li>
+          The polynomial <code>p(L,C,R) = C+R−CR−LCR</code> requires exactly 19 bits 
+          to specify completely: 8 (Rule 110 floor) + 3 (modulus) + 5 (algebraic form) 
+          + 1 (chirality) + 2 (sign pattern) = 19.
+        </li>
+        <li>
+          An exhaustive lookup table for the same GF(7) CA rule would require approximately 
+          963 bits — about 50× more. MDL selects the polynomial because it is the shorter description.
+        </li>
+        <li>
+          The 19-bit description is <em>informationally closed</em>: no bits can be removed 
+          without ambiguity, and no bits need to be added. The rule is fully specified.
+        </li>
+        <li>
+          The 19-bit coding theorem is machine-certified: 
+          <span data-lean="mdl_ca_rule_coding_closed"></span>
+        </li>
+        <li>
+          This is why the polynomial has no free parameters: all 19 bits are derivable 
+          from the framework constraints (PSC, MDL, the orbit, vacuum transparency). 
+          Nothing is tuned or chosen by hand.
+        </li>
+      </ul>
+    </section>
+
+    <!-- ═══ See Also ═══ -->
+    <div class="see-also">
+      <h2>See Also</h2>
+      <div class="see-also-group">
+        <div class="see-also-label">Lean 4 proofs (ugp-lean)</div>
+        <ul class="source-list">
+          <li><code>mdl_ca_rule_coding_closed</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/MDLDerivabilityCriterion.lean" target="_blank" rel="noopener">view on GitHub ↗</a></li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Source papers</div>
+        <ul class="source-list">
+          <li><a href="https://doi.org/10.5281/zenodo.20560550" target="_blank" rel="noopener">P48 — The Complete GTE Framework, Ch. 4 §19-bit ↗</a></li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Full tutorial (PDF)</div>
+        <ul class="source-list">
+          <li><a href="https://doi.org/10.5281/zenodo.20657876" target="_blank" rel="noopener">How MDL Selects the 19-Bit Polynomial — UGP Tutorial Series ↗</a></li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Related lessons</div>
+        <ul class="source-list">
+          <li><a href="../L08_mdl_selection/index.html">L08 — How MDL Selects the Polynomial</a></li>
+          <li><a href="../L09_gf7_selection/index.html">L09 — Why GF(7): The Minimal Prime Theorem</a></li>
+        </ul>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ═══ Lesson Footer Navigation ═══ -->
+  <div class="page-wrapper">
+    <footer class="lesson-footer">
+      <a href="../L09_gf7_selection/index.html" class="nav-btn nav-btn--prev">← L09: Why GF(7)</a>
+      <a href="../L11_levels_of_theory/index.html" class="nav-btn nav-btn--next">L11: The Four Levels →</a>
+    </footer>
+  </div>
+
+  <!-- Math -->
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})">
+  </script>
+
+  <script src="../../common/interactive.js"></script>
+  <script src="../../common/nav.js"></script>
+  <script>
+    const LEAN_REFS = {
+      "mdl_ca_rule_coding_closed": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/MDLDerivabilityCriterion.lean"
+      }
+    };
+
+    // ── Bit block annotations ─────────────────────────────────────────────
+    const BIT_DATA = [
+      {
+        name: "8 bits — Rule 110 binary floor",
+        color: "#3B82F6",
+        body: "Specifies the outputs for all 8 binary input triples (L,C,R) ∈ {0,1}³. Each output is 0 or 1, so each costs 1 bit. These 8 outputs reproduce the Rule 110 truth table — a consequence of the orbit data, not a separate choice. 8 × 1 bit = 8 bits."
+      },
+      {
+        name: "3 bits — modulus specification",
+        color: "#8B5CF6",
+        body: "Specifies that the rule operates over GF(7) rather than GF(2), GF(3), GF(5), etc. The prime 7 requires ⌈log₂7⌉ = 3 bits to identify uniquely among all primes ≤ 7. This is the output of the GF(7) selection in Steps 2–4 of the funnel."
+      },
+      {
+        name: "5 bits — algebraic form selector",
+        color: "#10B981",
+        body: "Specifies which of the ~32 possible algebraic shapes (patterns of nonzero monomial terms) the polynomial has. The polynomial C+R−CR−LCR uses exactly 4 of the 8 possible multilinear monomials in L,C,R. Selecting which 4 costs 5 bits (2⁵ = 32 options)."
+      },
+      {
+        name: "1 bit — chirality selector",
+        color: "#F59E0B",
+        body: "Selects the chiral orientation: standard (forward, p(L,C,R) = C+R−CR−LCR) vs mirror (backward, Rule 124 orientation). The orbit data selects the standard orientation. 1 bit encodes this binary choice."
+      },
+      {
+        name: "2 bits — modular reduction signs",
+        color: "#EF4444",
+        body: "Specifies the signs of the two product terms: −CR and −LCR. Each can be + or −. The orbit interpolation forces both to be negative. 2 bits = 1 bit for sign(CR) + 1 bit for sign(LCR). No other sign pattern matches the orbit data."
+      }
+    ];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initSteps('steps-bits');
+      autoRenderLeanBadges(LEAN_REFS);
+
+      // Bit block click handlers
+      const blocks   = document.querySelectorAll('#bit-blocks .bit-block[data-idx]');
+      const annName  = document.getElementById('ann-name');
+      const annBody  = document.getElementById('ann-body');
+      const annPanel = document.getElementById('bit-annotation');
+
+      blocks.forEach(block => {
+        block.addEventListener('click', () => {
+          blocks.forEach(b => b.classList.remove('active'));
+          block.classList.add('active');
+          const idx = parseInt(block.dataset.idx, 10);
+          const d   = BIT_DATA[idx];
+          annName.textContent = d.name;
+          annName.style.color = d.color;
+          annBody.textContent = d.body;
+          annPanel.style.borderColor = d.color;
+        });
+      });
+    });
+  </script>
+</body>
+</html>
