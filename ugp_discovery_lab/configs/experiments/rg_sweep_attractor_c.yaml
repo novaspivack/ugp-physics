@@ -1,0 +1,34 @@
+experiment:
+  name: rg_sweep
+  description: "RG sweep focused on Attractor C (~0.2644) validation"
+  
+  inputs:
+    runs: []  # Analysis-only mode
+    
+  rg:
+    iterations: 12
+    crop_policy: "center"
+    rescale_policy: "normalize"
+    tol_plane: 1e-4
+    tol_param: 1e-4
+    tol_cycle: 1e-5
+    
+  param_grid:
+    seeds:
+      - [2, 89, 1597]  # Known Attractor C seed
+      - [2, 89, 1597]  # Duplicate for more data
+      - [2, 89, 1597]  # Triple for robust validation
+    windows: [8, 9, 10, 11, 12, 13, 14, 15]  # Multiple window sizes
+    laws:
+      - { c_policy: mersenne, b_policy: fib,   a_policy: gte, mirror: d2 }
+      - { c_policy: mersenne, b_policy: lucas, a_policy: gte, mirror: d2 }
+      - { c_policy: mersenne, b_policy: fib,   a_policy: gte, mirror: d4 }
+      - { c_policy: mersenne, b_policy: fib,   a_policy: gte, mirror: d5 }
+      - { c_policy: mersenne, b_policy: fib,   a_policy: gte, mirror: d6 }
+      - { c_policy: repunit,  repunit_base: 3, b_policy: fib, a_policy: gte, mirror: d2 }
+      - { c_policy: repunit,  repunit_base: 3, b_policy: lucas, a_policy: gte, mirror: d2 }
+  
+  report:
+    export_md: true
+    export_json: true
+    export_plots: true

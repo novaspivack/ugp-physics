@@ -1,0 +1,127 @@
+# Configuration for UGP Yukawa/CKM/PMNS mixing matrix calculation - MIXING ANGLE FOCUSED
+# Research Question 1.2: Focus on mixing angle accuracy rather than overall RMS error
+
+experiment:
+  name: ugp_yukawa_ckm_pmns_flow_optimization
+  description: "UGP → Yukawas & CKM/PMNS mixing matrices with MIXING ANGLE FOCUSED optimization"
+  inputs:
+    runs:
+      - "canonical_gte_triples.json"
+
+# Options
+options:
+  neutrino_model: "majorana"
+  pdg_targets_ckm: [0.2245, 0.041, 0.00365]
+  pdg_targets_pmns: [33.44, 8.57, 49.2]
+
+# MIXING ANGLE FOCUSED OPTIMIZATION GRID
+optimization_grid:
+  # Expanded tau0 scaling for better mixing angle coverage
+  tau0_scaling_factors: [0.1, 0.2, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0, 50.0, 100.0, 200.0]
+  
+  # Expanded epsilon scaling for mixing angle sensitivity
+  epsilon_scaling_factors: [0.1, 0.2, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0, 50.0, 100.0]
+  
+  # Expanded epsilon_prime scaling for CP violation and mixing
+  epsilon_prime_scaling_factors: [0.1, 0.2, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0, 50.0, 100.0]
+  
+  # Multiple normalization methods to test
+  normalization_methods: ["spectral_radius", "max_element", "frobenius", "trace_norm"]
+
+# MIXING ANGLE SPECIFIC TARGETS
+mixing_angle_targets:
+  ckm_angles:
+    theta12_target: 33.44  # degrees
+    theta13_target: 8.57   # degrees  
+    theta23_target: 49.2   # degrees
+    theta12_tolerance: 5.0  # degrees - acceptable error
+    theta13_tolerance: 2.0  # degrees - acceptable error
+    theta23_tolerance: 10.0 # degrees - acceptable error
+  
+  pmns_angles:
+    theta12_target: 33.44  # degrees
+    theta13_target: 8.57   # degrees
+    theta23_target: 49.2   # degrees
+    theta12_tolerance: 5.0  # degrees - acceptable error
+    theta13_tolerance: 2.0  # degrees - acceptable error
+    theta23_tolerance: 10.0 # degrees - acceptable error
+
+# WEIGHTED OPTIMIZATION METRICS
+optimization_metrics:
+  primary_metric: "mixing_angle_weighted_error"
+  secondary_metrics: ["overall_rms_error", "ckm_score", "pmns_score"]
+  
+  # Weighting factors for different observables
+  weights:
+    ckm_theta12: 3.0  # High weight - most important mixing angle
+    ckm_theta13: 2.0  # Medium weight - small but important
+    ckm_theta23: 2.0  # Medium weight - important for hierarchy
+    pmns_theta12: 2.0 # Medium weight - solar mixing
+    pmns_theta13: 1.0 # Low weight - reactor mixing
+    pmns_theta23: 2.0 # Medium weight - atmospheric mixing
+    ckm_elements: 1.0 # Low weight - less important than angles
+    overall_fit: 0.5  # Low weight - secondary to mixing angles
+
+# SUCCESS CRITERIA - MIXING ANGLE FOCUSED
+success_criteria:
+  mixing_angle_accuracy:
+    ckm_theta12_error: "< 20%"  # Target: < 6.7° error
+    ckm_theta13_error: "< 30%"  # Target: < 2.6° error  
+    ckm_theta23_error: "< 25%"  # Target: < 12.3° error
+    pmns_theta12_error: "< 20%" # Target: < 6.7° error
+    pmns_theta13_error: "< 30%" # Target: < 2.6° error
+    pmns_theta23_error: "< 25%" # Target: < 12.3° error
+  
+  overall_performance:
+    mixing_angle_weighted_error: "< 25%"  # Primary metric
+    overall_rms_error: "< 15%"            # Secondary metric
+    improvement_factor: "> 2.0x vs baseline"
+
+# ENHANCED ANALYSIS
+analysis:
+  optimization_method: "mixing_angle_focused_grid_search"
+  primary_evaluation_metric: "mixing_angle_weighted_error"
+  secondary_evaluation_metrics: ["overall_rms_error", "individual_angle_errors"]
+  
+  # Enhanced analysis for mixing angles
+  mixing_angle_analysis:
+    angle_correlation_analysis: true
+    parameter_sensitivity_per_angle: true
+    mixing_pattern_analysis: true
+    hierarchy_analysis: true
+  
+  parameter_sensitivity_analysis: true
+  optimization_landscape_mapping: true
+  best_configuration_analysis: true
+  mixing_angle_optimization_path: true
+
+# ENHANCED OUTPUT
+output:
+  save_matrices: true
+  save_angles: true
+  save_eigenvalues: true
+  save_vectors: true
+  save_permutation_choice: true
+  
+  # Mixing angle specific outputs
+  save_mixing_angle_analysis: true
+  save_parameter_sensitivity_per_angle: true
+  save_optimization_landscape_mixing: true
+  save_best_mixing_configurations: true
+  save_angle_correlation_plots: true
+  
+  format: "csv"
+  detailed_reporting: true
+  mixing_angle_focus_report: true
+
+# VALIDATION - MIXING ANGLE FOCUSED
+validation:
+  unitary_check: true
+  pdg_ordering_check: true
+  eigenvalue_ordering: true
+  jarlskog_invariant_check: true
+  
+  # Mixing angle specific validation
+  mixing_angle_bounds_check: true
+  angle_consistency_check: true
+  mixing_pattern_validation: true
