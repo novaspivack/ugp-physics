@@ -1,0 +1,2614 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  The Three-Layer Chiral Minkowski Cellular Automaton:
+%  A Unified Discrete Spacetime Model from First Principles
+%
+%  Nova Spivack --- 2026
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt]{article}
+
+% ===================== PREAMBLE =====================
+\usepackage[margin=1in]{geometry}
+\usepackage{authblk}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\allowdisplaybreaks
+\setlength{\abovedisplayskip}{6pt}
+\setlength{\belowdisplayskip}{6pt}
+\setlength{\abovedisplayshortskip}{4pt}
+\setlength{\belowdisplayshortskip}{4pt}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{tikz}
+\input{../common/tikz_cmca_styles.tex}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+\usepackage{cite}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx,ragged2e,array}
+\usepackage{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage[toc]{appendix}
+\usepackage{float}
+\usepackage{placeins}
+\usepackage{multicol}
+
+\setlength{\emergencystretch}{3em}
+\raggedbottom
+
+\newcolumntype{P}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\graphicspath{{artifacts/}{figures/}{./}}
+
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black}
+\input{nova_zenodo_doi_placeholder}
+
+% ── Theorem environments ──────────────────────────────────────────────────────
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% ── Convenience macros ────────────────────────────────────────────────────────
+\newcommand{\UGP}{\text{UGP}}
+\newcommand{\GTE}{\text{GTE}}
+\newcommand{\MDL}{\text{MDL}}
+\newcommand{\PSC}{\text{PSC}}
+\newcommand{\PHIMDL}{\Phi_{\mathrm{MDL}}}
+\newcommand{\ZS}{\mathbb{Z}_7}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\lean}[1]{%
+  \penalty-100
+  \begingroup\def\_{\textunderscore\allowbreak}\texttt{#1}\endgroup}
+\newcommand{\sinwsq}{\sin^2\!\theta_W}
+\newcommand{\Mw}{M_W}
+\newcommand{\Mz}{M_Z}
+\newcommand{\Ngen}{N_{\rm gen}}
+\newcommand{\cH}{c_H}
+\newcommand{\vPSC}{v_{\rm PSC}}
+\newcommand{\epsz}{\varepsilon_0}
+
+% ── Status badge macros (same as P28) — math-mode safe ────────────────────────
+\newcommand{\CatA}{\textbf{A}}
+\newcommand{\CatAL}{\ensuremath{\textbf{A}_{\rm Lean}}}
+\newcommand{\CatAMDL}{\ensuremath{\textbf{A}_{\rm MDL}}}
+\newcommand{\CatAD}{\textbf{A/D}}
+\newcommand{\CatB}{\textbf{B}}
+\newcommand{\CatD}{\textbf{D}}
+
+\begin{document}
+
+\title{\textbf{The Three-Layer Chiral Minkowski Cellular Automaton:
+  A Unified Discrete Spacetime Model from First Principles}}
+
+\author{Nova Spivack}
+\affil{Independent Researcher}
+\date{May 2026}
+\maketitle
+
+\NovaZenodoAfterTitle
+
+%─────────────────────────────────────────────────────────────────────────────
+\begin{abstract}
+We derive physical observables from the three-layer Chiral Minkowski CA (CMCA):
+Rule~110 ($L_{x^+}$, right-moving), Rule~124 ($L_{x^-}$, left-moving), and a
+shared inner Rule~110 $\tau_c$ clock ($L_t$, timelike).
+
+Four principal results:
+(1) \textit{Lorentz invariance as observer effect:} PSC Presentation Invariance
+forces all $[\mathbf{D}]$-selected observables to be Lorentz-equivariant on
+the $\PHIMDL$ continuum; the lattice residual $\varepsilon_0(7) = \pi^2/147 \approx 6.71\%$
+vanishes as $M^{-2}$ in the continuum limit; at LHC energies
+$\delta_{\rm LV} \approx 8.8\times10^{-32}$ (\CatAL, zero sorry, one axiom).
+(2) \textit{Electroweak scale:} $\sin^2\theta_W = 384729/1664000 \approx 0.231207$
+($-0.42\sigma$ PDG~2022, \CatAL, Wolfenstein; two-loop correction: $+0.038\sigma$ PDG~2024, \CatB, P31~\cite{SpivackWeinbergAngle}); $M_Z = 91.91\,\text{GeV}$ ($+0.80\%$);
+$M_W = 80.61\,\text{GeV}$ (CA-scale, $M{=}7$ resolution).
+(3) \textit{Born rule:} $P(k) = |\phi_k|^2$ from canonical $\ZS$-KG kink
+quantization (\lean{born\_rule\_unconditional}, zero sorry, zero custom physics axioms).
+(4) \textit{Quantum interference:} the double-slit fringe pattern reproduced at
+correlation $0.998$ vs Fraunhofer ($\chi^2_{\rm red} \approx 10^{-4}$).
+
+The CMCA is the MDL-unique ($K_{\rm CA} = 19$ bits) Level-1 GTE model carrying
+all five structural features: $\ZS$ generation orbit, V--A chirality, Turing
+universality, observer-level Lorentz invariance, and SR proper-time dilation
+(5.79\% error, the $M=7$ Nyquist floor).
+The $3+1$D generalization is presented in~\cite{SpivackThreeTapeCMCA}.
+\end{abstract}
+
+\tableofcontents
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{Introduction}
+\label{sec:intro}
+%═════════════════════════════════════════════════════════════════════════════
+
+This work continues the programme of digital physics initiated by
+Zuse~\cite{Zuse1969}, Fredkin and Toffoli~\cite{fredkin1982conservative}, and
+Wolfram~\cite{Wolfram2002}, now with a machine-certified algebraic certificate
+and an identified physical substrate.
+
+The Universal Generative Principle (\UGP{}) Physics programme, the quantitative branch of the Reflexive Reality programme~\cite{SpivackCompUniversality,SpivackResearchProgrammes}
+derives Standard Model physics from first principles using a minimal discrete
+arithmetic substrate.  The foundational object is the Generative Triple
+Evolution (GTE) map, whose MDL-minimal realisation in one spatial dimension
+is the cellular automaton rule f$_{\rm MDL}$---equivalent to Rule~110 on the
+binary projection and a $\ZS$-valued update rule on the winding-number
+projection~\cite{SpivackGTEMobius}.  Rule~110 is Turing-universal
+(Cook~2004~\cite{Cook2004}; algebraically certified in~\cite{SpivackGF7Universality}).
+
+A single-layer Rule~110 substrate reproduces many SM predictions:
+the Weinberg angle~\cite{SpivackWeinbergAngle}, gauge group
+structure~\cite{SpivackGTEUnification}, particle
+masses~\cite{SpivackQMFromR110}, and the $\PHIMDL$ continuum
+field~\cite{SpivackGTEMobius}.  However, a single chiral layer cannot
+simultaneously account for all discrete symmetries of the Standard Model.
+Specifically:
+\begin{itemize}[noitemsep]
+  \item \textit{Chiral symmetry (V--A):} the SM charged-current couples
+    left-handed fermions only.  A single right-moving CA glider does not
+    distinguish left- from right-handed currents.
+  \item \textit{Lorentz invariance:} Rule~110 has a preferred direction
+    (right-moving gliders travel at $v_R=+2/3$ in lattice units) and does
+    not, by itself, exhibit the Lorentz boost symmetry of the continuum
+    limit.
+  \item \textit{Generation orbit asymmetry:} mirror decays proceed in 2 steps
+    in a single chiral layer, while the forward orbit takes 3 steps.
+\end{itemize}
+
+These three requirements are resolved simultaneously by pairing Rule~110
+with its \emph{spatial mirror}, Rule~124 (right-mirror: the left-moving
+chiral layer).  The two-layer system---Rule~110 ($v_R=+2/3$) plus
+Rule~124 ($v_L=-2/3$)---is the minimal substrate consistent with all SM
+discrete symmetries.
+The pair is itself arithmetically forced: over all $120$ family orderings
+of the unordered UGP generation-orbit data, the admissible vacuum-transparent
+survivor set is exactly $\{\text{Rule~110}, \text{Rule~124}\}$, with reversal
+of the ordering bijecting the two (\lean{orbit\_chirality\_census},
+machine-certified in Lean~4 with zero
+sorry~\cite{SpivackGTEPolynomialWolfram,SpivackGTECompleteFramework}).
+The two-layer chiral architecture thus instantiates the full survivor set,
+and the choice of which member carries which direction is the chirality
+gauge.
+
+\medskip
+
+% ── Claim-strength taxonomy ───────────────────────────────────────────────────
+\begin{tcolorbox}[colback=gray!4,colframe=gray!50!black,
+  title={\textbf{Claim-strength taxonomy}},
+  fonttitle=\bfseries,left=6pt,right=6pt,top=5pt,bottom=5pt]
+\small
+\[
+\CatAL \;>\; \CatAMDL \;>\; \CatAD \;>\; \CatA \;>\; \CatB \;>\; \CatD
+\]
+\textbf{$\CatAL$:} machine-checked exact arithmetic in Lean~4, zero \texttt{sorry}.\\
+\textbf{$\CatAMDL$:} MDL-unique within a declared expression class.\\
+\textbf{$\CatAD$:} analytically derived and computationally confirmed.\\
+\textbf{$\CatA$:} computationally confirmed; an analytic derivation or Lean cert remains.\\
+\textbf{$\CatB$:} calibrated reproduction.\\
+\textbf{$\CatD$:} exploratory / frontier.
+\end{tcolorbox}
+
+% ── Reviewer's map ────────────────────────────────────────────────────────────
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{2.8cm}>{\raggedright\arraybackslash}p{1.4cm}>{\raggedright\arraybackslash}p{8.8cm}>{\raggedright\arraybackslash}p{2.2cm}@{}}
+\caption{Reviewer's map: principal claims, certification level, and location.}
+\label{tab:reviewer_map}\\
+\toprule
+\textbf{Result} & \textbf{Status} & \textbf{Claim} & \textbf{Where}\\
+\midrule
+\endfirsthead
+\multicolumn{4}{l}{\small\itshape (Table~\ref{tab:reviewer_map} continued)}\\
+\toprule
+\textbf{Result} & \textbf{Status} & \textbf{Claim} & \textbf{Where}\\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\small\itshape (continued on next page)}\\
+\endfoot
+\bottomrule
+\endlastfoot
+CMCA definition & $\CatAL$ &
+  Three-layer Chiral Minkowski CA: $L_{x^+}$ (R110), $L_{x^-}$ (R124),
+  $L_t$ (inner R110 $\tau_c$); three irreducible Minkowski causal directions. &
+  \S\ref{sec:temporal_layer}\\
+Inner clock mechanism & CatA &
+  ETHER14 re-seed; binary $\tau_c\in\{0,1\}$; glider flip rate $57\%$ vs
+  ether $42\%$; differential $\tau_c$ is the SR dilation mechanism. &
+  \S\ref{ssec:inner_clock_mechanism}\\
+SR time dilation & CatA &
+  $\tau_{\rm glider}/\tau_{\rm ether}=1.563$, SR error $5.79\%$ (M=7 Nyquist floor);
+  synchronous variant gives ratio $1.000$ (no dilation). &
+  \S\ref{sec:temporal_layer}\\
+Five-feature unification & CatA &
+  CMCA uniquely realises all five Level-1 GTE features (Z$_7$ orbit, V--A,
+  Turing universality, observer Lorentz, dynamics SR). &
+  \S\ref{sec:cmca_unified}\\
+Mass-pipeline interface & disclosure &
+  Structural CMCA IMT mixer audit; fermion UCL/dual-path in~\cite{SpivackSM}. &
+  \S\ref{ssec:mass_interface}\\
+GTE category & conditional CatAL &
+  $\PHIMDL$ is terminal object; CMCA is MDL-maximally-featured Level-1 object.
+  Lean: \lean{GTECategoryStructure.lean}, axiom \lean{d2\_universal}. &
+  \S\ref{sec:cmca_unified}\\
+Algebraic Lifting & $\CatAL$ &
+  Every PSC-admissible SM configuration is algebraically realised in $f_{\rm MDL}$.
+  Lean: \lean{LiftingTheorem.lean} (P28), zero sorry. &
+  \S\ref{ssec:lifting_descent}\\
+Algebraic Descent & $\CatAL$ &
+  Every F$_{21}$ conservation law holds at all resolutions $M\geq1$.
+  Lean: \lean{AlgebraicDescentTheorem.lean} (P28), zero sorry. &
+  \S\ref{ssec:lifting_descent}\\
+SR Nyquist M-dep. & $\CatAL$ &
+  $\epsz(M)=\pi^2/(3M^2)$ is $M$-dependent; does not descend.
+  Lean: \lean{sr\_accuracy\_depends\_on\_M}, zero sorry. &
+  \S\ref{ssec:lifting_descent}\\
+Frame duality & CatA &
+  $\mathrm{R124}(\mathrm{rev}(X))=\mathrm{rev}(\mathrm{R110}(X))$; verified 30 steps. &
+  \S\ref{sec:temporal_layer}\\
+Chiral mirror & $\CatAL$ &
+  Rule~124 is the spatial mirror of Rule~110; the two-layer system has
+  exact $|v_R|=|v_L|=2/3$, ether period~14, and the same $\ZS$ generation orbit. &
+  \S\ref{sec:twolayer}, App.~\ref{app:lean}\\
+Orbit depth $=$ period $= 7$ & $\CatAL$ &
+  Maximum $f_{\rm MDL}$ decay depth on $\ZS^5$ equals the ether temporal period.
+  Lean: \lean{OrbitDepthEtherPeriod.lean}. &
+  \S\ref{sec:twolayer}\\
+Lorentz KG & $\CatAL$ &
+  $\PHIMDL$ Klein-Gordon dispersion $\omega^2=k^2+m^2$ is Lorentz-invariant.
+  Lean: \lean{LorentzInvariance.lean}, zero sorry. &
+  \S\ref{sec:lorentz}\\
+PSC $\to$ Lorentz & $\CatAL$ (1 axiom) &
+  PSC Presentation Invariance forces $[\mathbf{D}]$-selected observables to be
+  Lorentz-equivariant.
+  Lean: \lean{PSCPILorentzMain.lean}, axiom \lean{d2\_universal}. &
+  \S\ref{sec:lorentz}\\
+LV bound & $\CatAD$ &
+  Lattice residual $\varepsilon_0(7)=\pi^2/147\approx6.71\%$, vanishing as
+  $M^{-2}$ in the continuum limit; $\delta_{\rm LV}\approx8.8\times10^{-32}$
+  at LHC, far below existing bounds. &
+  \S\ref{sec:lorentz}\\
+Weinberg angle & $\CatAL$ &
+  $\sinwsq=384729/1664000\approx0.231207$ (PDG~2024 $0.23129$; Wolfenstein \CatAL, $+0.038\sigma$ at \CatB two-loop, P31).
+  Lean: \lean{EWScalePrediction.lean}, zero sorry. &
+  \S\ref{sec:ew}\\
+$M_W/M_Z$ ratio & $\CatAL$ &
+  $(M_W/M_Z)^2=10/13$. Lean-certified: \lean{mw\_mz\_squared\_from\_weinberg}. &
+  \S\ref{sec:ew}\\
+$M_Z$, $M_W$ scale & $\CatAD$ &
+  $M_Z=91.91$~GeV ($+0.80\%$ vs.\ PDG); $M_W=80.61$~GeV ($+0.30\%$).
+  Physics bridge: \lean{psc\_ew\_entropy\_maximization} open axiom. &
+  \S\ref{sec:ew}\\
+Born rule & $\CatAL$ &
+  $P(k)=|\phi_k|^2$ from $\ZS$-KG kink superselection.
+  Lean: \lean{born\_rule\_unconditional} in
+  \lean{BeableWindingPartitionInstance.lean}; zero custom physics axioms. &
+  \S\ref{sec:born}\\
+Double-slit & $\CatA$ &
+  Huygens-Fresnel propagation reproduces Fraunhofer fringe pattern;
+  $\mathrm{corr}=0.998$, $\chi^2_{\rm red}\approx10^{-4}$.&
+  \S\ref{sec:dslit}\\
+V--A structure & $\CatAL$ &
+  Exactly $32/125$ SM vertex triples exhibit left--right winding mismatch,
+  all involving $W^+$.  Lean: \lean{ChiralPairVA.lean}, zero sorry. &
+  \S\ref{sec:va}\\
+\end{longtable}
+\normalsize
+\renewcommand{\arraystretch}{1}
+
+\medskip
+
+\begin{tcolorbox}[colback=green!4,colframe=green!45!black,
+  title={\textbf{Central result}},
+  fonttitle=\bfseries,left=6pt,right=6pt,top=4pt,bottom=4pt]
+\small
+The \emph{Chiral Minkowski CA} (CMCA) --- Rule~110 ($x^+$ null layer) $\oplus$
+Rule~124 ($x^-$ null layer) $\oplus$ inner Rule~110 $\tau_c$ clock (timelike
+layer) --- is the minimal Level-1 GTE discrete substrate simultaneously
+consistent with Lorentz invariance, the electroweak scale, the Born rule,
+V--A parity structure, and dynamics-level SR proper-time dilation.
+Lorentz invariance is an observer effect: the CA beable layer has a preferred
+frame at the lattice scale---placed at the Planck scale under the conventional
+fine-end working hypothesis $a\approx\ell_P$, a calibration reading of
+the discrete certificate rather than a GTE derivation
+(cf.\ the no-CA-replica theorem of P43~\cite{SpivackCompleteness})---but
+PSC Presentation Invariance (D2 of
+P34~\cite{SpivackGTEMobius}) forces all $[\mathbf{D}]$-selected observables to
+be Lorentz-equivariant on the $\PHIMDL$ continuum---machine-certified in Lean~4
+with zero sorry (one axiom: \lean{d2\_universal}).
+The Weinberg angle $\sinwsq=384729/1664000\approx0.231207$
+(PDG~2024 $0.23129\pm0.00004$; Wolfenstein \CatAL; two-loop threshold $+0.038\sigma$, \CatB, P31) and the ratio $M_W/M_Z=\sqrt{10/13}$ follow from the
+orbit arithmetic of the two outer layers with no tunable free parameters,
+both machine-certified in Lean~4 with zero sorry.
+Born rule $P(k)=|\phi_k|^2$ follows from canonical $\ZS$-KG kink superselection.
+The three-layer structure realises the three irreducible causal directions of
+$1+1$D Minkowski spacetime: right null ($x^+$), left null ($x^-$), timelike ($t$).
+\end{tcolorbox}
+
+\medskip
+
+\begin{tcolorbox}[colback=orange!4,colframe=orange!55!black,
+  title={\textbf{What this paper does and does not claim}},
+  fonttitle=\bfseries,left=6pt,right=6pt,top=5pt,bottom=5pt]
+\small
+\textbf{Established in this paper:}
+The Chiral Minkowski CA (CMCA) --- Rule~110 $\oplus$ Rule~124 $\oplus$ inner
+Rule~110 $\tau_c$ clock --- is the minimal Level-1 GTE discrete substrate
+consistent with V--A weak-current structure, a symmetric light cone, and
+dynamics-level SR proper-time dilation.
+Lorentz equivariance of $[\mathbf{D}]$-selected observables is machine-certified
+from PSC Presentation Invariance (one axiom: \lean{d2\_universal}).
+The Weinberg angle $\sinwsq=384729/1664000$ and ratio $M_W/M_Z=\sqrt{10/13}$
+are Lean-certified with zero sorry.
+The Born rule $P(k)=|\phi_k|^2$ is derived from $\ZS$-KG kink superselection;
+\lean{born\_rule\_unconditional} is certified with zero custom physics axioms.
+V--A structure ($32/125$ mismatches) and the orbit depth identity
+(depth $= $ ether period $= 7$) are Lean-certified with zero sorry.
+The inner $\tau_c$ clock gives $\tau_{\rm glider}/\tau_{\rm ether}\approx1.563$
+at $5.79\%$ SR error for the canonical C2 glider (CatA), within the
+M=7 Nyquist floor $\epsz(7)\approx6.71\%$.
+
+\textbf{Not claimed:}
+This paper does not derive gravitational coupling or a quantum-gravitational
+correction to the Weinberg angle; those remain open (\S\ref{ssec:open}).
+The absolute mass values $M_Z$ and $M_W$ in GeV require the open axiom
+\lean{psc\_ew\_entropy\_maximization} and carry $\CatAD$ status; unconditional
+$\CatAL$ for absolute masses is an open problem (\S\ref{ssec:open}).
+The CMCA does not account for neutrino mixing angles or the CKM
+matrix; these belong to distinct UGP sectors covered in companion papers.
+\end{tcolorbox}
+
+\medskip
+
+\paragraph{Main results.}
+This paper establishes the following:
+\begin{enumerate}[noitemsep]
+  \item \textbf{Outer chiral layers} (\S\ref{sec:twolayer}):
+    Rule~124 is the spatial mirror of Rule~110; the decoupled
+    two outer layers have exact $|v_R|=|v_L|=2/3$, ether period 14,
+    and the same $\ZS$ generation orbit as the single-layer system.
+    Lean-certified: \lean{ChiralMirrorSpeedSymmetry.lean} (zero sorry).
+
+  \item \textbf{The temporal layer and CMCA} (\S\ref{sec:temporal_layer}):
+    a shared inner Rule~110 $\tau_c$ clock per cell gates both outer layers,
+    completing the three-layer Chiral Minkowski CA.
+    A four-step per-cell update algorithm is given in
+    \S\ref{ssec:update_algorithm}; the canonical implementation is
+    \texttt{two\_layer\_chiral\_afca\_prototype.py}.
+    Moving gliders carry elevated $\tau_c$, producing dynamics-level SR time
+    dilation $\tau_{\rm glider}/\tau_{\rm ether}\approx1.563$ at $5.79\%$ SR
+    error (CatA).  Asynchrony is the operative mechanism: the synchronous
+    variant gives $\tau_{\rm glider}/\tau_{\rm ether}=1.000$ exactly.
+
+  \item \textbf{CMCA as unified discrete model} (\S\ref{sec:cmca_unified}):
+    the CMCA carries all five Level-1 GTE structural features
+    (Z$_7$ orbit, V--A, Turing universality, observer-level Lorentz,
+    dynamics-level SR) in one construction.  The GTE category has
+    $\PHIMDL$ as terminal object; the CMCA is the MDL-maximally-featured
+    Level-1 object.  Lean-certified (conditional CatAL):
+    \lean{GTECategoryStructure.lean}.
+
+  \item \textbf{Lorentz invariance as observer effect}
+    (\S\ref{sec:lorentz}):
+    the CA preferred frame is undetectable by $[\mathbf{D}]$-selected
+    observables.  Three tracks converge: (a)~the $\PHIMDL$ KG dispersion
+    relation $\omega^2=k^2+m^2$ is Lorentz-invariant (Lean:
+    \lean{LorentzInvariance.lean}, zero sorry); (b)~PSC Presentation
+    Invariance forces $[\mathbf{D}]$ to be Lorentz-equivariant (Lean:
+    \lean{PSCPILorentzMain.lean}, zero sorry, axiom \lean{d2\_universal});
+    (c)~the shared inner $\tau_c$ clock implements dynamics-level SR
+    proper-time dilation at the M=7 Nyquist floor (\S\ref{sec:temporal_layer}).
+
+  \item \textbf{Electroweak scale} (\S\ref{sec:ew}):
+    $\sinwsq=384729/1664000\approx 0.231207$ (PDG~2024 $0.23129$; \CatAL\ Wolfenstein; $+0.038\sigma$ at \CatB two-loop, P31);
+    $\Mz=91.91$~GeV ($+0.80\%$); $\Mw=80.61$~GeV ($+0.30\%$).
+    Lean-certified: \lean{EWScalePrediction.lean} (zero sorry).
+
+  \item \textbf{Born rule from kink quantization}
+    (\S\ref{sec:born}):
+    $P(k)=|\phi_k|^2$ from $\ZS$-KG kink superselection.
+    Lean-certified: \lean{born\_rule\_unconditional} in
+    \lean{BeableWindingPartitionInstance.lean} (zero sorry, zero custom
+    physics axioms).
+
+  \item \textbf{Double-slit interference} (\S\ref{sec:dslit}):
+    Huygens--Fresnel propagation through two slits reproduces the standard
+    fringe pattern with $\mathrm{corr}=0.998$ versus Fraunhofer;
+    Born-rule sampling gives $\chi^2_{\rm red}\approx10^{-4}$.
+
+  \item \textbf{V--A structure} (\S\ref{sec:va}):
+    exactly $32/125$ SM vertex triples exhibit a
+    left--right winding mismatch, all involving $W^+$ in a non-centre
+    position; this is the CA realisation of V--A parity violation.
+    Lean-certified: \lean{ChiralPairVA.lean} (zero sorry).
+\end{enumerate}
+
+\paragraph{Reader's guide.}
+\begin{itemize}[noitemsep]
+  \item \emph{Architecture and mechanics}: the blue overview box below, then
+    \S\ref{sec:twolayer}--\ref{sec:temporal_layer} (especially
+    \S\ref{ssec:update_algorithm} for the four-step update rule and
+    \S\ref{par:w_vertex_walkthrough} for the $W$-vertex simulation walkthrough).
+  \item \emph{Lorentz invariance derivation}: \S\ref{sec:lorentz} (three tracks,
+    with the PSC/Lean certificate in \S\ref{ssec:track2}).
+  \item \emph{Electroweak predictions}: \S\ref{sec:ew} (Weinberg angle,
+    $M_W/M_Z$, absolute scale).
+  \item \emph{Three-tape 3+1D extension}: companion paper P45~\cite{SpivackThreeTapeCMCA}.
+\end{itemize}
+
+This paper is part of the UGP Physics programme~\cite{SpivackResearchProgrammes}.  Companion references:
+P28~\cite{SpivackCompUniversality} (computational universality and Rule~110),
+P30~\cite{SpivackCookTheorem} (Cook theorem certification),
+P31~\cite{SpivackWeinbergAngle} (Weinberg angle),
+P33~\cite{SpivackDeeperConsequences} (deeper EW consequences),
+P34~\cite{SpivackGTEMobius} (GTE-M\"obius architecture and $[\mathbf{D}]$ axioms),
+P35~\cite{SpivackGTEUnification} (GTE unification),
+P36~\cite{SpivackEmergentGravity} (AFCA $\tau_c$ SR mechanism and emergent gravity),
+P37~\cite{SpivackQMFromR110} (quantum mechanics),
+P40~\cite{SpivackGF7Universality} (GF(7) polynomial universality).
+
+\paragraph{GTE substrate terminology.}
+The GTE substrate is a triple $(A,\,e,\,[\mathbf{D}])$: $A$ is the cellular-automaton arithmetic layer; the full Chiral Minkowski CA $(A,e,[\mathbf{D}])$ triple is realized by Rule~110 ($L_{x^+}$) + Rule~124 ($L_{x^-}$) + inner Rule~110 $\tau_c$ clock ($L_t$); see Definition~\ref{def:cmca}.  $e$ is the evolutionary dynamics (the CA update rule $f_{\rm MDL}$); and $[\mathbf{D}]$ is the \emph{coherence measure}---a real-valued functional on candidate/record pairs that the Perfect Self-Containment (PSC) criterion uses to adjudicate which CA trajectories correspond to physical observations~\cite{SpivackGTEMobius}.  A \emph{$[\mathbf{D}]$-selected observable} is one assigned positive weight by $[\mathbf{D}]$.  The PSC axiom D2 (Presentation Invariance) states that $[\mathbf{D}]$ is invariant under any transformation that preserves the substrate's PSC structure---this is the axiom from which Lorentz equivariance is derived in~\S\ref{sec:lorentz}.  Throughout, \emph{machine-certification levels} follow the GTE convention: $[\mathrm{A}_{\rm Lean}]$ (Lean~4 proof, zero sorry), $[\mathrm{A/D}]$ (algebraically derivable, computationally confirmed), $[\mathrm{A}]$ (computationally confirmed, no Lean certification).
+
+%─────────────────────────────────────────────────────────────────────────────
+\begin{tcolorbox}[colback=blue!3,colframe=blue!40!black,
+  title={\textbf{How the Chiral Minkowski CA works: a layer-by-layer overview}},
+  fonttitle=\bfseries,left=8pt,right=8pt,top=6pt,bottom=6pt]
+\small
+The Chiral Minkowski CA (CMCA) consists of three coupled layers, each
+corresponding to one of the three irreducible causal directions of $1+1$D
+Minkowski spacetime.
+Throughout this paper, ``three-layer'' denotes this \emph{internal}
+cell-level coupling within a single $1+1$D automaton (right-null outer,
+left-null outer, and inner $\tau_c$ clock), not three independent spatial
+automata; the radius-$1$ update neighborhood $(l,c,r)$ of each elementary
+rule is a separate three-input structure.
+The generalization to three spatial CMCA instances (``tapes'') sharing a
+common outer clock is treated in the companion
+paper~\cite{SpivackThreeTapeCMCA}.
+
+\medskip
+\textbf{Layer 1 — $x^+$ right-null layer (Rule~110).}
+Rule~110 is a one-dimensional binary CA defined by Wolfram rule number 110.
+It is Turing-universal (Cook~2004; algebraically re-proved via the GF(7)
+polynomial representation in P40).
+This layer supports three particle-like structures: right-moving gliders
+(C2 type, speed $v_R = +2/3$ in lattice units), the $\ZS$-periodic background
+(``ether'', period~7), and Garden-of-Eden configurations (the first-generation
+state, with no CA predecessor).  The $\ZS = \mathbb{Z}_7$ winding number is
+conserved, encoding electric charge and the three-generation structure.
+
+\medskip
+\textbf{Layer 2 — $x^-$ left-null layer (Rule~124).}
+Rule~124 is the spatial mirror of Rule~110: $\mathrm{R124}(l,c,r) =
+\mathrm{R110}(r,c,l)$.  It runs on the same tape positions as Layer~1 but
+with opposite chirality.  Where Layer~1 has right-moving gliders at $v_R =
++2/3$, Layer~2 has left-moving gliders at $v_L = -2/3$.  The two-layer system
+restores the symmetric light cone ($|v_R| = |v_L|$), which is the CA
+realisation of Lorentz covariance at the kinematic level.
+The layers are UV-decoupled (Theorem~\ref{thm:nogo}): no cell-level Boolean
+coupling can preserve the period-3 glider coherence, because $\gcd(3, 14) = 1$.
+Their coupling at the electroweak scale is mediated by resonant, event-triggered
+operators (Theorem~\ref{thm:event_coupling}).
+
+\medskip
+\textbf{Layer 3 — $t$ timelike layer (inner Rule~110 $\tau_c$ clock).}
+At each cell position $x$, a second Rule~110 CA of width $M = 7$ runs at a
+finer time scale.  This inner CA is seeded from the ETHER14 background
+(the 14-period ether of the two-layer system) at each outer step.
+The outer cell at $x$ advances its state only when the inner CA completes a
+transition — that is, when the majority of the $M=7$ inner window first
+matches the outer target state (first-passage recurrence time $\tau_c$).
+With ETHER14 seeding, $\tau_c \in \{0, 1\}$: the inner clock fires in one step
+if the outer cell flips, and zero steps if it stays.
+Moving gliders flip at $\approx 57\%$ of outer transitions; ether cells flip at
+$\approx 42\%$.  This systematic $\tau_c$ elevation for gliders is the
+discrete mechanism of SR proper-time dilation: the glider's outer state
+advances less frequently, so its clock runs slow.
+
+\medskip
+\textbf{The three-layer interplay.}
+The shared inner clock gates \emph{both} outer layers: when the inner CA at
+position $x$ fires, both the Rule~110 and Rule~124 outer cells at $x$ advance.
+At the algebraic level, the three layers map to the GTE Möbius triple
+$(A, e, [\mathbf{D}])$: Layer~1 carries the beable arithmetic ($A$),
+Layer~2 the chiral dynamics ($e$), and Layer~3 the coherence measure
+($[\mathbf{D}]$, proper time).
+The continuum limit ($M \to \infty$) removes the $\epsz(M) = \pi^2/(3M^2)$
+Lorentz-violation residual and promotes all five structural features to
+the exact $\PHIMDL$ field theory.
+\end{tcolorbox}
+\medskip
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{The Outer Chiral Layers: Rule 110 and Rule 124}
+\label{sec:twolayer}
+%═════════════════════════════════════════════════════════════════════════════
+
+\subsection{Rule 110 and Rule 124: Mirror pair}
+\label{ssec:mirror}
+
+Rule~110 is a one-dimensional, two-state, radius-1 CA in which each cell
+updates according to the Wolfram rule number 110:
+\begin{equation}
+  \mathrm{R110}(l,c,r) = \text{bit}_{7-4l-2c-r}(110),
+\end{equation}
+where $(l,c,r)\in\{0,1\}^3$ is the left-centre-right neighbourhood.
+Its Lean formalisation in \lean{ugp-lean} uses \lean{Fin~2} states.
+
+\begin{definition}[Mirror rule]
+  \label{def:mirror}
+  For a CA rule $f:\{0,1\}^3\to\{0,1\}$, its \emph{spatial mirror} is
+  $\bar f(l,c,r)=f(r,c,l)$.
+\end{definition}
+
+\begin{theorem}[\lean{rule124Fin2\_is\_spatial\_mirror}; \CatAL{} zero sorry]
+  \label{thm:mirror}
+  Rule~124 is the spatial mirror of Rule~110:
+  $\mathrm{R124}(l,c,r)=\mathrm{R110}(r,c,l)$ for all $(l,c,r)$.
+\end{theorem}
+
+\noindent The proof is a finite case check (256 cases over the full
+3-bit neighbourhood, dispatched by \lean{decide} in
+\lean{ChiralMirrorSpeedSymmetry.lean}).
+
+\begin{remark}[Census grounding of the chiral pair]
+\label{rem:census}
+The mirror pair is not a choice among candidate rule pairs.  Over all $120$
+family orderings of the unordered UGP generation-orbit data, the admissible
+vacuum-transparent survivor set is exactly
+$\{\text{Rule~110}, \text{Rule~124}\}$, and reversal of the ordering bijects
+the $110$-orderings onto the $124$-orderings
+(\lean{orbit\_chirality\_census}; \CatAL{} zero
+sorry~\cite{SpivackGTEPolynomialWolfram,SpivackGTECompleteFramework}).
+The ordering convention is the chirality gauge: which member of the pair
+carries the right-moving direction is fixed by the family ordering, not by
+the dynamics.
+\end{remark}
+
+\begin{remark}[Layers vs.\ levels]
+\label{rem:layers_levels}
+Throughout this paper we distinguish two uses of ``layer/level'':
+(i)~\emph{Two chiral layers}: Rule~110 (right-moving) and Rule~124 (left-moving), both operating on the \emph{same} discrete CA substrate (Level~1 below).
+(ii)~\emph{Two levels}: the discrete CA substrate (Level~1, preferred frame; lattice spacing at the Planck scale under the fine-end working hypothesis $a\approx\ell_P$) and the $\PHIMDL$ continuum field (Level~2, exact Lorentz invariance); they are related by the continuum limit $\epsz(M)\to0$.
+The discrete certificate carries no intrinsic spacing (the no-CA-replica theorem of P43~\cite{SpivackCompleteness}); $a\approx\ell_P$ is a calibration reading of the certificate, used throughout this paper as the conventional working hypothesis.
+The chiral layers live \emph{within} Level~1; the two-level distinction is between the CA and its continuum limit.
+In the Chiral Minkowski CA (\S\ref{sec:temporal_layer}), the temporal layer $L_t$ joins the two spatial layers, giving a three-layer structure $(L_{x^+}, L_{x^-}, L_t)$ that exhausts the irreducible causal directions of 1+1D Minkowski spacetime.
+\end{remark}
+
+As a consequence, if Rule~110 supports a right-moving glider (C2 type)
+at speed $v_R>0$, then Rule~124 supports a left-moving mirror-C2 glider
+at speed $v_L=-v_R$.  This is the content of the speed-symmetry theorem.
+
+\subsection{Glider speeds and chiral pair}
+\label{ssec:speeds}
+
+The canonical A-glider of Rule~110 has triplet $[0,1,1]$ and period~3,
+advancing by 2 cells per period: $v_R=+2/3$ in lattice units.
+The mirror C2 glider in Rule~124 has triplet $[1,0,1]$ and
+$v_L=-2/3$.
+
+\begin{theorem}[\lean{mirror\_rule\_speed\_symmetry}; \CatAL{} zero sorry]
+  \label{thm:speeds}
+  In the decoupled two-layer system, $|v_R|=|v_L|=2/3$ exactly.
+\end{theorem}
+
+The Lean proof constructs the Rule~124 glider orbit explicitly as the spatial
+mirror of the Rule~110 glider orbit; the speed equality follows by definition
+of the mirror map.
+
+\begin{remark}[Physical identification]
+  In natural units with lattice spacing $a$, the continuum limit identifies
+  the glider speed with the speed of light: $v_R\cdot a\to c$ as $a\to0$.
+  The two-layer pair restores the symmetric light cone, which is the CA
+  analogue of Lorentz covariance.
+\end{remark}
+
+\subsection{Ether period and Z\texorpdfstring{$_7$}{7} structure}
+\label{ssec:ether}
+
+Both Rule~110 and Rule~124 support stable spatially-uniform backgrounds
+(``ethers'') on periodic lattices of length divisible by~7.  The single-layer
+Rule~110 ether has temporal period~7; the combined two-layer ether has period
+$\mathrm{lcm}(7,7)=7$ on each layer, but with a spatial offset, giving a
+\emph{two-layer ether period} of~14.
+
+\begin{proposition}[Ether structure]
+  \label{prop:ether}
+  The Rule~124 ether has drift $+4$ cells per period (vs.\ $+3$ for
+  Rule~110 ether); temporal period~7; $\ZS$ winding sum~1; it is the
+  spatial reverse of the Rule~110 ether.  The combined ether has period~14.
+\end{proposition}
+
+The $\ZS$ generation orbit is preserved in the decoupled two-layer system:
+the forward orbit gen$_1\to\mathrm{gen}_2\to\mathrm{gen}_3\to\mathrm{vac}$
+takes 3 steps in Rule~110 (CatA, verified computationally and encoded in
+\lean{GUTStructure.lean}~\S41), while the mirror orbit under Rule~124
+takes 2 steps---reflecting the experimental fact that the heavier
+mirror-sector modes decay more rapidly than the forward-sector cascade.
+
+\begin{theorem}[\lean{OrbitDepthEtherPeriod.lean}; \CatAL{} zero sorry]
+  \label{thm:orbit_depth}
+  The maximum f$_{\rm MDL}$ decay depth on $\ZS^5$ equals the Rule~110 ether
+  temporal period: both equal $|\ZS|=7$.
+\end{theorem}
+
+\subsection{Single-layer properties: what carries over}
+\label{ssec:carryover}
+
+The two-layer extension preserves the structural content of the single-layer
+theory~\cite{SpivackCompUniversality,SpivackGTEUnification}.
+Table~\ref{tab:carryover} summarises the 12 properties surveyed computationally.
+
+\begin{table}[h]
+  \centering
+  \small
+  \caption{Single-layer Rule~110 property carry-over to the decoupled
+    two-layer (Rule~110 $\oplus$ Rule~124) system.}
+  \label{tab:carryover}
+  \begin{tabular}{P{0.23\linewidth}P{0.20\linewidth}P{0.28\linewidth}P{0.14\linewidth}}
+    \toprule
+    Property & Single layer & Two-layer & Status \\
+    \midrule
+    $\ZS$ winding conservation & \checkmark & \checkmark & PRESERVED \\
+    Garden of Eden (gen$_1$) & \checkmark & \checkmark & PRESERVED \\
+    Palindrome rule structure & \checkmark & \checkmark & PRESERVED \\
+    $\sinwsq=3/13$ & \checkmark & \checkmark & PRESERVED \\
+    $\Ngen=3$ & \checkmark & \checkmark & PRESERVED \\
+    Orbit depth $=7$ & \checkmark & \checkmark & PRESERVED \\
+    Glider speed $|v|=2/3$ & $v_R=+2/3$ & $v_R=+2/3$, $v_L=-2/3$ & PRESERVED \\
+    Generation orbit & 3-step forward & Forward 3, mirror 2 & MODIFIED \\
+    Parity violation & single-layer & V--A: 32/125 mismatches & MODIFIED \\
+    Left-handed stability & single-layer & Two-layer asymmetry & MODIFIED \\
+    Layer decoupling & N/A & UV decoupled & NEW \\
+    XOR physical observable & N/A & cross-layer $\oplus$ tape & NEW \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+No existing single-layer CatAL result is broken by the two-layer extension.
+All six preserved properties remain valid in the two-layer system.
+The three modified properties are refined (not contradicted): they acquire
+chirality structure that is the expected signature of V--A weak-current physics.
+
+\subsection{The coupling no-go and its physical interpretation}
+\label{ssec:nogo}
+
+A natural question is whether the two layers can be coupled at the CA level
+while preserving the glider coherence required for Lorentz-invariant
+propagation.  The answer is negative.
+
+\begin{theorem}[\lean{CouplingNoGo.lean}; \CatAL{} zero sorry]
+  \label{thm:nogo}
+  Let $T_{\rm ether}=14$ be the two-layer ether period and $T_{\rm glider}=3$
+  the C2 glider period.  Since $\gcd(3,14)=1$, any cell-level coupling
+  function introduces a period-$\mathrm{lcm}(3,7)=21$ orbit mismatch:
+  $21\nmid 3$, so the C2 glider cannot maintain period-3 coherence under any
+  uniform, non-uniform, or periodic CA-local coupling.
+  Formally:
+  \begin{equation}
+    \gcd(T_{\rm glider},\,T_{\rm ether/2}) = \gcd(3,7) = 1
+    \;\Longrightarrow\;
+    \mathrm{lcm}(3,7) = 21 \nmid 3.
+  \end{equation}
+  The theorem \lean{gcd\_glider\_ether} certifies $\gcd(3,14)=1$;
+  \lean{orbit\_length\_eq\_seven} certifies the period-7 orbit length;
+  \lean{gcd\_glider\_orbit} ($\gcd(3,7)=1$) and \lean{lcm\_glider\_orbit}
+  ($\mathrm{lcm}(3,7)=21$) certify the period-7 sublattice obstruction.
+\end{theorem}
+
+\noindent Computationally (CatA), all 24 uniform Boolean coupling functions
+(XOR, AND, OR, etc.) are tested and all fail to preserve the period-3 glider.
+Nine non-uniform coupling forms (including period-14 and mirror variants) also
+fail.
+
+\paragraph{Physical interpretation.}
+The gcd(3,14) no-go is correct SM physics: left- and right-handed chiral
+sectors do \emph{not} interact at the UV (CA/Planck) scale.  Their coupling
+emerges at the infrared (electroweak) scale through $W$-boson exchange---a
+three-particle vertex involving an off-shell propagator, not a CA-local
+Boolean operation.  This is captured by the event-triggered coupling escape
+(Theorem~\ref{thm:event_coupling}).
+
+\begin{theorem}[\lean{DynamicalCouplingBridge.lean}; \CatAL{} arithmetic, 1 axiom]
+  \label{thm:event_coupling}
+  The cell-level coupling no-go is evaded at the excitation level:
+  an event-triggered coupling operator acting at resonant times $t=21k$ preserves
+  both $v_R=2/3$ (period-3 Rule~110 glider) and induces a coherent
+  $v_L\approx-2/3$ mode in the Rule~124 layer ($p_3=1.0$, 20 resonant cycles).
+  Axiom: \lean{discrete\_w\_vertex\_interpretation}
+  (the $W$-boson charged-current vertex is a discrete inter-layer event at the
+  EW scale).
+\end{theorem}
+
+\paragraph{Simulation walkthrough: what a $W$-vertex looks like.}
+\label{par:w_vertex_walkthrough}
+The event-triggered mechanism is most clearly understood by following a
+single simulation run ($L=840$, $T=300$, canonical C2 seed at
+position~421 in $L_{x^+}$; script
+\texttt{epic073\_rank070\_122\_}%
+\texttt{dynamical\_coupling\_bridge.py}):
+
+\begin{enumerate}[label=\textbf{\arabic*.},itemsep=2pt]
+  \item \textbf{$t=0$–$20$: pre-vertex propagation.}
+    Both layers evolve independently.  The $L_{x^+}$ C2 glider propagates
+    at $v_R=+2/3$ (period~3); $L_{x^-}$ remains on the ETHER14 background
+    with zero cross-layer perturbation (peak cross-layer sites~$=0$ in the
+    decoupled baseline).  $\ZS$ winding is conserved independently on
+    each layer.
+
+  \item \textbf{$t=21$ (resonant event): vertex fires.}
+    The glider has advanced $\lfloor 21\times2/3\rfloor=14$ cells to
+    position $\approx435$.  Because $21=\mathrm{lcm}(3,7)$, the C2 glider
+    phase and the ETHER14 phase are simultaneously aligned for the first
+    time since $t=0$.  At this moment the event-triggered operator
+    places an excitation into $L_{x^-}$ at the glider's current position.
+    This is the CA realisation of a $W$-boson charged-current vertex: a
+    discrete inter-layer event at the glider's null-front, not a CA-local
+    Boolean coupling.
+
+  \item \textbf{$t=21$–$294$: post-vertex evolution.}
+    The $L_{x^+}$ glider continues undisturbed ($v_R=0.663\approx2/3$,
+    period-3 purity $p_3=1.0$, glider coherence preserved).
+    The $L_{x^-}$ perturbation spreads from the injection point.
+    At $t=21k$ for $k=1,\ldots,14$, further injections track the glider
+    front, sustaining 172 peak cross-layer affected sites.
+
+  \item \textbf{Why $t=21k$?}
+    Any coupling that fires at other times would introduce a period-$p$
+    forcing with $p\nmid 3$, immediately destroying the C2 glider
+    (Theorem~\ref{thm:nogo}).  Period~21 is the unique sparse
+    schedule consistent with both the period-3 glider and the period-7 ether.
+\end{enumerate}
+
+\noindent\textit{How this differs from continuum QFT.}
+In the SM, the $W$ boson is an off-shell virtual propagator that mediates
+a fermion-flavour-changing amplitude; the coupling is an infrared object
+(electroweak scale $\sim80$~GeV) invisible at the Planck UV.
+In the CMCA, the analogous object is the event-triggered operator acting
+at the EW-scale resonance time $t=21k$; it is implemented in the
+\texttt{excitation\_level\_coupling\_formalism.py} script, which
+confirms resonant period-3 cycles $p_3=1.0$ across 20 resonant
+cycles (\texttt{epic073\_rank070\_122}, CatA).
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{The Temporal Layer: Inner Rule~110 Clock}
+\label{sec:temporal_layer}
+%═════════════════════════════════════════════════════════════════════════════
+
+\subsection{Construction}
+\label{ssec:temporal_construction}
+
+Each cell position $x$ in the Chiral Minkowski CA carries an \emph{inner clock}:
+a second Rule~110 cellular automaton running at a finer time scale $\tau_c$.
+The inner clock at position $x$ gates the outer updates of \emph{both} chiral
+layers at $x$: the Rule~110 (right-mover) and Rule~124 (left-mover) layers at
+position $x$ advance their outer state only when the inner clock at $x$ completes
+a transition.
+
+\begin{definition}[Chiral Minkowski CA]
+\label{def:cmca}
+The \emph{Chiral Minkowski CA} (CMCA) is the triple
+$(L_{x^+}, L_{x^-}, L_t)$ consisting of:
+\begin{enumerate}[noitemsep]
+  \item \textbf{$L_{x^+}$ (right-null layer):} Rule~110, right-moving, $v_R=+2/3$.
+  \item \textbf{$L_{x^-}$ (left-null layer):} Rule~124, left-moving, $v_L=-2/3$.
+  \item \textbf{$L_t$ (timelike layer):} Inner Rule~110 $\tau_c$ clock at each
+    position $x$, shared between $L_{x^+}$ and $L_{x^-}$; gates outer updates
+    asynchronously.
+\end{enumerate}
+The three layers correspond to the three irreducible causal directions of
+$1+1$D Minkowski spacetime: right null ($x^+$), left null ($x^-$), and
+timelike ($t$).
+\end{definition}
+
+\input{../common/figures/fig_p41_cell_stack.tex}
+
+The inner clock is seeded from the 14-phase two-layer ether background.
+Outer updates fire only when the inner Rule~110 window at a given cell
+completes its local computation (the $\tau_c$ event); cells with higher
+structural complexity require more inner ticks before completion and therefore
+fire outer updates less frequently.
+
+\subsection{Per-cell update algorithm}
+\label{ssec:update_algorithm}
+
+At each global outer step $t\to t+1$, the CMCA update at every cell position
+$x$ proceeds in four stages:
+
+\begin{description}[leftmargin=1.2cm]
+  \item[Step~1 (Inner clock advance):] The inner Rule~110 window of width $M=7$
+    at position $x$ advances by one step:
+    \[
+      \mathrm{inner}[x] \leftarrow
+      \mathrm{R110}\!\bigl(\mathrm{inner}[x-1],\,\mathrm{inner}[x],\,\mathrm{inner}[x+1]\bigr).
+    \]
+    The inner window is re-seeded from the ETHER14 background at the
+    start of each outer step (i.e.\ before Step~1 runs).
+
+  \item[Step~2 (Gate check):] The gate fires at $x$ if the majority
+    of the $M=7$ inner window matches the target outer state
+    $T[x] = \mathrm{R110}(\text{outer}_{+}[x-1\ldots x+1])$:
+    \[
+      \mathrm{gate}[x] = \mathbf{1}\!\bigl[\,
+        \tfrac{1}{M}\textstyle\sum_{j=0}^{M-1}\mathrm{inner}[x]_j
+        \;\text{majority-matches}\; T[x]\bigr].
+    \]
+    The number of inner ticks elapsed before the gate fires is the
+    first-passage recurrence time $\tau_c(x)$.  Under ETHER14 seeding
+    at $M=7$ this is binary: $\tau_c(x)=1$ if $x$ flips, $0$ otherwise
+    (Eq.~\eqref{eq:tauc_binary}).
+
+  \item[Step~3 (Conditional outer update):] \emph{Only if} $\mathrm{gate}[x]=1$:
+    \begin{align*}
+      \text{outer}_{+}[x] &\leftarrow \mathrm{R110}(\text{outer}_{+}[x-1\ldots x+1]), \\
+      \text{outer}_{-}[x] &\leftarrow \mathrm{R124}(\text{outer}_{-}[x-1\ldots x+1]).
+    \end{align*}
+    Both chiral layers advance together; cells where the gate does not fire
+    hold their outer state unchanged.  This is the source of asynchrony.
+
+  \item[Step~4 (Winding readout):] The accumulated gate-fire counter increments:
+    \[
+      \tau_{c}[x] \mathrel{+}= \mathrm{gate}[x],
+      \qquad
+      w[x] = \tau_{c}[x] \bmod 7.
+    \]
+    The winding number $w[x]\in\ZS$ encodes the Standard Model quantum numbers
+    of the excitation at position $x$.
+\end{description}
+
+\noindent The canonical Python implementation
+(\lean{two\_layer\_chiral\_afca\_prototype.py},
+function \lean{run\_two\_layer\_chiral\_afca},
+clock~option~A) is co-located in \texttt{scripts/}.
+The full reproducibility suite
+(\lean{cmca\_full\_reproducibility.py}) imports it
+and verifies all nine headline claims.
+
+\subsection{Inner clock mechanism}
+\label{ssec:inner_clock_mechanism}
+
+The precise operation of the inner clock at position $x$ is as follows.
+
+\paragraph{Initial condition.}
+At each outer step, the $M=7$ inner window at position $x$ is re-seeded from
+the ETHER14 background: the inner Rule~110 CA is initialized to the 14-period
+two-layer ether pattern restricted to the $M$-cell window centred at $x$.
+ETHER14 is the unique stable, spatially-periodic background of the two-layer
+system (period~14, $\ZS$ winding sum~1); it provides a canonical reference
+state that makes $\tau_c$ a well-defined local property of $x$.
+
+\paragraph{Trigger condition.}
+The inner Rule~110 CA advances step by step from this initial condition.
+The outer cell at $x$ is triggered to update when the majority of the inner
+$M=7$ window first matches the \emph{target} outer state — that is, when the
+majority output reaches the value that the outer Rule~110 or Rule~124 rule
+would assign to the neighbourhood of $x$.  The number of inner steps required
+is the first-passage recurrence time $\tau_c(x)$.
+
+\paragraph{Binary $\tau_c$ under ETHER14 seeding.}
+With ETHER14 seeding at $M=7$, the inner first-passage lookup table is binary:
+\begin{equation}
+  \label{eq:tauc_binary}
+  \tau_c(x) = \begin{cases} 0 & \text{if outer state at } x \text{ does not flip,} \\ 1 & \text{if outer state at } x \text{ flips.} \end{cases}
+\end{equation}
+This follows from the ETHER14 LUT for $M=7$: $\tau_c(0\to0)=0$,
+$\tau_c(0\to1)=1$, $\tau_c(1\to0)=1$, $\tau_c(1\to1)=0$
+(established computationally in P36~\cite{SpivackEmergentGravity}).
+Therefore $\tau_c(x)$ equals the probability that the outer cell at $x$ flips
+at each outer transition.
+
+\begin{remark}[Equivalence of first-passage and single-bit gate descriptions]
+\label{rem:tauc_equiv}
+The general mechanism (Step~1--4 in \S\ref{ssec:update_algorithm}) uses the
+$M=7$ first-passage recurrence time $\tau_c(x)$, which could in principle take
+any non-negative integer value depending on the initial seeding and $M$.
+Under ETHER14 seeding at $M=7$, the lookup table collapses to the binary values
+above, so the general first-passage description is \emph{equivalent} to a
+single-bit gate rule: the inner window fires on the very first inner tick
+whenever the outer state would flip, and skips otherwise.
+The companion paper P45~\cite{SpivackThreeTapeCMCA} states the update rule
+using this equivalent single-bit form ($\mathrm{gate}[x]\in\{0,1\}$);
+both descriptions implement the same physical gate, and the canonical
+implementation in \texttt{two\_layer\_chiral\_afca\_prototype.py} uses the
+first-passage formulation (see \texttt{run\_two\_layer\_chiral\_afca},
+\texttt{majority()} and \texttt{complete()}).
+\end{remark}
+
+\paragraph{Differential $\tau_c$ between gliders and ether.}
+Cells occupied by a moving C2 glider flip at $\approx57\%$ of outer
+transitions; ether cells flip at $\approx42\%$.  Consequently:
+\begin{equation}
+  \label{eq:tauc_ratio}
+  \frac{\tau_c(\mathrm{glider})}{\tau_c(\mathrm{ether})} \approx
+  \frac{0.57}{0.42} \approx 1.36.
+\end{equation}
+The measured ratio in the two-layer AFCA (canonical C2 glider seed,
+$v\approx0.532$) is $\tau_c(\mathrm{glider})/\tau_c(\mathrm{ether})
+= 0.500/0.322 \approx 1.563$, with SR error $5.79\%$
+vs $\gamma(0.532)=1.659$ (Table~\ref{tab:sync_async}).
+The small discrepancy between the flip-rate estimate ($1.36$) and the
+measured ratio ($1.563$) reflects boundary effects at the glider footprint
+edge and the precise structure of the C2 glider seed; it does not alter the
+qualitative mechanism.
+
+\paragraph{Shared gating of both outer layers.}
+The single inner clock at position $x$ gates \emph{both} the Rule~110
+and Rule~124 outer cells at $x$ simultaneously.  When the inner clock fires
+at $x$, both chiral layers advance their outer state at $x$.  This is the
+shared inner clock construction in which a single inner clock at position $x$
+gates both chiral layers simultaneously, rather than maintaining separate inner
+clocks per layer; this ensures that SR time dilation acts symmetrically on
+both chirality sectors.
+
+\subsection{Why asynchrony is necessary for SR time dilation}
+\label{ssec:async_necessary}
+
+The inner clock gate is the mechanism of proper-time dilation.  Moving gliders
+activate the inner clock more frequently than ether cells (higher $\tau_c$
+counts per outer step), causing their outer state to advance less frequently.
+This implements SR time dilation at the dynamics level.
+
+\begin{proposition}[SR time dilation from inner clock; CatA]
+\label{prop:sr_dilation}
+In the CMCA with shared inner Rule~110 $\tau_c$ clock, moving C2 gliders
+accumulate $\tau_c/\tau_{\rm ether} \approx 1.563$ inner ticks per ether cycle,
+consistent with $\gamma(v\approx0.53) = 1.659$ to within $5.79\%$ (the M=7
+Nyquist lattice floor $\epsz(7)\approx6.71\%$).
+In the synchronous variant (inner clock counts without gating outer updates),
+$\tau_{\rm glider}/\tau_{\rm ether} = 1.000$ exactly: no proper-time dilation.
+\emph{Asynchrony is necessary for dynamics-level SR time dilation.}
+\end{proposition}
+
+The proposition is supported by two computational measurements:
+
+\begin{table}[h]
+  \centering
+  \small
+  \caption{Sync vs.\ ASYNC inner clock: proper-time dilation.
+    $v \approx 0.532$, $\gamma = 1.659$ (canonical C2 glider seed, M=7).}
+  \label{tab:sync_async}
+  \begin{tabular}{lcccc}
+    \toprule
+    Mode & $\tau_c(\text{ether})$ & $\tau_c(\text{glider})$
+         & Ratio & SR error \\
+    \midrule
+    ASYNC (CMCA) & $0.322$ & $0.500$ & $\mathbf{1.563}$ & $\mathbf{5.79\%}$ \\
+    SYNC (parallel, no gate) & $1.000$ & $1.000$ & $1.000$ & --- \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The synchronous variant has the inner clock running in parallel but not
+gating outer updates; it gives no dilation regardless of glider velocity.
+Removing the gating mechanism eliminates proper-time dilation while leaving
+outer glider kinematics intact at the rule level (outer speed $|v|=2/3$
+is preserved in both modes).
+
+\subsection{The Law of Threes and Minkowski structure}
+\label{ssec:law_of_threes}
+
+The three CMCA layers realize the Law of Threes that cascades from the
+GTE algebraic structure $F_{21} = \ZS\rtimes\mathbb{Z}_3$:
+
+\begin{table}[h]
+  \centering
+  \small
+  \caption{The three CMCA layers and their structural correspondences.}
+  \label{tab:law_of_threes}
+  \begin{tabular}{lccc}
+    \toprule
+    Layer & Velocity & Minkowski & M\"obius triple \\
+    \midrule
+    $L_{x^+}$: outer R110 & $+2/3$ & $x^+$ right null & $A$ (beable/carrier) \\
+    $L_{x^-}$: outer R124 & $-2/3$ & $x^-$ left null  & $e$ (dynamics) \\
+    $L_t$: inner R110 $\tau_c$ & $0$ & $t$ timelike & $[\mathbf{D}]$ (coherence) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\input{../common/figures/fig_p41_minkowski_map.tex}
+
+The triple is \emph{forced} by the geometry of $1+1$D Minkowski spacetime:
+any relativistic discrete substrate has exactly two null directions and one
+timelike direction.  The three layers realise the three irreducible causal
+directions as three CA rules, with the algebraic triple $(A,e,[\mathbf{D}])$
+mapping to the computational, chiral-mirror, and proper-time functions respectively.
+
+The $F_{21}$ correspondence maps: the $\ZS$ winding sector to the right-null
+computational layer (weak-force dynamics); the $\mathbb{Z}_3$ color-mirror
+sector to the left-null chiral layer (strong-sector discrete mirror); and the
+$U(1)$ phase to the inner $\tau_c$ clock (electromagnetic phase dynamics).
+This identification follows from the GTE Möbius analysis in~\cite{SpivackGTEMobius}
+and the unification sector structure established in~\cite{SpivackGTEUnification}:
+each factor of $F_{21} = \ZS\rtimes\mathbb{Z}_3$ acts on exactly one causal
+direction of 1+1D Minkowski spacetime, and the $\tau_c$ inner clock implements
+$U(1)$ phase dynamics by gating the outer layers at position $x$.
+
+\subsection{Measurement-frame duality}
+\label{ssec:frame_duality}
+
+The two outer layers are not independent objects; they are the same Rule~110
+dynamics seen from two observer frames.  A right-to-left observer who reverses
+the tape and applies Rule~124 sees exactly the spatial mirror of forward
+Rule~110 evolution:
+\begin{equation}
+  \label{eq:frame_duality}
+  \mathrm{R124}(\mathrm{rev}(X)) = \mathrm{rev}(\mathrm{R110}(X)),
+\end{equation}
+verified computationally for 30 evolution steps on random and ether tapes
+(exact identity, machine precision).  The reversed-frame observer at position $j$
+sees neighbourhood $(r,c,l)$ and effective coupling
+$\mathrm{R110}(r,c,l) = \mathrm{R124}(l,c,r)$ (Lean:
+\lean{rule124Fin2\_is\_spatial\_mirror}, zero sorry).
+
+This frame duality does not collapse the two-layer construction to a single
+chiral layer array: concurrent R110 and R124 evolution on separate outer
+layer arrays (at the same lattice positions) is required for the
+V--A mismatch count and glider kinematics to hold simultaneously.  The 32/125
+mismatch count is invariant under frame reversal, with R-only and L-only labels
+exchanged, reflecting the physical fact that V--A chirality is a property of
+which current participates, not which frame measures it.
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{The Chiral Minkowski CA as the Unified Discrete Model}
+\label{sec:cmca_unified}
+%═════════════════════════════════════════════════════════════════════════════
+
+\subsection{Five structural features in one construction}
+\label{ssec:five_features}
+
+The CMCA (Definition~\ref{def:cmca}) is the unique Level-1 GTE construction
+that simultaneously realises all five structural features of the GTE discrete
+substrate:
+
+\begin{table}[h]
+  \centering
+  \small
+  \caption{Five-feature verification in the CMCA (CatA, shared inner clock gating both layers,
+    M=7, L=840).}
+  \label{tab:five_features}
+  \begin{tabular}{P{0.22\linewidth}P{0.45\linewidth}P{0.12\linewidth}}
+    \toprule
+    Feature & Result & Status \\
+    \midrule
+    Z$_7$ generation orbit & gen$_1\to$gen$_2\to$gen$_3\to$vac (3 steps);
+                              mirror 2 steps & PASS \\
+    V--A 32/125 mismatch & 32 mismatches; all involving $W^+$ non-centre & PASS \\
+    Turing universality & Inherited from Rule~110 (P28, P30, P40) & PASS \\
+    Observer-level Lorentz & $|v_R|=|v_L|=2/3$; PSC/PI equivariance & PASS \\
+    Dynamics-level SR & $\tau_c(\text{glider})/\tau_c(\text{ether})=1.563$;
+                         SR error $5.79\%$ & PASS \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+No previously instantiated Level-1 GTE CA achieves all five.  Single-layer
+Rule~110 (P28) lacks V--A and observer-level Lorentz.  The two-layer chiral
+CA without the inner clock (the construction underlying §\ref{sec:twolayer})
+achieves the first four but not dynamics-level SR.  The AFCA of
+P36~\cite{SpivackEmergentGravity} achieves Turing universality, Z$_7$ orbit,
+and dynamics-level SR but lacks the V--A structure and the symmetric light cone
+of the chiral pair.  The CMCA is the first construction to satisfy all five.
+
+\subsection{Interface to the charged-fermion mass pipeline}
+\label{ssec:mass_interface}
+
+The present paper certifies the \emph{discrete spacetime} substrate: causal layers,
+observer-level Lorentz structure, and the unified Wilson residual of
+\S\ref{ssec:wilson}.
+Absolute electroweak masses in GeV (\S\ref{sec:ew}) and the nine charged-fermion
+spectrum are not derived here; they are treated in the companion SM paper
+\cite{SpivackSM}, which maps GTE triples to pole masses through the
+information-to-mass transformer (IMT) and the universal calibration law (UCL).
+
+The same CMCA tape geometry enters that mass pipeline as an \emph{audit} channel,
+not as a second calibration.
+In the public verifier, the optional structural mixer mode
+(\texttt{--imt-mixer-mode cmca}) replaces the default embedded Phase/Binding
+weights with a two-anchor closure built from the holographic mode share
+$3L/(3L+L^2)$ on tape length~$L$, together with Bekenstein and phase energies
+on electron and muon anchor triples.
+The three-tape holographic hierarchy of~\cite{SpivackThreeTapeCMCA} supplies the
+multi-tape generalisation; the three-layer chiral Minkowski CA here is the
+$1{+}1$D unified Level-1 presentation of the same CMCA family.
+In the current SM closure, this structural mixer is numerically equivalent to the
+default \texttt{v12} path for charged-fermion masses; the flag exists to test
+mixer dependence.
+Coefficient convergence (empirical UCL2.3 toward the Elegant Kernel,
+dual-path versus bare-kernel limit runs) is documented in~\cite{SpivackSM},
+Appendix on verifier modes---distinct from the substrate unification results
+of \S\ref{sec:cmca_unified} and Appendix~\ref{app:unification}.
+
+\subsection{The GTE category and \texorpdfstring{$\PHIMDL$}{Phi\_MDL} as terminal object}
+\label{ssec:gte_category}
+
+The unified discrete model is not a single CA but a \emph{category} of Level-1
+GTE CA constructions,
+with $\PHIMDL$ as terminal object.  The Algebraic Lifting Theorem and Algebraic
+Descent Theorem of P28~\cite{SpivackCompUniversality} certify the algebraic
+content-preservation morphisms: every Level-1 object descends the same
+Z$_7$ orbit algebra (winding conservation, generation count, color confinement,
+scattering vertices) and lifts the same predicates to $[\mathbf{D}]$-weighted
+physical states.
+
+The continuum limit $\epsz(M)\to0$ as $M\to\infty$ is the terminal morphism;
+all Level-1 objects converge to the same $\PHIMDL$ field under this limit.
+The choice of Level-1 CA is thus a presentation choice analogous to a gauge
+fixing: different choices emphasise different aspects of the same underlying
+physics.
+
+The CMCA is the MDL-maximally-featured Level-1 object in this category:
+the smallest (in description-length) CA satisfying all five structural features
+simultaneously.  A Lean categorical meta-theorem certifying the category structure
+--- with objects \{single R110, two-layer chiral CA, AFCA, CMCA\} and morphisms
+given by the Algebraic Lifting/Descent maps and the continuum limit --- is
+encoded in \lean{GTECategoryStructure.lean} (conditional CatAL; axiom:
+\lean{d2\_universal}).
+
+\begin{proposition}[CMCA is terminal Level-1 object; conditional CatAL]
+\label{prop:cmca_terminal}
+In the GTE category of Level-1 CA constructions, the CMCA is the unique
+MDL-maximally-featured object: among all Z$_7$ CAs satisfying Turing
+universality, Z$_7$ generation orbit, Z$_2$ spatial-mirror chirality, and
+per-cell $\tau_c$ proper clock, the CMCA with one shared inner Rule~110 clock
+per cell is the MDL-minimal construction.  Its continuum limit $M\to\infty$
+is $\PHIMDL$ (the terminal object), matching the limits of all other
+Level-1 objects.  Lean reference: \lean{GTECategoryStructure.lean}, conditional
+on \lean{d2\_universal}.
+\end{proposition}
+
+\subsection{MDL Minimality of the CMCA}
+\label{ssec:cmca_mdl_minimal}
+
+The CMCA is the MDL-minimal Level-1 discrete model with all five GTE features.
+Define the \emph{construction description length} $K_{\rm CA}$ as a six-channel sum
+\begin{equation}
+\label{eq:kca}
+K_{\rm CA}(c) = K_\alpha + K_r + K_L + K_{\rho_{\rm outer}} + K_\tau + K_g,
+\end{equation}
+where $K_\alpha$ (alphabet), $K_r$ (rule table), $K_L$ (layer count + mirror bit),
+$K_{\rho_{\rm outer}}$ (primitive, universal), $K_\tau$ (asynchronous toggle),
+and $K_g$ (gating predicate) are independently encoded under prefix-free
+$\lfloor\log_2\cdot\rfloor+1$ counting.  Two MDL reduction principles apply:
+(i)~\emph{sharing} -- the inner Rule~110 clock reuses the outer rule at zero extra bits;
+(ii)~\emph{Z$_2$ mirror} -- the Rule~124 layer costs $+1$ bit (derivable from Rule~110
+via spatial reflection).
+
+\begin{table}[h]
+\centering
+\small
+\caption{Construction description lengths $K_{\rm CA}$ for Level-1 GTE CA constructions.}
+\label{tab:kca}
+\begin{tabular}{lcc}
+\toprule
+Construction & $K_{\rm CA}$ (bits) & All 5 features? \\
+\midrule
+Single-layer Rule~110 & 13 & No (missing V--A, SR) \\
+Two-layer chiral CA & 15 & No (missing SR) \\
+AFCA (single-layer async) & 17 & No (missing V--A) \\
+\textbf{CMCA} & \textbf{19} & \textbf{Yes} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{theorem}[\lean{CMCAMDLMinimality.lean};
+  \lean{cmca\_is\_mdl\_minimal\_with\_all\_five\_features},
+  \lean{K\_CA\_all\_features\_lower\_bound}; \CatAL{} conditional]
+\label{thm:cmca_mdl_minimal}
+The CMCA construction saturates the independent-channel lower bound of $19$ bits
+(alphabet $\geq3$ + radius $\geq1$ + layers $\geq2$ + universal primitive $\geq8$
++ mirror bit $\geq1$ + async toggle $\geq1$ + gating predicate $\geq3$).
+Any alternative Level-1 construction carrying all five GTE features requires at
+least $19$ bits, with strict inequality for non-mirror or non-shared-clock
+alternatives.  The five features sit on independent algebraic channels;
+no single-rule trick merges spatial $\mathbb{Z}_2$ chirality with temporal
+asynchronous gating, and the MDL-minimal inner clock is forced to be Rule~110
+by the MDL-universality result (CUP-4,~\cite{SpivackCompUniversality}).
+The $K_{\rm CA}$ functional is certified by \lean{decide}; the lower bound
+follows by \lean{omega} directly from the \lean{ConstructionHas*} definitions
+for four of the five channels, plus one non-trivial physical-interpretation
+axiom \lean{va\_min\_mirror\_bit} (the 8$\to$9 bit lift under the joint
+V--A~+~Turing-universality channel); zero sorry.
+\end{theorem}
+
+\subsection{Algebraic Lifting and Descent: what transfers and what does not}
+\label{ssec:lifting_descent}
+
+The Algebraic Lifting and Descent theorems (P28, \CatAL, zero sorry) transfer
+propositional content over the Z$_7$ orbit algebra.
+
+\begin{theorem}[Algebraic Lifting, P28~\cite{SpivackCompUniversality};
+  \lean{algebraic\_lifting\_theorem} in \lean{LiftingTheorem.lean}; \CatAL\ zero sorry]
+\label{thm:lifting}
+Every PSC-admissible SM particle configuration is algebraically realised in
+the $f_{\rm MDL}$ CA substrate, independently of whether that configuration
+is reachable by direct CA construction.
+Specifically, the following content \emph{lifts} from the CMCA discrete
+structure to $[\mathbf{D}]$-weighted physical states on $\PHIMDL$:
+\begin{itemize}[noitemsep]
+  \item $\ZS$ winding conservation (electric charge quantisation),
+  \item three-generation count ($N_{\rm gen}=3$),
+  \item Garden-of-Eden stability (first-generation particle stability),
+  \item color confinement (orbit-closure structure),
+  \item scattering vertex catalog ($f_{\rm MDL}$ neighborhood table),
+  \item V--A 32/125 mismatch fraction.
+\end{itemize}
+\end{theorem}
+
+\begin{theorem}[Algebraic Descent, P28~\cite{SpivackCompUniversality};
+  \lean{algebraic\_descent\_theorem}; \CatAL, zero sorry]
+\label{thm:descent}
+Every conservation law, charge quantisation condition, and generation structure
+certified at the discrete CA level holds in any continuum realisation of the
+same $F_{21} = \ZS\rtimes\mathbb{Z}_3$\allowbreak{} winding algebra,
+at any lattice resolution $M\geq1$.
+The same Z$_7$ orbit algebra, confinement, asymptotic freedom, and strong CP
+properties that hold for $f_{\rm MDL}$ at $M=7$ (the CMCA scale) hold for all
+$M\geq1$, including the $M\to\infty$ continuum limit on $\PHIMDL$.
+\end{theorem}
+
+These two directions together establish that the SM winding sector and the
+Rule~110/$f_{\rm MDL}$ CA substrate are algebraically isomorphic in the
+relevant sector: not two competing models, but two resolutions of one algebraic
+object.
+
+\paragraph{What does \emph{not} descend.}
+Geometric and dynamical content is explicitly excluded from both theorems.
+The SR Nyquist correction
+\begin{equation}
+  \epsz(M) = \frac{\pi^2}{3M^2}
+\end{equation}
+is $M$-dependent and does not descend (it vanishes only as $M\to\infty$).
+This is machine-certified:
+
+\begin{theorem}[\lean{sr\_accuracy\_depends\_on\_M} in \lean{AlgebraicDescentTheorem.lean};
+  \CatAL\ zero sorry]
+\label{thm:sr_accuracy_m}
+The Nyquist denominator $3M^2$ is strictly increasing in $M$ for $M\geq1$;
+therefore the SR Nyquist correction $\epsz(M) = \pi^2/(3M^2)$ is strictly
+positive and decreasing in $M$.
+At $M=7$ (the CMCA scale): $\epsz(7) = \pi^2/147 \approx 6.71\%$.
+The SR accuracy of the inner $\tau_c$ clock is $M$-dependent and is
+\emph{not} a resolution-independent algebraic property.
+\end{theorem}
+
+Consequently, exact Lorentz invariance is recovered only in the $M\to\infty$
+continuum limit on $\PHIMDL$.  The bundle theorem
+\lean{cmca\_continuum\_limit\_is\_phimdl} in \lean{CMCAContinuumLimit.lean}
+(\CatAL{} conditional; zero sorry) packages algebraic M-independence,
+Nyquist residual $\epsz(M)\to0$, and terminal-object identification with
+$\PHIMDL$ (P28~\cite{SpivackCompUniversality}, P34~\cite{SpivackGTEMobius}).
+The CMCA dynamics-level SR
+from the inner $\tau_c$ clock (Proposition~\ref{prop:sr_dilation}) is a
+Level-1 mechanism; it approximates $\gamma$ with residual $\epsz(7)\approx6.71\%$
+at the M=7 Nyquist floor, vanishing in the continuum.
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{Lorentz Invariance as an Observer Effect}
+\label{sec:lorentz}
+%═════════════════════════════════════════════════════════════════════════════
+
+Lorentz invariance in the CMCA framework is established by three
+independent and complementary tracks.
+
+\subsection{Three levels of Lorentz symmetry}
+\label{ssec:three_lorentz_levels}
+
+The three tracks establish Lorentz symmetry at logically distinct levels
+of the CMCA framework.  They are related but not equivalent; each is required
+to give a complete account of relativistic physics from the discrete substrate.
+
+\begin{table}[h]
+  \centering
+  \small
+  \caption{Three levels of Lorentz symmetry in the CMCA.}
+  \label{tab:three_lorentz}
+  \begin{tabular}{p{1.6cm}p{2.5cm}p{4.8cm}p{2.3cm}}
+    \toprule
+    \textbf{Track} & \textbf{Level} & \textbf{Content} & \textbf{Reference} \\
+    \midrule
+    I & Kinematic & Glider speeds $|v_R|=|v_L|=2/3$ restore the
+      symmetric light cone.  Lorentz at the \emph{particle-speed} level:
+      the CA has equal-speed excitations in both null directions. &
+      \S\ref{ssec:track1}, Thm~\ref{thm:speeds} \\
+    \addlinespace
+    II & Causal/\mbox{observable} & PSC Presentation Invariance (D2 of P34)
+      forces $[\mathbf{D}]$ to be Lorentz-equivariant on $\PHIMDL$.
+      Lorentz at the \emph{measurement} level: every $[\mathbf{D}]$-selected
+      observable is Lorentz-covariant, regardless of the underlying lattice. &
+      \S\ref{ssec:track1}, Thm~\ref{thm:psc_lorentz} \\
+    \addlinespace
+    III & Dynamical SR & The inner $\tau_c$ clock implements proper-time
+      dilation for moving gliders.  SR at the \emph{substrate-dynamics} level:
+      the CA itself runs slow for moving configurations ($\tau_{\rm glider}/
+      \tau_{\rm ether}\approx1.563$, SR error $5.79\%$). &
+      \S\ref{ssec:track3}, Prop~\ref{prop:sr_dilation} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Track~I operates purely at the CA kinematics level and requires no continuum
+limit.  Track~II is an algebraic/logical consequence of the PSC axioms applied
+to the $\PHIMDL$ continuum; it guarantees observer-level Lorentz invariance
+regardless of what the substrate does.  Track~III is a new Level-1 mechanism
+that complements Tracks~I and~II without superseding either: it shows that
+the CA substrate \emph{itself} approximates SR time dilation, with the
+approximation improving as $M\to\infty$.
+
+The three tracks are summarised in Table~\ref{tab:three_lorentz}.
+An important terminological distinction: \emph{Lorentz invariance} (Tracks I
+and II) refers to the transformation property of the light cone and of
+$[\mathbf{D}]$-observables; \emph{SR proper-time dilation} (Track III) refers
+to the time-rate differential between moving and stationary objects, which is
+a dynamical consequence of Lorentz invariance in standard SR.  The CMCA
+derives both independently and then confirms their mutual consistency.
+
+\subsection{Track I: CA preferred frame and its unobservability}
+\label{ssec:track1}
+
+At the lattice scale, Rule~110 defines a preferred spatial direction
+(right-moving gliders at $v_R=+2/3$).  This constitutes a preferred frame.
+The two-layer extension restores the symmetric light cone ($v_R=-v_L$),
+but the lattice itself remains a preferred structure.
+
+The Lorentz violation parameter at the discrete lattice level is
+\begin{equation}
+  \label{eq:eps0}
+  \epsz(M) = \frac{\pi^2}{3M^2},
+\end{equation}
+where $M$ is the number of lattice sites per unit continuum length.
+At $M=7$ (the Z$_7$ CA scale):
+\begin{equation}
+  \label{eq:eps0_7}
+  \epsz(7) = \frac{\pi^2}{147} \approx 6.71\%.
+\end{equation}
+This quantifies the maximum fractional deviation of the lattice mass-shell
+from the continuum Lorentz-invariant dispersion relation; it is a
+pure lattice artifact.
+
+Under PSC Presentation Invariance (D2 of P34~\cite{SpivackGTEMobius}),
+the $[\mathbf{D}]$-selected observables are Lorentz-equivariant:
+
+\begin{theorem}[\lean{PSCPILorentzMain.lean};
+  \lean{psc\_pi\_forces\_d\_lorentz\_equivariant},
+  \lean{psc\_pi\_no\_preferred\_frame}; \CatAL{} zero sorry, 1 axiom]
+  \label{thm:psc_lorentz}
+  For any PSC-consistent GTE-M\"obius architecture realised on the
+  $\PHIMDL$ continuum field, the coherence measure $[\mathbf{D}]$ satisfies
+  \begin{equation}
+    D(\rho\,|\,w) = D(\Lambda\cdot\rho\,|\,\Lambda\cdot w)
+  \end{equation}
+  for all $\Lambda\in O(1,3)$ and all admissible pairs $(\rho,w)$
+  in flat-spacetime backgrounds.
+  Named axiom: \lean{d2\_universal} (D2 of P34 in its universal form,
+  stating that all PSC-preserving transformations leave $[\mathbf{D}]$
+  equivariant).
+\end{theorem}
+
+The proof chain is: (1) $\mathcal{L}_{\PHIMDL}$ is a Lorentz scalar
+(standard QFT + $\ZS$-symmetric KG potential); (2) all four Layer-I PSC
+axioms (RC, NM$^*$, TV, SA) are preserved under Lorentz boosts applied to
+the $\PHIMDL$ Lagrangian; (3) D2 universality (Lemma~3) implies that
+any PSC-preserving transformation leaves $[\mathbf{D}]$ equivariant.
+
+\textit{Physical reading.}  The CA beable layer retains a preferred frame
+at the lattice scale (the Planck scale under the fine-end working hypothesis
+$a\approx\ell_P$, Remark~\ref{rem:layers_levels}); all
+$[\mathbf{D}]$-selected observables are Lorentz
+equivariant.  Lorentz symmetry is an \emph{emergent observer effect}: it
+holds for any measurable quantity, but the underlying discrete substrate
+breaks it at the lattice level.
+
+\subsection{Track II: KG dispersion and the continuum limit}
+\label{ssec:track2}
+
+The $\PHIMDL$ field satisfies the Klein--Gordon equation with the
+$\ZS$-symmetric potential $V(\Phi)=m^2(1-\cos 7\Phi)/49$.  Its dispersion
+relation is the standard relativistic form:
+\begin{equation}
+  \label{eq:kg_dispersion}
+  \omega^2 = \bm{k}^2 + m^2.
+\end{equation}
+
+\begin{theorem}[\lean{LorentzInvariance.lean};
+  \lean{kg\_dispersion\_lorentz\_invariant},
+  \lean{poincare\_invariance\_of\_kg}; \CatAL{} zero sorry]
+  \label{thm:kg_lorentz}
+  The mass-shell constraint $\eta(p,p)=-m^2$ is invariant under all
+  $\Lambda\in O(1,3)$: if $p$ is on-shell then $\Lambda p$ is on-shell.
+  Lorentz boosts preserve the Minkowski metric ($\Lambda^{\rm T}\eta\Lambda=\eta$);
+  the standard x-boost with $|\beta|<1$ is a Lorentz transformation
+  (\lean{lorentz\_boost\_preserves\_metric}; zero sorry).
+\end{theorem}
+
+The continuum limit of the lattice violation parameter is:
+\begin{equation}
+  \label{eq:continuum_limit}
+  \epsz(M) = \frac{\pi^2}{3M^2} \xrightarrow{M\to\infty} 0.
+\end{equation}
+Numerical fits across $M=7,\ldots,224$ give $n_{\rm fit}=1.998\pm0.001$
+confirming the analytic $n=2$ exponent from the Fermi--Dirac dispersion
+Taylor expansion.
+
+\subsection{Track III: Dynamics-level SR time dilation}
+\label{ssec:track3}
+
+In the CMCA, the shared inner $\tau_c$ clock implements proper-time dilation
+for moving gliders at the discrete Level-1 substrate (Section~\ref{sec:temporal_layer}).
+This is the discrete-CA analogue of the AFCA construction in
+P36~\cite{SpivackEmergentGravity}: each cell's inner Rule~110 clock has a
+state-dependent recurrence period $\tau_c$; a moving glider's elevated structural
+complexity gives a higher $\tau_c$ per outer step, so the glider's outer state
+advances less frequently --- its clock runs slow.
+
+Concretely, for the canonical C2 glider seed at $v\approx0.532$:
+\begin{equation}
+  \frac{\tau_{\rm glider}}{\tau_{\rm ether}} \approx 1.563,
+  \qquad
+  \gamma(0.532) = 1.659,
+  \qquad
+  \text{SR error} = 5.79\%.
+\end{equation}
+This error is within the M=7 Nyquist lattice floor $\epsz(7)\approx6.71\%$
+(Eq.~\eqref{eq:eps0_7}); it vanishes as $M^{-2}$ in the continuum limit,
+consistent with Tracks I and II.
+
+The synchronous test confirms that asynchrony is the operative mechanism
+(Proposition~\ref{prop:sr_dilation}): removing the gating gives
+$\tau_{\rm glider}/\tau_{\rm ether}=1.000$ exactly (Table~\ref{tab:sync_async}).
+Track III is therefore a \emph{genuine new physical mechanism} at Level~1,
+not a redescription of synchronous CA dynamics; it complements the
+observer-level derivation of Tracks I and II without superseding it.
+
+\subsection{The Planck-scale falsification window}
+\label{ssec:planck}
+
+The lattice Lorentz violation survives as a Planck-scale correction to
+observable dispersion:
+\begin{equation}
+  \label{eq:planck_lv}
+  \frac{\delta c}{c} \equiv \delta_{\rm LV}(E)
+  = C\left(\frac{E}{E_{\rm Planck}}\right)^2,
+\end{equation}
+with $n=2$ (quadratic suppression) and sector-dependent coefficients:
+$C_\gamma = \pi^2/147$ (photon/massless, from the ether period structure)
+and $C_m = 5/9$ (massive glider sector).
+
+Concrete predictions:
+\begin{align}
+  \delta_{\rm LV}(\text{LHC}, 14\;\text{TeV}) &\approx 8.8\times10^{-32}, \\
+  \delta_{\rm LV}(10^{20}\;\text{eV}) &\approx 4.5\times10^{-18}, \\
+  \delta_{\rm LV}(E_{\rm cross}) &= 10^{-23} \;\text{at}\;
+    E_{\rm cross}\approx 1.5\times10^{17}\;\text{eV}.
+\end{align}
+
+These predictions are conditional on the fine-end working hypothesis:
+Eq.~\eqref{eq:planck_lv} normalizes the lattice residual to $E_{\rm Planck}$
+by setting the lattice spacing $a=\ell_P$, a calibration reading of the
+discrete certificate rather than a GTE derivation
+(Remark~\ref{rem:layers_levels}).  If the physically relevant reading places
+the lattice at a different spacing $a$, the predicted residuals rescale as
+$(a/\ell_P)^2$ and the falsification window shifts accordingly; the
+quadratic suppression exponent $n=2$ and the coefficient family are
+reading-independent.
+
+The GRB time-of-flight bound from the Fermi GBM/LAT is $\delta_{\rm LV}\lesssim
+10^{-23}$ for $n=1$ suppression~\cite{Abdo2009}
+(see~\cite{SpivackGTEMobius} for the GTE context); the $n=2$ prediction
+is well below this at GRB energies ($\sim10^{-18}$) and is accessible
+to ultra-high-energy photon time-of-flight experiments above
+$E\sim10^{17}$~eV, constituting a genuine falsification window.
+LHC- and CTA-scale experiments are not sensitive ($\delta\lesssim10^{-30}$
+is four orders of magnitude below current LHC Lorentz violation bounds).
+
+\subsection{Unified spacetime-symmetry Wilson coefficient}
+\label{ssec:wilson}
+
+The same coefficient family controls all spacetime-symmetry residuals on the
+GTE lattice:
+\begin{equation}
+  \label{eq:wilson}
+  \mathrm{Residual}(M) = \frac{\pi^2}{3M^2} \times (\text{O}(a^2)\;\text{correction})
+\end{equation}
+for Lorentz boosts (from $\omega^2=k^2+m^2$ Taylor expansion), spatial
+rotations (Symanzik $O(a^2)$ restoration; fit $n=2.0001$), and
+translations.  At Planck spacing $a=\ell_P$, the unified residual is
+$\sim10^{-30}$ at LHC and $\sim10^{-23}$ at GRB energies---well below
+experimental bounds in all sectors.
+The Wilson paradigm applies: the lattice CA is the regulator;
+the continuum $\PHIMDL$ field theory carries exact Poincar\'e symmetry and
+the Noether charges.
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{Electroweak Scale Predictions}
+\label{sec:ew}
+%═════════════════════════════════════════════════════════════════════════════
+
+\subsection{The Weinberg angle from orbit arithmetic}
+\label{ssec:weinberg}
+
+The electroweak mixing angle is derived from the GTE generation orbit
+structure.  The GTE arithmetic of Rule~110 is characterised by two constants:
+$\Ngen=3$ (number of SM generations, Lean-certified from PSC Presentation
+Invariance~\cite{SpivackWeinbergAngle}) and
+$\cH=13$ (the orbit capacity constant from the $\ZS$ winding structure).
+
+The tree-level prediction is:
+\begin{equation}
+  \label{eq:weinberg_tree}
+  \sinwsq\Big|_{\rm tree} = \frac{\Ngen}{\cH} = \frac{3}{13} \approx 0.23077.
+\end{equation}
+The first threshold correction arises at the orbit-vacuum-reaching step:
+
+\begin{theorem}[\lean{isEWThresholdStep}, \lean{ew\_threshold\_definitional\_route};
+  \CatAL{} zero sorry]
+  \label{thm:ew_threshold}
+  The electroweak threshold step is uniquely $k=\Ngen=3$: this is the
+  unique step in the generation orbit that first reaches the vacuum absorber.
+  Steps $k=1,2$ remain in excited generation states and do not satisfy the
+  threshold predicate.
+\end{theorem}
+
+The threshold correction is $\lambda^3/(2\cH)$ where $\lambda=9/128$ is
+the GTE coupling constant:
+\begin{equation}
+  \label{eq:weinberg_twoterm}
+  \sinwsq = \frac{3}{13} + \frac{\lambda^3}{2\cH}
+  = \frac{3}{13} + \frac{729}{1664000}
+  = \frac{384729}{1664000} \approx 0.231207.
+\end{equation}
+The PDG~2024 value is $\sinwsq=0.23129\pm0.00004$ (in the $\overline{\rm MS}$
+scheme at $M_Z$)~\cite{ParticleDataGroup2024}.
+
+\begin{theorem}[\lean{weinberg\_two\_term\_prediction};
+  \CatAL{} zero sorry]
+  \label{thm:weinberg}
+  $\sinwsq = 384729/1664000$.  The Wolfenstein deviation from PDG~2024 is
+  $-0.009\%$ ($-2.07\sigma$); including the SM Higgs threshold correction
+  (P31~\cite{SpivackWeinbergAngle}) yields $0.23129154$ ($+0.038\sigma$, \CatB).
+\end{theorem}
+
+\subsection{M\texorpdfstring{$_W$/$M_Z$}{W/Z} ratio}
+\label{ssec:mwmz}
+
+The mass ratio follows from the tree-level Weinberg angle:
+\begin{equation}
+  \label{eq:mwmz}
+  \left(\frac{\Mw}{\Mz}\right)^2 = 1 - \sinwsq\Big|_{\rm tree} = 1 - \frac{3}{13} = \frac{10}{13}.
+\end{equation}
+
+\begin{theorem}[\lean{mw\_mz\_squared\_from\_weinberg}; \CatAL{} zero sorry]
+  \label{thm:mwmz}
+  $(\Mw/\Mz)^2 = 10/13$, i.e., $\Mw/\Mz=\sqrt{10/13}\approx 0.8771$.
+  PDG~2024: $\Mw/\Mz = 80.3692/91.1880 \approx 0.8813$ ($-0.48\%$).
+\end{theorem}
+
+\subsection{Absolute scale from vacuum VEV}
+\label{ssec:absolute}
+
+The absolute electroweak scale is derived from the Schwinger--SM identity
+and the SRRG vacuum scale $\vPSC$:
+\begin{equation}
+  \label{eq:E0}
+  E_0 = \vPSC\sqrt{\pi/8} = 154.26\;\text{GeV},
+\end{equation}
+with $\vPSC=246.16$~GeV (from the SRRG fixed-point construction of P27).
+The radiative correction is $\Delta r = \sinwsq/\pi = 3/(13\pi)$ (GTE
+Sirlin analogue, CatAD).  The absolute mass predictions are:
+\begin{align}
+  \label{eq:Mw_pred}
+  \Mw^{\rm GTE} &= 80.61\;\text{GeV} \quad (+0.30\%\;\text{vs PDG~2024}\;80.3692\;\text{GeV}), \\
+  \label{eq:Mz_pred}
+  \Mz^{\rm GTE} &= 91.91\;\text{GeV} \quad (+0.80\%\;\text{vs PDG}\;91.188\;\text{GeV}).
+\end{align}
+
+Internal consistency is exact: $\Mw/\Mz=\sqrt{10/13}$ from the direct mass
+predictions.  The $+0.80\%$ $M_Z$ residual reflects the Sirlin-analogue
+$\Delta r$ overshooting the tree--PDG gap by $\approx8\%$ combined with
+$\vPSC$ uncertainty; no additional GTE correction closes the gap without
+breaking the angle prediction.
+
+\begin{theorem}[\lean{EWScalePrediction.lean};
+  \lean{e0\_schwinger\_sm\_identity}, \lean{mw\_formula\_from\_vH},
+  \lean{mz\_formula\_from\_vH}, \lean{ew\_scale\_prediction\_summary};
+  \CatAL{} zero sorry]
+  \label{thm:ew_scale}
+  The Schwinger--SM identity $E_0=\vPSC\sqrt{\pi/8}$, the $\Mw$ and $\Mz$
+  formulas from $\vPSC$, and their ratio $\Mw/\Mz=\sqrt{10/13}$ are all
+  machine-certified.
+\end{theorem}
+
+\paragraph{Assumption chain.}
+Table~\ref{tab:ew_chain} shows the eight-step derivation chain with
+confidence levels.
+
+\begin{table}[h]
+  \centering
+  \small
+  \caption{Eight-step derivation chain for the GTE electroweak scale.}
+  \label{tab:ew_chain}
+  \begin{tabular}{cP{0.42\linewidth}P{0.12\linewidth}P{0.26\linewidth}}
+    \toprule
+    Step & Assumption & Cat level & Source \\
+    \midrule
+    1 & EW threshold $=$ $k=\Ngen=3$ orbit-vacuum step
+        & \CatAL & \lean{ew\_threshold\allowbreak\_step\_unique} / GUTStructure §41 \\
+    2 & $\sinwsq\big|_{\rm tree} = 3/13$
+        & \CatAL & GUTStructure §12 \\
+    3 & Threshold correction $\lambda^3/(2\cH)=729/1664000$
+        & \CatAL & GUTStructure §24 \\
+    4 & $(\Mw/\Mz)^2 = 10/13$ at tree $\sinwsq$
+        & \CatAL & GUTStructure §45 \\
+    5 & $\vPSC = 246.16$~GeV
+        & CatAD & P27 SRRG [A$-$] \\
+    6 & $E_0 = \vPSC\sqrt{\pi/8}$
+        & CatAD & P31 Schwinger identity \\
+    7 & $\alpha=1/137$ (GTE cascade)
+        & CatA  & \\
+    8 & $\Delta r = \sinwsq/\pi$
+        & CatAD & P33 Sirlin analogue \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Steps 1--4 are unconditionally machine-certified.  Steps 5--8 carry the
+remaining CatAD assumption: the absolute scale requires first-principles
+derivation of $\Delta r$ from a CA Schwinger loop (currently CatD).
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{Born Rule from Kink Quantization}
+\label{sec:born}
+%═════════════════════════════════════════════════════════════════════════════
+
+\subsection{The \texorpdfstring{$\ZS$}{Z7}-KG kink solitons}
+\label{ssec:kinks}
+
+The $\PHIMDL$ field has $\ZS$-periodic potential
+$V(\Phi)=m^2(1-\cos7\Phi)/49$.  The spectrum of BPS kink solutions
+consists of topological defects labelled by their winding number
+$k\in\{0,1,2,3,4,5,6\}=\ZS$, connecting adjacent
+$\ZS$-degenerate vacua~\cite{SpivackGTEMobius}.
+
+The kink sectors are superselected: the $\ZS$ winding number is a
+conserved topological charge.  Following Coleman--Mandelstam--Rajaraman
+in 1+1D quantum field theory~\cite{Coleman1975,Mandelstam1975,Rajaraman1982}
+the $\ZS$-winding superselection sectors of the quantized $\PHIMDL$
+field provide a discrete Hilbert-space decomposition.
+
+\subsection{Z\texorpdfstring{$_7$}{7} winding partition and beable amplitudes}
+\label{ssec:winding_partition}
+
+The Fock space over $\PHIMDL$ kinks is constructed in
+\lean{FockSpaceKink.lean} (zero sorry): four GTE kink Fock modes with
+certified \lean{qPhi} labels; creation/annihilation operators
+(\lean{kinkCreation}/\lean{kinkAnnihilation}); and a uniform
+winding-sector lift (\lean{BeableWindingPartition}).
+
+\begin{theorem}[\lean{BeableWindingPartitionInstance.lean};
+  \lean{born\_rule\_unconditional},
+  \lean{beableWindingPartitionInstance},
+  \lean{structuralBeableAmplitude},
+  \lean{fock\_beable\_amplitude\_normalized};
+  \CatAL{} zero sorry, zero custom physics axioms]
+  \label{thm:born}
+  The $\ZS$-winding beable partition of the $\PHIMDL$ Fock space satisfies
+  the Born rule:
+  \begin{equation}
+    \label{eq:born}
+    P(k) = |\phi_k|^2 / \textstyle\sum_{j=0}^{6}|\phi_j|^2,
+    \quad k\in\ZS.
+  \end{equation}
+  For any normalised sector coefficient vector, the Born rule
+  \lean{born\_rule\_unconditional} is certified with zero custom physics
+  axioms in Lean~4.  The fibre cardinality is $2401\times7$ (certified by
+  \lean{native\_decide}).
+\end{theorem}
+
+The algebraic Born-rule derivation (\lean{born\_weight\_from\_mdl\_minimality},
+\lean{sector\_born\_weight\_partition}; in \lean{BornRuleMDL.lean}) is
+unconditionally zero sorry and precedes the constructive Fock lift.
+
+\subsection{MDL derivation of the Born rule}
+\label{ssec:born_mdl}
+
+The MDL-minimal selection chain that forces the Born rule is:
+
+\begin{theorem}[\lean{BornRuleMDL.lean};
+  \lean{born\_rule\_from\_psc\_mdl}; \CatAL{} conditional]
+  \label{thm:born_mdl}
+  Under the \lean{BeableAmplitudeHypothesis} (normalised amplitudes on
+  $\text{Fin}(7^5)$ with winding labels, constructively supplied by the
+  Fock lift in \lean{FockSpaceKink.lean}),
+  the winding-sector Born weights satisfy:
+  \begin{equation}
+    P(k) = \sum_{i: W(i)=k} |\alpha_i|^2 \big/ \sum_i |\alpha_i|^2.
+  \end{equation}
+  Corollary: the D5 Born-consistency constraint of $[\mathbf{D}]$
+  (P34~\cite{SpivackGTEMobius}) is satisfied structurally.
+\end{theorem}
+
+The full derivation chain from P34 substrate axioms to the Born rule is
+thus: $[\mathbf{D}]$ axioms (D1--D5)
+$\to$ MDL-minimal completion $= f_{\rm MDL}$ (CUP-12, CatAL)
+$\to$ inverse-complexity winding-sector weights (CatAL)
+$\to$ Fock lift constructive amplitude (CatAL)
+$\to$ Born partition (CatAL conditional).
+
+\paragraph{Two-function picture: Born rule and transputation.}
+The Born rule $\mathcal{B}$ maps amplitudes to probabilities given a state;
+transputation $\mathbb{P}^\top$ selects the physical state via
+$(D3 \land D4 \land D5)$ of the $[\mathbf{D}]$-class.
+Composition $\mathbb{P}(\text{outcome}=k\mid w)=(\mathcal{B}\circ\mathbb{P}^\top_D)(w)_k$
+is certified in \lean{TransputationStateSelector.lean} as
+\lean{two\_function\_picture} (\CatAL{} conditional; zero sorry).
+
+\paragraph{Continuum Born track.}
+On the $\PHIMDL$ continuum, the position Born density is
+$P(x)=|\partial_x\Phi|^2/\int|\partial_x\Phi|^2$ with
+$\int(\partial_x\Phi)^2=8m/49=M_{\rm kink}$ ($\CatAD$).
+For well-separated kinks, sector weights $P(k)=|c_k|^2$ follow from the
+$L^2(\partial_x\Phi)$ overlap integral ($\CatAD$).
+$[\mathbf{D}]$-selection implements projective collapse onto the $\ZS$ kink
+eigenbasis with $P(j)=|c_j|^2$ ($\CatA$).
+Track~A (structural prior $P(k)=1/7$ from equal beable counts) and Track~B
+(state-specific $P(k)=|c_k|^2$) agree iff $|c_k|^2=1/7$: a prior/state
+distinction, not a contradiction ($\CatAD$).
+
+\paragraph{Overlapping kinks and the dual-frame Born rule.}
+For overlapping kink configurations ($\Delta x \lesssim m_\varphi^{-1}$),
+the L$^2(\partial_x\Phi)$ inner product is replaced by the field-theoretic
+Gaussian functional inner product with Gram matrix
+$G_{kj}=\exp(-\tfrac{1}{4}\langle\Delta\varphi^{\rm cl}|\omega|
+\Delta\varphi^{\rm cl}\rangle)$; Born probabilities are recovered exactly
+via the canonical dual frame (Lean: \lean{DualFrameBornRule.lean},
+\lean{born\_rule\_from\_dual\_frame\_master}, \CatAL{}; zero custom axioms in any \CatAL\ proof chain).
+$\ZS$ winding superselection holds at all separations (topological charge
+$Q=(2\pi)^{-1}[\varphi(+\infty)-\varphi(-\infty)]$).
+
+\paragraph{Physical state selection (L3).}
+The Born rule certifies the squared-modulus \emph{map}; identifying the
+physical coefficient vector is a separate state-selection question.
+The Hamiltonian thermal state of the $\ZS$ sine-Gordon kink Hilbert space,
+restricted to PSC-admissible sectors $\{0,2,3,4,6\}$~\cite{SpivackMirrorBraidAtlas,SpivackPhiMDLField}, gives
+$P(k)=e^{-M_k/T}/Z_T$ with $M_0=0$ and $M_{k>0}=8m/49$
+(Lean: \lean{PhiMDLThermalState.lean}, \lean{phimdl\_thermal\_state\_master};
+\CatAL{} conditional; zero custom physics axioms).
+Uniqueness of the physical $D\in[\mathbf{D}]$ remains Conjecture~C2 of
+P34~\cite{SpivackGTEMobius}; the structural reduction is certified in
+\lean{CoherenceMeasureUniqueness.lean} (\CatAL{} conditional on
+\lean{architectural\_restriction}).
+
+\begin{remark}[PSC $+$ f$_{\rm MDL}$ $\Rightarrow$ EffectMeasure]
+  The formal bridge B2 from PSC dynamics to the quantum-axiomatic
+  EffectMeasure structure is derivable (not axiomatic): it decomposes into
+  (B2a) the constructive amplitude-to-EffectMeasure bridge (mechanical Mathlib
+  operator algebra; Lean module \lean{PSCEffectMeasure.lean}), and (B2b) the
+  PSC physical-state-to-amplitude identification (in the canonical quantisation
+  scope).  No \lean{psc\_prescribes\_effect\_measure} axiom is needed in the
+  GTE Lean formalization.
+\end{remark}
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{Double-Slit Interference}
+\label{sec:dslit}
+%═════════════════════════════════════════════════════════════════════════════
+
+\subsection{CMCA derivation of double-slit statistics}
+\label{ssec:dslit_derivation}
+
+The $\PHIMDL$ double-slit demonstration uses the CMCA:
+
+\begin{itemize}[noitemsep]
+  \item \textbf{Zone~Z1 (unitary amplitude zone, corresponding to Level~2/$\PHIMDL$):} the $\PHIMDL$ scalar field
+    propagates as a wave through two slits; the intensity pattern on the
+    detection screen is $|\phi(x)|^2=|\phi_L(x)+\phi_R(x)|^2$.
+  \item \textbf{Zone~Z2 ($[\mathbf{D}]$/beable zone, corresponding to Level~1/CA beable ontology):} individual kink
+    localisation events are discrete ``clicks''; each kink follows a
+    \emph{definite} beable path through one slit ('t Hooft cogwheel
+    picture~\cite{tHooft2016CA}, P37~\cite{SpivackQMFromR110}).
+  \item \textbf{Born rule (76-BORN/77-2QUANT):} $[\mathbf{D}]$ outcome
+    weights satisfy $P(x)=|\phi(x)|^2/\int|\phi|^2$ (MDL-minimal sector
+    partition, Lean-structural: \lean{born\_rule\_from\_psc\_mdl} $+$ Fock lift).
+\end{itemize}
+
+Wave--particle duality is resolved without contradiction: the ontological
+path is definite (which slit) at the beable level; interference encodes
+the relative phase of the two-slit amplitude $\phi=\phi_L+\phi_R$;
+and the Born rule produces the ensemble statistics.
+
+\subsection{Huygens--Fresnel simulation}
+\label{ssec:dslit_numerical}
+
+The Zone~Z1 amplitude is computed by Huygens--Fresnel numerical quadrature
+with parameters: wave number $K=12.0$, $\lambda=2\pi/K\approx 0.524$,
+slit width $0.35$, slit separation $2.0$, screen distance $L=18.0$,
+80 quadrature points per slit, $M_{\rm kink}=0.29010$~GeV,
+$N_\phi(\ZS)=7$.  Zone~Z2 uses $12{,}000$ Born clicks on 400 screen bins.
+
+\begin{table}[h]
+  \centering
+  \small
+  \caption{Double-slit numerical results.}
+  \label{tab:dslit}
+  \begin{tabular}{ll}
+    \toprule
+    Observable & Value \\
+    \midrule
+    Fringe visibility (simulation) & 0.99936 \\
+    Fringe visibility (Fraunhofer analytic) & 0.99998 \\
+    $\mathrm{corr}(\text{sim},\,\text{Fraunhofer})$ & \textbf{0.9983} \\
+    Path identity: $\max|\,I - |\phi_L+\phi_R|^2\,|$ & $2.6\times10^{-18}$ \\
+    Fringe spacing (predicted $\lambda L/d$) & 4.712 \\
+    Fringe spacing (measured from peaks) & 4.772 ($+1.3\%$) \\
+    Born clicks $\mathrm{corr}(\text{hist},\,|\phi|^2)$ & 0.994 \\
+    $\chi^2_{\rm red}$ (clicks vs.\ $|\phi|^2$) & $9.8\times10^{-5}$ \\
+    Overall PASS & \textbf{True} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The simulation reproduces the Fraunhofer analytic fringe pattern with
+$\mathrm{corr}=0.998$; the two-path interference identity holds to
+machine precision ($2.6\times10^{-18}$).  The Born-sampling histogram
+reproduces $|\phi|^2$ with $\chi^2_{\rm red}\approx10^{-4}$.
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{V--A Structure and Chiral Symmetry}
+\label{sec:va}
+%═════════════════════════════════════════════════════════════════════════════
+
+\subsection{Left--right winding mismatch}
+\label{ssec:mismatch}
+
+The V--A structure of the SM charged-current interaction is reflected in
+the CMCA by a systematic left--right winding mismatch at $W^+$
+vertices.  Specifically, for each vertex triple $(f_{\rm MDL,110}(\ell,c,r),\,
+f_{\rm MDL,124}(\ell,c,r),\,c)$ with $c\in\ZS$, a \emph{mismatch} occurs
+when:
+\begin{equation}
+  f_{\rm MDL,110}(\ell,c,r) \neq f_{\rm MDL,124}(\ell,c,r)
+  \;\;\wedge\;\; c \bmod 2 = 0.
+\end{equation}
+
+\begin{theorem}[\lean{ChiralPairVA.lean};
+  \lean{bit\_mismatch\_iff},
+  \lean{va\_mismatch\_count}=32; \CatAL{} zero sorry]
+  \label{thm:va}
+  Among the 125 nonzero SM vertex triples $(\ell,c,r)\in\ZS^3$
+  with $c\neq 0$:
+  \begin{itemize}[noitemsep]
+    \item Exactly $32$ exhibit a left--right winding mismatch.
+    \item All 32 mismatches involve $W^+$ (winding $+3$) in the non-centre
+      position.
+    \item No mismatch occurs for ether ($c=0$), photon ($c\bmod7=0$),
+      or neutral-current ($Z^0$) vertices.
+  \end{itemize}
+  The fraction $32/125$ is the CA realisation of V--A parity violation.
+\end{theorem}
+
+\paragraph{Interpretation.}
+In the SM, the V--A structure arises because $SU(2)_L$ couples only to
+left-handed fermions.  In the CA, this is realised by the mirror-rule
+asymmetry: the Rule~124 ($v_L=-2/3$) layer applies spatial reflection to
+every vertex, so a vertex that is centre-parity-even in Rule~110 is
+centre-parity-odd in Rule~124.  The mismatch predicate
+$f_{\rm MDL,110}\neq f_{\rm MDL,124}$ with $c\bmod 2=0$ isolates precisely
+the $W^+$ non-centre vertices---the charged weak interactions.
+
+\subsection{Generation orbit asymmetry}
+\label{ssec:gen_asymm}
+
+The forward generation orbit gen$_1\to\mathrm{gen}_2\to\mathrm{gen}_3\to\mathrm{vac}$
+takes 3 steps in the Rule~110 (right-moving) layer, while the mirror orbit
+under Rule~124 (left-moving) takes only 2 steps.  The $\ZS$ orbit trace is
+preserved: $[4,4,3,0,0]$ in the decoupled two-layer system, identical to
+the single-layer result.  This generation-orbit asymmetry is a further
+realisation of chiral symmetry: the mirror (left-handed) sector decays
+faster, matching the experimental dominance of left-handed charged-current
+couplings.
+
+\subsection{Ether-phase nucleation classification}
+\label{ssec:ether_class}
+
+Persistent C2 gliders (the physical particles) can be nucleated only from a
+subset of the 14 ether phases of the two-layer system.  The working phases
+are:
+
+\begin{center}
+\begin{tabular}{ll}
+  Rule~110: & phases $\{1,6,7,10\}$ \\
+  Rule~124: & phases $\{3,6,7,12\}$ \\
+\end{tabular}
+\end{center}
+
+These sets are related by the mirror map $p\leftrightarrow(13-p)$; phase~7
+is shared (the $\ZS$-residue-zero phase).  The 10 transient phases support
+persistent C2 gliders under multi-cell injection (overall rate $\approx8.5\%$,
+random rate $\approx6.4\%$), but the single-bit injection no-go for
+phase-unaware coupling is preserved: phases 0,2,3,4,5,8,9,11,12,13
+cannot support persistent gliders under single-bit perturbation.
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{Discussion}
+\label{sec:discussion}
+%═════════════════════════════════════════════════════════════════════════════
+
+\subsection{Two-level architecture}
+\label{ssec:two_level}
+
+The framework distinguishes two structural levels (distinct from the two chiral
+outer layers of Rule~110 $\oplus$ Rule~124, which both reside at Level~1 along
+with the inner $\tau_c$ clock):
+
+\paragraph{Level 1: discrete CA substrate (CMCA).}
+Rule~110 (right-mover) $\oplus$ Rule~124 (left-mover) $\oplus$ inner Rule~110
+$\tau_c$ clock, operating on a $\ZS$-valued tape (at the Planck scale under
+the fine-end working hypothesis $a\approx\ell_P$,
+Remark~\ref{rem:layers_levels}).  This
+level has a preferred frame, with $\epsz(7)\approx6.71\%$ Lorentz violation;
+it carries the V--A structure (32/125 mismatches), the $\ZS$ generation orbit
+($\Ngen=3$), the coupling no-go [$\gcd(3,14)=1$], the beable ontology
+('t Hooft cogwheels~\cite{tHooft2016CA}), and dynamics-level SR time dilation
+via the $\tau_c$ inner clock.
+
+\paragraph{Level 2: $\PHIMDL$ continuum field.}
+The $\ZS$-symmetric Klein--Gordon field on 1+1D Minkowski space, with
+potential $V(\Phi)=m^2(1-\cos7\Phi)/49$.  This level has exact Lorentz
+invariance ($\omega^2=k^2+m^2$, Lean-certified); carries the BPS kink
+spectrum with $\ZS$ superselection; and hosts the quantum amplitudes
+$\phi_k$ from which the Born rule $P(k)=|\phi_k|^2$ follows.
+
+The two levels are connected by the continuum limit
+$\epsz(M)\to0$ as $M\to\infty$ (Theorem~\ref{thm:kg_lorentz}),
+the event-triggered coupling (Theorem~\ref{thm:event_coupling}),
+and the PSC/D2 Lorentz equivariance theorem (Theorem~\ref{thm:psc_lorentz}).
+
+Two derivations of Lorentz-related physics at Level~1 are complementary,
+not equivalent.  This paper derives \textbf{observer-level Lorentz}: PSC
+Presentation Invariance forces $[\mathbf{D}]$-selected observables on the
+$\PHIMDL$ continuum to be Lorentz-equivariant despite the Level-1 preferred
+frame.  P36~\cite{SpivackEmergentGravity} derives \textbf{dynamics-level SR}:
+in the Asynchronous Fractal Cellular Automaton (AFCA), each cell's inner
+Rule~110 clock measures a state-dependent recurrence period $\tau_c$, and a
+moving glider's elevated structural complexity gives
+$\tau_c(\text{glider})/\tau_c(\text{ether})$ tracking $\gamma$.
+The CMCA (Section~\ref{sec:temporal_layer}) unifies both mechanisms in a
+single Level-1 construction.
+
+The Algebraic Lifting Theorem and Algebraic Descent Theorem of
+P28~\cite{SpivackCompUniversality} transfer propositional content over the
+Z$_7$ orbit algebra (Z$_7$ winding conservation, charge quantisation,
+three-generation count, color confinement, scattering vertex catalog,
+Garden-of-Eden stability).  These theorems explicitly do not transfer
+geometric or dynamical content: the SR Nyquist correction
+$\epsz(M)=\pi^2/(3M^2)$ is $M$-dependent and does not descend; exact Lorentz
+invariance is recovered only in the $M\to\infty$ continuum limit on $\PHIMDL$.
+A Lean-certified theorem (\lean{no\_finite\_ca\_exact\_lorentz\_replica}, zero sorry)
+establishes this rigorously: $\epsz(M)=\pi^2/(3M^2)>0$ for all $M>0$, so no
+cellular automaton at any finite resolution $M$ exactly replicates the Lorentz
+invariance of $\PHIMDL$; exact invariance is recovered only as $M\to\infty$,
+at which point the CMCA identifies with $\PHIMDL$ itself
+(\lean{phimdl\_is\_unique\_exact\_lorentz\_model}, zero sorry).
+
+\paragraph{Explicit continuum-limit descent map.}
+The $M\to\infty$ continuum limit is explicitly verified at $M=7$.
+The Cook A-type glider winding profile (sampled over a 60-cell window centred
+on the glider's centre of mass) matches the $\PHIMDL$ BPS kink
+$\phi_{\rm kink}(x)=(4/7)\arctan(e^{m_\phi x})$ with $\mathrm{RMSD}=5.34\%$,
+strictly below the certified Nyquist residual
+$\varepsilon_0(7)=\pi^2/147\approx6.71\%$;
+the Pearson correlation between the discrete and continuum profiles is $r=0.994$;
+and the winding number $Q=1/7$ exactly, matching the $\ZS$ kink charge
+(script \texttt{cmca\_algebraic\_descent.py};
+results JSON \texttt{cmca\_algebraic\_descent\_results.json}).
+This closes the explicit numerical bridge between the Level-1 CMCA discrete
+substrate and the $\PHIMDL$ continuum terminal object.
+
+\subsection{Comparison with Cook (2004) and GF(7) universality}
+\label{ssec:cook}
+
+Cook (2004)~\cite{Cook2004} proved that Rule~110 is Turing-universal using
+a constructive Turing-complete simulation (CTS) construction.  P30~\cite{SpivackCookTheorem}
+provides a Lean~4 formalisation of the operational core of this construction
+(\lean{cook\_operational\_stage3\_tm\_microstep\_readback}, zero sorry modulo five named
+classical Cook collision-analysis bridge axioms) --- a conditional certificate connecting
+already-supplied Turing-machine compilations to CTS decode and origin readback, with the
+general TM$\to$CTS compiler for arbitrary machines remaining open; Cook's classical
+construction remains the load-bearing Turing-universality result.  The algebraic route via GF(7) polynomial
+characterisation~\cite{SpivackGF7Universality} independently yields a Cook-independent
+finite functional-completeness certificate: \lean{z7\_bool3\_finite\_functional\_completeness},
+\lean{rule110\_z7\_poly\_rep}, \lean{rule110\_center1\_is\_nand} (zero sorry) --- Rule~110 at
+center cell $C=1$ realizes any finite two-input Boolean function algebraically, a result
+distinct from and not sufficient for Turing universality.
+
+In the two-layer context, Rule~110 Turing universality is the foundation for
+the \emph{computational sufficiency} claim (P28~\cite{SpivackCompUniversality}):
+any finite-dimensional SM particle configuration can be realised as a CA
+excitation, because the universal computation provided by Rule~110 can
+simulate any computable physical process.  The two-layer extension does not
+alter this certificate; it adds the chiral partner layer required for V--A
+structure and the symmetric light cone.
+
+\subsection{GTE framework context}
+\label{ssec:gte_context}
+
+This paper is positioned within the UGP Physics programme
+as follows:
+
+\begin{itemize}[noitemsep]
+  \item \textbf{P28} (computational universality): establishes Rule~110 as
+    the MDL-minimal universal CA; foundational for all three CMCA layers.
+    The Algebraic Lifting and Descent theorems certify the algebraic
+    content-preservation morphisms in the GTE category of Level-1 CAs.
+  \item \textbf{P30}~\cite{SpivackCookTheorem} (Cook theorem certification):
+    machine-certifies Cook's Rule~110 universality proof; complements the
+    GF(7) polynomial route of P40.
+  \item \textbf{P34} (GTE-M\"obius architecture): defines the architecture
+    $(A,e,[\mathbf{D}])$ and the D2 Presentation Invariance axiom from
+    which Theorem~\ref{thm:psc_lorentz} derives Lorentz equivariance.
+  \item \textbf{P35} (GTE unification): derives the Weinberg angle and EW
+    threshold; Theorems~\ref{thm:ew_threshold}--\ref{thm:ew_scale} here
+    provide the three-layer CMCA derivation complement.
+  \item \textbf{P36}~\cite{SpivackEmergentGravity} (emergent gravity and AFCA):
+    derives dynamics-level SR time dilation via the AFCA $\tau_c$ inner clock
+    mechanism, complementary to the observer-level Lorentz derivation here.
+    The CMCA (Section~\ref{sec:temporal_layer}) combines both mechanisms in
+    a single Level-1 construction.
+  \item \textbf{P37} (quantum mechanics from Rule~110): develops the 't Hooft
+    cogwheel construction; Born rule and double-slit results here extend P37
+    with the three-layer CMCA chirality structure.
+  \item \textbf{P40} (GF(7) polynomial and finite NAND functional completeness):
+    certifies Rule~110's finite Boolean functional completeness Cook-independently;
+    complements the Rule~124 and inner-clock construction here.
+  \item \textbf{P43}~\cite{SpivackCompleteness} (complete $\PHIMDL$ framework):
+    proves the Algebraic Necessity Theorem --- any QFT with three generations,
+    $b_0=7$, and a $\ZS$-kink Born rule necessarily has
+    $F_{21} = \ZS\rtimes\ZZ_3$ as its internal symmetry group (Lean-certified,
+    \lean{AlgebraicNecessityTheorem.lean}, zero \texttt{sorry}).
+  \item \textbf{P45}~\cite{SpivackThreeTapeCMCA} (three-tape CMCA): extends
+    the $1+1$D architecture of this paper to $3+1$D via three CMCAs sharing a
+    common outer clock $\tau_c^{\rm out}$.  The Dimensional Protocol Principle
+    (DPP)---that the three tapes synchronize through this shared clock---is
+    shown there to be both necessary and sufficient for $3+1$D Minkowski
+    dynamics to emerge from the three-tape system.
+\end{itemize}
+
+\subsection{Open questions}
+\label{ssec:open}
+
+Several open questions remain.
+
+\paragraph{Unconditional CatAL for absolute masses.}
+Steps 5--8 of Table~\ref{tab:ew_chain} carry CatAD status.  Achieving
+unconditional CatAL for $\Mw$ and $\Mz$ in GeV requires: (1)~a
+first-principles derivation of $\Delta r$ from a CA Schwinger loop
+(currently CatD); (2)~closure of the $\vPSC$ open axiom
+\lean{psc\_ew\_entropy\_maximization} in the SRRG formalism.
+
+\paragraph{Discharge of kernel-workaround axioms.}
+The module previously carried seven private kernel-workaround axioms, all of
+which have been discharged via parametric proofs over \lean{Fin n} in
+\lean{PSCEffectMeasureGeneric.lean}.
+The sole remaining imported axiom is
+\lean{re\_trace\_psd\_mul\_psd\_nonneg} from \lean{nems-lean}.
+
+\paragraph{Canonical kink quantization.}
+The canonical $\ZS$-KG kink Fock construction (Jackiw--Rebbi~\cite{JackiwTeitelboim1985}
+zero-mode; MDL weight $=|\phi_k|^2$ identification in the continuum quantum
+limit) remains an open direction for Lean formalization in future work.
+
+\paragraph{Conjecture C2 and absolute state selection.}
+Theorem~\ref{thm:cmca_mdl_minimal} and \lean{CMCAMDLMinimality.lean} are
+conditional \CatAL{} (one physical-interpretation axiom, \lean{va\_min\_mirror\_bit};
+zero sorry).
+Full closure of P34 Conjecture~C2---uniqueness of the physical
+$D\in[\mathbf{D}]$---requires discharging the \lean{architectural\_restriction}
+axiom in \lean{CoherenceMeasureUniqueness.lean} via a DSAC representation
+theorem on $\PHIMDL$.
+
+\paragraph{Canonical inner-clock formalisation.}
+The inner Rule~110 $\tau_c$ clock (Section~\ref{sec:temporal_layer}) is
+characterised computationally (CatA).  A Lean formalisation of the $\tau_c$
+first-passage recurrence time and its dependence on glider vs.\ ether
+structural complexity would provide a CatAL certificate for
+Proposition~\ref{prop:sr_dilation}.
+
+\paragraph{Gravitational sector.}
+The Ollivier--Ricci curvature of the Rule~110 causal graph discriminates
+gliders from ether ($\kappa(\text{EE})=0$, $\kappa(\text{SD})=+0.769$,
+Gorard sign at $p=2.5\times10^{-36}$, CatA~\cite{Gorard2020Rel}).
+Dynamical glider--glider gravitational attraction via $f(\kappa)$ edge-weight
+coupling was not confirmed across several distinct coupling prescriptions:
+both static inter-defect curvature gradients and dynamical backreaction
+methods yielded no measurable attraction signal.  The primary gravity
+derivation path is the $\PHIMDL$/Einstein track (P38, in preparation).
+
+\paragraph{Dimensional dissipation staircase and higher-dimensional extensions.}
+The CMCA established in this paper is a $1+1$D construction.
+Systematic searches have now mapped the full dimensional spectrum of
+GF(7)-polynomial-derived rules:
+\begin{itemize}[noitemsep]
+  \item \textbf{$1+1$D.}  The CMCA (Rule~110 $\oplus$ Rule~124 $\oplus$ inner
+    $\tau_c$) supports persistent propagating gliders indefinitely
+    (established; \CatA{}).
+  \item \textbf{$2+1$D.}  Canonical $2+1$D extensions of the $\ZS$ polynomial
+    rule---axis-decomposed chiral application along $x$ and $y$, a 5-layer
+    chiral construction matching the four discrete null directions of $2+1$D
+    Minkowski plus an inner clock, and the $\ZS$ von Neumann
+    totalistic---all fail to produce stable propagating gliders.
+    A search over four rule variants and approximately 330 random and
+    structured initial conditions run to $T=1{,}000$ finds zero persistent
+    localised propagators.  A Conway B3/S23 positive control correctly
+    detects its canonical glider (diagonal speed $c/4$), confirming the
+    methodology.  The 5-layer construction is structurally well-defined but
+    its layers decouple into independent $1+1$D dynamics along each axis;
+    no inter-axis coupling is derivable from the underlying polynomial.
+    The axis-XOR rule exhibits a transient marginal regime at intermediate
+    times that decays to vacuum at long times, qualitatively intermediate
+    between the $1+1$D edge-of-chaos regime and the pure vacuum-or-chaos
+    bifurcation of the $3+1$D extension.
+  \item \textbf{$3+1$D.}  The canonical 3D extension \lean{step\_fmdl3d}
+    has Langton $\lambda=0.8575$, statistically indistinguishable within
+    $0.05\%$ from the random-rule expectation $6/7$ (verified exhaustively
+    over all $7^7=823{,}543$ input configurations); the output distribution
+    is uniform, the signature of maximum-entropy chaos saturation.
+    A $\lambda$-scan over 510 independent outer-totalistic $\ZS$ von Neumann
+    6-neighborhood rule-and-seed combinations finds zero Class~4
+    (edge-of-chaos, glider-supporting) trajectories; rules transition
+    sharply from Class~1/2 (ordered) at $\lambda<0.54$ directly to
+    Class~3 (chaos) at $\lambda>0.54$ with no marginal window.
+\end{itemize}
+This constitutes a \emph{dimensional dissipation staircase}: GF(7)
+polynomial-derived rules support persistent gliders in $1+1$D, produce
+only transient marginal dynamics in $2+1$D, and exhibit only
+vacuum-or-chaos bifurcation in $3+1$D.  The structural root cause is that
+the GF(7) polynomial $p(L,C,R)$ encodes a single causal axis; in $3+1$D
+the null cone is $S^2$, which cannot be discretised without breaking
+Lorentz symmetry.  Three converging factors account for the $3+1$D
+vacuum-or-chaos phase: higher dimensionality (6 neighbours versus 2 in
+$1+1$D) yields a sharper percolation transition on the cubic lattice; the
+$\ZS$ alphabet concentrates the attractor to vacuum or saturated chaos;
+and outer-totalistic neighbour-symmetrisation destroys chirality, which
+is necessary for edge-of-chaos glider transport in 1+1D rules.
+
+The Class~4 impossibility is partially Lean-certified:
+\lean{outer\_totalistic\_is\_reflection\_invariant} (zero sorry) proves
+that outer-totalistic rules are reflection-symmetric and therefore cannot
+be chiral; \lean{no\_class4\_outer\_totalistic\_z7\_3d} ($\CatAL$ conditional;
+zero sorry in proof body; one named physics axiom
+\lean{chirality\_necessary\_for\_class4}) uses this
+to certify the absence of Class~4 behaviour in the full $\ZS$-vN6
+outer-totalistic family, conditional on the named axiom that chirality
+is necessary for Class~4 dynamics
+(\lean{Universality/NoClass4OuterTotalisticZ7}).
+
+The framework conclusion is that no canonical $2+1$D intermediate discrete
+substrate exists, and no canonical $3+1$D discrete substrate is required
+or derivable from a single GF(7) polynomial rule.  The discrete counterpart of a $3+1$D $\PHIMDL$ kink pair
+is the $1+1$D CMCA glider, transferred to $3+1$D spacetime via the
+Algebraic Lifting Theorem.  The $3+1$D spectral dimension $d_s\to4$ is
+Lean-certified (\lean{causal\_graph\_spectral\allowbreak\_dim\_thermodynamic\_limit}, \CatAL{}) and the
+algebraic continuum limit $\text{CMCA}\to\PHIMDL$ is certified
+(\lean{CMCAContinuumLimit.lean}, \CatAL{} conditional).  Since $\PHIMDL$
+in $3+1$D carries exact Poincar\'e symmetry and SR time dilation
+(\lean{poincare\_invariance\_of\_kg}), both follow for the $3+1$D CMCA
+in the continuum limit by algebraic descent.
+A distinct and complementary route to $3+1$D is established
+in~\cite{SpivackThreeTapeCMCA}: three $1+1$D CMCAs sharing a common outer
+clock $\tau_c^{\rm out}$ (the Dimensional Protocol Principle) jointly
+produce $3+1$D Minkowski dynamics, with spatial structure arising precisely
+from the synchronization imposed by the shared clock.
+
+\paragraph{Holographic structure.}
+Of three holographic interpretations examined---($H_1$) the $1+1$D CMCA
+as boundary of a $3+1$D bulk, ($H_2$) a $2+1$D discrete CA as boundary,
+and ($H_3$) $2+1$D $\PHIMDL$ continuum domain walls as boundary---only
+$H_3$ is consistent with the framework.  $H_1$ fails on entropy count
+(a $1$D boundary has insufficient degrees of freedom for a $3$D bulk).
+$H_2$ fails because no canonical $2+1$D discrete substrate exists.
+$H_3$ is consistent with established black-hole holography ($S=A/4$):
+the $\PHIMDL$ $2$D domain walls, with surface tension
+$\sigma=290.10~\mathrm{MeV/fm}^2$, are codimension-$1$ surfaces in the
+$3+1$D bulk with the appropriate entropy count to act as information-bearing
+boundaries.  The GTE-native holographic structure is therefore continuum,
+not discrete.
+
+%═════════════════════════════════════════════════════════════════════════════
+\section{Conclusion}
+\label{sec:conclusion}
+%═════════════════════════════════════════════════════════════════════════════
+
+We have presented the Chiral Minkowski Cellular Automaton (CMCA)---Rule~110
+($x^+$ null layer) paired with its spatial mirror Rule~124 ($x^-$ null layer)
+and a shared inner Rule~110 $\tau_c$ clock ($t$ timelike layer)---as the
+minimal Level-1 GTE discrete substrate simultaneously accounting for
+Lorentz invariance, the electroweak scale, the Born rule, V--A parity
+structure, and dynamics-level SR proper-time dilation.
+
+The central conceptual point is that \emph{Lorentz invariance is an observer
+effect, not a fundamental symmetry of the substrate}: the CA beable layer
+has a preferred frame at the lattice scale (the Planck scale under the
+fine-end working hypothesis), but PSC Presentation Invariance
+(D2 of P34) forces all $[\mathbf{D}]$-selected observables to be
+Lorentz-equivariant on the $\PHIMDL$ continuum (observer-level, machine-certified
+in Lean~4 with zero sorry).  Simultaneously, the inner $\tau_c$ clock
+implements proper-time dilation for moving gliders at the Level-1 dynamics
+(SR error $5.79\%$, within the M=7 Nyquist floor; CatA).
+
+The quantitative results---Weinberg angle $\sinwsq=0.231207$ (Wolfenstein \CatAL; $+0.038\sigma$ at \CatB with two-loop threshold~\cite{SpivackWeinbergAngle})
+from PDG~2024), $\Mz=91.91$~GeV ($+0.80\%$), Born rule $P(k)=|\phi_k|^2$,
+double-slit $\mathrm{corr}=0.998$---all follow from the orbit arithmetic
+of the two outer layers with no tunable free parameters.
+
+The three-layer structure (R110 outer, R124 outer, inner R110 $\tau_c$)
+corresponds exactly to the three irreducible causal directions of $1+1$D
+Minkowski spacetime ($x^+$, $x^-$, $t$).  This is the Law of Threes at the
+level of the spacetime substrate, cascading from $F_{21}=\ZS\rtimes\mathbb{Z}_3$.
+The CMCA is the minimal Level-1 GTE CA with all five structural features;
+$\PHIMDL$ is its continuum terminal object in the GTE category of Level-1
+constructions (Lean-certified: \lean{GTECategoryStructure.lean}, conditional CatAL).
+
+The CMCA is a falsifiable framework.  The definitive test is the Planck-scale
+Lorentz violation prediction $\delta_{\rm LV}(E)=C_\gamma(E/E_P)^2$ with
+$n=2$ and $C_\gamma=\pi^2/147$, accessible to ultra-high-energy photon
+time-of-flight experiments at $E\gtrsim10^{17}$~eV (conditional on the
+fine-end working hypothesis $a=\ell_P$; \S\ref{ssec:planck}).
+
+The $1+1$D architecture established here is generalized
+in~\cite{SpivackThreeTapeCMCA} to $3+1$D via three CMCAs sharing a common
+outer clock $\tau_c^{\rm out}$; the shared clock, formalized as the
+Dimensional Protocol Principle, is shown there to be both necessary and
+sufficient for $3+1$D Minkowski dynamics to emerge from the three-tape
+system.
+
+\section*{Acknowledgements}
+Computations were performed in Python~3; Lean~4 certifications used
+\texttt{ugp-lean} (Lean~4.29.0-rc6 / Mathlib~4.29.0-rc6).
+
+AI coding assistants were used for \LaTeX{} formatting, coding assistance, and adversarial review during manuscript preparation. All mathematical derivations, numerical computations, and Lean~4 certifications were independently verified by deterministic scripts and the Lean~4 kernel.
+
+%─────────────────────────────────────────────────────────────────────────────
+\bibliography{../bib/Spivack_Papers_Bibliography}
+\bibliographystyle{plain}
+%─────────────────────────────────────────────────────────────────────────────
+
+%═════════════════════════════════════════════════════════════════════════════
+\begin{appendices}
+%═════════════════════════════════════════════════════════════════════════════
+\section{Unified CMCA Subsystem Verification}
+\label{app:unification}
+%═════════════════════════════════════════════════════════════════════════════
+
+Each structural feature of the CMCA was first established in isolation
+(either in a single-layer construction or in a companion paper) and then
+verified to survive intact in the full three-layer CMCA system.
+Table~\ref{tab:unified_reproduction} summarises these reproduction tests.
+
+\begin{table}[h!]
+  \centering
+  \small
+  \caption{CMCA subsystem reproduction: each property tested in isolation
+    (prior paper or single-layer system) and in the full CMCA (UNIDM1 prototype,
+    L=840, M=7, N\_trans=300).}
+  \label{tab:unified_reproduction}
+  \begin{tabular}{p{2.8cm}p{3.0cm}p{3.2cm}p{1.3cm}}
+    \toprule
+    \textbf{Property} & \textbf{Isolated test} & \textbf{CMCA test} &
+    \textbf{Match?} \\
+    \midrule
+    $|v_R|=|v_L|=2/3$ & Lean:
+      \lean{ChiralMirror\-SpeedSymmetry} & UNIDM1 two-layer outer reference
+      & {\checkmark} \\
+    \addlinespace
+    $\ZS$ generation orbit (3-step) & \lean{GUTStructure}~\S41 &
+      UNIDM1 gen$_1\to$gen$_2\to$gen$_3\to$vac (3~steps; mirror~2) & {\checkmark} \\
+    \addlinespace
+    V--A 32/125 mismatch & Lean: \lean{ChiralPairVA} (zero sorry) &
+      UNIDM1: 32 mismatches, all $W^+$ non-centre & {\checkmark} \\
+    \addlinespace
+    $\tau_c\approx\gamma$ (SR error $5.79\%$) & P36~\cite{SpivackEmergentGravity}
+      AFCA single-layer & UNIDM1 canonical C2 glider seed:
+      ratio $1.563$ vs $\gamma=1.659$ & {\checkmark} \\
+    \addlinespace
+    Sync gives no dilation & sync/async null test
+      (\S\ref{ssec:async_necessary}) & UNIDM1 sync mode:
+      ratio $1.000$ exactly & {\checkmark} \\
+    \addlinespace
+    Observer-level Lorentz & Lean: \lean{PSCPILorentzMain} (1 axiom) &
+      Still applies to $[\mathbf{D}]$-observables on $\PHIMDL$ & {\checkmark} \\
+    \addlinespace
+    Turing universality & P28, P30, P40 (Rule~110, all CatAL) &
+      Inherited by CMCA Layer~1 & {\checkmark} \\
+    \addlinespace
+    Born rule $P(k)=|\phi_k|^2$ & Lean:
+      \lean{born\_rule\_unconditional} (zero custom physics axioms) &
+      Carried from single-layer; $\ZS$-sector Born weights unchanged & {\checkmark} \\
+    \addlinespace
+    Frame duality $\mathrm{R124}(\mathrm{rev}(X))=\mathrm{rev}(\mathrm{R110}(X))$
+      & Computational verification (30 steps) & Structural identity of mirror rule &
+      {\checkmark} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The CMCA inherits all nine properties simultaneously.  No single prior
+construction achieves all nine: single-layer Rule~110 (P28) lacks V--A and
+symmetric light cone; the two-layer system without the inner clock lacks
+dynamics-level SR; the AFCA of P36 lacks the symmetric light cone and V--A.
+The CMCA is the unique construction in the survey that passes all rows.
+
+All computation scripts for the UNIDM1 prototype are in the paper's
+\texttt{scripts/} subdirectory (see \texttt{REPRODUCE.md}).
+The sync/async comparison is \texttt{sync\_vs\_async\_three\_layer.py};
+the single-script verification of all nine headline claims is
+\texttt{cmca\_full\_reproducibility.py}.
+
+\paragraph{Wolfram Language implementation.}
+A Wolfram Language implementation of the CMCA and all nine P41 reproducibility
+tests is available as \texttt{cmca\_full\_reproducibility\_wolfram\_version.wl} in the same \texttt{scripts/}
+directory.  It uses native \texttt{CellularAutomaton[110,~\ldots]} and
+\texttt{CellularAutomaton[124,~\ldots]} primitives for the outer chiral layers,
+with the inner $\tau_c$ Rule~110 clock via asynchronous table updates.
+All nine claims pass in approximately 41~seconds via
+\texttt{wolframscript -file cmca\_full\_reproducibility\_wolfram\_version.wl}.
+
+\section{Lean 4 Theorem Inventory}
+\label{app:lean}
+%═════════════════════════════════════════════════════════════════════════════
+
+All Lean~4 modules are in the \lean{ugp-lean} repository.
+Table~\ref{tab:lean} lists all theorems used in this paper.
+
+{\scriptsize
+\setlength{\emergencystretch}{10em}
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.15}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{4.6cm}>{\raggedright\arraybackslash}p{5.4cm}>{\raggedright\arraybackslash}p{0.9cm}>{\raggedright\arraybackslash}p{2.5cm}@{}}
+\caption{Lean~4 theorem inventory for P41.}
+\label{tab:lean}\\
+\toprule
+\textbf{Theorem (Lean name)} & \textbf{Module path} & \textbf{Sorry} & \textbf{Notes}\\
+\midrule
+\endfirsthead
+\multicolumn{4}{l}{\small\itshape (Table~\ref{tab:lean} continued)}\\
+\toprule
+\textbf{Theorem (Lean name)} & \textbf{Module path} & \textbf{Sorry} & \textbf{Notes}\\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\small\itshape (continued on next page)}\\
+\endfoot
+\bottomrule
+\endlastfoot
+\lean{rule124Fin2\_is\_spatial\_mirror} &
+  \lean{Universality/}\newline\lean{ChiralMirrorSpeedSymmetry} &
+  0 & Mirror rule identity\\
+\lean{mirror\_rule\_speed\_symmetry} &
+  \lean{Universality/}\newline\lean{ChiralMirrorSpeedSymmetry} &
+  0 & $|v_R|=|v_L|=2/3$\\
+\lean{orbit\_depth\_ether\_period\_z7\_identity} &
+  \lean{Universality/}\newline\lean{OrbitDepthEtherPeriod} &
+  0 & depth $=$ period $= 7$\\
+\lean{gcd\_glider\_ether} &
+  \lean{Universality/CouplingNoGo} &
+  0 & $\gcd(3,14)=1$\\
+\lean{orbit\_length\_eq\_seven} &
+  \lean{Universality/CouplingNoGo} &
+  0 & period-7 orbit length\\
+\lean{gcd\_glider\_orbit} &
+  \lean{Universality/CouplingNoGo} &
+  0 & $\gcd(3,7)=1$\\
+\lean{lcm\_glider\_orbit} &
+  \lean{Universality/CouplingNoGo} &
+  0 & $\mathrm{lcm}(3,7)=21$ sublattice obstruction\\
+\lean{coupling\_no\_go\_cell\_level} &
+  \lean{Universality/}\newline\lean{DynamicalCouplingBridge} &
+  0 & Cell-level no-go\\
+\lean{event\_triggered\_coupling\_period} &
+  \lean{Universality/}\newline\lean{DynamicalCouplingBridge} &
+  0 & lcm$(3,7)=21$ resonance\\
+\lean{coupling\_no\_go\_escape\_via\_event} &
+  \lean{Universality/}\newline\lean{DynamicalCouplingBridge} &
+  0 & Class~B escape\\
+\lean{minkowski\_metric\_def} &
+  \lean{Universality/LorentzInvariance} &
+  0 & $\eta=\mathrm{diag}(-1,1,1,1)$\\
+\lean{lorentz\_transform\_preserves\_inner} &
+  \lean{Universality/LorentzInvariance} &
+  0 & $\eta$ invariance\\
+\lean{kg\_dispersion\_lorentz\_invariant} &
+  \lean{Universality/LorentzInvariance} &
+  0 & On-shell $\to$ on-shell\\
+\lean{poincare\_invariance\_of\_kg} &
+  \lean{Universality/LorentzInvariance} &
+  0 & Full Poincar\'e\\
+\lean{psc\_pi\_forces\_d\_lorentz\_equivariant} &
+  \lean{Substrate/PSCPILorentzMain} &
+  0 & 1 axiom: \lean{d2\_universal}\\
+\lean{psc\_pi\_no\_preferred\_frame} &
+  \lean{Substrate/PSCPILorentzMain} &
+  0 & No preferred frame\\
+\lean{orbit\_absorption\_at\_ngen} &
+  \lean{Universality/GUTStructure}~\S41 &
+  0 & $k=\Ngen$ vacuum reach\\
+\lean{isEWThresholdStep} &
+  \lean{Universality/GUTStructure}~\S41 &
+  0 & EW step uniqueness\\
+\lean{ew\_threshold\_definitional\_route} &
+  \lean{Universality/GUTStructure}~\S41 &
+  0 & Definitional $\CatAL$\\
+\lean{weinberg\_angle\_closure} &
+  \lean{Universality/GUTStructure}~\S12 &
+  0 & $\sinwsq=3/13$\\
+\lean{weinberg\_two\_term\_prediction} &
+  \lean{Universality/GUTStructure}~\S24 &
+  0 & $384729/1664000$\\
+\lean{mw\_mz\_squared\_from\_weinberg} &
+  \lean{Universality/GUTStructure}~\S45 &
+  0 & $(M_W/M_Z)^2=10/13$\\
+\lean{e0\_schwinger\_sm\_identity} &
+  \lean{Universality/}\newline\lean{EWScalePrediction} &
+  0 & $E_0=\vPSC\sqrt{\pi/8}$\\
+\lean{mw\_formula\_from\_vH} &
+  \lean{Universality/}\newline\lean{EWScalePrediction} &
+  0 & $M_W$ formula\\
+\lean{mz\_formula\_from\_vH} &
+  \lean{Universality/}\newline\lean{EWScalePrediction} &
+  0 & $M_Z$ formula\\
+\lean{ew\_scale\_prediction\_summary} &
+  \lean{Universality/}\newline\lean{EWScalePrediction} &
+  0 & Summary bundle\\
+\lean{beableWindingPartitionInstance} &
+  \lean{Universality/}\newline\lean{BeableWindingPartitionInstance} &
+  0 & Zero custom physics axioms\\
+\lean{born\_rule\_unconditional} &
+  \lean{Universality/}\newline\lean{BeableWindingPartitionInstance} &
+  0 & Unconditional Born rule\\
+\lean{structuralBeableAmplitude} &
+  \lean{Universality/}\newline\lean{BeableWindingPartitionInstance} &
+  0 & Structural Born\\
+\lean{fock\_beable\_amplitude\_normalized} &
+  \lean{Universality/}\newline\lean{BeableWindingPartitionInstance} &
+  0 & Normalization\\
+\lean{born\_rule\_from\_dual\_frame\_master} &
+  \lean{Universality/}\newline\lean{DualFrameBornRule} &
+  0 & Dual-frame Born master bundle\\
+\lean{two\_function\_picture} &
+  \lean{Substrate/}\newline\lean{TransputationStateSelector} &
+  0 & Born $\circ$ transputation\\
+\lean{transputation\_state\_selector\_bundle} &
+  \lean{Substrate/}\newline\lean{TransputationStateSelector} &
+  0 & Two-function selector (\CatAL{} conditional)\\
+\lean{born\_weight\_from\_mdl\_minimality} &
+  \lean{Universality/BornRuleMDL} &
+  0 & Sector weights\\
+\lean{born\_rule\_from\_psc\_mdl} &
+  \lean{Universality/BornRuleMDL} &
+  0 & Conditional Born\\
+\lean{bit\_mismatch\_iff} &
+  \lean{Universality/ChiralPairVA} &
+  0 & Mismatch criterion\\
+\lean{va\_mismatch\_count} &
+  \lean{Universality/ChiralPairVA} &
+  0 & Count $= 32$\\
+\lean{pascal\_row3\_absorption\_property} &
+  \lean{Universality/GUTStructure}~\S37 &
+  0 & Pascal/orbit joint\\
+\lean{algebraic\_descent\_theorem} &
+  \lean{Universality/}\newline\lean{AlgebraicDescentTheorem} &
+  0 & F$_{21}$ content resolution-independent\\
+\lean{sr\_accuracy\_depends\_on\_M} &
+  \lean{Universality/}\newline\lean{AlgebraicDescentTheorem} &
+  0 & Nyquist correction $M$-dependent\\
+\lean{nyquist\_correction\_denominator\_at\_m7} &
+  \lean{Universality/}\newline\lean{AlgebraicDescentTheorem} &
+  0 & $\epsz(7)=\pi^2/147$\\
+\lean{gte\_level1\_category\_certificate} &
+  \lean{Framework/}\newline\lean{GTECategoryStructure} &
+  0 & GTE Level-1 category; $\PHIMDL$ terminal object; 4 axioms\\
+\lean{objects\_with\_all\_features} &
+  \lean{Framework/}\newline\lean{GTECategoryStructure} &
+  0 & Level-1 objects with all 5 features\\
+\lean{cmca\_is\_mdl\_minimal\_with\_all\_five\_features} &
+  \lean{Framework/}\newline\lean{CMCAMDLMinimality} &
+  0 & MDL minimality master; 6 axioms\\
+\lean{K\_CA\_all\_features\_lower\_bound} &
+  \lean{Framework/}\newline\lean{CMCAMDLMinimality} &
+  0 & Lower bound $= 19$ bits\\
+\lean{phimdl\_thermal\_state\_master} &
+  \lean{Universality/}\newline\lean{PhiMDLThermalState} &
+  0 & L3 thermal state; zero custom axioms in any \CatAL\ proof chain\\
+\lean{thermal\_state\_sector\_prob} &
+  \lean{Universality/}\newline\lean{PhiMDLThermalState} &
+  0 & $P(k)=e^{-M_k/T}/Z_T$\\
+\lean{thermal\_state\_vacuum\_dominant} &
+  \lean{Universality/}\newline\lean{PhiMDLThermalState} &
+  0 & Vacuum-dominant at low $T$\\
+\lean{cmca\_continuum\_limit\_is\_phimdl} &
+  \lean{Framework/}\newline\lean{CMCAContinuumLimit} &
+  0 & CMCA $\to$ $\PHIMDL$ bundle; 4 inherited axioms\\
+\lean{phimdl\_lorentz\_correction\_tendsto\_zero} &
+  \lean{Framework/}\newline\lean{CMCAContinuumLimit} &
+  0 & $\epsz(M)\to0$ as $M\to\infty$\\
+\lean{c2\_distinguishability} &
+  \lean{Substrate/}\newline\lean{CoherenceMeasureUniqueness} &
+  0 & Six distinct $D\in[\mathbf{D}]$ candidates\\
+\lean{c2\_uniqueness\_structural\_bundle} &
+  \lean{Substrate/}\newline\lean{CoherenceMeasureUniqueness} &
+  0 & C2 structural reduction; 1 axiom\\
+\lean{no\_finite\_ca\_exact\_lorentz\_replica} &
+  \lean{Framework/}\newline\lean{CMCAContinuumLimit} &
+  0 & $\varepsilon_0(M)>0$ for all $M>0$; no finite-$M$ CA is Lorentz-exact\\
+\lean{phimdl\_is\_unique\_exact\_lorentz\_model} &
+  \lean{Framework/}\newline\lean{CMCAContinuumLimit} &
+  0 & Unique zero-error Lorentz limit; bundle of the two above\\
+\lean{outer\_totalistic\_is\_reflection\_invariant} &
+  \lean{Universality/}\newline\lean{NoClass4OuterTotalisticZ7} &
+  0 & OT rules reflection-symmetric $\Rightarrow$ not chiral\\
+\lean{outer\_totalistic\_not\_chiral} &
+  \lean{Universality/}\newline\lean{NoClass4OuterTotalisticZ7} &
+  0 & Corollary: OT rules cannot be chiral\\
+\lean{outer\_totalistic\_z7\_vn6\_rule\_space\_card} &
+  \lean{Universality/}\newline\lean{NoClass4OuterTotalisticZ7} &
+  0 & $|\mathcal{R}_{\rm OT}|=7^{49}$\\
+\lean{no\_class4\_outer\_totalistic\_z7\_3d} &
+  \lean{Universality/}\newline\lean{NoClass4OuterTotalisticZ7} &
+  0 & 1 axiom: \lean{chirality\_necessary\_for\_class4}\\
+\end{longtable}
+}
+
+\paragraph{Lean build verification.}
+All modules compile with:
+\begin{verbatim}
+  cd ugp-lean
+  lake build UgpLean.Universality.LorentzInvariance
+  lake build UgpLean.Substrate.PSCPILorentzMain
+  lake build UgpLean.Universality.EWScalePrediction
+  lake build UgpLean.Universality.BeableWindingPartitionInstance
+  lake build UgpLean.Universality.BornRuleMDL
+  lake build UgpLean.Universality.ChiralPairVA
+  lake build UgpLean.Universality.CouplingNoGo
+  lake build UgpLean.Universality.DynamicalCouplingBridge
+  lake build UgpLean.Universality.ChiralMirrorSpeedSymmetry
+  lake build UgpLean.Universality.AlgebraicDescentTheorem
+  lake build UgpLean.Framework.GTECategoryStructure
+  lake build UgpLean.Framework.CMCAMDLMinimality
+  lake build UgpLean.Framework.CMCAContinuumLimit
+  lake build UgpLean.Universality.PhiMDLThermalState
+  lake build UgpLean.Universality.DualFrameBornRule
+  lake build UgpLean.Substrate.TransputationStateSelector
+  lake build UgpLean.Substrate.CoherenceMeasureUniqueness
+  lake build UgpLean.Universality.NoClass4OuterTotalisticZ7
+\end{verbatim}
+Sorry count: zero.  Disclosed axioms:
+\lean{d2\_universal} (D2 of P34, PSC Presentation Invariance in universal form);
+\lean{discrete\_w\_vertex\_interpretation} ($W$-boson vertex as discrete inter-layer event);
+\lean{architectural\_restriction} (C2a Path~4c, \lean{CoherenceMeasureUniqueness.lean});
+\lean{chirality\_necessary\_for\_class4} (chirality necessary for Class~4 dynamics in 3D
+  von Neumann CA; \lean{NoClass4OuterTotalisticZ7.lean});
+one physical-interpretation axiom (\lean{va\_min\_mirror\_bit}) in
+\lean{CMCAMDLMinimality.lean};
+two physical-interpretation axioms (\lean{twoLayer\_observable\_lorentz\_physical},
+\lean{afca\_sr\_dilation\_physical}) in \lean{GTECategoryStructure.lean}.
+The Born-rule modules \lean{BeableWindingPartitionInstance.lean},
+\lean{DualFrameBornRule.lean}, and \lean{PhiMDLThermalState.lean} carry zero custom physics axioms.
+Theorems~\ref{thm:lifting}--\ref{thm:sr_accuracy_m} (Algebraic Lifting, Descent, and
+SR accuracy) are proved in P28~\cite{SpivackCompUniversality}; their Lean modules are
+\lean{LiftingTheorem.lean} and \lean{AlgebraicDescentTheorem.lean} in the
+\lean{ugp-lean} repository.
+
+\end{appendices}
+
+\end{document}

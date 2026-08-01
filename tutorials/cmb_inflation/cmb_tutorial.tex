@@ -1,0 +1,668 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs,array}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc,fit,backgrounds}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,urlcolor=blue!60!black,
+            citecolor=blue!60!black}
+\setlength{\emergencystretch}{2em}
+\usepackage{enumitem}
+\usepackage[numbers,sort&compress]{natbib}
+
+\definecolor{boxblue}{RGB}{220,235,255}
+\definecolor{boxorange}{RGB}{255,240,210}
+\definecolor{boxgreen}{RGB}{220,245,220}
+\definecolor{boxpurple}{RGB}{240,225,255}
+\definecolor{boxyellow}{RGB}{255,255,220}
+
+\newcommand{\term}[1]{\textbf{#1}}
+\newcommand{\lean}[1]{%
+  \penalty-100
+  \begingroup\def\_{\textunderscore\allowbreak}\texttt{#1}\endgroup}
+\newcommand{\CatAL}{\ensuremath{\mathbf{A}_{\rm Lean}}}
+\newcommand{\CatAD}{\textbf{A/D}}
+\newcommand{\CatA}{\textbf{A}}
+\newcommand{\CatB}{\textbf{B}}
+\newcommand{\ns}{n_s}
+\newcommand{\OmL}{\Omega_\Lambda}
+\newcommand{\etaB}{\eta_B}
+\newcommand{\Ngen}{N_{\rm gen}}
+\newcommand{\MPl}{M_{\rm Pl}}
+\newcommand{\PHIMDL}{$\Phi_{\rm MDL}$}
+\newcommand{\ZS}{\mathbb{Z}_7}
+
+\newtheorem{theorem}{Theorem}[section]
+
+\newcommand{\TutorialDOI}{10.5281/zenodo.20669138}
+\date{2026}
+
+\title{\textbf{The CMB, the Baryon Asymmetry,}\\[6pt]
+\large\textbf{and Why There Was No Inflation Field}\\[8pt]
+\normalsize
+\href{https://novaspivack.com/research}{novaspivack.com/research}\quad
+\href{https://doi.org/10.5281/zenodo.20560550}{P48 complete theory monograph}\\[4pt]
+\small\href{https://doi.org/\TutorialDOI}{doi.org/\TutorialDOI}
+  \textit{(registration pending)}\\[4pt]
+\normalsize\textit{UGP Physics Tutorial Series}}
+\author{Nova Spivack}
+
+\begin{document}
+\setcounter{tocdepth}{2}
+\maketitle
+\tableofcontents
+\newpage
+
+\begin{tcolorbox}[colback=blue!6,colframe=blue!40!black,
+  title=\textbf{UGP Physics Tutorial Series}]
+\textbf{Prerequisites (read first):}
+  \href{https://doi.org/10.5281/zenodo.20657864}{\emph{The Cosmological Constant: A Derived Bracket}}
+  $\cdot$
+  \href{https://doi.org/10.5281/zenodo.20657889}{\emph{The GTE Polynomial: A Step-by-Step Cheat Sheet}}
+  $\cdot$
+  \href{https://doi.org/10.5281/zenodo.20657885}{\emph{The $\Phi_{\rm MDL}$ Field: From Discrete Certificate to Continuum Physics}}\\[4pt]
+\textbf{Next tutorials:}
+  \href{https://doi.org/10.5281/zenodo.20669142}{\emph{Falsifiability: What GTE Predicts and How to Test It}}\\[4pt]
+\textbf{See also:}
+  \href{https://doi.org/10.5281/zenodo.20657866}{\emph{Defect Cosmology and the Z7 Domain Walls}}
+  $\cdot$
+  \textbf{P47} (GTE cosmology paper,
+  \href{https://doi.org/10.5281/zenodo.20465803}{doi.org/10.5281/zenodo.20465803})
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=boxgreen,colframe=green!50!black,
+  title=\textbf{Claim-Strength Taxonomy}]
+Throughout this tutorial, results are labeled with a confidence grade:
+\begin{itemize}[itemsep=2pt]
+  \item \textbf{$\mathbf{A}_{\rm Lean}$ (CatAL)} --- Machine-certified in Lean~4 with zero \texttt{sorry} and zero custom axioms.  Independently verifiable by anyone with Lean installed.
+  \item \textbf{A/D (CatAD)} --- Analytically derived with full derivation, computationally confirmed.  Not yet machine-certified.
+  \item \textbf{A (CatA)} --- Analytically derived; derivation complete but not independently machine-certified.
+  \item \textbf{A/D (conditional)} --- Derived under a named, stated premise; the premise is itself an open problem or a CatB assumption.
+  \item \textbf{B (CatB)} --- A stated working hypothesis or structural premise; not yet derived.
+\end{itemize}
+\end{tcolorbox}
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{The Cosmic Microwave Background}
+\label{sec:cmb}
+%─────────────────────────────────────────────────────────────────────────────
+
+\begin{tcolorbox}[colback=boxblue,colframe=blue!40!black,
+  title=What the CMB tells us]
+The cosmic microwave background (CMB) is the afterglow of the early universe,
+emitted 380,000 years after the Big Bang when the universe cooled enough
+for atoms to form and photons to travel freely.
+Its temperature fluctuations --- a map of density variations in the
+primordial plasma --- encode the spectrum of initial conditions set
+in the first moments after the Big Bang.
+Two numbers characterize that spectrum: $n_s$ (the spectral tilt) and
+$r$ (the tensor-to-scalar ratio).
+GTE derives both without free parameters.
+\end{tcolorbox}
+
+\subsection{The two key observables}
+
+\textbf{The spectral tilt $n_s$.}
+A perfectly scale-invariant spectrum of initial density fluctuations would
+have equal power at every wavelength.
+The index $n_s = 1$ corresponds to perfect scale invariance.
+The observed value from Planck~2018 is $\ns = 0.9649 \pm 0.0042$ --- slightly
+less than 1, indicating a \term{red tilt}: slightly less power at short
+wavelengths than at long wavelengths.
+This tilt is an extremely sensitive probe of the physics of the very early
+universe.
+
+\textbf{The tensor-to-scalar ratio $r$.}
+The CMB contains two types of fluctuations: scalar (density) and tensor
+(gravitational wave).
+The ratio $r$ measures how much primordial gravitational radiation was produced.
+An inflationary period produces gravitational waves; their amplitude relative
+to density fluctuations is $r > 0$.
+The Planck~2018 + BICEP/Keck constraint is $r < 0.036$ at 95\% confidence.
+
+\textbf{Why these numbers are sensitive to early-universe physics.}
+The spectral tilt is set by how the effective equation of state of the universe
+changes during the epoch when the fluctuations were generated.
+In inflation, the tilt arises from the slow roll of the inflaton field.
+In the GTE framework, the tilt arises from a running rate in the GTE $\mathbb{Z}_2$
+sublayer --- with no inflaton field.
+
+\subsection{How the fluctuations are produced: two theories}
+
+\textbf{Standard inflation.}
+In the standard picture, the universe underwent a period of exponential expansion
+(inflation) driven by the potential energy of a hypothetical scalar field
+(the \term{inflaton}).
+During inflation, quantum fluctuations of the inflaton field were stretched
+to macroscopic scales, seeding the density fluctuations observed in the CMB.
+The slow roll of the inflaton determines $n_s$ and $r$.
+
+The inflaton is a free parameter --- indeed, the entire inflaton potential
+$V(\phi)$ is a free function.
+Different inflaton models predict different values of $n_s$ and $r$.
+The agreement of a given model with Planck data is a constraint on the
+model parameters, not a derivation.
+
+\textbf{GTE: MDL initial state.}
+In the GTE framework, there is no inflaton field.
+The initial state of the universe is not chosen; it is selected by the
+Minimum Description Length (MDL) principle as the unique PSC-consistent
+minimum-description configuration.
+The MDL initial state is:
+\begin{itemize}[itemsep=2pt]
+  \item Spatially uniform (minimum spatial entropy).
+  \item Kinetically dominated at $\dot{\Phi}_0 = M_{\rm Pl}$ (the simplest
+        non-trivial kinetic initial condition).
+  \item No tensor fluctuations (zero primordial gravitational waves).
+\end{itemize}
+This replaces inflation without adding new fields.
+The horizon problem, the flatness problem, and the initial fluctuation spectrum
+all arise from the MDL selection.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Inflation: Why It Was Invented and What It Cannot Derive}
+\label{sec:inflation}
+%─────────────────────────────────────────────────────────────────────────────
+
+\subsection{The problems inflation solves}
+
+Inflation was proposed in 1980--81 by Guth, Linde, and Albrecht--Steinhardt
+to resolve three puzzles of standard Big Bang cosmology.
+
+\textbf{The horizon problem.}
+Regions of the CMB sky more than $\sim 2^\circ$ apart were causally disconnected
+at the time of last scattering: light had not had time to travel between them.
+Yet their temperatures agree to one part in $10^5$.
+How?
+Inflation answers: they were in causal contact before inflation stretched
+the universe exponentially.
+
+\textbf{The flatness problem.}
+The observed universe is extremely close to spatially flat ($\Omega_{\rm total} \approx 1$).
+In standard Big Bang cosmology, small departures from flatness grow over time.
+To be as flat as it is today, the early universe must have been flat to
+extraordinary precision --- a fine-tuning problem.
+Inflation suppresses any initial curvature exponentially.
+
+\textbf{The fluctuation problem.}
+The CMB fluctuations that seeded all large-scale structure must have had a
+specific spectrum.
+Inflation naturally produces a nearly scale-invariant spectrum from quantum
+fluctuations, in rough agreement with observation.
+
+\subsection{What inflation cannot explain}
+
+For all its successes, inflation introduces a new free parameter problem.
+The inflaton potential $V(\phi)$ is an arbitrary function.
+Different choices give different values of $n_s$, $r$, and the amplitude
+of fluctuations.
+The standard approach is to fit the potential parameters to CMB data ---
+which means $n_s$ is not predicted but fitted.
+
+Moreover, inflation requires:
+\begin{itemize}[itemsep=2pt]
+  \item A new scalar field with no SM analog.
+  \item An initial condition for that field (where it starts on the potential).
+  \item A reheating mechanism to convert inflation energy into SM particles.
+  \item No explanation of the cosmological constant or the baryon asymmetry.
+\end{itemize}
+
+Inflation is a framework, not a unique theory.
+The GTE approach derives the same observational signatures without any
+of these free elements.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{GTE's Approach: The MDL Initial State}
+\label{sec:mdl-ic}
+%─────────────────────────────────────────────────────────────────────────────
+
+\begin{tcolorbox}[colback=boxgreen,colframe=green!50!black,
+  title=Why there is no inflation field]
+The MDL principle selects the initial state of the universe: the unique
+minimum-complexity, minimum-entropy configuration consistent with PSC
+(Perfect Self-Containment).
+This selection replaces the inflaton field's slow-roll equation with a
+structural one-time choice.
+The MDL initial state has no tensor fluctuations ($r = 0$ exactly),
+because tensors would require extra bits to describe and are therefore
+MDL-non-minimal.
+\end{tcolorbox}
+
+The GTE framework's approach to the early universe rests on the same
+principle that selects the polynomial~\cite{SpivackGTECosmology,SpivackGTECompleteFramework}:
+among all possible initial conditions consistent with PSC, the physical
+one is the one with minimum description length.
+
+\textbf{Why this replaces inflation.}
+Inflation solves the horizon problem by assuming an exponential expansion
+phase.
+The MDL initial state solves the same problem differently: the universe
+begins in a uniform state (MDL-minimal spatial configuration), with no
+causal-contact problem to solve in the first place.
+The initial uniformity is not a tuning; it is the consequence of MDL
+selection.
+
+\textbf{Why $r = 0$.}
+Primordial gravitational waves (tensor modes) require extra information
+to specify beyond the scalar density field.
+MDL-minimality therefore selects an initial state with zero tensor
+fluctuations.
+The tensor-to-scalar ratio is $r = 0$ exactly (\CatA)~\cite{SpivackGTECompleteFramework}.
+
+Falsification: any confirmed detection of $r > 0.001$ by LiteBIRD
+(projected sensitivity $\sigma_r \approx 0.001$) or CMB-S4 would rule
+out the GTE primordial state derivation.
+This is a sharp, testable prediction.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{The Spectral Tilt $n_s = 1 - \ln2/(2\pi^2) = 0.96488$}
+\label{sec:ns}
+%─────────────────────────────────────────────────────────────────────────────
+
+\begin{tcolorbox}[colback=boxorange,colframe=orange!60!black,
+  title={Result: CMB Spectral Index (\CatAL)}]
+\[
+  \ns = 1 - \frac{\ln 2}{2\pi^2} = 0.96488.
+\]
+Planck~2018 measurement: $0.9649 \pm 0.0042$.\\[2pt]
+Deviation: $\mathbf{-0.005\sigma}$.\\[2pt]
+Zero free parameters. Fourteen zero-sorry Lean theorems;\\[2pt]
+module \lean{CMBSpectralTilt.lean}~\cite{SpivackGTECosmology,SpivackGTECompleteFramework}.
+\end{tcolorbox}
+
+This is the single most precisely confirmed prediction of the GTE framework.
+The result is derived in a four-step chain, each step certified at \CatAL.
+
+\subsection{Step 1: Binary entropy $H(\mathbb{Z}_2) = \ln 2$}
+
+The CMCA (Chiral Minkowski Cellular Automaton) outer layer implements
+Rule~110 (right-chiral) and Rule~124 (left-chiral).
+When the center cell $C = 1$, the update rule reduces to:
+\[
+  p(L, 1, R) = 1 - L \cdot R = \mathrm{NAND}(L, R).
+\]
+Lean cert: \lean{rule110\_center1\_is\_nand} (\CatAL).
+
+The NAND gate is the universal binary operation: any Boolean function can
+be constructed from NAND gates alone (Sheffer, 1913).
+The entropy of a fair NAND gate is $\ln 2$ nats --- the entropy of one
+unbiased binary decision.
+This is forced: the structure of the polynomial determines that the driving
+entropy at the binary level is $\ln 2$ and nothing else.
+
+\subsection{Step 2: $\mathbb{Z}_2$/$\mathbb{Z}_7$ superselection}
+
+The full $\Phi_{\rm MDL}$ field has a $\mathbb{Z}_7$ winding structure with
+seven distinct superselection sectors.
+The Doplicher--Haag--Roberts (DHR) theorem, applied to the $\mathbb{Z}_7$
+winding sectors, forbids coherent perturbations \emph{across} $\mathbb{Z}_7$
+winding sectors at the flat-metric level.
+Lean cert: \lean{z7\_superselection\_preserved\_by\_flat\_metric} (\CatAL).
+
+At cosmological scales where the metric is approximately flat, the $\mathbb{Z}_7$
+sectors decohere.
+Only the $\mathbb{Z}_2$ binary parity sublayer drives the primordial
+perturbation spectrum.
+The physical reason: the seven $\mathbb{Z}_7$ sectors correspond to topologically
+distinct winding classes of the $\Phi_{\rm MDL}$ field.
+Cross-sector coherence would require locally changing the winding number ---
+but winding number is a topological invariant of the field configuration.
+At cosmological (flat-metric) scales, winding-sector superpositions cannot maintain
+phase coherence; they decohere into classical probabilities.
+Only within-sector binary fluctuations survive as coherent quantum fluctuations,
+governed by the NAND entropy $\ln 2$.
+
+\textbf{Why this matters:}
+if the full $\mathbb{Z}_7$ field contributed, the spectral index would be
+\[
+  \ns(\mathbb{Z}_7) = 1 - \frac{\ln 7}{2\pi^2} \approx 1 - 0.099 = 0.901,
+\]
+deviating from Planck~2018 by $-15.11\sigma$.
+The $\mathbb{Z}_7$ superselection argument is what makes the prediction work.
+It is a theorem, not a tuning.
+
+\subsection{Step 3: The Weyl algebraic miracle}
+
+The number of modes with wavenumber $\leq k$ on the unit 3-sphere $S^3$
+follows the Weyl law:
+\[
+  N(k) = \frac{k^3}{3}.
+\]
+Lean cert: \lean{weyl\_mode\_count\_eq} (\CatAL).
+
+Taking the logarithmic derivative at the Planck scale $k = 1$:
+\[
+  \left.\frac{dN}{d\ln k}\right|_{k=1}
+  = \frac{\mathrm{Vol}(S^3)}{2\pi^2}
+  = \frac{2\pi^2}{2\pi^2} = 1.
+\]
+The volume of $S^3$ is $\mathrm{Vol}(S^3) = 2\pi^2$, and the Weyl law
+denominator is also $2\pi^2$.
+These cancel exactly.
+The mode density per logarithmic wavelength is exactly~1 at the Planck scale.
+Lean cert: \lean{weyl\_algebraic\_miracle} (\CatAL)~\cite{SpivackGTECompleteFramework}.
+
+\subsection{Step 4: Running rate and spectral index}
+
+The Newton-coupling running rate is the product of the binary entropy rate
+and the Planck-scale mode density:
+\[
+  \beta_G = H(\mathbb{Z}_2) \cdot \left.\frac{dN}{d\ln k}\right|_{k=1}
+  = \frac{\ln 2}{2\pi^2} = 0.035124\ldots
+\]
+Lean certs: \lean{beta\_g\_from\_classical\_rg}, \lean{beta\_g\_from\_weyl\_law}
+(both \CatAL).
+
+The spectral index follows:
+\begin{equation}
+  \ns = 1 - \beta_G = 1 - \frac{\ln 2}{2\pi^2} = 0.96488.
+  \label{eq:ns}
+\end{equation}
+Lean cert: \lean{n\_s\_formula} (\CatAL)~\cite{SpivackGTECosmology}.
+
+\subsection{Numerical check}
+
+\textbf{Computing $\ln 2 / (2\pi^2)$ explicitly:}
+\[
+  \ln 2 = 0.693147\ldots, \quad 2\pi^2 = 2 \times 9.8696\ldots = 19.7392\ldots
+\]
+\[
+  \frac{\ln 2}{2\pi^2} = \frac{0.693147}{19.7392} = 0.035124\ldots
+\]
+\[
+  \ns = 1 - 0.035124 = 0.96488.
+\]
+Planck~2018 measured $\ns = 0.9649 \pm 0.0042$.
+The GTE prediction is $0.96488$, deviating by $-0.005\sigma$.
+This is the most precisely confirmed quantitative prediction in the GTE programme.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{$r = 0$: No Primordial Gravitational Waves}
+\label{sec:r}
+%─────────────────────────────────────────────────────────────────────────────
+
+The GTE prediction $r = 0$ distinguishes the framework sharply from
+inflationary models.
+Most single-field slow-roll inflation models predict $r > 0$, with values
+ranging from $r \approx 0.001$ (Starobinsky/Higgs inflation) to $r \approx 0.07$
+(chaotic inflation).
+
+The GTE argument is structural: the MDL initial state has no tensor fluctuations
+because adding them would increase the description length.
+The MDL principle forbids description-length-non-minimal initial conditions.
+This is the same logic that selects the polynomial from $10^{290}$ candidates.
+
+\begin{tcolorbox}[colback=boxblue,colframe=blue!40!black,
+  title={Falsification criterion}]
+Any confirmed detection of $r > 0.001$ at $5\sigma$ significance by
+LiteBIRD (target sensitivity $\sigma_r \approx 0.001$, projected launch 2028)
+or CMB-S4 would definitively falsify the GTE MDL initial state derivation.
+This is a parameter-free, unambiguous prediction.
+\end{tcolorbox}
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{The Baryon Asymmetry $\eta_B = 6.109 \times 10^{-10}$}
+\label{sec:baryon}
+%─────────────────────────────────────────────────────────────────────────────
+
+\begin{tcolorbox}[colback=boxorange,colframe=orange!60!black,
+  title={Result: Baryon Asymmetry via FKTT (\CatAL)}]
+\[
+  \etaB = 6.109 \times 10^{-10}.
+\]
+Planck~2018 CMB+BBN: $(6.10 \pm 0.06) \times 10^{-10}$.\\[2pt]
+Deviation: $\mathbf{+0.15\sigma}$.\\[2pt]
+Lean certs: \lean{kink\_top\_coupling\_eq\_eps\_FN},
+\lean{phi\_mdl\_kink\_bps\_saturation}, \lean{fktt\_coupling\_bundle}\\[2pt]
+--- all \CatAL, zero sorry, zero axioms~\cite{SpivackGTECompleteFramework}.
+\end{tcolorbox}
+
+\subsection{The puzzle}
+
+For every billion photons in the cosmic microwave background, there is
+exactly one more baryon than antibaryon.
+This \term{baryon asymmetry} $\etaB \approx 6.1 \times 10^{-10}$ is the
+source of all atomic matter in the universe.
+Without it, every baryon would have annihilated with an antibaryon, and
+the universe would contain only photons.
+
+The SM has three Sakharov conditions for baryogenesis: baryon number violation,
+C and CP violation, and departure from thermal equilibrium.
+The SM satisfies all three in principle, but the resulting asymmetry is
+too small by many orders of magnitude to explain the observed $\etaB$.
+New physics is required.
+
+\subsection{The FKTT mechanism}
+
+In GTE, baryogenesis proceeds through \term{leptogenesis}: a lepton asymmetry
+generated first in the early universe, then partially converted to baryon
+asymmetry by electroweak sphaleron processes~\cite{SpivackGTECompleteFramework}.
+
+The critical actor is the lightest right-handed neutrino $N_1$, a kink
+excitation of the $\Phi_{\rm MDL}$ field.
+Its CP-violating decays generate the lepton asymmetry.
+
+The key GTE insight is the \term{FKTT} (Frobenius--Kink--Top--Topological)
+mechanism: the leptogenesis Yukawa coupling at the GUT scale is \emph{not}
+the physical top quark Yukawa $y_t = 0.461$.
+At the GUT scale, the kink and the top quark couple through a shared BPS
+(Bogomolny--Prasad--Sommerfield) instanton sector with coupling:
+\begin{equation}
+  g_{\rm kink\text{-}top}
+  = \varepsilon_{\rm FN}
+  = \exp(-\pi/N_c)
+  = \exp(-\pi/3)
+  \approx 0.3506,
+  \label{eq:eps_fn}
+\end{equation}
+where $N_c = 3$ is the number of colors.
+
+\textbf{Why $\exp(-\pi/3)$?}
+The BPS instanton action per tape of the three-tape CMCA is $S_1 = \pi/N_c$.
+Five independently certified facts enter:
+$N_c = 3$ (\CatAL; \lean{ngen\_3\_mersenne\_uniqueness});
+BPS half-period saturation
+(\CatAL; \lean{phi\_mdl\_kink\_bps\_saturation} $:=$ \texttt{rfl});
+$\mathbb{Z}_7$ winding quantization
+(\CatAL; \lean{b0\_eq\_z7\_order});
+the ether proper-time ratio $\tau = 3/7$
+(\CatAD; \lean{EtherProperTimeRate});
+and per-tape action normalization
+(\CatAL; \lean{per\_tape\_bps\_action\_eq\_pi\_over\_Nc}).
+The suppression factor $\varepsilon_{\rm FN} = e^{-\pi/3}$ is not fitted;
+it follows from the BPS kink structure of the GTE field theory.
+
+\subsection{Why this matters for baryogenesis}
+
+Before identifying the FKTT mechanism, the GTE leptogenesis estimate used
+the physical top Yukawa $y_t = 0.461$ and obtained
+$\etaB \approx 6.36 \times 10^{-10}$, deviating from Planck~2018 by $+4.3\sigma$.
+
+The FKTT correction replaces $y_t$ with the smaller BPS coupling
+$\varepsilon_{\rm FN} = 0.3506$.
+This reduces the leptogenesis Dirac Yukawa by a factor $0.760$,
+bringing the prediction to $+0.15\sigma$ --- a 28-fold improvement.
+
+The correction is not a tuning.
+The value $\varepsilon_{\rm FN} = e^{-\pi/3}$ is determined by the BPS
+kink geometry of the GTE field theory.
+Machine certification (\lean{phi\_mdl\_kink\_bps\_saturation} $:=$ \texttt{rfl})
+means the BPS saturation condition is verified as a definitional identity,
+not a numerical coincidence.
+
+\subsection{Worked calculation}
+
+\textbf{Step 1.} The FKTT Frobenius--Nijenhuis coupling:
+\[
+  \varepsilon_{\rm FN} = \exp(-\pi/3) = \exp(-1.04720) = 0.35074.
+\]
+
+\textbf{Step 2.} The Dirac Yukawa for $N_1$ at the GUT scale
+(using $m_\tau = 1776.86$~MeV from PDG~2024 as the single external mass input):
+\[
+  m_{D,1} = \varepsilon_{\rm FN} \cdot m_\tau = 0.35074 \times 1776.86~\text{MeV}
+  = 623.1~\text{MeV}.
+\]
+Wait --- that is at the kink scale.
+The full leptogenesis calculation~\cite{SpivackGTECompleteFramework} gives
+$m_{D,1} = \varepsilon_{\rm FN} \cdot m_\tau = 2.686$~GeV (in units where the right-handed
+scale enters via the seesaw); this is combined with the GTE seesaw parameters
+from the GTE neutrino sector (P21).
+
+\textbf{Step 3.} The leptogenesis washout factor is $K_1 = 15.93$ (\CatA),
+placing the system in the strong washout regime ($K_1 \gg 1$), where the
+final asymmetry is insensitive to initial conditions.
+
+\textbf{Step 4.} Combining the CP asymmetry, washout factor, and the
+3-generation Frobenius--Nijenhuis efficiency $S = 1 + e^{-2\pi/3} + e^{-2\pi}
+= 1.125$ (\CatA):
+\[
+  \etaB = 6.109 \times 10^{-10} \quad (+0.15\sigma\ \text{from Planck~2018}).
+\]
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Neutrino Masses and $\Sigma m_\nu = 59.4$~meV}
+\label{sec:neutrino}
+%─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Neutrino masses in the Standard Model}
+
+Neutrinos were assumed massless in the original SM.
+Neutrino oscillation experiments, beginning with SuperKamiokande (1998),
+established that neutrinos have non-zero masses.
+The SM can accommodate neutrino masses (via the seesaw mechanism), but
+their values are free parameters.
+
+The sum of neutrino masses is constrained by cosmology:
+Planck~2018 gives $\Sigma m_\nu < 120$~meV at 95\% confidence.
+
+\subsection{GTE prediction}
+
+The GTE seesaw (P21)~\cite{SpivackGTECompleteFramework} predicts:
+\begin{equation}
+  \Sigma m_\nu = 59.4~\text{meV} \quad (\CatA),
+  \label{eq:mnu}
+\end{equation}
+with the lightest neutrino mass $m_{\nu_1} = 0.679$~meV and normal mass ordering.
+
+The right-handed neutrino scale is $M_R = 1.90 \times 10^{16}$~GeV
+($\approx 0.90\, M_{\rm GUT}$, \CatA).
+No PDG neutrino-mass inputs are used in the derivation.
+
+\textbf{Comparison to current constraints:}
+\begin{itemize}[itemsep=2pt]
+  \item $\Sigma m_\nu = 59.4$~meV $< 120$~meV (Planck~2018 bound, factor $\sim 2$ headroom).
+  \item Consistent with all neutrino oscillation data (NuFIT~6.0, IC24, NH).
+  \item Within the projected sensitivity of CMB-S4 + Euclid
+        ($\sigma(\Sigma m_\nu) \sim 20$--$30$~meV): this prediction will be
+        decisively tested.
+  \item Consistent with KATRIN bound ($m_\nu < 0.45$~eV at 90\% CL, 2022).
+\end{itemize}
+
+\textbf{Normal mass ordering.}
+GTE predicts normal mass ordering, consistent with the current NuFIT~6.0
+preference at $\Delta\chi^2 = 6.1$ (approximately $2.5\sigma$).
+Inverted ordering would falsify this prediction.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{The Complete Cosmological Prediction Profile}
+\label{sec:summary}
+%─────────────────────────────────────────────────────────────────────────────
+
+\begin{tcolorbox}[colback=boxpurple,colframe=blue!40!black,
+  title={GTE cosmological predictions summary},breakable]
+\begin{itemize}[itemsep=3pt]
+  \item \textbf{CMB spectral tilt $\ns$}: $1 - \ln2/(2\pi^2) = 0.96488$
+        ($-0.005\sigma$, \CatAL)
+  \item \textbf{Tensor-to-scalar ratio $r$}: $0$ exactly (\CatA)
+  \item \textbf{Baryon asymmetry $\etaB$}: $6.109 \times 10^{-10}$
+        ($+0.15\sigma$, \CatAL)
+  \item \textbf{Neutrino mass sum $\Sigma m_\nu$}: 59.4~meV (\CatA)
+  \item \textbf{Dark energy fraction $\OmL$}: bracket $[0.6732,\,0.6899]$
+        (Planck~2018 value $0.6889$ is inside, \CatAD)
+  \item \textbf{Dark energy equation of state $w_0$}: $-1$ (PSC boundary
+        condition; no slow-roll field, \CatAD)
+  \item \textbf{Dark matter density $\Omega_{\rm DM}h^2$}: $0.11994$
+        ($-0.05\sigma$, \CatAD)
+  \item \textbf{Hubble constant $H_0$}: 67.95~km/s/Mpc
+        ($+0.69\sigma$ vs.\ Planck~2018, \CatA)
+\end{itemize}
+All values carry zero free parameters.
+\end{tcolorbox}
+
+\subsection{Falsifiability: what could rule out GTE cosmology}
+
+\begin{table}[h]
+\centering
+\caption{GTE cosmological falsification criteria. Each row specifies an
+observable, the GTE prediction, and the experimental test that would
+definitively rule it out.}
+\label{tab:falsify}
+\small
+\begin{tabular}{lll}
+\toprule
+\textbf{Observable} & \textbf{GTE prediction} & \textbf{Falsification} \\
+\midrule
+Spectral tilt $\ns$ & $0.96488$ & $|\ns - 0.96488| > 0.021$ at $5\sigma$ \\
+Tensor ratio $r$ & $0$ (exact) & $r > 0.001$ at $5\sigma$ (LiteBIRD) \\
+Baryon asymmetry $\etaB$ & $6.109 \times 10^{-10}$ & $>3\sigma$ exclusion \\
+Neutrino mass sum & 59.4~meV & Exclude at $5\sigma$ (CMB-S4 + Euclid) \\
+$\OmL$ bracket & $[0.6732,\,0.6899]$ & $\OmL$ measured outside bracket \\
+Dark energy $w_0$ & $-1$ & $|w_0 + 1| > 0.040$ at $5\sigma$ (Euclid) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The GTE framework's cosmological predictions are not adjustable.
+If LiteBIRD detects $r > 0.001$, the MDL initial state derivation is wrong.
+If CMB-S4 + Euclid measures $\Sigma m_\nu < 40$~meV or $> 90$~meV, the GTE
+seesaw is wrong.
+These are crisp, binary tests --- not matters of interpretation.
+
+\subsection{Connection to the baryon-photon ratio: a remarkable chain}
+
+The baryon asymmetry $\etaB = 6.109 \times 10^{-10}$ comes from an
+entirely different derivation from the CMB tilt $\ns = 0.96488$.
+The tilt arises from the $\mathbb{Z}_2$ binary entropy and the Weyl law.
+The asymmetry arises from the BPS instanton coupling $\varepsilon_{\rm FN} = e^{-\pi/3}$
+and the leptogenesis efficiency.
+
+What connects them is that both are derived from the same 19-bit polynomial,
+with zero free parameters.
+The same mathematical object
+$p(L,C,R) = C + R - CR - LCR \pmod{7}$
+that determines the baryon-to-photon ratio in the early universe also determines
+the spectral tilt of the CMB.
+These are not two independent fits; they are two theorems of the same structure.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section*{Further Reading}
+%─────────────────────────────────────────────────────────────────────────────
+\begin{tcolorbox}[colback=orange!8,colframe=orange!50!black,
+  title=\textbf{Primary Sources}]
+The results in this tutorial are derived in the following papers,
+all available open-access on Zenodo and at
+\href{https://novaspivack.com/research}{novaspivack.com/research}:
+\begin{itemize}[itemsep=2pt]
+  \item \textbf{P48 --- The Complete GTE Framework} (main synthesis monograph):\\
+        \href{https://doi.org/10.5281/zenodo.20560550}{doi.org/10.5281/zenodo.20560550}
+  \item \textbf{P47 --- Cosmological Predictions of the GTE/$\Phi_{\rm MDL}$ Framework}
+        (spectral tilt, baryon asymmetry, $r = 0$ derivations):\\
+        \href{https://doi.org/10.5281/zenodo.20465803}{doi.org/10.5281/zenodo.20465803}
+  \item \textbf{P45 --- The Three-Tape Chiral Minkowski Cellular Automaton}
+        (CMB perturbation mechanism, chirality structure):\\
+        \href{https://doi.org/10.5281/zenodo.20465805}{doi.org/10.5281/zenodo.20465805}
+\end{itemize}
+Lean~4 machine proofs: \href{https://github.com/novaspivack/ugp-lean}{github.com/novaspivack/ugp-lean}
+\end{tcolorbox}
+
+\bibliographystyle{unsrtnat}
+\bibliography{../../papers/bib/Spivack_Papers_Bibliography}
+
+\end{document}

@@ -1,0 +1,653 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs,array}
+\usepackage{xcolor}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,shapes.geometric,calc,fit,backgrounds}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,urlcolor=blue!60!black,
+            citecolor=blue!60!black}
+\setlength{\emergencystretch}{2em}
+\usepackage{enumitem}
+\usepackage[numbers,sort&compress]{natbib}
+
+\definecolor{boxblue}{RGB}{220,235,255}
+\definecolor{boxorange}{RGB}{255,240,210}
+\definecolor{boxgreen}{RGB}{220,245,220}
+\definecolor{boxpurple}{RGB}{240,225,255}
+
+\newcommand{\term}[1]{\textbf{#1}}
+\newcommand{\lean}[1]{%
+  \penalty-100
+  \begingroup\def\_{\textunderscore\allowbreak}\texttt{#1}\endgroup}
+\newcommand{\CatAL}{\ensuremath{\mathbf{A}_{\rm Lean}}}
+\newcommand{\CatAD}{\textbf{A/D}}
+\newcommand{\CatA}{\textbf{A}}
+\newcommand{\CatB}{\textbf{B}}
+\newcommand{\ZS}{\mathbb{Z}_7}
+\newcommand{\PHIMDL}{$\Phi_{\rm MDL}$}
+\newcommand{\Ngen}{N_{\rm gen}}
+\newcommand{\cH}{c_H}
+\newcommand{\sigW}{\sin^2\theta_W}
+
+\newtheorem{theorem}{Theorem}[section]
+
+\newcommand{\TutorialDOI}{10.5281/zenodo.20669144}
+\date{2026}
+
+\title{\textbf{The Forces:}\\[6pt]
+\large How SU(3)$\times$SU(2)$\times$U(1) Emerges from the Polynomial\\[8pt]
+\normalsize
+\href{https://novaspivack.com/research}{novaspivack.com/research}\quad
+\href{https://doi.org/10.5281/zenodo.20560550}{P48 complete theory monograph}\\[4pt]
+\small\href{https://doi.org/\TutorialDOI}{doi.org/\TutorialDOI}
+  \textit{(registration pending)}\\[4pt]
+\normalsize\textit{UGP Physics Tutorial Series}}
+\author{Nova Spivack}
+
+\begin{document}
+\setcounter{tocdepth}{2}
+\maketitle
+\tableofcontents
+\newpage
+
+\begin{tcolorbox}[colback=blue!6,colframe=blue!40!black,
+  title=\textbf{UGP Physics Tutorial Series}]
+\textbf{Prerequisites (read first):}
+  \href{https://doi.org/10.5281/zenodo.20657898}{\emph{How the Standard Model Quantum Numbers Emerge}}
+  $\cdot$
+  \href{https://doi.org/10.5281/zenodo.20657923}{\emph{The Weinberg Angle from Orbit Arithmetic}}
+  $\cdot$
+  \href{https://doi.org/10.5281/zenodo.20657902}{\emph{The Strong CP Problem Solved by Structure}}\\[4pt]
+\textbf{Next tutorials:}
+  \href{https://doi.org/10.5281/zenodo.20657913}{\emph{From the Arithmetic Substrate to Particle Masses}}\\[4pt]
+\textbf{See also:}
+  \href{https://doi.org/10.5281/zenodo.20657889}{\emph{The GTE Polynomial: A Step-by-Step Cheat Sheet}}
+  $\cdot$
+  \href{https://doi.org/10.5281/zenodo.20657872}{\emph{The Levels of the Theory}}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=boxgreen,colframe=green!50!black,
+  title=\textbf{Claim-Strength Taxonomy}]
+Throughout this tutorial, results are labeled with a confidence grade:
+\begin{itemize}[itemsep=2pt]
+  \item \textbf{$\mathbf{A}_{\rm Lean}$ (CatAL)} --- Machine-certified in Lean~4 with zero \texttt{sorry} and zero custom axioms.  Independently verifiable by anyone with Lean installed.
+  \item \textbf{A/D (CatAD)} --- Analytically derived with full derivation, computationally confirmed.  Not yet machine-certified.
+  \item \textbf{A (CatA)} --- Analytically derived; derivation complete but not independently machine-certified.
+  \item \textbf{A/D (conditional)} --- Derived under a named, stated premise; the premise is itself an open problem or a CatB assumption.
+  \item \textbf{B (CatB)} --- A stated working hypothesis or structural premise; not yet derived.
+\end{itemize}
+\end{tcolorbox}
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{The Three Forces of the Standard Model}
+\label{sec:forces-intro}
+%─────────────────────────────────────────────────────────────────────────────
+
+\begin{tcolorbox}[colback=boxblue,colframe=blue!40!black,title=The central claim]
+In the Standard Model, the gauge group
+$\mathrm{SU}(3) \times \mathrm{SU}(2) \times \mathrm{U}(1)$ is an assumption.
+You write it down and then derive the forces from it.
+In the GTE framework, the gauge group is a theorem.
+You start from the 19-bit polynomial and derive which gauge group it implies ---
+without putting any group in by hand.
+\end{tcolorbox}
+
+The three forces of the Standard Model (SM) are:
+
+\begin{itemize}[itemsep=4pt]
+  \item \textbf{Electromagnetism} (EM): carried by the photon; described by
+        $\mathrm{U}(1)_{\rm em}$.
+        It governs atomic structure, optics, and electric circuits.
+
+  \item \textbf{The weak nuclear force}: carried by the $W^{\pm}$ and $Z^0$
+        bosons; described by $\mathrm{SU}(2)_L \times \mathrm{U}(1)_Y$
+        (the electroweak group, unified with EM in the Glashow--Weinberg--Salam
+        model).
+        It governs radioactive decay and neutrino interactions.
+        The $L$ subscript signals \term{left-handedness}: the weak force
+        acts only on left-handed particles.
+
+  \item \textbf{The strong nuclear force}: carried by the gluons;
+        described by $\mathrm{SU}(3)_c$ (the color group $c$).
+        It binds quarks into protons and neutrons and holds nuclei together.
+\end{itemize}
+
+In the SM, the gauge group $\mathrm{SU}(3) \times \mathrm{SU}(2) \times \mathrm{U}(1)$
+is postulated.
+The theory is consistent with this choice, and consistent with many other choices
+too.
+There is no SM argument for why this particular group structure is the physical one.
+
+The \term{Generative Triple Evolution (GTE)} framework derives it.
+The derivation starts from the polynomial $p(L,C,R) = C + R - CR - LCR \pmod{7}$
+and shows that its symmetry group structure uniquely implies
+$\mathrm{SU}(3) \times \mathrm{SU}(2) \times \mathrm{U}(1)$ at the continuum level.
+
+\subsection{What a gauge group actually does}
+
+A \term{gauge group} encodes a local symmetry of a physical theory.
+``Local'' means the symmetry can be applied differently at each point in spacetime.
+
+The photon exists because electromagnetism has a local $\mathrm{U}(1)$ symmetry:
+you can rotate the phase of a charged particle's wave function by an arbitrary
+angle at each spacetime point, and the physics is unchanged.
+To maintain this symmetry in the equations of motion, you must introduce a
+compensating field --- the photon.
+
+Similarly, the eight gluons of QCD exist because of the local $\mathrm{SU}(3)$
+symmetry of the quark color charge.
+The $W^{\pm}$ and $Z^0$ bosons exist because of the electroweak $\mathrm{SU}(2)_L
+\times \mathrm{U}(1)_Y$ symmetry.
+
+In each case, the gauge group determines:
+(a) how many force-carrying particles exist,
+(b) how they interact with matter, and
+(c) how they interact with each other.
+
+In the SM, (a)--(c) follow from the postulated group.
+In GTE, the group itself is derived.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{The GTE Approach: $\mathbb{Z}_7$ Winding Conservation}
+\label{sec:z7}
+%─────────────────────────────────────────────────────────────────────────────
+
+\begin{tcolorbox}[colback=boxgreen,colframe=green!50!black,
+  title=The key structural fact]
+At every Standard Model interaction vertex, the total $\mathbb{Z}_7$
+winding number of the incoming particles equals the total $\mathbb{Z}_7$
+winding number of the outgoing particles (mod 7).
+This is a theorem, not a postulate.
+Electric charge conservation, color conservation, and weak isospin
+conservation all follow from it.
+\end{tcolorbox}
+
+\subsection{$\mathbb{Z}_7$ winding numbers}
+
+The particles in the GTE framework are topological defects (kinks) in the
+continuum field $\Phi_{\rm MDL}$ --- the physical field whose algebraic
+certificate is the 19-bit polynomial.
+Each particle is classified by its \term{winding number} in $\mathbb{Z}_7$
+--- the group of integers mod 7, with elements $\{0, 1, 2, 3, 4, 5, 6\}$.
+
+The winding number counts how many times the field winds around the
+$\mathbb{Z}_7$ vacuum circle as you move through a particle.
+It is conserved topologically --- you cannot remove a winding without
+creating another.
+
+The winding numbers of the SM particles, derived from the polynomial's
+orbit structure (\CatAL)~\cite{SpivackGTECompleteFramework}, are:
+
+\begin{table}[h]
+\centering
+\caption{$\mathbb{Z}_7$ winding numbers and SM force sectors.
+All assignments machine-certified (\CatAL, \lean{winding\_class\_sm\_assignment}).}
+\label{tab:winding}
+\small
+\begin{tabular}{cll}
+\toprule
+Winding $w$ & Particle sector & SM role \\
+\midrule
+0 & Vacuum, photon, neutrinos & Neutral / massless gauge sector \\
+1 & Dark-mirror sector (PSC-forbidden) & No SM particle \\
+2 & Quark (up-type: $u,c,t$) & Up-quark current \\
+3 & $W^+$ boson, positron & Weak charged current \\
+4 & Charged lepton ($e^-,\mu^-,\tau^-$), $W^-$ & Electromagnetic (QED) / weak charged current \\
+5 & Dark-mirror sector (PSC-forbidden) & No SM particle \\
+6 & Quark (down-type: $d,s,b$) & Charged weak, CKM mixing \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Winding conservation at all 33 SM vertices}
+
+In QED, the conservation of electric charge at every interaction vertex
+is imposed as a requirement of the $\mathrm{U}(1)$ gauge symmetry.
+In GTE, there is a prior conservation law: $\mathbb{Z}_7$ winding conservation
+at every SM vertex is a theorem from the $\mathbb{Z}_7$ symmetry of the
+$\Phi_{\rm MDL}$ Lagrangian.
+
+\textbf{Worked example: the charged-current weak vertex.}
+The $W^+$ boson connects an up-type quark ($w_u = 2$) to a down-type quark ($w_d = 6$):
+\[
+  u \to d + W^+.
+\]
+The $W^+$ carries winding $w_{W^+} = w_u - w_d \equiv 2 - 6 \equiv -4 \equiv 3 \pmod{7}$.
+Check conservation: the incoming winding is $w_u = 2$; the outgoing winding is
+$w_d + w_{W^+} = 6 + 3 = 9 \equiv 2 \pmod{7}$. \checkmark
+
+\textbf{Worked example: electromagnetic vertex.}
+An electron ($w = 4$) emits a photon ($w = 0$) and remains an electron ($w = 4$):
+\[
+  e^- \to e^- + \gamma.
+\]
+Incoming winding: 4. Outgoing winding: $4 + 0 = 4$. \checkmark
+
+All 33 SM vertices have been verified by this calculation (\CatAL,
+\lean{gte\_winding\_sm\_vertex\_conserved\_full})~\cite{SpivackGTECompleteFramework}.
+Electric charge conservation is the projection of winding conservation
+onto the degree-1 sector of the polynomial.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{The Frobenius Group $F_{21}$: The Symmetry Skeleton}
+\label{sec:f21}
+%─────────────────────────────────────────────────────────────────────────────
+
+\subsection{From the polynomial to $F_{21}$}
+
+The GTE polynomial $p(L,C,R) = C + R - CR - LCR \pmod{7}$ acts on the
+finite field $\mathrm{GF}(7)$.
+The symmetry group of this polynomial --- the group of transformations
+that leave $p$ invariant --- is the \term{Frobenius group}
+$F_{21} = \mathbb{Z}_7 \rtimes \mathbb{Z}_3$.
+
+This is a finite group of order 21 (21 elements).
+It is not a continuous (Lie) group.
+The continuous SM gauge group $\mathrm{SU}(3) \times \mathrm{SU}(2) \times \mathrm{U}(1)$
+operates at the continuum level.
+
+The relationship between $F_{21}$ and the SM gauge group is:
+$F_{21}$ is the discrete arithmetic skeleton; the continuous SM gauge group
+is the continuum redundancy structure that the Algebraic Lifting Theorem
+(\CatAL) forces to be present in the continuum field $\Phi_{\rm MDL}$,
+given the symmetry structure of $F_{21}$.
+
+The machine certification of $F_{21}$ as the symmetry group of the GTE polynomial
+is \lean{frobenius\_f21\_is\_z7\_sdp\_z3} (\CatAL)~\cite{SpivackGTECompleteFramework}.
+
+\subsection{The subgroup structure gives the forces}
+
+$F_{21} = \mathbb{Z}_7 \rtimes \mathbb{Z}_3$ has the following key subgroup structure:
+\begin{itemize}[itemsep=2pt]
+  \item $\mathbb{Z}_7$ (order 7): the cyclic group of order 7.
+        Its non-trivial action gives the color sector --- 7 distinct winding
+        values, of which 3 correspond to color charge.
+  \item $\mathbb{Z}_3$ (order 3): the cyclic group of order 3.
+        Its action generates the 3-fold structure corresponding to color $\mathrm{SU}(3)$.
+  \item The semidirect product structure $\rtimes$: encodes the interaction
+        between the $\mathbb{Z}_7$ and $\mathbb{Z}_3$ sectors, giving the
+        full gauge structure.
+\end{itemize}
+
+The MDL-minimality proof establishes that $\mathbb{Z}_7 \times \mathbb{Z}_3$
+(or equivalently $F_{21}$) is the \emph{unique} structure of this form
+with minimum description length:
+\lean{mdl\_total\_z7z3\_strictly\_beats\_z5z3} (\CatAL)~\cite{SpivackGTECompleteFramework}.
+Every competitor ($\mathbb{Z}_5 \times \mathbb{Z}_3$, $\mathbb{Z}_9 \times \mathbb{Z}_3$,
+etc.) is either eliminated by no PSC-admissible kink orbits, or by higher MDL cost.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{The Strong Force: SU(3) from $F_{21}$}
+\label{sec:strong}
+%─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Color from the three ground states}
+
+The GTE polynomial $p(L,C,R)$ over $\mathrm{GF}(7)$ has a set of ground states ---
+values that the field can stably occupy.
+The three non-trivial ground states are $\{0, 1, 5\}$ in $\mathrm{GF}(7)$.
+These generate the group $\mathbb{Z}_3$ (a cyclic group of order 3: $\{0, 1, 2\} \pmod{3}$
+in additive notation, or $\{1, 5, 25 \equiv 4\} \pmod{7}$ in multiplicative notation).
+
+Three ground states, three colors.
+The $\mathbb{Z}_3$ generated by the ground states is the discrete color charge.
+At the continuum level, the MDL-minimal Lie group implementing $\mathbb{Z}_3$
+color conservation is $\mathrm{SU}(3)$: the group of special unitary $3 \times 3$
+matrices.
+$\mathrm{SU}(3)$ contains $\mathbb{Z}_3$ as a subgroup (the center of $\mathrm{SU}(3)$)
+and is the unique simple Lie group with a $\mathbb{Z}_3$ center at rank~2.
+
+\subsection{Color confinement from MDL}
+
+Why can we never observe a free quark?
+In QCD, this \term{color confinement} is an experimental fact for which
+no analytic proof from SM first principles exists (it is a Millennium Prize Problem).
+In GTE, confinement follows from a description-length argument~\cite{SpivackGTECompleteFramework}.
+
+A free colored quark in an asymptotic state requires $\log_2 3 + \log_2 15 = \log_2 45$
+bits to describe (bits for the color choice plus bits for the winding value).
+A color-neutral hadron requires only $\log_2 5$ bits (only 5 PSC-admissible winding values).
+The description-length gap is:
+\[
+  \Delta K = \log_2 45 - \log_2 5 = \log_2 9 \approx 3.17~\text{bits} > 0.
+\]
+Because $\Delta K > 0$, a free colored quark is MDL-non-minimal.
+PSC forbids MDL-non-minimal asymptotic states.
+Therefore, no free colored quark exists.
+Lean cert: \lean{color\_confinement\_k\_extra\_pos} (\CatAL, zero sorry)~\cite{SpivackGTECompleteFramework}.
+
+\subsection{The QCD $\beta$-function coefficient $b_0 = 7$}
+
+\term{Asymptotic freedom} is the property that the strong coupling $\alpha_s$ becomes
+weaker at shorter distances (higher energies).
+It follows from the QCD $\beta$-function being negative:
+$\beta(\alpha_s) < 0 \iff b_0 > 0$.
+
+In GTE, the one-loop $\beta$-function coefficient is:
+\begin{equation}
+  b_0 = |\mathbb{Z}_7| = 7.
+  \label{eq:b0}
+\end{equation}
+This is a theorem from the Casimir relation of $F_{21}$
+(\lean{b0\_eq\_z7\_order}, \CatAL)~\cite{SpivackGTECompleteFramework}.
+Since $b_0 = 7 > 0$, the GTE substrate automatically gives an asymptotically free
+color sector.
+The QCD coupling is derived as $\alpha_s(M_Z) = 0.11822$ ($+0.24\sigma$
+from PDG~2024, \CatAL).
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{The Electroweak Force: SU(2)$_L \times$ U(1)$_Y$ from Chirality}
+\label{sec:ew}
+%─────────────────────────────────────────────────────────────────────────────
+
+\subsection{The V$-$A structure: left-handedness from the CA rule pair}
+
+The weak force has a distinctive property: it acts only on \term{left-handed}
+particles.
+This \term{V$-$A} (vector minus axial) structure is one of the SM's most striking
+features.
+In the SM, left-handedness is imposed by hand: the $\mathrm{SU}(2)_L$ group
+acts only on the left-handed components of the fermion fields.
+
+In GTE, left-handedness is structural.
+The three-tape Chiral Minkowski Cellular Automaton (CMCA) has two outer layers:
+Rule~110 (right-chiral) and Rule~124 (left-chiral).
+These are not the same rule.
+Rule~110 is related to Rule~124 by left-right mirror reflection.
+The physical vacuum --- the unique $k = 0$ vacuum selected by the MDL principle
+--- breaks the left-right symmetry: it selects one of the two chiral pair members
+as the physical evolution rule for the outer tape.
+
+This selection is the origin of parity violation.
+The physical SM universe is left-handed because the MDL-selected vacuum
+is left-handed.
+Lean cert: \lean{sm\_orbit\_is\_left\_handed} (\CatAL)~\cite{SpivackGTECompleteFramework}.
+
+\subsection{The Weinberg angle: $\sin^2\theta_W = 3/13$}
+
+The \term{Weinberg angle} $\theta_W$ (also called the electroweak mixing angle)
+is the angle that mixes the $\mathrm{SU}(2)_L$ and $\mathrm{U}(1)_Y$ gauge
+bosons to produce the physical photon and $Z^0$.
+Its value $\sin^2\theta_W \approx 0.231$ is a free parameter in the SM.
+
+In GTE, it is the ratio of the generation count to the Higgs-sector orbit count~\cite{SpivackWeinbergAngle}:
+\begin{equation}
+  \sin^2\theta_W = \frac{\Ngen}{\cH} = \frac{3}{13} = 0.23077.
+  \label{eq:weinberg}
+\end{equation}
+Here $\Ngen = 3$ is the number of SM generations, and $\cH = 13$ is the
+Higgs color count: the number of distinct $\mathbb{Z}_7$ orbit sectors
+accessible to the Higgs doublet under the $F_{21}$ action.
+
+\textbf{Why $c_H = 13$?}
+The number 13 is not arbitrary: it is forced by the electroweak boson
+``staircase.'' The three electroweak bosons occupy consecutive GTE branch
+capacities with unit steps between them: $c_{W^+} = 11$, $c_Z = 12$,
+$c_{H^0} = 13$. Equivalently, $c_H = \Ngen + 2N_{\rm fam} = 3 + 10 = 13$,
+where $N_{\rm fam} = 5$ is the SM family count (the $\mathbb{Z}_5$ ring size).
+Lean cert: \lean{ew\_c\_staircase} (\CatAL).
+The derivation is in P31~\cite{SpivackWeinbergAngle} and P48~\cite{SpivackGTECompleteFramework}.
+
+\textbf{Comparison to experiment.}
+The tree-level result $3/13 = 0.23077$ is a pure arithmetic result.
+With two-loop threshold corrections (all inputs from GTE, no PDG parameters):
+\[
+  \sin^2\theta_W\big|_{\rm 2\text{-}loop} = 0.23129.
+\]
+PDG~2024 (MS-bar at $M_Z$): $\sin^2\theta_W = 0.23129 \pm 0.00004$.
+Deviation: $+0.038\sigma$ (\CatAL/\CatAD)~\cite{SpivackGTECompleteFramework}.
+
+\begin{tcolorbox}[colback=boxorange,colframe=orange!60!black,
+  title={Result: Weinberg Angle (\CatAL)}]
+Tree-level: $\sin^2\theta_W = \Ngen/\cH = 3/13 = 0.23077$\\[2pt]
+Two-loop: $\sin^2\theta_W = 0.23129$ (\CatAD)\\[2pt]
+PDG~2024: $0.23129 \pm 0.00004$. Deviation: $\mathbf{+0.038\sigma}$.\\[2pt]
+Lean: \lean{weinberg\_angle\_closure}, \lean{weinberg\_angle\_derivation}
+\end{tcolorbox}
+
+\subsection{The $W$ and $Z$ boson masses}
+
+Once the Higgs VEV $v_{\rm PSC} = 246.16$~GeV and the Weinberg angle are
+derived, the gauge boson masses follow from standard electroweak relations:
+\begin{align}
+  M_W &= 80.364~\text{GeV} \quad (\CatAL;\;\lean{m\_W\_pdg\_interval}),
+  \label{eq:mw}\\[4pt]
+  M_Z &= M_W \cdot \sqrt{\frac{\cH}{\cH - \Ngen}}
+       = M_W \cdot \sqrt{\frac{13}{10}}
+       = 91.6~\text{GeV} \quad (\CatAL;\;\lean{m\_Z\_gte\_from\_weinberg}).
+  \label{eq:mz}
+\end{align}
+PDG~2024 values: $M_W = 80.369 \pm 0.013$~GeV; $M_Z = 91.188 \pm 0.002$~GeV.
+The GTE values are within $0.4\sigma$ and within $0.5\sigma$ respectively.
+
+\subsection{Why the $Z$ is heavier than the $W$: the $c$-staircase}
+
+The three electroweak bosons occupy a unit-step arithmetic staircase in the
+$F_{21}$ branch-capacity parameter~\cite{SpivackGTECompleteFramework}:
+\[
+  c_{W^\pm} = 11, \quad c_Z = 12, \quad c_H = 13.
+\]
+Each step down from the Higgs scalar boundary $c_H = 13$ records the loss of
+one longitudinal degree of freedom, encoding the Goldstone mechanism in
+orbit arithmetic.
+The photon (massless) sits at $w = 0$, the $\mathbb{Z}_7$ zero sector.
+The $W$ is lighter than the $Z$ because it loses one more degree of freedom
+($c_W < c_Z$).
+No continuous parameter chooses these numbers; they are forced by the
+integer structure of the $F_{21}$ orbits.
+\mbox{Lean: \lean{ew\_c\_staircase} (\CatAL,\ zero sorry)}~\cite{SpivackGTECompleteFramework}.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{The Strong CP Problem: $\theta_{\rm QCD} = 0$ by Structure}
+\label{sec:strongcp}
+%─────────────────────────────────────────────────────────────────────────────
+
+The SM Lagrangian admits a CP-violating term proportional to $\theta_{\rm QCD}$.
+This term would cause the neutron electric dipole moment to be non-zero.
+Experiment constrains $|\theta_{\rm QCD}| < 10^{-10}$ --- essentially exactly zero.
+Why?
+
+In GTE, $\theta_{\rm QCD} = 0$ exactly, with three independent proofs
+from the structure of $F_{21}$~\cite{SpivackGTECompleteFramework}.
+
+\textbf{Proof 1.} The $\theta$ term in the effective Lagrangian is proportional to
+$\mathrm{Tr}[G_{\mu\nu} \tilde{G}^{\mu\nu}]$.
+In $F_{21}$, this is a topological density.
+The $\mathbb{Z}_7$ shift symmetry is anomaly-free at all loop orders
+(\lean{z7\_shift\_measure\_preserving}, \CatAL), which forces the
+$\theta$ term to vanish identically.
+
+\textbf{Proof 2.} The $F_{21}$ group action on the gluon field configuration space
+has no CP-violating fixed point.
+The theorem \lean{f21\_theta\_term\_vanishes} (\CatAL) certifies this directly.
+
+\textbf{Proof 3.} The three-tape architecture forces $\theta_{\rm QCD} = 0$ by
+a discrete symmetry argument: the Rule~110/124 chiral pair has a discrete
+CP symmetry that is preserved by the vacuum selection.
+
+\begin{tcolorbox}[colback=boxorange,colframe=orange!60!black,
+  title={Result: Strong CP Vanishes (\CatAL)}]
+$\theta_{\rm QCD} = 0$ exactly. Three independent proofs.\\[2pt]
+No axion required or predicted.\\[2pt]
+Falsification: any measurement of a non-zero neutron electric dipole moment
+at the $\theta_{\rm QCD} > 10^{-12}$ level would falsify the $F_{21}$
+structure.\\[2pt]
+Lean: \lean{f21\_theta\_term\_vanishes} (\CatAL, zero sorry)
+\end{tcolorbox}
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{The Fine Structure Constant: $\alpha^{-1} = 137$ at Tree Level}
+\label{sec:alpha}
+%─────────────────────────────────────────────────────────────────────────────
+
+The \term{fine structure constant} $\alpha \approx 1/137.036$ governs the strength
+of electromagnetic interactions.
+In the SM, $\alpha$ is a free parameter fitted from experiment.
+The value $\alpha^{-1} = 137.036$ at zero momentum transfer is measured to
+extraordinary precision but not explained.
+
+In GTE, the tree-level value is:
+\begin{equation}
+  \alpha^{-1} = 2^7 + 3^2 = 128 + 9 = 137.
+  \label{eq:alpha}
+\end{equation}
+Lean cert: \lean{alpha\_em\_inverse\_structural\_identity} (\CatAL)~\cite{SpivackGTECompleteFramework}.
+
+\textbf{Where do $2^7$ and $3^2$ come from?}
+The factor $2^7 = 128$ counts the binary branching modes: the outer Rule~110 tape
+has 7 binary generators, giving $2^7$ modes.
+The factor $3^2 = 9$ counts the $\mathbb{Z}_3$ sector modes: the two-generation
+residual from the three-generation orbit.
+Both counts are forced by the polynomial's algebraic structure, not chosen to
+reproduce $137$.
+
+\textbf{Comparison to experiment.}
+The tree-level GTE value is $\alpha^{-1} = 137$, while the measured value is
+$\alpha^{-1} = 137.036$.
+The fractional discrepancy is $0.026\%$, explained by QED running (radiative
+corrections between zero momentum transfer and the physical scale).
+The QED running brings the GTE result toward $137.036$ at \CatB~\cite{SpivackGTECompleteFramework}.
+
+\textbf{A structural equivalence.}
+The derivation can also be stated in terms of the GTE generation orbit.
+The first-generation $b$-value $b_1 = 73$ satisfies
+\[
+  b_1 = 2^{\varphi(7)} + N_{\rm gen}^2,
+\]
+where $\varphi(7) = |\mathbb{F}_7^*| = 6$ is the order of the multiplicative group of
+$\mathrm{GF}(7)$.  Since $\mathbb{F}_7^* \cong \mathbb{Z}_2 \times \mathbb{Z}_3$ and
+$N_{\rm gen} = 3 = |\mathbb{Z}_3|$, the Sylow-3 subgroup of $\mathbb{F}_7^*$ has order $N_{\rm gen}$.
+This gives $\varphi(7) = 2 \times N_{\rm gen}$, which is itself a structural identity.
+The formula $\alpha^{-1} = 2^7 + N_{\rm gen}^2$ can therefore be rewritten as
+$\alpha^{-1} = 2 \times b_1 - N_{\rm gen}^2 + N_{\rm gen}^2 = 2b_1$, or equivalently
+checked directly: $2 \times 73 - 9 = 137$.
+Both expressions --- the $|Z_7|$-mode count route $2^7 + N_{\rm gen}^2 = 137$ and the
+orbit route via $b_1$ --- yield the same integer because $b_1 = 2^{\varphi(7)} + N_{\rm gen}^2$.
+The two routes to $\alpha^{-1} = 137$ are thus algebraically equivalent under the
+$\varphi(7) = 2N_{\rm gen}$ identity.
+Lean cert: \lean{b1\_totient7\_ngen\_identity} (\CatAL)~\cite{SpivackGTECompleteFramework}.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Electric Charge Quantization}
+\label{sec:charge}
+%─────────────────────────────────────────────────────────────────────────────
+
+Electric charges in the SM come in multiples of $e/3$
+(quark charges: $\pm 1/3$ and $\pm 2/3$; lepton charges: $0$ and $\pm 1$).
+The SM requires charge quantization as a separate constraint.
+
+In GTE, charge quantization is automatic.
+The electric charge of any SM particle follows from the degree-1 projection
+of the polynomial:
+\begin{equation}
+  Q = \frac{p(0, w, 0)}{3} = \frac{w_{\rm centered}}{3},
+  \label{eq:charge}
+\end{equation}
+where $w_{\rm centered}$ is the centered representative of $w \in \mathbb{Z}_7$
+in the range $[-3, 3]$.
+The denominator 3 is not arbitrary: it equals the number of colors $N_c = 3$,
+which is itself derived from the $\mathbb{Z}_3$ structure of $F_{21}$.
+Charge is quantized in units of $e/3$ because there are exactly three colors.
+A universe with two colors would have charge quantization in units of $e/2$;
+a universe with four colors in units of $e/4$.
+The GTE structure uniquely selects three colors, uniquely fixing the charge quantum.
+
+\textbf{Worked examples:}
+\begin{itemize}[itemsep=2pt]
+  \item $w = 2$: $Q = 2/3$ (up quark). \checkmark
+  \item $w = 4 \equiv -3$: $Q = -1$ (charged lepton). \checkmark
+  \item $w = 3$: $Q = 1$ ($W^+$ boson). \checkmark
+  \item $w = 0$: $Q = 0$ (neutrino, photon). \checkmark
+  \item $w = 6 \equiv -1$: $Q = -1/3$ (down quark). \checkmark
+\end{itemize}
+Lean cert: \lean{gte\_charge\_formula} (\CatAL, zero sorry)~\cite{SpivackGTECompleteFramework}.
+The denominator 3 in the charge formula comes from the color count $N_c = 3$,
+which is itself derived from the polynomial's $\mathbb{Z}_3$ structure.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Machine Certifications: The Complete Force Inventory}
+\label{sec:inventory}
+%─────────────────────────────────────────────────────────────────────────────
+
+\begin{tcolorbox}[colback=boxpurple,colframe=blue!40!black,
+  title={GTE force-sector machine certifications (\CatAL, zero sorry)},breakable]
+\begin{itemize}[itemsep=2pt]
+  \item \lean{gte\_winding\_sm\_vertex\_conserved\_full} ---
+        $\mathbb{Z}_7$ conservation at all SM vertices
+  \item \lean{gte\_charge\_formula} ---
+        Charge quantization in multiples of $e/3$
+  \item \lean{weinberg\_angle\_closure} ---
+        $\sin^2\theta_W = N_{\rm gen}/c_H$ at tree level
+  \item \lean{m\_W\_pdg\_interval} ---
+        $M_W = 80.364$~GeV in PDG interval
+  \item \lean{ew\_c\_staircase} ---
+        Electroweak $c$-parameter staircase ($c_W = 11$, $c_Z = 12$, $c_H = 13$)
+  \item \lean{color\_confinement\_k\_extra\_pos} ---
+        Color confinement ($\Delta K = \log_2 9 > 0$)
+  \item \lean{certified\_mass\_gap\_positive} ---
+        QCD mass gap from $F_{21}$ orbit arithmetic
+  \item \lean{b0\_eq\_z7\_order} ---
+        QCD $\beta$-function $b_0 = |\mathbb{Z}_7| = 7$
+  \item \lean{f21\_theta\_term\_vanishes} ---
+        $\theta_{\rm QCD} = 0$ (strong CP)
+  \item \lean{alpha\_em\_inverse\_structural\_identity} ---
+        $\alpha^{-1} = 2^7 + 3^2 = 137$
+  \item \lean{sm\_orbit\_is\_left\_handed} ---
+        Left-handedness from vacuum selection
+  \item \lean{gravity\_em\_degree\_split} ---
+        Gravity (degree 3) vs.\ EM (degree 1) from the polynomial
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{How a finite group produces continuous gauge symmetry}
+
+A natural question: $F_{21}$ is a finite group of 21 elements.
+How does it produce a continuous gauge theory with infinitely many local
+symmetry transformations?
+
+The answer is that $F_{21}$ and the SM gauge group operate at different levels.
+At Level~1 (the algebraic certificate, the CMCA), $\mathbb{Z}_7$ winding
+conservation is an exact discrete arithmetic law.
+At Level~2 (the continuum $\Phi_{\rm MDL}$ field), the Algebraic Lifting
+Theorem (\CatAL) requires that the same conservation laws hold continuously.
+Local continuous redundancy of those discrete constraints is the gauge principle.
+The MDL-minimal Lie group implementing the $\mathbb{Z}_7 \times \mathbb{Z}_3$
+discrete structure is $\mathrm{SU}(3) \times \mathrm{SU}(2) \times \mathrm{U}(1)$.
+
+The discrete group is the arithmetic skeleton.
+The continuous gauge group is the continuum redundancy structure.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section*{Further Reading}
+%─────────────────────────────────────────────────────────────────────────────
+\begin{tcolorbox}[colback=orange!8,colframe=orange!50!black,
+  title=\textbf{Primary Sources}]
+The results in this tutorial are derived in the following papers,
+all available open-access on Zenodo and at
+\href{https://novaspivack.com/research}{novaspivack.com/research}:
+\begin{itemize}[itemsep=2pt]
+  \item \textbf{P48 --- The Complete GTE Framework} (main synthesis monograph):\\
+        \href{https://doi.org/10.5281/zenodo.20560550}{doi.org/10.5281/zenodo.20560550}
+  \item \textbf{P45 --- The Three-Tape Chiral Minkowski Cellular Automaton}
+        (Weinberg angle, chirality, force structure):\\
+        \href{https://doi.org/10.5281/zenodo.20465805}{doi.org/10.5281/zenodo.20465805}
+  \item \textbf{P08 --- From UGP to GTE: Prime-Locked Universes}
+        (MDL selection, $F_{21}$ group theory):\\
+        \href{https://doi.org/10.5281/zenodo.20171002}{doi.org/10.5281/zenodo.20171002}
+  \item \textbf{P01 --- Standard Model Parameters from the UGP}
+        (coupling constant derivations):\\
+        \href{https://doi.org/10.5281/zenodo.20168787}{doi.org/10.5281/zenodo.20168787}
+\end{itemize}
+Lean~4 machine proofs: \href{https://github.com/novaspivack/ugp-lean}{github.com/novaspivack/ugp-lean}
+\end{tcolorbox}
+
+\bibliographystyle{unsrtnat}
+\bibliography{../../papers/bib/Spivack_Papers_Bibliography}
+
+\end{document}

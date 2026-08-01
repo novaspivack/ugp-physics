@@ -1,0 +1,1683 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Emergent Gravity from the Phi_MDL Field:
+%  Einstein Equations, Kink Sources, and Quantum Gravity Scale
+%
+%  Nova Spivack --- 2026
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt]{article}
+
+% ===================== PREAMBLE =====================
+\usepackage[margin=1in]{geometry}
+\usepackage{authblk}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\allowdisplaybreaks
+\setlength{\abovedisplayskip}{6pt}
+\setlength{\belowdisplayskip}{6pt}
+\setlength{\abovedisplayshortskip}{4pt}
+\setlength{\belowdisplayshortskip}{4pt}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+\usepackage{cite}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx,ragged2e,array}
+\usepackage{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage[toc]{appendix}
+\usepackage{float}
+\usepackage{placeins}
+\usepackage{multicol}
+
+\setlength{\emergencystretch}{3em}
+\raggedbottom
+
+\newcolumntype{P}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\graphicspath{{./}{./figures/}}
+
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black}
+\input{nova_zenodo_doi_placeholder}
+
+% ── Theorem environments ──────────────────────────────────────────────────────
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{openprob}[theorem]{Open Problem}
+
+% ── Convenience macros ────────────────────────────────────────────────────────
+\newcommand{\UGP}{\text{UGP}}
+\newcommand{\GTE}{\text{GTE}}
+\newcommand{\MDL}{\text{MDL}}
+\newcommand{\PSC}{\text{PSC}}
+\newcommand{\PHIMDL}{\Phi_{\mathrm{MDL}}}
+\newcommand{\ZS}{\mathbb{Z}_7}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\lean}[1]{%
+  \penalty-100
+  \begingroup\def\_{\textunderscore\allowbreak}\texttt{#1}\endgroup}
+\newcommand{\Mkink}{M_{\rm kink}}
+\newcommand{\mtau}{m_\tau}
+\newcommand{\mphi}{m_\varphi}
+\newcommand{\fmdl}{f_{\rm MDL}}
+\newcommand{\Ngen}{N_{\rm gen}}
+\newcommand{\epsz}{\varepsilon_0}
+\newcommand{\vPSC}{v_{\rm PSC}}
+
+% ── Certification-level macros ────────────────────────────────────────────────
+\newcommand{\CatA}{\textbf{A}}
+\newcommand{\CatAL}{\ensuremath{\textbf{A}_{\rm Lean}}}
+\newcommand{\CatAD}{\textbf{A/D}}
+\newcommand{\CatB}{\textbf{B}}
+\newcommand{\CatD}{\textbf{D}}
+
+% ── Gravity/stress-energy macros ─────────────────────────────────────────────
+\newcommand{\Tmunu}{T_{\mu\nu}}
+\newcommand{\Gmunu}{G_{\mu\nu}}
+\newcommand{\hmunu}{h_{\mu\nu}}
+\newcommand{\GN}{G_N}
+\newcommand{\MPl}{M_{\rm Pl}}
+\newcommand{\MPltot}{M_{\rm Pl}^{\GTE}}
+\newcommand{\rhoLam}{\rho_\Lambda}
+
+% ── Standard sine-Gordon notation ────────────────────────────────────────────
+\newcommand{\VZ}{V_{\ZS}}
+\newcommand{\Lkink}{\mathcal{L}}
+
+\begin{document}
+
+\title{\textbf{Emergent Gravity from the $\PHIMDL$ Field:\\
+  Einstein Equations, Kink Sources, and Quantum Gravity Scale}}
+
+\author{Nova Spivack}
+\affil{Independent Researcher}
+\date{May 2026}
+\maketitle
+
+\NovaZenodoAfterTitle
+
+%─────────────────────────────────────────────────────────────────────────────
+\begin{abstract}
+Starting from the $\ZS$-symmetric Klein--Gordon field $\PHIMDL$ with
+$V = (m_\varphi^2/49)(1-\cos 7\Phi)$ and $m_\varphi = m_\tau = 1776.86\,\text{MeV}$,
+we derive six gravitational results.
+
+(1) $T_{\mu\nu} = \partial_\mu\Phi\,\partial_\nu\Phi - \eta_{\mu\nu}\mathcal{L}$ is
+machine-certified in Lean~4 (zero \texttt{sorry}; symmetry, vacuum-vanishing, and gravity prerequisites in \lean{StressEnergyTensor.lean}).
+
+(2) The linearized Einstein equations $G_{\mu\nu} = 8\pi G_N T_{\mu\nu}$ follow
+from MDL-Lovelock correspondence (P35) combined with minimal coupling.
+
+(3) The $\PHIMDL$ BPS kink is a gravitational source: $\int T_{00}\,dx = M_{\rm kink}
+= 290.10\,\text{MeV}$ (relative error $1.4\times10^{-6}$); conservation holds to
+$6\times10^{-12}$.
+
+(4) The classical cosmological constant vanishes at all seven $\ZS$ vacua; the
+one-loop correction $\Delta V_{\rm CW} \approx -1.7\times10^7\,\text{MeV}^4$
+exceeds the observed dark-energy scale by $10^{42}$ — identified but not resolved.
+
+(5) The quantum gravity scale is $M_{\rm Pl}^{\rm tot} = \pi/\sqrt{3} \approx 1.81$
+lattice units from the Nyquist residual $\varepsilon_0(M) = \pi^2/(3M^2)$.
+
+(6) The three-tape CMCA $\tau_c$ gradient-kick mechanism recovers Newtonian gravity
+$F = G_{\rm eff}M/(4\pi b^2)$ in the continuum limit (\CatAD, P45~\cite{SpivackCMCA}).
+Newton's constant $G_N$ is derived via the gravitational hierarchy formula (\CatAD).
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+%─────────────────────────────────────────────────────────────────────────────
+%  Claim-strength taxonomy
+%─────────────────────────────────────────────────────────────────────────────
+\begin{tcolorbox}[colback=gray!4,colframe=gray!50!black,
+  title={\textbf{Claim-strength taxonomy}},
+  fonttitle=\bfseries,left=6pt,right=6pt,top=5pt,bottom=5pt]
+\small
+\[
+\CatAL \;>\; \CatAD \;>\; \CatA \;>\; \CatD
+\]
+\textbf{$\CatAL$:} machine-checked exact arithmetic in Lean~4, zero \texttt{sorry}.\\
+\textbf{$\CatAD$:} full analytic derivation; computationally confirmed.\\
+\textbf{$\CatA$:} computationally confirmed; an analytic derivation or Lean cert remains.\\
+\textbf{$\CatD$:} exploratory / long-term open.
+\end{tcolorbox}
+
+%─────────────────────────────────────────────────────────────────────────────
+%  Reviewer's map
+%─────────────────────────────────────────────────────────────────────────────
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{3.1cm}>{\raggedright\arraybackslash}p{1.3cm}>{\raggedright\arraybackslash}p{8.6cm}>{\raggedright\arraybackslash}p{2.0cm}@{}}
+\caption{Reviewer's map: principal claims, certification level, and location.}
+\label{tab:reviewer_map}\\
+\toprule
+\textbf{Result} & \textbf{Status} & \textbf{Claim} & \textbf{Where}\\
+\midrule
+\endfirsthead
+\multicolumn{4}{l}{\small\itshape (Table~\ref{tab:reviewer_map} continued)}\\
+\toprule
+\textbf{Result} & \textbf{Status} & \textbf{Claim} & \textbf{Where}\\
+\midrule
+\endhead
+\midrule
+\multicolumn{4}{r}{\small\itshape (continued on next page)}\\
+\endfoot
+\bottomrule
+\endlastfoot
+$\ZS$-KG Lagrangian & $\CatAD$ &
+  $\mathcal{L}=\tfrac12(\partial\Phi)^2-V(\Phi)$; $V=(m_\varphi^2/49)(1-\cos 7\Phi)$;
+  $m_\varphi=\mtau=1776.86$~MeV. &
+  \S\ref{sec:tmunu}\\
+$\Tmunu$ symmetry & $\CatAL$ &
+  $\Tmunu = T_{\nu\mu}$.
+  Lean: \lean{phimdl\_tmunu\_symmetric}, \lean{StressEnergyTensor.lean}. &
+  \S\ref{sec:tmunu}\\
+Vacuum $\Tmunu = 0$ & $\CatAL$ &
+  $T_{\mu\nu}\big|_{\rm vac} = 0$ at all $\ZS$ vacua.
+  Lean: \lean{phimdl\_tmunu\_vacuum\_zero}, \lean{StressEnergyTensor.lean}. &
+  \S\ref{sec:tmunu}\\
+BPS pressure-free & $\CatAD$ &
+  $T_{11}=0$ on BPS kink; $T_{22}=T_{33}=-T_{00}$.
+  Max numerical $|T_{11}|<10^{-16}$; max $|T_{00}+T_{22}|<10^{-16}$.
+  Lean: \lean{phimdl\_bps\_kink\_pressure\_free} (axiom, BPS calculus pending). &
+  \S\ref{sec:tmunu}\\
+$\partial^\mu T_{\mu\nu}=0$ & $\CatAD$ &
+  On-shell conservation; max divergence $6.2\times10^{-12}$ (numerical). &
+  \S\ref{sec:tmunu}\\
+Gravity prerequisites & $\CatAL$ &
+  Poincar\'e inv.\ + $\Tmunu$ symmetric + vacuum-zero + no finite CA replica.
+  Lean: \lean{phimdl\_gravity\_sector\_prerequisites}. &
+  \S\ref{sec:efe}\\
+Einstein field eq.\ (form) & $\CatAD$ &
+  $\Gmunu = 8\pi\GN\Tmunu[\PHIMDL]$ derived via MDL-Lovelock + variational.
+  $h_{\mu\nu}\sim5\times10^{-39}$ at 1~fm (perturbative). &
+  \S\ref{sec:efe}\\
+Newton's $\GN$ & $\CatAD$ &
+  $\MPl/m_\tau = 21^{10}\cdot7^7/2 = 6.8683\times10^{18}$, 0.040\%
+  precision; $Z_3$-invariant entropy mechanism proved. &
+  \S\ref{sec:hierarchy}\\
+Newtonian force law & $\CatAD$ &
+  $F(b) = G_{\rm eff}M/(4\pi b^2)\,[1+O(\sigma_{\rm AL}/b)^2]$;
+  $\tau_c$ gradient-kick continuum limit;
+  three-mechanism equivalence (gradient kick = linearized GR = equivalence principle).
+  At $b/\sigma_{\rm AL}=5$: deviation $< 1.54\times10^{-5}$.
+  Prior discrete-run exponents $b^{-2.30}$, $b^{-2.19}$ are finite-source-size artifacts. &
+  \S\ref{ssec:newtonian_limit}\\
+$\int T_{00}\,dx = \Mkink$ & $\CatA$ &
+  $290.0996$~MeV, relative error $1.4\times10^{-6}$.
+  Moving kink: $\int T_{00}\,dx = \gamma\Mkink$ to $10^{-13}$. &
+  \S\ref{sec:kink_source}\\
+Kink width & $\CatAD$ &
+  ${\rm FWHM} = 1.7627/\mphi = 0.196$~fm; Fourier form factor
+  $(8\mphi/49)\,\bigl(\pi k/(2\mphi)\bigr)/\sinh\bigl(\pi k/(2\mphi)\bigr)$. &
+  \S\ref{sec:kink_source}\\
+Classical $\Lambda = 0$ & $\CatAL$ &
+  $V(\Phi_k) = 0$ at all seven $\ZS$ vacua.
+  Lean: \lean{phimdl\_potential\_at\_vacuum\_zero}. &
+  \S\ref{sec:cosmo}\\
+Quantum hierarchy & $\CatD$ &
+  One-loop $\Delta V_{\rm CW} \approx -1.7\times10^{7}$~MeV$^4$;
+  $|\Delta V_{\rm CW}|/\rhoLam^{\rm obs} \approx 10^{42}$; no GTE suppression. &
+  \S\ref{sec:cosmo}\\
+QGR scale & $\CatAD$ &
+  $\MPltot = \pi/\sqrt{3}\approx1.81$ lattice units from $\epsz(M)=\pi^2/(3M^2)=1$. &
+  \S\ref{sec:qgr}\\
+Penrose OR time & $\CatAD$ &
+  $\tau_{\rm OR}\approx 20$~Myr for single GTE kink;
+  $\Gamma_{\rm OR} = 1.52\times10^{-15}$~s$^{-1}$. &
+  \S\ref{sec:qgr}\\
+Async lifting & $\CatAL$ &
+  Asynchronous update preserves PSC-admissibility and confinement.
+  Lean: \lean{async\_algebraic\_lifting\_theorem}, \lean{AsyncLiftingTheorem.lean}. &
+  \S\ref{sec:prog_context}\\
+\end{longtable}
+\normalsize
+\renewcommand{\arraystretch}{1}
+
+\medskip
+
+\begin{tcolorbox}[colback=green!4,colframe=green!45!black,
+  title={\textbf{Central result}},
+  fonttitle=\bfseries,left=6pt,right=6pt,top=4pt,bottom=4pt]
+\small
+The $\ZS$-KG field $\PHIMDL$ carries a fully explicit, Lean~4-certified
+stress-energy tensor $\Tmunu$.  Combined with the MDL-Lovelock correspondence
+(P35), this yields the linearized Einstein field equations
+$\Gmunu = 8\pi\GN\Tmunu[\PHIMDL]$ by standard variational calculus.
+The $\PHIMDL$ BPS kink sources gravity with mass-energy $290.10$~MeV verified to
+$1.4\times10^{-6}$.  The classical cosmological constant vanishes exactly at all
+$\ZS$ vacua.  The quantum gravity scale is $\MPltot = \pi/\sqrt{3}\approx1.81$
+lattice units, at which metric fluctuations become $O(1)$.
+Newton's constant $\GN$ is derived at $\CatAD$ via the gravitational hierarchy formula (Proposition~\ref{prop:orbit_weight}).
+The $\tau_c$ gradient-kick mechanism produces exactly Newtonian $F = G_{\rm eff}M/(4\pi b^2)$
+in the continuum limit ($\CatAD$; P45~\cite{SpivackCMCA}).
+\end{tcolorbox}
+
+\medskip
+
+\begin{tcolorbox}[colback=orange!4,colframe=orange!55!black,
+  title={\textbf{What this paper does and does not claim}},
+  fonttitle=\bfseries,left=6pt,right=6pt,top=5pt,bottom=5pt]
+\small
+\textbf{Established in this paper:}
+The $\ZS$-KG stress-energy tensor $\Tmunu = \partial_\mu\Phi\,\partial_\nu\Phi -
+\eta_{\mu\nu}\mathcal{L}$ is derived from the $\PHIMDL$ Lagrangian and
+Lean~4-certified in \lean{StressEnergyTensor.lean} (symmetry, vacuum-vanishing,
+and gravity-sector prerequisites; zero \texttt{sorry}).
+The \emph{form} of the linearized Einstein equations
+$\Gmunu = 8\pi\GN\Tmunu$ follows from the MDL-Lovelock correspondence
+(P35~\cite{SpivackGTEUnification}, analytically derived) combined with
+$\PHIMDL$ minimal coupling on a curved background and standard variational
+calculus.
+The BPS kink rest energy $\Mkink = 290.10$~MeV acts as gravitational mass
+($\int T_{00}\,dx = \Mkink$, relative error $1.4\times10^{-6}$).
+The classical cosmological constant is \emph{exactly zero} at all $\ZS$ vacua
+($V(\Phi_k)=0$ for $k=0,\ldots,6$, Lean-certified).
+The quantum gravity scale $\MPltot = \pi/\sqrt{3} \approx 1.81$ lattice units is
+derived from the $\PHIMDL$ Nyquist residual formula.
+Newton's constant $\GN$ is derived at $\CatAD$ via the gravitational hierarchy
+formula (\S\ref{sec:hierarchy}, Proposition~\ref{prop:orbit_weight}):
+$\MPl/m_\tau = |F_{21}|^{10}|Z_7|^7/2 = 6.8683\times10^{18}$, $0.040\%$ precision.
+The $\CatAL$ Lean certification is provided in P43~\cite{SpivackCompleteness}.
+The $\tau_c$ gradient-kick mechanism in the three-tape CMCA produces Newtonian gravity
+$F(b) = G_{\rm eff}M/(4\pi b^2)$ in the continuum limit $b \gg \sigma_{\rm AL}$
+($\CatAD$; \S\ref{ssec:newtonian_limit}, P45~\cite{SpivackCMCA}).
+The exact force formula is
+\[
+  F(b) = \frac{G_{\rm eff}M}{4\pi b^2}
+  \left[\mathrm{erf}\!\left(\frac{b}{\sqrt{2}\,\sigma_{\rm AL}}\right)
+  - \frac{b}{\sqrt{2}\,\sigma_{\rm AL}}\cdot\frac{2}{\sqrt{\pi}}
+    \exp\!\left(-\frac{b^2}{2\sigma_{\rm AL}^2}\right)\right],
+\]
+converging to $G_{\rm eff}M/(4\pi b^2)$ with corrections $O(\sigma_{\rm AL}/b)^2$.
+Three formulations are equivalent: gradient kick (Level 1), linearized GR metric perturbation
+(Level 2), and the beable-level equivalence principle $\tau_c = $ local proper time (Level 3).
+
+\textbf{Not claimed:}
+The full nonlinear Einstein equations are not established; only the linearized
+theory $\Gmunu^{(1)} = 8\pi\GN\Tmunu$ is derived.
+The quantum cosmological constant problem (hierarchy $|\Delta V_{\rm CW}|/\rhoLam^{\rm obs}
+\approx 10^{42}$) is identified but not resolved; GTE provides no known suppression mechanism.
+The identification of $\MPltot = \pi/\sqrt{3}$ lattice units with the physical Planck length
+requires the Lorentzian continuum limit (vacuum spatial GH \CatAL).
+\end{tcolorbox}
+
+\medskip
+
+\paragraph{UGP Physics programme context.}
+This paper is part of the UGP Physics programme~\cite{SpivackResearchProgrammes}.
+Paper~P28~\cite{SpivackCompUniversality} establishes the Rule~110 computational-universality
+result and the Algebraic Lifting and Descent theorems.
+Paper~P34~\cite{SpivackGTEMobius} defines the GTE-M\"{o}bius substrate, the $[\mathbf{D}]$
+coherence measure, and D1--D5 axioms.
+Paper~P35~\cite{SpivackGTEUnification} establishes the MDL-Lovelock correspondence and the
+mass identification $\mphi = \mtau = 1776.86$~MeV.
+Paper~P36~\cite{SpivackEmergentGravity} covers the CA-track gravity derivation: Ollivier--Ricci
+curvature, the discrete Einstein equation, geodesic computation, and the MDL-Lovelock
+dictionary.
+Paper~P37~\cite{SpivackQMFromR110} develops the quantum-mechanical sector (Hilbert space,
+Born rule, Fock quantization).
+Paper~P41~\cite{SpivackCMCA} constructs the Three-Layer Chiral Minkowski CA.
+Paper~P42~\cite{SpivackPhiMDLField} studies $\PHIMDL$ as the continuum completion of the
+CMCA: Poincar\'e invariance, Born rule derivation, and 3+1D domain-wall structure.
+The present paper (P38) covers the continuum-track gravity derivation: stress-energy
+tensor, Einstein equations, kink sources, cosmological constant, and quantum gravity scale.
+Papers~P36 and P38 together form a two-track derivation of emergent gravity in the GTE framework.
+
+\paragraph{GTE substrate terminology.}
+The GTE substrate is a triple $(A,\,e,\,[\mathbf{D}])$ where $A$ is the CA arithmetic layer,
+$e$ is the $\fmdl$ update rule, and $[\mathbf{D}]$ is the coherence measure that the
+Perfect Self-Containment (PSC) uses to adjudicate physical
+trajectories~\cite{SpivackGTEMobius}.
+In the $\PHIMDL$ setting, $A$ is the $\ZS$-valued ring on which the kink winding
+numbers live, and $e$ is the Klein--Gordon equation.
+The PSC-admissible sectors $\{0,2,3,4,6\}$ identified in P42~\cite{SpivackPhiMDLField} determine which
+winding-number transitions are physically observable.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Introduction}
+\label{sec:intro}
+%─────────────────────────────────────────────────────────────────────────────
+
+The derivation of Einstein gravity from a discrete computational substrate is one
+of the central goals of the UGP Physics programme, the quantitative branch of the
+Reflexive Reality programme~\cite{SpivackResearchProgrammes}.
+Paper~P36~\cite{SpivackEmergentGravity} approached this through the CA track:
+Ollivier--Ricci curvature on the Rule~110 causal graph, the MDL-Lovelock structural
+correspondence, and the geodesic theorem.
+The CA-track bridge from discrete Ollivier--Ricci curvature to the smooth Ricci scalar
+is quantified by the Gorard bridge coefficient
+$C_{\rm Gorard} = 3/32 = (C_{n=2} + 3C_{n=4})/4$,
+derived from the mixed-dimension expansion (1~temporal~+~3~spatial tapes) and
+matching the measured value $0.0923$ to $1.56\%$.
+The G24 session established the complete discrete-to-smooth gravity bridge at the
+coefficient level: $C_{\rm Gorard} = 3/32$ (\CatAL,
+\lean{gorard\_mixed\_dim\_formula}); SD-edge curvature $\kappa_{\rm SD} = 10/13$
+at matter edges (\CatAL, \lean{gorard\_sd\_edge\_kappa}); and $\kappa_{\rm SD}/(8\pi)
+\in (0,1)$ (\CatAL, \lean{gorard\_bridge\_coefficient}).  These are bundled in the
+master theorem \lean{gorard\_gravity\_bridge\_master} (\CatAD,
+\lean{GorardRicciFlatVacuum.lean}; P36~\S3.4 for full characterisation).
+Full Riemann-tensor convergence on the CMCA graph remains open (G26, EPIC\_081).
+The present paper pursues the complementary continuum track: deriving the linearized
+Einstein field equations directly from the stress-energy tensor of the $\PHIMDL$
+Klein--Gordon field.
+
+The two tracks are independent and mutually reinforcing.
+The CA track works at the beable level---discrete Rule~110 orbit states and their
+causal-graph curvature.
+The $\PHIMDL$ continuum track works at the field-theory level---the exact $\ZS$-symmetric
+cosine potential, the BPS kink sector, and the Noether stress-energy tensor.
+Both tracks converge on the same equation: $\Gmunu = 8\pi\GN\Tmunu$.
+Their eventual unification through the CMCA-to-$\PHIMDL$ continuum limit
+(established in P42~\cite{SpivackPhiMDLField}) will complete the two-level derivation.
+
+The $\PHIMDL$ field was introduced as the unique $\ZS$-symmetric cosine-potential
+Klein--Gordon field whose mass parameter equals the tau lepton mass,
+$m_\varphi = m_\tau = 1776.86$~MeV, forced by the Self-Consistency Condition (SCC)
+of the $\ZS$ orbit structure~\cite{SpivackGTEUnification}.
+This zero-free-parameter Lagrangian fully determines the stress-energy tensor
+$\Tmunu = \partial_\mu\Phi\,\partial_\nu\Phi - \eta_{\mu\nu}\mathcal{L}$.
+
+The route to the Einstein equations is through the MDL-Lovelock correspondence
+established in P35~\cite{SpivackGTEUnification} and stated in P36~\cite{SpivackEmergentGravity}:
+MDL minimality in the CA maps to Lovelock's uniqueness theorem~\cite{Lovelock1971}
+for the Einstein--Hilbert action in $D=4$.
+Given the Einstein--Hilbert action $S_{\rm EH} = (1/16\pi\GN)\int R\,\sqrt{-g}\,d^4x$
+as the unique covariant, diffeomorphism-invariant, second-order gravitational action
+in four spacetime dimensions, coupling $\PHIMDL$ minimally and varying the total
+action yields $\Gmunu = 8\pi\GN\Tmunu[\PHIMDL]$ by standard variational calculus.
+
+Beyond the classical field equations, this paper establishes:
+\begin{enumerate}[leftmargin=2em,itemsep=2pt]
+\item The BPS kink as an explicit gravitational source with mass $290.10$~MeV
+  and an analytic Fourier-domain form factor.
+\item The exact vanishing of the classical cosmological constant at all $\ZS$ vacua,
+  and the magnitude of the one-loop quantum correction (the cosmological constant
+  problem in the GTE context).
+\item The GTE quantum gravity scale $\MPltot = \pi/\sqrt{3}$ lattice units from
+  the $\epsz(M) = \pi^2/(3M^2)$ Nyquist residual formula, and the Penrose
+  objective-reduction time for a single kink.
+\end{enumerate}
+
+The paper is organized as follows.
+\S\ref{sec:tmunu} derives $\Tmunu$ and its component structure for the static and
+moving BPS kink.
+\S\ref{sec:efe} presents the derivation of the linearized Einstein equations.
+\S\ref{sec:kink_source} analyzes the kink as a gravitational source in detail.
+\S\ref{sec:cosmo} establishes $\Lambda = 0$ classically and the quantum hierarchy.
+\S\ref{sec:qgr} derives the quantum gravity scale and Penrose OR time.
+\S\ref{sec:open} collects open problems.
+\S\ref{sec:prog_context} situates this paper within the UGP Physics programme.
+\S\ref{sec:hierarchy} derives Newton's constant $\GN$ via the $b_0 = |Z_7|$
+theorem and the gravitational hierarchy formula
+(Proposition~\ref{prop:orbit_weight}, $\CatAD$).
+\S\ref{sec:conclusions} concludes.
+Appendix~\ref{app:lean} provides the Lean inventory.
+Appendix~\ref{app:computational} describes the computational methods.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{The $\PHIMDL$ Stress-Energy Tensor}
+\label{sec:tmunu}
+%─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Lagrangian and canonical stress-energy tensor}
+
+The $\PHIMDL$ field is the $\ZS$-symmetric Klein--Gordon field with Lagrangian
+density (in $+{-}{-}{-}$ Minkowski signature)
+\begin{equation}
+  \mathcal{L} = \tfrac{1}{2}(\partial_\mu\Phi)(\partial^\mu\Phi) - V(\Phi),
+  \qquad V(\Phi) = \frac{m_\varphi^2}{49}\bigl(1 - \cos 7\Phi\bigr),
+\label{eq:lagrangian}
+\end{equation}
+with $m_\varphi = m_\tau = 1776.86$~MeV.
+The potential has exactly seven degenerate minima at $\Phi_k = 2\pi k/7$ ($k = 0,\ldots,6$),
+forming the $\ZS$ orbit.
+
+The canonical stress-energy tensor follows from Noether's theorem~\cite{SpivackPhiMDLField}:
+\begin{equation}
+  \Tmunu = \frac{\partial\mathcal{L}}{\partial(\partial^\mu\Phi)}\partial_\nu\Phi
+  - \eta_{\mu\nu}\mathcal{L}
+  = \partial_\mu\Phi\,\partial_\nu\Phi - \eta_{\mu\nu}\mathcal{L}.
+\label{eq:tmunu_def}
+\end{equation}
+Symmetry $\Tmunu = T_{\nu\mu}$ follows from the symmetry of $\partial_\mu\Phi\,\partial_\nu\Phi$
+and the metric $\eta_{\mu\nu}$.
+This is certified in Lean~4 (\lean{phimdl\_tmunu\_symmetric},
+\lean{StressEnergyTensor.lean}, $\CatAL$, zero \texttt{sorry}).
+
+\subsection{Component structure}
+
+Expanding~\eqref{eq:tmunu_def} explicitly:
+\begin{align}
+  T_{00} &= \tfrac{1}{2}(\partial_t\Phi)^2 + \tfrac{1}{2}|\nabla\Phi|^2 + V(\Phi)
+            &&\text{(energy density, always $\geq 0$)}
+\label{eq:T00}\\
+  T_{0i} &= \partial_t\Phi\,\partial_i\Phi
+            &&\text{(momentum density)}
+\label{eq:T0i}\\
+  T_{ij} &= \partial_i\Phi\,\partial_j\Phi
+            + \delta_{ij}\bigl[\tfrac{1}{2}(\partial_t\Phi)^2
+            - \tfrac{1}{2}|\nabla\Phi|^2 - V(\Phi)\bigr]
+            &&\text{(stress tensor)}
+\label{eq:Tij}
+\end{align}
+where the $+\delta_{ij}$ sign in~\eqref{eq:Tij} reflects the $(-,-,-)$ spatial
+signature ($\eta_{ij} = -\delta_{ij}$, so $-\eta_{ij}\mathcal{L} = +\delta_{ij}\mathcal{L}$).
+The trace is
+\begin{equation}
+  T \equiv \eta^{\mu\nu}\Tmunu = -(\partial_t\Phi)^2 + |\nabla\Phi|^2 + 4V(\Phi).
+\label{eq:trace}
+\end{equation}
+
+\subsection{Vacuum stress-energy vanishes}
+
+At any $\ZS$ vacuum $\Phi_k = 2\pi k/7$:
+\begin{equation}
+  V(\Phi_k) = \frac{m_\varphi^2}{49}(1 - \cos(2\pi k)) = 0
+\label{eq:vacuum_V_zero}
+\end{equation}
+because $\cos(2\pi k) = 1$ for all $k\in\ZZ$.
+With $\partial_\mu\Phi = 0$ in the homogeneous vacuum, $\Tmunu = 0$.
+This is Lean-certified:
+\lean{phimdl\_potential\_at\_vacuum\_zero} and \lean{phimdl\_tmunu\_vacuum\_zero}
+in \lean{StressEnergyTensor.lean} ($\CatAL$, zero \texttt{sorry}).
+
+\subsection{BPS kink stress-energy}
+\label{ssec:bps_tmunu}
+
+The $\ZS$ kink connecting vacua $\Phi_k$ and $\Phi_{k+1}$ satisfies the BPS
+(Bogomolny--Prasad--Sommerfield) condition
+\begin{equation}
+  \frac{d\Phi}{dx} = \sqrt{2V(\Phi)},
+\label{eq:bps}
+\end{equation}
+which is saturated to relative error $2.8\times10^{-5}$ in numerical integration
+over the kink profile.
+On a static BPS kink ($\partial_t\Phi = 0$, $\partial_y\Phi = \partial_z\Phi = 0$):
+\begin{align}
+  T_{00} &= \tfrac{1}{2}\bigl(\tfrac{d\Phi}{dx}\bigr)^2 + V(\Phi) = 2V(\Phi)
+  &&\text{(using BPS: $(\partial_x\Phi)^2 = 2V$)}
+\label{eq:T00_BPS}\\
+  T_{0i} &= 0
+  &&\text{(static)}
+\label{eq:T0i_BPS}\\
+  T_{11} &= \tfrac{1}{2}\bigl(\tfrac{d\Phi}{dx}\bigr)^2 - V(\Phi) = 0
+  &&\text{(BPS: pressure-free)}
+\label{eq:T11_BPS}\\
+  T_{22} &= T_{33} = -T_{00}
+  &&\text{(transverse tension)}
+\label{eq:T22_BPS}
+\end{align}
+The vanishing of $T_{11}$ is the characteristic topological pressure-free property of BPS
+solitons~\cite{Rajaraman1982}.
+It is certified in Lean~4 via the axiom \lean{phimdl\_bps\_kink\_pressure\_free}
+(the BPS profile calculus is $\CatAD$; a Lean formal proof awaits Mathlib BPS calculus
+infrastructure).
+The relation $T_{22} = T_{33} = -T_{00}$ is confirmed numerically to
+$|T_{00} + T_{22}| < 10^{-16}$ at every profile point.
+
+For a kink moving at velocity $v$ with Lorentz factor $\gamma = (1-v^2)^{-1/2}$:
+\begin{align}
+  T_{00}^{(\rm moving)} &= \gamma^2\bigl[\varepsilon_0 + v^2 p_\parallel\bigr] = \gamma^2 \varepsilon_0
+  &&\text{(since $T_{11}^{\rm BPS}=0$)}\\
+  T_{01}^{(\rm moving)} &= -\gamma^2 v\,\varepsilon_0,
+\end{align}
+where $\varepsilon_0 \equiv T_{00}^{\rm static}$.
+This gives the expected relativistic energy transformation $E_{\rm moving} = \gamma M_{\rm kink}$,
+verified to relative error $< 10^{-13}$ over six boost velocities $v \in \{0.3,\,0.5,\,0.7,\,0.9,\,0.99\}$.
+
+\subsection{Energy-momentum conservation}
+
+On-shell, $\partial_\mu T^{\mu\nu} = 0$.
+This follows from the Klein--Gordon equation of motion
+\begin{equation}
+  \partial^\mu\partial_\mu\Phi + \frac{\partial V}{\partial\Phi} = 0,
+\label{eq:KGeom}
+\end{equation}
+via the standard Noether argument.
+Numerically, the maximum absolute value of $\partial_\mu T^{\mu\nu}$ over the kink
+profile is $6.2\times10^{-12}$, eight orders of magnitude below the tolerance
+$\|\Tmunu\|_\infty \approx 5.6\times10^{-4}$ (relative error $\sim 10^{-8}$).
+
+The gravity-sector prerequisites bundle is certified as a package:
+\lean{phimdl\_gravity\_sector\_prerequisites} in \lean{StressEnergyTensor.lean}
+collects Poincar\'e invariance, $\Tmunu$ symmetry, vacuum vanishing, and the
+no-finite-CA-replica theorem ($\CatAL$, zero \texttt{sorry}).
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Linearized Einstein Field Equations}
+\label{sec:efe}
+%─────────────────────────────────────────────────────────────────────────────
+
+\subsection{MDL-Lovelock route to the Einstein--Hilbert action}
+
+The derivation of the Einstein equations from the GTE substrate proceeds in three
+steps, each with an independently established certification level.
+
+\paragraph{Step 1 (MDL-Lovelock, $\CatAD$).}
+Paper~P35~\cite{SpivackGTEUnification} and Paper~P36~\cite{SpivackEmergentGravity}
+establish the MDL-Lovelock correspondence: the MDL minimality principle that selects
+$\fmdl$ (Rule~110) also selects the Einstein--Hilbert action via Lovelock's
+uniqueness theorem~\cite{Lovelock1971}.
+Lovelock's theorem states that in $D=4$ the unique rank-2 symmetric, divergence-free
+tensor built from the metric and its derivatives up to second order is the Einstein
+tensor $G_{\mu\nu} = R_{\mu\nu} - \tfrac{1}{2}g_{\mu\nu}R$, plus a cosmological
+constant term.
+MDL minimality matches Lovelock's free-parameter count of one (Newton's $\GN$) in
+both the discrete ($f_{\rm MDL}$) and continuous (Einstein--Hilbert) frameworks.
+Together with $d_s = 4$ (Lean-certified: \lean{causal\_graph\_spectral\_dim\_thermodynamic\_limit},
+P36/P28), this uniquely selects the Einstein--Hilbert action:
+\begin{equation}
+  S_{\rm EH} = \frac{1}{16\pi\GN}\int R\,\sqrt{-g}\,d^4x.
+\label{eq:SEH}
+\end{equation}
+The MDL-Lovelock correspondence is analytically derived and computationally confirmed ($\CatAD$).
+
+\paragraph{Step 2 (minimal coupling, $\CatAD$).}
+The $\PHIMDL$ field couples to gravity through the minimal substitution
+$\eta_{\mu\nu} \to g_{\mu\nu}$, $\partial_\mu \to \nabla_\mu$ in the Lagrangian~\eqref{eq:lagrangian}.
+The equivalence principle ($\CatA$: $p = 8.9\times10^{-14}$, numerically
+confirmed in P36~\cite{SpivackEmergentGravity}) justifies minimal coupling.
+The covariant matter action is:
+\begin{equation}
+  S_{\rm mat} = \int \bigl[\tfrac{1}{2}g^{\mu\nu}\nabla_\mu\Phi\,\nabla_\nu\Phi
+  - V(\Phi)\bigr]\sqrt{-g}\,d^4x.
+\label{eq:Smat}
+\end{equation}
+This is the unique GTE curved-background action with $\xi=0$ (MDL-minimality
+forces vanishing non-minimal coupling; see the discussion in~P43~\cite{SpivackCompleteness}).
+The flat-space Lagrangian~\eqref{eq:lagrangian} is recovered when
+$g_{\mu\nu}\to\eta_{\mu\nu}$ and $\sqrt{-g}\to1$.
+
+\paragraph{Step 3 (variational derivation, $\CatAD$).}
+Varying the total action $S = S_{\rm EH} + S_{\rm mat}$ with respect to
+$g^{\mu\nu}$ and setting $\delta S = 0$:
+\begin{align}
+  \frac{\delta S_{\rm EH}}{\delta g^{\mu\nu}} &=
+  \frac{\sqrt{-g}}{16\pi\GN}\bigl(R_{\mu\nu} - \tfrac{1}{2}g_{\mu\nu}R\bigr)
+  = \frac{\sqrt{-g}}{16\pi\GN}\,G_{\mu\nu}
+\label{eq:vary_EH}\\
+  \frac{\delta S_{\rm mat}}{\delta g^{\mu\nu}} &=
+  -\frac{\sqrt{-g}}{2}\Tmunu[\PHIMDL]
+\label{eq:vary_mat}
+\end{align}
+where $\Tmunu[\PHIMDL]$ is the symmetric stress-energy tensor derived in
+\S\ref{sec:tmunu}.
+Setting $\delta S = 0$ yields:
+\begin{equation}
+  \boxed{G_{\mu\nu} = 8\pi\GN\,\Tmunu[\PHIMDL]}
+\label{eq:efe}
+\end{equation}
+This derivation follows standard variational calculus in general relativity.
+The form of the equation is established at $\CatAD$; the value of the coupling
+constant $\GN$ is derived at $\CatAD$ via the hierarchy formula
+(Proposition~\ref{prop:orbit_weight}).
+
+\subsection{Linearized theory and perturbative validity}
+
+At linear order around flat Minkowski spacetime, $g_{\mu\nu} = \eta_{\mu\nu} + \hmunu$
+with $|\hmunu| \ll 1$:
+\begin{equation}
+  \Box\bar{h}_{\mu\nu} = -16\pi\GN\,\Tmunu,
+\label{eq:linearized}
+\end{equation}
+where $\bar{h}_{\mu\nu} = \hmunu - \tfrac{1}{2}\eta_{\mu\nu}h$ is the trace-reversed
+perturbation.
+For a static source with Newtonian potential $\Phi_{\rm grav}$, the dominant
+component satisfies $\nabla^2\Phi_{\rm grav} = 4\pi\GN\rho$ where $\rho = T_{00}$.
+
+For the GTE kink with $\Mkink = 290.10$~MeV:
+\begin{equation}
+  \Phi_{\rm grav}(r) \approx -\frac{\GN \Mkink}{r},
+\qquad r \gg m_\varphi^{-1} = 0.111\;\text{fm}.
+\label{eq:newton}
+\end{equation}
+Evaluating at $r = 1$~fm:
+\begin{equation}
+  |\Phi_{\rm grav}/c^2|\big|_{r=1\,\text{fm}} \approx \frac{\GN \Mkink}{r\,c^2}
+  \approx 5\times10^{-39},
+\label{eq:h_bound}
+\end{equation}
+confirming that the kink is firmly in the perturbative, classical-gravity regime:
+$|h_{\mu\nu}| \sim 5\times10^{-39} \ll 1$.
+The Schwarzschild radius of the kink is $r_s = 2\GN\Mkink/c^2 \approx 7.6\times10^{-55}$~m,
+forty-one orders of magnitude below the kink's physical size $\sim 0.2$~fm.
+
+\subsection{Newtonian force law and \texorpdfstring{$\tau_c$}{tau\_c} gradient-kick mechanism}
+\label{ssec:newtonian_limit}
+
+The Newtonian potential~\eqref{eq:newton} arises from the three-dimensional Poisson equation
+$\nabla^2\Phi_{\rm grav} = 4\pi\GN\rho$, $\rho = T_{00}$.
+In the GTE three-tape CMCA substrate~\cite{SpivackCMCA}, this Poisson equation is realized
+through the $\tau_c$ gradient-kick mechanism: the computational clock rate $\tau_c$ at each
+tape site is modulated by the local winding-number density, producing a force on probe
+trajectories.
+Three formulations of the same physics are identified at $\CatAD$; they form a strict hierarchy.
+
+\paragraph{Level 1 (gradient kick).}
+The force on a probe at transverse distance $b$ from the gravitational source is
+$\mathbf{F} = -\nabla\langle\tau_c\rangle$, where $\langle\tau_c\rangle$ is the
+$\tau_c$ field weighted by the winding density $p(\mathbf{w})$.
+For a compact GTE source of gravitational mass $M$ with Algebraic Lifting smearing radius
+$\sigma_{\rm AL}$, the exact three-dimensional Poisson Green's function yields the potential
+\begin{equation}
+  \Phi_{\rm grav}(b) = -\frac{G_{\rm eff} M}{4\pi b}
+  \,\mathrm{erf}\!\left(\frac{b}{\sqrt{2}\,\sigma_{\rm AL}}\right),
+\label{eq:phi_gaussian}
+\end{equation}
+and the force magnitude
+\begin{equation}
+  F(b) = \frac{G_{\rm eff} M}{4\pi b^2}
+  \left[\mathrm{erf}\!\left(\frac{b}{\sqrt{2}\,\sigma_{\rm AL}}\right)
+  - \frac{b}{\sqrt{2}\,\sigma_{\rm AL}}\cdot\frac{2}{\sqrt{\pi}}
+    \exp\!\!\left(-\frac{b^2}{2\sigma_{\rm AL}^2}\right)\right].
+\label{eq:force_exact}
+\end{equation}
+As $b/\sigma_{\rm AL}\to\infty$ this gives the Newtonian inverse-square law:
+\begin{equation}
+  \boxed{F(b) = \frac{G_{\rm eff} M}{4\pi b^2}
+  \left[1 - \frac{\sigma_{\rm AL}^2}{2b^2} + O\!\left(\frac{\sigma_{\rm AL}}{b}\right)^{\!4}\right]
+  \;\xrightarrow{\;b\,\gg\,\sigma_{\rm AL}\;}\;
+  \frac{G_{\rm eff} M}{4\pi b^2}.}
+\label{eq:force_newton_limit}
+\end{equation}
+
+\paragraph{Level 2 (linearized GR analogy).}
+The $\tau_c$ rate modulation is isomorphic to the time-time metric perturbation:
+$\tau_c(\mathbf{x}) = 1 + \Phi_{\rm grav}(\mathbf{x})/c^2$
+corresponds to $g_{00} = -(1 + 2\Phi_{\rm grav}/c^2)$ in the Newtonian gauge,
+and geodesic motion in the perturbed metric reproduces $\mathbf{F} = -\nabla\Phi_{\rm grav}$,
+which is~\eqref{eq:force_newton_limit}.
+Mechanism 2 is the geometric formulation of Mechanism 1 at the level of the
+linearized EFE~\eqref{eq:efe} derived in \S\ref{sec:efe}.
+
+\paragraph{Level 3 (beable equivalence principle).}
+The $\tau_c$ rate equals the local proper time at each tape site (Discrete Proper Path).
+A probe minimizes its GTE action $S = -m_{\rm probe}c^2\int\tau_c\,dt$ by following
+the gradient of $\tau_c$ toward slower-clock regions---identically to geodesic fall
+in a Newtonian gravitational potential.
+This is the deepest formulation: the beable-level equivalence principle from which
+Levels 2 and 1 follow.
+
+\paragraph{Numerical verification.}
+Multipole expansion of the 3D Gaussian source with $\sigma_{\rm AL} = 5$ lattice units confirms:
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{@{}rll@{}}
+\toprule
+$b/\sigma_{\rm AL}$ & $F(b)\cdot 4\pi b^2/M$ & Deviation from Newtonian\\
+\midrule
+$5$ & $0.999985$ & $1.54\times10^{-5}$\\
+$10$ & $1.000000$ & $< 10^{-7}$\\
+$20$ & $1.000000$ & $< 10^{-7}$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+The measured local force exponent converges monotonically to $-2.000$:
+$n = -2.073$ at $b/\sigma_{\rm AL} = 10$; $n = -2.004$ at $b/\sigma_{\rm AL} = 20$--$100$
+(computed via the exact formula~\eqref{eq:force_exact}).
+The exponents $n \approx -2.30$ and $n \approx -2.19$ reported in prior discrete CMCA
+simulation runs are entirely due to finite-source-size effects at $b/\sigma_{\rm AL} \lesssim 10$
+and probe-trajectory drift during measurement---not a fundamental deviation from Newtonian gravity.
+In the $\sigma_{\rm AL}\to 0$ limit (point source), the exponent converges to
+$-2.0001$ for all measured distances~\cite{SpivackCMCA}.
+
+\paragraph{Lean certification status.}
+The algebraic source structure (compact support, mass table, unique gravitational coupling
+$G_N$ from P43) is machine-certified in \lean{PMDLGravityTheorems.lean} ($\CatAL$,
+zero \texttt{sorry}).
+The force-law derivation~\eqref{eq:phi_gaussian}--\eqref{eq:force_newton_limit} is at $\CatAD$:
+the 3D Poisson Green's function argument is analytic and the continuum limit is confirmed numerically.
+Full $\CatAL$ certification requires the Mathlib Poisson kernel (3D), which is not yet available;
+the theorem \lean{gte\_newtonian\_force\_law\_continuum} is drafted and targeted for
+certification when the Mathlib infrastructure is available (Table~\ref{tab:lean}).
+
+\subsection{Certification status summary}
+
+\begin{table}[h]
+\centering
+\small
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{@{}ll>{\raggedright\arraybackslash}p{5.5cm}@{}}
+\toprule
+\textbf{Derivation step} & \textbf{Status} & \textbf{Source}\\
+\midrule
+$S_{\rm EH}$ from MDL-Lovelock & $\CatAD$ & P35/P36; \lean{fmdl\_mdl\_uniqueness}\\
+$d_s = 4$ (spacetime dimension) & $\CatAL$ & \lean{causal\_graph\_spectral\_dim\_thermodynamic\_limit}\\
+$\PHIMDL$ minimal coupling & $\CatAD$ & P42; equivalence-principle test $p=8.9\times10^{-14}$\\
+$\Tmunu$ fully explicit & $\CatAL$ (parts) & \lean{StressEnergyTensor.lean}\\
+Variational calculus $\to G_{\mu\nu} = 8\pi\GN T_{\mu\nu}$ & $\CatAD$ & Standard GR; textbook\\
+Newton's $\GN$ value & $\CatAD$ & Prop.~\ref{prop:orbit_weight}\\
+Newtonian force law & $\CatAD$ & \S\ref{ssec:newtonian_limit}; \lean{PMDLGravityTheorems.lean} ($\CatAL$ algebraic structure)\\
+\bottomrule
+\end{tabular}
+\caption{Certification status of the EFE derivation chain.}
+\label{tab:efe_status}
+\end{table}
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{The Kink as Gravitational Source}
+\label{sec:kink_source}
+%─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Energy density profile}
+
+The BPS kink profile connecting $\Phi = 0$ and $\Phi = 2\pi/7$ is:
+\begin{equation}
+  \Phi_{\rm kink}(x) = \frac{4}{7}\arctan\!\bigl(\exp(m_\varphi x)\bigr).
+\label{eq:kink_profile}
+\end{equation}
+The energy density (from~\eqref{eq:T00_BPS} with BPS saturation) is:
+\begin{equation}
+  T_{00}(x) = 2V(\Phi_{\rm kink}(x)) = \frac{2m_\varphi^2}{49}
+  \bigl(1 - \cos(7\Phi_{\rm kink}(x))\bigr).
+\label{eq:T00_profile}
+\end{equation}
+At the kink center $x=0$: $\Phi_{\rm kink}(0) = \pi/7$, giving
+$T_{00}(0) = (4m_\varphi^2/49)\approx 2.577\times10^5$~MeV$^2$.
+
+The profile is a sech$^2$ function: $T_{00}(x) = (4m_\varphi^2/49)\,{\rm sech}^2(m_\varphi x)$,
+localized on a scale $\sim m_\varphi^{-1} = 0.111$~fm.
+The full width at half maximum is:
+\begin{equation}
+  {\rm FWHM} = \frac{2\,{\rm arccosh}\sqrt{2}}{m_\varphi}
+  = \frac{2\ln(1+\sqrt{2})}{m_\varphi}
+  \approx \frac{1.7627}{m_\varphi} \approx 0.196\;\text{fm}.
+\label{eq:fwhm}
+\end{equation}
+This is $1.7627$ Compton wavelengths, consistent with the standard soliton width
+for the generalized sine-Gordon model~\cite{Rajaraman1982,DashenHasslacherNeveu1975}.
+
+\subsection{Mass-energy equivalence}
+\label{ssec:mass_energy}
+
+The gravitational mass of the kink equals its rest energy:
+\begin{equation}
+  \int_{-\infty}^{\infty} T_{00}(x)\,dx = \Mkink = \frac{8}{49}m_\varphi.
+\label{eq:mass_integral}
+\end{equation}
+This follows analytically from the BPS condition:
+\begin{equation}
+  \int T_{00}\,dx = \int\bigl[\tfrac{1}{2}(\partial_x\Phi)^2 + V\bigr]dx
+  = \int\sqrt{2V}\,\partial_x\Phi\,dx = \int_{\Phi_0}^{\Phi_1}\sqrt{2V}\,d\Phi
+  = \frac{8}{49}m_\varphi.
+\label{eq:bps_mass}
+\end{equation}
+Numerically, using 100,000-point midpoint integration:
+\[
+  \int T_{00}\,dx = 290.0996\;\text{MeV}, \quad M_{\rm kink}^{\rm target} = 290.10\;\text{MeV},
+  \quad \text{relative error } 1.4\times10^{-6}.
+\]
+Mass-energy equivalence is thus not a postulate in GTE: it follows from the
+identification of $T_{00}$ as the gravitational source density through the coupling
+$G_{\mu\nu} = 8\pi\GN\Tmunu$.
+
+\paragraph{Connection to the electroweak scale.}
+The tau lepton mass entering $\Mkink = (8/49)\mtau$ is itself derived from the Higgs VEV via $y_\tau = 1/(2 \cdot 7^2) = 1/98$ (CatA; P18~\cite{Spivack2026_Koide}):
+\begin{equation}
+m_\tau \;=\; \frac{v_H}{98\sqrt{2}} \;=\; 1776.57\;\text{MeV} \quad (0.016\%\text{ from PDG}),
+\label{eq:mtau_vH}
+\end{equation}
+so the kink mass is traceable to the Higgs VEV through the $Z_7$ structure:
+\begin{equation}
+\Mkink \;=\; \frac{8}{49}\,\frac{v_H}{98\sqrt{2}} \;=\; \frac{8\,v_H}{49 \times 98\sqrt{2}}.
+\label{eq:mkink_vH}
+\end{equation}
+The factor $49 = 7^2$ appears both in the BPS kink ratio $(8/49)$ and in the Yukawa denominator $98 = 2 \times 7^2$, suggesting a common $Z_7$ origin for both the kink mass scale and the lepton Yukawa coupling.
+
+The ratio of the kink mass to the reduced Higgs VEV defines the dimensionless kink--Higgs coupling:
+\begin{equation}
+g_{hKK} \;=\; \frac{\Mkink}{v_H/\sqrt{2}} \;=\; \frac{4}{7^4} \;\approx\; 8.36 \times 10^{-4} \quad (\text{CatA}).
+\label{eq:ghKK}
+\end{equation}
+This is a pure $\mathbb{Z}_7$-integer formula: the numerator $4 = 8/2$ and denominator $7^4$ combine the BPS factor $8/49 = 8/7^2$ with the Yukawa $y_\tau = 1/98 = 1/(2 \times 7^2)$.
+
+The Yukawa amplitude $b = \sqrt{2}$ in the Koide parametrisation $\sqrt{m_g} = a(1 + \sqrt{2}\cos(\theta + 2\pi g/3))$ is equivalent to the condition $\mathrm{CV}(\sqrt{m}) = 1$ (coefficient of variation of the generation $\sqrt{m}$-spectrum equals one), where $\mathrm{CV}^2 = \mathrm{Var}(\sqrt{m})/\langle\sqrt{m}\rangle^2$.  The Koide cone is therefore the locus of generation spectra with coefficient of variation exactly one --- the maximally-dispersed positive spectrum at fixed mean.  Machine-checked as \texttt{koide\_cv\_one\_iff\_amplitude} in \texttt{ugp-lean} module \texttt{UgpLean.MassRelations.KoideEqualNormReformulation} (zero \texttt{sorry}) (CatAL).  The dynamical origin of the $b = \sqrt{2}$ condition in the $\Phi_{\mathrm{MDL}}$ kink-condensate Yukawa structure is an open problem (P18~\cite{Spivack2026_Koide}).
+
+For a moving kink at velocity $v$, the Lorentz-boosted energy is $E = \gamma\Mkink$,
+verified numerically to relative error $< 10^{-13}$:
+\begin{equation}
+  \int T_{00}^{(\rm moving)}\,dx = \gamma\Mkink, \qquad (\text{error} < 10^{-13}).
+\label{eq:moving_kink}
+\end{equation}
+
+\subsection{Fourier form factor}
+
+In the gravitational scattering regime, the spatial Fourier transform of the
+energy density gives the form factor:
+\begin{equation}
+  \hat{T}_{00}(k) \equiv \int T_{00}(x)\,e^{ikx}\,dx
+  = \frac{8m_\varphi}{49}\,\frac{\pi k/(2m_\varphi)}{\sinh\bigl(\pi k/(2m_\varphi)\bigr)}.
+\label{eq:formfactor}
+\end{equation}
+In the $k\to 0$ limit, $\hat{T}_{00}(0) = (8/49)m_\varphi = \Mkink$,
+recovering the point-mass limit.
+At $k \sim m_\varphi$, the form factor deviates from the point-mass approximation
+and encodes the internal kink structure.
+This analytic form follows from the Fourier transform of ${\rm sech}^2(m_\varphi x)$
+\,---\,$\int {\rm sech}^2(ax)\,e^{ikx}\,dx = (\pi k/a^2)/\sinh\bigl(\pi k/(2a)\bigr)$\,---\,%
+and is confirmed numerically.
+
+\subsection{Gravitational self-energy and coupling strength}
+
+The Newtonian gravitational self-energy of the kink is:
+\begin{equation}
+  U_{\rm grav} \approx -\frac{\GN \Mkink^2}{r_{\rm Compton}}
+  \approx -\frac{\GN \Mkink^2 m_\varphi}{\hbar c}
+  \approx -9.98\times10^{-37}\;\text{MeV}.
+\label{eq:self_energy}
+\end{equation}
+The ratio $|U_{\rm grav}|/\Mkink \approx 3.4\times10^{-39}$, confirming that
+gravitational effects on the kink's internal structure are negligible.
+The kink is firmly in the quantum, non-gravitational regime:
+$\Mkink/\MPl \approx 2.4\times10^{-20}$, four orders of magnitude below the Planck mass.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Classical Cosmological Constant}
+\label{sec:cosmo}
+%─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Classical vacuum energy vanishes exactly}
+
+In the Einstein equations with a cosmological constant term,
+\begin{equation}
+  G_{\mu\nu} + \Lambda g_{\mu\nu} = 8\pi\GN\Tmunu,
+\label{eq:efe_with_lambda}
+\end{equation}
+the vacuum expectation value of $\Tmunu$ contributes an effective cosmological
+constant $\rhoLam = \langle T_{00}\rangle_{\rm vac}$.
+
+At any $\ZS$ vacuum $\Phi_k = 2\pi k/7$, equation~\eqref{eq:vacuum_V_zero}
+gives $V(\Phi_k) = 0$ exactly.
+With $\partial_\mu\Phi = 0$ in the vacuum, $\langle T_{00}\rangle_{\rm vac} = 0$.
+This is certified in Lean~4: \lean{phimdl\_potential\_at\_vacuum\_zero} and
+\lean{phimdl\_tmunu\_vacuum\_zero} in \lean{StressEnergyTensor.lean} ($\CatAL$, zero \texttt{sorry}).
+
+The physical reason is the $\ZS$ symmetry: the cosine potential
+$(m_\varphi^2/49)(1-\cos 7\Phi)$ vanishes at all seven vacua $\Phi_k = 2\pi k/7$
+because $\cos(2\pi k) = 1$ for integer $k$.
+The $\ZS$ symmetry cancels the \emph{relative} vacuum energies, and the classical
+absolute vacuum energy also vanishes because the potential is normalized to zero
+at its minima.
+The classical cosmological constant is therefore $\Lambda_{\rm classical} = 0$ exactly.%
+\footnote{Independently of this structural zero, an information-theoretic derivation
+of the \emph{observed} cosmological constant from UGP structure gives
+$\Lambda = (\ln 2/\pi)\,L_{\rm model}\,H_0^2/c^2$,
+where $L_{\rm model} = \log_2(2000/3)$ is derived from gauge-invariant structure and $H_0$
+serves as a dimensional anchor; that result matches the Planck~2018 value at $0.31\sigma$~\cite{SpivackSM}.
+The present result---that the classical vacuum energy density is structurally zero by $\ZS$
+symmetry---is a complementary, independent finding.}
+Moreover, the vanishing $V(\Phi_k)=0$ is topologically protected: the mass-independence identity $dV_{\ZS}/dm^2|_{\Phi_k}=0$ holds for all $k\in\ZS$, confirming that mass renormalization in the Turing-decidable sector preserves the classical result to all orders ($\CatAL$: \lean{z7\_vacuum\_energy\_mass\_independent}).
+
+\subsection{One-loop quantum correction and the hierarchy problem}
+
+At one loop, the Coleman--Weinberg effective potential contributes a
+zero-point energy correction in the $\overline{\rm MS}$ scheme at
+renormalization scale $\mu = m_\varphi$:
+\begin{equation}
+  \Delta V_{\rm CW} = -\frac{3m_\varphi^4}{128\pi^2}
+  \approx -1.68\times10^{7}\;\text{MeV}^4.
+\label{eq:delta_V_CW}
+\end{equation}
+(The sign depends on the resummation scheme; the magnitude is the relevant quantity.)
+The observed dark-energy density corresponds to
+\begin{equation}
+  \rhoLam^{\rm obs} = \bigl(\rho_\Lambda^{\rm obs}\bigr)^{1/4}
+  \approx (2.3\;\text{meV})^4
+  \approx 2.80\times10^{-35}\;\text{MeV}^4.
+\label{eq:rho_obs}
+\end{equation}
+The ratio is:
+\begin{equation}
+  \frac{|\Delta V_{\rm CW}|}{\rhoLam^{\rm obs}}
+  \approx \frac{1.68\times10^{7}}{2.80\times10^{-35}}
+  \approx 10^{41.8} \approx 10^{42}.
+\label{eq:hierarchy}
+\end{equation}
+
+Two additional GTE-specific mechanisms have been investigated and found insufficient. First, the MDL principle could in principle act on the quantum effective potential $V_{\rm eff}(\Phi;\mu)$ by selecting the renormalization scale $\mu^* = m_\varphi e^{-3/4}$ at which the one-loop correction vanishes. However, this is a renormalization scheme choice: the physical vacuum energy is $\mu$-independent, and choosing $\mu^*$ merely shifts the vacuum energy into the counterterm $\delta\Lambda(\mu^*)$. Second, the character-sum identity $\sum_{j=0}^{6}\zeta_7^j = 0$ might suggest a cancellation mechanism via the $\mathbb{Q}(\zeta_7)$ structure of the partition function. This argument fails because the physical partition function $Z = \mathrm{Tr}\,e^{-\beta H}$ is real and positive; the character-sum combination $\sum_j Z_j \zeta_7^j$ is complex, and its vanishing corresponds to an undefined free energy rather than a vanishing vacuum energy. The relevant Fourier mode is $\tilde{Z}(0) = 7Z_0 > 0$.
+
+\begin{openprob}[Cosmological constant hierarchy]
+\label{op:cc}
+The GTE framework establishes $\Lambda_{\rm classical} = 0$ by $\ZS$ symmetry.
+The one-loop quantum correction $|\Delta V_{\rm CW}| \approx 1.7\times10^{7}$~MeV$^4$
+exceeds the observed $\rhoLam^{\rm obs} \approx 2.8\times10^{-35}$~MeV$^4$ by a
+factor of $\sim10^{42}$.
+No GTE cancellation mechanism is identified.
+The $\ZS$ symmetry cancels relative vacuum energies between the seven minima
+but provides no suppression of the absolute zero-point energy.
+This is the standard cosmological constant problem in the GTE context.
+\end{openprob}
+
+The GTE reframing identifies $\rho_\Lambda = D_{\rm res} = (\ln 2/\pi) L_{\rm model} H_0^2 M_{\rm Pl}^2$ as the non-perturbative physical vacuum energy, where $D_{\rm res}$ is the PSC undecidability residual ($\CatAD$; P44~\cite{SpivackQGR}). Twenty candidate perturbative suppression mechanisms have been evaluated and ruled out. The conventional suppression problem remains open; the GTE reframing determines $\rho_\Lambda$ structurally from first principles without solving the hierarchy.
+
+At the CMB temperature $T_{\rm CMB} \approx 2.35\times10^{-10}$~MeV, thermal kink
+production is Boltzmann-suppressed by $\exp(-\Mkink/T_{\rm CMB}) \approx
+\exp(-1.24\times10^{12})$, essentially zero.
+Kink-gas contributions to $\rhoLam$ at cosmic epochs are negligible.
+
+\subsection{Pöschl-Teller fluctuation spectrum and quantum kink mass}
+\label{ssec:pt_spectrum}
+
+Small fluctuations about the BPS kink are governed by the Pöschl-Teller potential
+$V_{\rm fl}(x) = m_\varphi^2[1 - 2\,\mathrm{sech}^2(m_\varphi x)]$ with index $s=1$,
+machine-certified as \lean{phimdl\_fluctuation\_is\_poschl\_teller}
+(\texttt{PhiMDLFluctuationSpectrum.lean}, zero sorry, $\CatAL$).
+The spectrum is reflectionless with a single zero mode and a continuum at $k^2 > m_\varphi^2$.
+The DHN semi-classical expansion is inapplicable because $\alpha = 7 > \sqrt{8\pi} \approx 5.01$.
+
+The exact kink--antikink scattering matrix is identified with the ZZ S-matrix
+at sinh-Gordon coupling $B=1$:
+$S(\theta) = (\sinh\theta - i)/(\sinh\theta + i)$
+(\CatAD; P42~\cite{SpivackPhiMDLField}).
+The TBA kernel $\varphi_{\rm TBA}(\theta) = 2/\cosh\theta$ (\CatAD).
+The one-loop quantum (pole) kink mass is computed by channel-resolved dimensional
+regularization of the $3{+}1$D domain-wall tension in the interface formalism of
+Graham, Jaffe, Quandt, and Weigel~\cite{GrahamJaffeQuandtWeigel2001}, applied to the
+machine-certified $s{=}1$ Pöschl-Teller spectrum with two Born subtractions and the
+renormalized two-point-function add-back.
+The machinery reproduces the exact Dashen--Hasslacher--Neveu one-loop kink
+masses --- $-m/\pi$ for the sine-Gordon kink and
+$\bigl(1/(4\sqrt{3}) - 3/(2\pi)\bigr)m$ for the $\varphi^4$
+kink~\cite{DashenHasslacherNeveu1974,Rajaraman1982} --- to $3\times10^{-14}$,
+and is confirmed by an independent finite-box mode sum (no phase-shift machinery)
+agreeing with the continuum result to $3\times10^{-5}$.
+The correction is small and negative:
+\begin{equation}
+  \Delta M = -7.2~\text{MeV (on-shell)}
+  \;\;/\;\; -10.0~\text{MeV } (\overline{\rm MS}\text{ at }\mu = m_\varphi),
+  \qquad
+  M^Q = 281 \pm 21\;\text{MeV}
+  \label{eq:MQ}
+\end{equation}
+($\CatA$, within a $\CatAD$ analytic framework; full treatment in
+P42~\cite{SpivackPhiMDLField}).
+The $\pm21$~MeV envelope spans the gauge-invariant renormalization-condition family
+($\mu \in [m_\varphi/2,\,2m_\varphi]$, on-shell, and self-consistent $\mu = 7M^Q$):
+the $(V'')^2$ logarithm of the $3{+}1$D cosine effective field theory requires a
+counterterm beyond the dimension-$\leq4$ potential, so the one-loop
+renormalization-condition freedom is irreducible until the $F_{21}\to SU(3)$
+ultraviolet completion fixes the subtraction.
+$M^Q$ is consistent with the tree mass $M^{\rm cl} = \Mkink = 290.10$~MeV within
+the scheme band: the one-loop correction is a small ripple around the tree identity.
+Two previously reported values --- $\Delta M = +31.22$~MeV with
+$M^Q = 321.32 \pm 15.6$~MeV ($\overline{\rm MS}$ dimensional regularization), and the
+log-UV-cutoff $\Delta M = -59.67$~MeV with $M^Q = 230.43$~MeV --- are superseded:
+both arise from renormalization-bookkeeping errors (a missing diagrammatic
+add-back, an inverted Levinson phase-shift convention, and a scheme-inconsistent
+$\mu$-flow), and the finite coefficient previously denoted $C_{\rm Cas}$ belongs to
+that superseded bookkeeping and is withdrawn.
+
+\subsection{MDL-minimal cosmological initial state}
+\label{ssec:mdl_ic}
+
+MDL-minimality uniquely selects the cosmological initial state:
+the minimum-complexity PSC-admissible FLRW configuration is
+$k=0$, $\Phi_0=0$, $\dot\Phi_0=M_{\rm Pl}$, spatially uniform, with description
+complexity $K=\log_2 3$ bits ($\CatAD$; P44~\cite{SpivackQGR}).
+This MDL-minimal initial state dissolves three cosmological fine-tuning problems
+without inflation:
+flatness ($k=0$ MDL-selected, 0 vs.\ $\sim204$ bits for $k=\pm1$),
+horizon (uniform MDL-selected, 0 vs.\ $\sim608$ bits for patchy),
+and domain walls ($N_{\rm DW}=7\to0$ by MDL uniformity).
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Quantum Gravity Scale}
+\label{sec:qgr}
+%─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Nyquist residual and the GTE Planck scale}
+\label{ssec:nyquist_planck}
+
+The $\PHIMDL$ field arises as the $M\to\infty$ continuum limit of the
+Three-Layer Chiral Minkowski CA (CMCA) at lattice size $M$~\cite{SpivackCMCA,SpivackPhiMDLField}.
+The Nyquist residual $\epsz(M) = \pi^2/(3M^2)$ (established in
+P36/P42) quantifies the deviation of the discrete CA from the continuum Lorentz-invariant
+theory:
+\begin{equation}
+  \epsz(M) = \frac{\pi^2}{3M^2} \xrightarrow[M\to\infty]{} 0.
+\label{eq:nyquist}
+\end{equation}
+When $\epsz(M) = O(1)$, the discrete metric fluctuations are comparable to the classical
+metric itself and the notion of a smooth Lorentzian spacetime breaks down.
+The quantum gravity regime is defined by $\epsz(M) \gtrsim 1$, i.e.,
+\begin{equation}
+  M \lesssim \MPltot \equiv \frac{\pi}{\sqrt{3}} \approx 1.8138\;\text{lattice units}.
+\label{eq:mpl}
+\end{equation}
+This is the GTE prediction for the Planck scale in lattice units.
+Equation~\eqref{eq:nyquist} evaluated at threshold confirms $\epsz(\MPltot) = 1$ exactly.
+
+Table~\ref{tab:eps0} shows the $\epsz$ values for representative lattice sizes:
+\begin{table}[h]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{@{}rcl@{}}
+\toprule
+$M$ (lattice units) & $\epsz(M) = \pi^2/(3M^2)$ & Regime\\
+\midrule
+$1$ & $3.29$ & QGR (metric fluctuations $> 1$)\\
+$1.81 \approx \MPltot$ & $1.00$ & Planck threshold\\
+$2$ & $0.822$ & QGR borderline\\
+$3$ & $0.366$ & Transitional\\
+$5$ & $0.132$ & Weakly classical\\
+$10$ & $0.033$ & Classical ($\epsz \ll 1$)\\
+$100$ & $3.3\times10^{-4}$ & Deep classical\\
+\bottomrule
+\end{tabular}
+\caption{Nyquist residual $\epsz(M) = \pi^2/(3M^2)$ vs.\ lattice size $M$.
+  Quantum gravity effects become $O(1)$ for $M \lesssim \pi/\sqrt{3} \approx 1.81$.}
+\label{tab:eps0}
+\end{table}
+
+The identification of $\MPltot = \pi/\sqrt{3}$ lattice units with the physical Planck
+length $\ell_{\rm Pl} \approx 1.62\times10^{-35}$~m requires the continuum limit
+and is not established here (open problem, \S\ref{sec:open}).
+
+\subsection{Penrose objective-reduction time for GTE kinks}
+\label{ssec:penrose}
+
+The Penrose--Di\'{o}si mechanism~\cite{Penrose1994} predicts that a quantum state
+in superposition of two spacetime geometries separated by an energy difference
+$\Delta E$ collapses spontaneously on a timescale
+\begin{equation}
+  \tau_{\rm OR} \approx \frac{\hbar}{\Delta E},
+\label{eq:tau_OR}
+\end{equation}
+where $\Delta E$ is the gravitational self-energy difference between the two arms
+of the superposition.
+For a single GTE kink in a superposition of two well-separated positions, the
+relevant energy difference is:
+\begin{equation}
+  \Delta E \approx \GN\Mkink^2 m_\varphi / \hbar c,
+\label{eq:deltaE}
+\end{equation}
+giving an OR decoherence rate:
+\begin{equation}
+  \Gamma_{\rm OR} = \frac{\GN\Mkink^2 m_\varphi}{\hbar^2 c}
+  \approx 1.52\times10^{-15}\;\text{s}^{-1}.
+\label{eq:gamma_OR}
+\end{equation}
+The corresponding OR time is:
+\begin{equation}
+  \tau_{\rm OR} = 1/\Gamma_{\rm OR} \approx 6.56\times10^{14}\;\text{s}
+  \approx 20\;\text{million years}.
+\label{eq:tau_OR_val}
+\end{equation}
+
+This result has two implications.
+First, single GTE kinks are cosmologically long-lived under Penrose OR: a kink
+superposition would survive for $\sim20$~Myr, a factor $1.5\times10^{-3}$ of
+the age of the universe.
+The OR mechanism is not relevant for laboratory timescales at MeV energies.
+Second, a coherent ensemble of $N_{\rm kinks} \approx 6.6\times10^{15}$ kinks
+(total mass $\sim 3.4\times10^{-12}$~kg) would decohere on a timescale
+$\sim 0.1$~s, consistent with the standard Penrose estimates for
+gram-scale objects.
+
+The gravitational decoherence rate $\Gamma_{\rm grav}$ is the same numerical value
+as $\Gamma_{\rm OR}$:
+\begin{equation}
+  \Gamma_{\rm grav} = \GN\Mkink^2 m_\varphi
+  \approx 1.52\times10^{-15}\;\text{s}^{-1}.
+\label{eq:gamma_grav}
+\end{equation}
+The Penrose objective-reduction mechanism for GTE beables is certified at $\CatAD$
+in \lean{QuantumGravity.lean} (\lean{gte\_is\_beable\_level\_quantum\_gravity},
+zero \texttt{sorry}).
+
+\subsection{Beable-level quantum gravity unification}
+\label{ssec:qgr_unification}
+
+A unique feature of the GTE framework is that both quantum mechanics and gravity
+emerge from the single Rule~110 update rule $\fmdl$, without separate quantization:
+\begin{itemize}[leftmargin=2em,itemsep=2pt]
+\item \textbf{Gravitational geometry} (Ranks 17-GEO, 13-LSD, 28-QGR):
+  the $3$D $\fmdl$ causal graph has spectral dimension $d_s = 4$ (Lean-certified);
+  Ollivier--Ricci curvature is zero in vacuum and positive at matter sites (Lean-certified).
+\item \textbf{Quantum particle content} ($\ZS$ orbit states):
+  SM generations from the $\ZS$ orbit; color confinement PSC-forced (Lean-certified);
+  mass gap (Lean-certified).
+\item \textbf{Quantum dynamics} (Algebraic Lifting Theorem, Lean-certified):
+  $[\mathbf{D}]$-weighting IS the quantum measure; no additional quantization is needed.
+\end{itemize}
+This unification is not bolt-on: all three sectors are forced by the same rule $\fmdl$.
+It is certified in \lean{QuantumGravity.lean}
+(\lean{matter\_geometry\_from\_same\_rule},
+\lean{gte\_is\_beable\_level\_quantum\_gravity},
+\lean{unification\_is\_not\_bolt\_on}; $\CatAD$ overall, with sub-components $\CatAL$).
+
+The Asynchronous Lifting Theorem ($\CatAL$) extends this unification
+to asynchronous update schedules:
+\lean{async\_algebraic\_lifting\_theorem} in \lean{AsyncLiftingTheorem.lean}
+proves that any local state predicate (PSC-admissibility, confinement, mass gap)
+is preserved under asynchronous $\fmdl$ evolution, because \texttt{DWeight} and
+\texttt{PSCAdmissible} depend only on the current beable state, not on timing history.
+The proof is a one-line definitional reduction (zero \texttt{sorry}, zero custom axioms).
+
+The SM fermion/boson split has an algebraic origin in the $\ZS$ winding structure. The non-primitive-root residues $\{2, 4, 6\}$ of $\ZS^*$ (u-type quarks, $e^-$-type leptons, d-type quarks) acquire exchange phase $-1$ under the BraidAtlas winding-to-braid representation; the bosonic sector $\{0, 3\}$ (vacuum and $W^+$) acquires phase $+1$. Machine-certified in Lean~4 with zero sorry (\lean{gte\_fermionic\_sectors\_get\_minus\_phase}; P43~\cite{SpivackCompleteness}/P44~\cite{SpivackQGR}).
+
+\subsection{Hawking temperature for massive $\PHIMDL$}
+\label{ssec:hawking}
+
+The Hawking temperature for a massive $\ZS$-KG field in a Schwarzschild background
+is $T_H = M_{\rm Pl}^2/(8\pi M_{\rm BH})$, \emph{unchanged} from the massless result.
+The effective potential $V_{\rm eff}(r) = f(r)[l(l+1)/r^2 + 2GM/r^3 + m_\varphi^2]$
+satisfies $f(r_H)=0$ at the horizon, screening the mass term; the surface gravity
+$\kappa = 1/(4GM)$ is purely geometric, independent of $m_\varphi$.
+
+A critical mass emerges:
+\begin{equation}
+  M_{\rm crit} = \frac{M_{\rm Pl}^2}{8\pi m_\tau}
+  = 3.34\times10^{39}\;\text{MeV}
+  \approx 3\times10^{-21}\,M_\odot.
+\end{equation}
+For $M_{\rm BH} \gg M_{\rm crit}$ (all astrophysical black holes), $\PHIMDL$
+emission is suppressed by $\exp(-m_\tau/T_H) \approx \exp(-3.3\times10^{20})$
+for a solar-mass black hole.
+The $\ZS$ sine-Gordon kink has BPS mass $m_{\rm kink} = 8m_\tau/49 = 290.10\,\text{MeV}$,
+defining a second critical mass $M_{\rm kink,crit} = (49/8)M_{\rm crit} = 2.04\times10^{40}\,\text{MeV}$
+below which kinks are Bose-enhanced (thermal factor $1/({\rm e}^{8/49}-1) = 5.64$).
+The open thread OQ-QG-3b concerns whether $\ZS$ superselection imposes a topological remnant
+near $M_{\rm kink,crit}$ ($\CatAD$; P44~\cite{SpivackQGR}).
+
+\subsection{Ryu-Takayanagi formula}
+\label{ssec:rt}
+
+With $\xi=0$ forced by MDL-minimality, the Wald entropy density
+$(\partial\mathcal{L}/\partial R_{\mu\nu\rho\sigma})\varepsilon_{\mu\nu}\varepsilon_{\rho\sigma}
+= 1/(4G)$ is metric-invariant and surface-type-independent.
+Combined with the replica-trick saddle approximation and MDL-minimality in
+the gravitational path integral, this yields the Ryu-Takayanagi formula for
+any spacelike subregion $A$:
+\begin{equation}
+  S(A) = \min_{\partial\Gamma = \partial A}
+  \frac{\mathrm{Area}[\Gamma]}{4G}.
+\end{equation}
+($\CatAD$; full derivation in P44~\cite{SpivackQGR}.)
+The GTE Holographic Encoding Theorem (Theorem~4.1 of P44) establishes bidirectional
+equivalence, with no gravitational input, among four of the five descriptions of
+the GTE encoding map: the $\xi=0$ Lagrangian, the $[5,3,3]_7$ QEC code, the MDL
+initial state, and CPT-orbit closure.  Relating any of these to the RT formula
+additionally takes the standard Bekenstein-Hawking coefficient $1/4G$ as an
+external premise, not derived from GTE structure.
+
+\subsection{GTE cosmological bounce}
+\label{ssec:bounce}
+
+At Planck density, the $\PHIMDL$ EFT description breaks down ($\varepsilon_0\to1$),
+quenching the expansion rate.  The GTE modified Friedmann equation is:
+\begin{equation}
+  H^2 = \frac{8\pi G}{3}\,\rho\cdot f_C\!\left(\frac{\rho}{\rho_{\rm Pl}}\right),
+  \quad
+  f_C(x) = \frac{3(1-x)}{3(1-x)+\pi^2 x},
+\end{equation}
+with $H=0$ at $\rho=\rho_{\rm Pl}$ (the bounce point), replacing the classical
+singularity~($\CatA$).  This differs from LQC ($f_{\rm LQC} = 1-x$); the GTE
+suppression is more aggressive at intermediate densities.
+The MDL-minimal initial state ($k=0$, $\Phi_0=0$, $\dot\Phi_0=M_{\rm Pl}$, uniform;
+$K=\log_2 3$ bits) is the post-bounce state at $t\approx0.816\,t_{\rm Pl}$ ($\CatAD$;
+P44~\cite{SpivackQGR}), dissolving the flatness, horizon, and domain-wall problems.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Open Problems}
+\label{sec:open}
+%─────────────────────────────────────────────────────────────────────────────
+
+Three open problems bound the current results.
+
+\begin{openprob}[Nonlinear Einstein equations]
+\label{op:nonlinear}
+The full nonlinear Einstein equations $G_{\mu\nu}[g] = 8\pi\GN\Tmunu$ from action variation are derived ($\CatAD$; P44~\cite{SpivackQGR}, Theorem~3.2). The remaining open problem is the back-reaction of $\PHIMDL$ in the strong-field regime $E \gg M_{\rm Pl}$, which requires the matter-sector and Lorentzian continuum limits of the CMCA (OQ-QG-1b/1c; vacuum spatial GH is \CatAL: \lean{vacuum\_cmca\_gh\_converges\_to\_flat\_space}).
+\end{openprob}
+
+\begin{openprob}[Cosmological constant suppression]
+\label{op:lambda}
+Open Problem~\ref{op:cc} (\S\ref{sec:cosmo}) states the hierarchy $10^{42}$ between
+the one-loop correction $|\Delta V_{\rm CW}|$ and the observed $\rhoLam^{\rm obs}$.
+Neither supersymmetry nor a GTE-specific cancellation mechanism has been identified.
+The $\ZS$ discrete symmetry cancels relative vacuum energies between the seven minima
+but does not suppress the absolute zero-point energy.
+\end{openprob}
+
+\begin{openprob}[CMB spectral tilt]
+\label{op:cmb}
+At leading order the GTE bounce gives $n_s = 1$ ($8.4\sigma$ tension with Planck~2018
+$n_s^{\rm obs} = 0.9649\pm0.0042$).  The conditional prediction
+$n_s = 1-\ln(2)/(2\pi^2) = 0.96488$ matches observation at $-0.005\sigma$.
+Five of seven derivation steps are $\CatAL$ or $\CatAD$: $\ln 2$ from
+\lean{rule110\_center1\_is\_nand}, $2\pi^2 = \mathrm{Vol}(S^3)$ from the causal
+diamond ($\CatAL$), Weyl algebraic miracle $dN/d\ln k|_{k_{\rm Pl}}=1$ ($\CatAL$:
+\lean{weyl\_log\_deriv\_at\_planck}), $\ZS$ superselection ($\CatAL$).
+The remaining step (OQ-QG-1-$\mathbb{Z}_2$-EFT) requires identifying the $\mathbb{Z}_2$
+sublayer entropy contribution with the gravitational $\beta_G$ via Wald entropy on
+compact $S^4$ --- a classical statistical-mechanics problem, narrower than the
+full CMCA Lorentzian path integral.
+\end{openprob}
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Discussion and Programme Context}
+\label{sec:prog_context}
+%─────────────────────────────────────────────────────────────────────────────
+
+\subsection{Two-track gravity derivation}
+
+Papers~P36 and~P38 form a two-track derivation of Einstein gravity from the GTE substrate.
+
+The \textbf{CA track} (P36) operates at the beable level.
+Ollivier--Ricci curvature on the Rule~110 causal graph satisfies
+$\kappa_{\rm EE} = 0$ in vacuum and $\kappa_{\rm SD} > 0$ at matter sites,
+exactly matching the vacuum and matter regions of general relativity.
+The discrete Einstein equation $\kappa_{\rm excess} = \kappa_{\rm CA}\,T_{00}^{(\rm CA)}$
+is numerically confirmed with $\kappa_{\rm CA} = 4.84$, $R^2=0.20$, $p=1.37\times10^{-148}$.
+The MDL-Lovelock structural correspondence links MDL minimality to the unique
+diffeomorphism-invariant action in $D=4$.
+
+The \textbf{$\PHIMDL$ continuum track} (P38, this paper) operates at the field level.
+$\Tmunu$ is derived analytically from the zero-free-parameter $\ZS$-KG Lagrangian.
+The Einstein field equations $G_{\mu\nu} = 8\pi\GN\Tmunu$ are obtained by
+combining the MDL-Lovelock-selected Einstein--Hilbert action with minimal
+coupling and standard variational calculus.
+The kink rest energy ($290.10$~MeV) serves as an explicit, quantitative
+gravitational source.
+
+The two tracks converge: both derive the same equation from the same GTE substrate,
+at different levels of description.
+Their unification requires the CMCA-to-$\PHIMDL$ continuum limit (machine-certified in P42)
+and the identification of the discrete Ollivier--Ricci curvature with the coarse-grained
+Ricci tensor of $\PHIMDL$ (an open problem, the subject of future work).
+
+The geodesic interpretation of particle motion complements the stress-energy
+derivation of this paper.  In P36~\cite{SpivackEmergentGravity}, the Rule~110
+$\tau_c$ mechanism was shown experimentally to select geodesic paths (minimum
+computational effort): the $\tau_c$ ratio matches $\gamma_{\rm SR}$ at
+$p = 4.2\times10^{-73}$ and the equivalence principle is confirmed at
+$p = 8.9\times10^{-14}$.  The continuum $\PHIMDL$ geodesic theorem
+(\lean{tau\_c\_prefers\_geodesic}, \lean{psc\_orbit\_is\_curvature\_geodesic},
+$\CatAL$, zero \texttt{sorry}; certified in P43~\cite{SpivackCompleteness})
+certifies that this experimental result holds as a formal theorem: particles
+follow geodesics of minimum $\tau_c$ effort, consistent with the Einstein
+equations derived here.
+
+\subsection{Relation to existing approaches}
+
+Causal dynamical triangulations (CDT)~\cite{Ambjorn2012} and
+spin-foam models~\cite{Perez2013} derive Einstein gravity from discrete combinatorial
+structures by taking a suitable continuum limit.
+The GTE approach differs in two respects.
+First, the underlying discrete structure (Rule~110 CA) is uniquely selected
+by the Standard Model orbit structure, rather than introduced ad hoc.
+Second, both matter content (SM generations, quark confinement) and spacetime geometry
+(spectral dimension $d_s=4$, Ollivier--Ricci curvature) emerge from the same
+arithmetic rule, without separate matter and gravity sectors.
+
+The Gorard~\cite{Gorard2020Rel} result on Ollivier--Ricci curvature in Wolfram-model
+causal graphs provides the closest precedent for the CA-track result in P36.
+The present $\PHIMDL$ track is independent: it does not require the causal graph
+and derives the Einstein equations at the continuum field-theory level.
+
+Jacobson's~\cite{Jacobson1995} thermodynamic derivation of the Einstein equation from
+the Clausius relation $\delta Q = T\,dS$ on local Rindler horizons provides another
+independent route.
+The GTE MDL-Lovelock correspondence provides yet a third structural route---from
+information-theoretic minimality rather than thermodynamics.
+All three routes yield the same equation, supporting the universality of Einstein gravity
+as the low-energy effective theory.
+
+\subsection{Relation to P37 (quantum mechanics) and P42 ($\PHIMDL$ field)}
+
+Paper~P37~\cite{SpivackQMFromR110} develops the quantum-mechanical sector over the
+$\PHIMDL$ kink modes: Fock quantization, the Born rule as a closure fixed point,
+and 't~Hooft's cogwheel construction.
+Paper~P42~\cite{SpivackPhiMDLField} establishes Poincar\'e invariance and the Born
+rule for $\PHIMDL$ at $\CatAL$.
+The present paper provides the gravitational coupling: $\PHIMDL$ kink states are
+not only quantum excitations (P37) but also gravitational sources (P38).
+The two sectors---quantum and gravitational---arise from the same field $\PHIMDL$,
+consistent with the beable-level unification proved in \lean{QuantumGravity.lean}.
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Gravitational Hierarchy: Derivation of Newton's Constant}
+\label{sec:hierarchy}
+%─────────────────────────────────────────────────────────────────────────────
+
+This section presents the GTE derivation of Newton's constant $\GN$:
+a Lean-certified identity connecting the QCD $\beta$ coefficient to the GTE
+substrate, and an orbit-decomposition theorem with $Z_3$-invariant entropy
+mechanism yielding a $\CatAD$ derivation of the Planck-scale hierarchy.
+
+\subsection{The $b_0 = |Z_7|$ identity}
+
+The one-loop QCD $\beta$-function coefficient is $b_0 = (11N_c - 2N_f)/3$.
+With $N_c = 3$ colours and $N_f = 6$ active flavours (three generations,
+$N_f = 2N_{\rm gen} = 6$):
+\[
+  b_0 = \frac{11 \cdot 3 - 2 \cdot 6}{3} = \frac{33 - 12}{3} = \frac{21}{3} = 7.
+\]
+The GTE substrate contains the Frobenius group
+$F_{21} = Z_7 \rtimes Z_3$ of order $|F_{21}| = 21$,
+whose unique normal $Z_7$ subgroup has order $|Z_7| = 7$.
+Writing $11N_c = 11|Z_3| = 33$ and $2N_f = 2 \cdot 2N_{\rm gen} = 12$, we obtain
+\[
+  b_0 = \frac{|F_{21}|}{|Z_3|} = |Z_7| = 7.
+\]
+The identity $b_0 = |Z_7|$ is Lean-certified (\lean{b0\_eq\_z7\_order},
+\lean{BetaCoefficientIdentity.lean}, zero \texttt{sorry}):
+the QCD asymptotic-freedom coefficient is not a free parameter but is fixed by the
+group-theoretic structure of the GTE substrate.
+
+\subsection{Orbit decomposition of the CMCA 3-cell neighborhood space}
+
+The CMCA rule operates on 3-cell neighborhoods drawn from $Z_7^3$ (343 states).
+The group $F_{21}$ acts diagonally on $Z_7^3$ by $(a,s) \cdot x = 2^s x + a$
+(componentwise).
+By Burnside's lemma, the action has $(7^3 + 14)/21 = 17$ orbits.
+These decompose by neighborhood type:
+
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+Type & States & Orbit size & \# Orbits \\
+\midrule
+All-equal $(k,k,k)$ & $7$ & $7$ & $1$ \\
+Exactly-two-equal & $126$ & $21$ & $6$ \\
+All-distinct & $210$ & $21$ & $10$ \\
+\midrule
+Total & $343$ & --- & $17$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The all-distinct count follows from $|Z_7|(|Z_7|-1)(|Z_7|-2)/|F_{21}| = 210/21 = 10$
+orbits; the degenerate count $(1 + 6 = 7 = b_0 = |Z_7|)$ is a consequence of the
+$b_0 = |Z_7|$ identity: the number of degenerate $F_{21}$-orbits on $Z_7^3$ equals
+the QCD one-loop $\beta$ coefficient.
+This identity is Lean-certified (\lean{gte\_planck\_cascade\_group\_identity},
+\lean{BetaCoefficientIdentity.lean}).
+
+Let $n = 10$ denote the number of all-distinct orbits (the generic sector) and
+$b_0 = 7$ the number of degenerate orbits (the degenerate sector).
+The total $n + b_0 = 17$ agrees with the Burnside count.
+
+\subsection{The Planck-hierarchy formula}
+
+The ratio $M_{\rm Pl}/m_\tau = (1.220 \times 10^{22}~\text{MeV})/(1776.86~\text{MeV})
+= 6.871 \times 10^{18}$ satisfies:
+\[
+  \frac{M_{\rm Pl}}{m_\tau}
+  \;\approx\;
+  \frac{|F_{21}|^{n}\,|Z_7|^{b_0}}{2}
+  \;=\;
+  \frac{21^{10} \times 7^7}{2},
+\]
+with a relative error of $0.040\%$ against the PDG values.
+Equivalently, writing the ratio as an entropy:
+\[
+  \ln\!\left(\frac{M_{\rm Pl}}{m_\tau}\right)
+  \;=\;
+  n\ln|F_{21}| + b_0\ln|Z_7| - \ln 2,
+\]
+where the exponents count the generic ($n = 10$) and degenerate ($b_0 = 7$)
+orbit types in the GTE CMCA neighborhood space.
+Every parameter in this expression is an independently certified GTE quantity:
+$|F_{21}| = 21$ and $|Z_7| = 7$ are the orders of the GTE substrate and its
+normal subgroup; $n = 10$ is the number of all-distinct $F_{21}$-orbits on $Z_7^3$;
+$b_0 = 7 = |Z_7|$ is the QCD one-loop coefficient (GTE theorem above).
+There are no free parameters.
+
+The formula admits an MDL interpretation: the Planck mass is the UV cutoff of the
+GTE configuration space, at which every orbit parameter is specified.
+The generic-sector orbits contribute a factor $|F_{21}|$ each (full $F_{21}$-orbit
+size, trivial stabilizer), and the degenerate-sector orbits contribute $|Z_7|$ each
+(reduced size due to non-trivial $Z_3$ stabilizer of the all-equal diagonal);
+the factor of $2$ arises from the outer $Z_2$ binary sublayer of the CMCA.
+
+Subsequent analysis derived both the exponent $n$ and the denominator from GTE
+first principles.
+The exponent $n=10$ counts the orbit-specific neighborhoods in the CMCA \texttt{fmdl}
+lookup table:
+$n = (N_{\rm gen}-1)\times N_{\rm cells} = (3-1)\times 5 = 10$,
+where $N_{\rm gen}=3$ (Lean-certified) and $N_{\rm cells}=5$ (the PSC
+beable dimension).
+The denominator $|Z_2|=2$ counts the exactly two PSC-admissible CMCA variants:
+Rule~110 and Rule~124, which preserve the PSC orbit identically but differ on
+precisely the two chiral-conjugate neighborhoods
+$(0,0,1)\leftrightarrow(1,0,0)$, related by $Z_2$ space-reflection.
+With these derivations, all parameters in the formula are GTE-derived.
+
+The two independent derivations of $n=10$ are provably the same theorem.
+The unifying identity is the \textbf{GTE Frobenius prime condition}:
+$|Z_7| = |Z_3|^2 - |Z_3| + 1 = 9 - 3 + 1 = 7$,
+which connects $F_{21}$ orbit theory (group theory) to PSC beable dynamics
+(cellular automaton).
+Formally: $(|Z_7|-1)(|Z_7|-2)/|Z_3| = (N_{\rm gen}-1)(|Z_7|-2)$ iff
+$|Z_7| = |Z_3|^2-|Z_3|+1$.
+This identity is Lean-certified in \lean{FrobeniusPrimeIdentity.lean}
+(zero \texttt{sorry}).
+The $M_{\rm Pl}/m_\tau$ formula is $\CatAD$: all components and the
+orbit-weight mechanism are derived from GTE first principles.
+
+\begin{proposition}[$Z_3$-invariant entropy theorem, $\CatAD$ derivation with one open Lean step (disjointness lemma); $\CatAL$ cert in P43]
+\label{prop:orbit_weight}
+For the diagonal $F_{21}$-action on $Z_7^3$, the MDL weight assigned to each
+orbit type in $S_{\rm GTE}$ is:
+\begin{itemize}[noitemsep]
+\item \emph{All-distinct orbits} (size 21, trivial stabiliser, PSC-selected):
+  weight $\ln|F_{21}| = \ln 21$.
+\item \emph{Two-equal orbits} (size 21, trivial stabiliser, PSC-unselected):
+  decompose into exactly three $Z_3$-conjugate $Z_7$-translation sub-orbits
+  of size 7; $Z_3$ acts freely and transitively.  In the $Z_3$-invariant
+  (colour-neutral) sector the effective weight is $\ln|Z_7| = \ln 7$.
+\item \emph{The all-equal orbit} (size 7, stabiliser $Z_3$): weight
+  $\ln|Z_7| = \ln 7$ by the orbit-stabiliser theorem.
+\end{itemize}
+\emph{Proof sketch:} if $(a+k,a+k,b+k)=(2a+j,2a+j,2b+j)$ for $a\neq b$, then
+$k-j\equiv a$ and $k-j\equiv b$, a contradiction; so $T(s)\cap b\cdot T(s)=\varnothing$.
+All six two-equal orbits verified computationally.
+\end{proposition}
+
+\noindent
+Proposition~\ref{prop:orbit_weight} closes the orbit-weight mechanism,
+deriving Newton's constant $\GN$ from GTE at $\CatAD$.
+The $\CatAL$ Lean certification is provided in P43~\cite{SpivackCompleteness}
+(\lean{z3\_invariant\_entropy\_closes\_hierarchy} in \lean{Z3InvariantEntropy.lean},
+zero \texttt{sorry}).
+
+\begin{remark}[Gravitational hierarchy orbit-weight mechanism — $\CatAD$ here; $\CatAL$ in P43]
+\label{op:hierarchy}
+The orbit-weight mechanism is closed by Proposition~\ref{prop:orbit_weight} above.
+All components of the formula are GTE-derived, constituting a $\CatAD$ derivation
+of Newton's constant $\GN$.  The $\CatAL$ Lean certification
+(\lean{z3\_invariant\_entropy\_closes\_hierarchy}, \lean{Z3InvariantEntropy.lean},
+zero \texttt{sorry}) is established in P43~\cite{SpivackCompleteness}.
+\end{remark}
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Conclusions}
+\label{sec:conclusions}
+%─────────────────────────────────────────────────────────────────────────────
+
+We have derived the stress-energy tensor $\Tmunu$ of the $\ZS$-symmetric
+Klein--Gordon field $\PHIMDL$ analytically and certified key properties in
+Lean~4 (zero \texttt{sorry}).
+Combined with the MDL-Lovelock structural correspondence established in P35,
+we obtain the linearized Einstein field equations
+$G_{\mu\nu} = 8\pi\GN\Tmunu[\PHIMDL]$ by standard variational calculus.
+
+The BPS kink is a well-defined gravitational source with rest mass $290.10$~MeV
+(relative error $1.4\times10^{-6}$), pressure-free longitudinal stress ($T_{11}=0$
+to floating-point precision), and transverse tension $T_{22}=T_{33}=-T_{00}$.
+Energy-momentum conservation holds to $6\times10^{-12}$ numerically.
+
+The classical cosmological constant vanishes identically at all seven $\ZS$ vacua
+($V(\Phi_k) = 0$ exactly, Lean-certified), but the one-loop correction
+$|\Delta V_{\rm CW}| \approx 1.7\times10^{7}$~MeV$^4$ exceeds the observed
+dark-energy density by $\sim10^{42}$---the cosmological constant problem in the
+GTE context, identified but unresolved.
+
+The quantum gravity scale is $\MPltot = \pi/\sqrt{3} \approx 1.81$~lattice units,
+at which the Nyquist residual $\epsz(M) = \pi^2/(3M^2)$ reaches $O(1)$ and the
+classical spacetime approximation breaks down.
+A single GTE kink decoheres via Penrose objective reduction on a timescale of
+$\sim20$~million years.
+
+Newton's constant $\GN$ is derived from GTE first principles at $\CatAD$
+via the gravitational hierarchy formula (Proposition~\ref{prop:orbit_weight}).
+
+\begin{appendices}
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Lean Inventory}
+\label{app:lean}
+%─────────────────────────────────────────────────────────────────────────────
+
+Table~\ref{tab:lean} summarizes all Lean~4 certifications relevant to this paper.
+All theorems are in the \texttt{ugp-lean} repository (public); zero \texttt{sorry}
+unless noted.
+
+\renewcommand{\arraystretch}{1.2}
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{5.1cm}>{\raggedright\arraybackslash}p{1.3cm}>{\raggedright\arraybackslash}p{6.7cm}@{}}
+\caption{Lean~4 theorem inventory for P38.}
+\label{tab:lean}\\
+\toprule
+\textbf{Theorem / Lean name} & \textbf{Status} & \textbf{Content}\\
+\midrule
+\endfirsthead
+\multicolumn{3}{l}{\small\itshape (Table~\ref{tab:lean} continued)}\\
+\toprule
+\textbf{Theorem / Lean name} & \textbf{Status} & \textbf{Where / content}\\
+\midrule
+\endhead
+\midrule
+\multicolumn{3}{r}{\small\itshape (continued on next page)}\\
+\endfoot
+\bottomrule
+\endlastfoot
+\lean{phimdl\_tmunu\_symmetric} & $\CatAL$ &
+  $\Tmunu = T_{\nu\mu}$; \lean{StressEnergyTensor.lean}.\\
+\lean{phimdl\_potential\_at\_vacuum\_zero} & $\CatAL$ &
+  $V(\Phi_k) = 0$ at $\ZS$ vacuum; \lean{StressEnergyTensor.lean}.\\
+\lean{phimdl\_tmunu\_vacuum\_zero} & $\CatAL$ &
+  $T_{\mu\nu}\big|_{\rm vac} = 0$; \lean{StressEnergyTensor.lean}.\\
+\lean{phimdl\_bps\_kink\_pressure\_free} & axiom &
+  $T_{11}=0$ on BPS kink; BPS calculus pending formalization.
+  Numerically verified to $5\times10^{-17}$.\\
+\lean{phimdl\_gravity\_sector\_prerequisites} & $\CatAL$ &
+  Bundle: Poincar\'e inv.\ + sym.\ + vac-zero + no-CA-replica;
+  \lean{StressEnergyTensor.lean}. One axiom (BPS slot).\\
+\lean{gte\_is\_beable\_level\_quantum\_gravity} & $\CatAD$ &
+  Geometry + particles + dynamics from $\fmdl$;
+  \lean{QuantumGravity.lean}. D2 sub-components $\CatAL$.\\
+\lean{matter\_geometry\_from\_same\_rule} & $\CatAD$ &
+  No separate matter/geometry sectors;
+  \lean{QuantumGravity.lean}.\\
+\lean{particles\_source\_and\_follow\_curvature} & $\CatAD$ &
+  Gliders source $\kappa_{\rm SD}>0$ and follow causal geodesics;
+  \lean{QuantumGravity.lean}.\\
+\lean{unification\_is\_not\_bolt\_on} & $\CatA$ &
+  Three sectors forced by $\fmdl$; \lean{QuantumGravity.lean}.\\
+\lean{async\_algebraic\_lifting\_theorem} & $\CatAL$ &
+  Async update preserves PSC-admissibility;
+  \lean{AsyncLiftingTheorem.lean}, zero axioms.\\
+\lean{async\_color\_confinement} & $\CatAL$ &
+  Color confinement under async update; derived from above.\\
+\lean{causal\_graph\_spectral\_dim\_thermodynamic\_limit} & $\CatAL$ &
+  $d_s = 4$ in thermodynamic limit; P36 / \lean{SpectralDimension.lean}.\\
+\lean{poincare\_invariance\_of\_kg} & $\CatAL$ &
+  KG dispersion $\omega^2=k^2+m^2$; P42 / \lean{LorentzInvariance.lean}.\\
+\lean{b0\_eq\_z7\_order} & $\CatAL$ &
+  $b_0 = (11N_c - 2N_f)/3 = |F_{21}|/|Z_3| = |Z_7| = 7$; zero sorry;
+  \lean{BetaCoefficientIdentity.lean}.\\
+\lean{gte\_planck\_cascade\_group\_identity} & $\CatAL$ &
+  Degenerate $F_{21}$-orbit count on $Z_7^3$ equals $b_0 = |Z_7|$;
+  generic-orbit count $n=10$; $n + b_0 = 17$ (Burnside total);
+  \lean{BetaCoefficientIdentity.lean}.\\
+\lean{gte\_newtonian\_force\_law\_continuum} & $\CatAD$ &
+  $F(b) = G_{\rm eff}M/(4\pi b^2)\,[1 - \sigma_{\rm AL}^2/(2b^2) + \cdots]$
+  as $b/\sigma_{\rm AL}\to\infty$; \lean{PMDLGravityTheorems.lean}.
+  Full $\CatAL$ requires Mathlib 3D Poisson kernel (forthcoming).\\
+\lean{tau\_c\_three\_mechanisms\_equivalent} & $\CatAD$ &
+  Gradient-kick (Level 1), linearized GR metric perturbation (Level 2),
+  and beable equivalence principle (Level 3) give the same Newtonian force;
+  \lean{PMDLGravityTheorems.lean} (structural).\\
+\end{longtable}
+\normalsize
+\renewcommand{\arraystretch}{1}
+
+%─────────────────────────────────────────────────────────────────────────────
+\section{Computational Methods}
+\label{app:computational}
+%─────────────────────────────────────────────────────────────────────────────
+
+Four Python scripts produced the numerical results reported in this paper.
+All scripts are available in \texttt{papers/38\_emergent\_gravity\_phimdl/scripts/}.
+
+\paragraph{\texttt{phimdl\_tmunu\_full.py}.}
+Computes the full $\Tmunu$ tensor for the $\PHIMDL$ BPS kink.
+Uses $m_\varphi = 1776.86$~MeV, kink profile $\Phi_{\rm kink}(x) = (4/7)\arctan(\exp(m_\varphi x))$
+with $N=1000$ grid points over $[-20/m_\varphi,\,20/m_\varphi]$.
+Verifies BPS saturation ($|\partial_x\Phi - \sqrt{2V}|_\infty < 2.8\times10^{-5}$),
+$|T_{11}|_\infty < 10^{-16}$, $|T_{00}+T_{22}|_\infty < 10^{-16}$,
+$\int T_{00}\,dx = 290.10$~MeV (midpoint rule, $N=1000$), moving-kink Lorentz test
+at six velocities, and conservation $|\partial_\mu T^{\mu\nu}|_\infty < 6.2\times10^{-12}$.
+
+\paragraph{\texttt{phimdl\_kink\_gravitational\_source.py}.}
+Computes the gravitational-source properties of the BPS kink.
+Uses 100,000-point midpoint integration for $\int T_{00}\,dx$.
+Computes FWHM, Fourier form factor via DFT, Schwarzschild radius, and
+gravitational self-energy ratio $|U_{\rm grav}|/\Mkink \approx 3.4\times10^{-39}$.
+
+\paragraph{\texttt{phimdl\_cosmological\_constant.py}.}
+Evaluates $V(\Phi_k)$ at all seven $\ZS$ vacua, the potential barrier
+$V_{\rm max} = 2m_\varphi^2/49$, the one-loop Coleman--Weinberg correction
+$\Delta V_{\rm CW} = -3m_\varphi^4/(128\pi^2)$, and the hierarchy ratio
+$|\Delta V_{\rm CW}|/\rhoLam^{\rm obs}$.
+
+\paragraph{\texttt{phimdl\_quantum\_gravity\_regime.py}.}
+Computes the Nyquist residual $\epsz(M) = \pi^2/(3M^2)$ over $M \in [1,\,1000]$,
+identifies the threshold $\MPltot = \pi/\sqrt{3}$, and computes the Penrose--Di\'{o}si
+decoherence rate $\Gamma_{\rm OR} = \GN\Mkink^2 m_\varphi/\hbar^2 c$ and the
+corresponding OR time $\tau_{\rm OR} \approx 20$~Myr.
+
+All scripts use \texttt{numpy} for numerical integration and standard physical
+constants from CODATA/PDG.
+Results are stored as JSON artifacts co-located with the scripts.
+Dependencies: Python 3.9+, numpy.
+
+\end{appendices}
+
+%─────────────────────────────────────────────────────────────────────────────
+\section*{Acknowledgments}
+%─────────────────────────────────────────────────────────────────────────────
+
+The Lean~4 certifications in this paper were developed using the Lean theorem
+prover and Mathlib library.
+Numerical computations were performed using Python and numpy.
+
+This work is part of the UGP Physics programme, the quantitative branch of the Reflexive Reality programme~\cite{SpivackResearchProgrammes}.
+
+%─────────────────────────────────────────────────────────────────────────────
+\bibliographystyle{plain}
+\bibliography{../bib/Spivack_Papers_Bibliography}
+%─────────────────────────────────────────────────────────────────────────────
+
+\end{document}

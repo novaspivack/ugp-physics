@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L14: Particles as Topological Kinks — UGP Physics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="../../common/style.css">
+  <style>
+    /* ── Kink visualization ──────────────────────────────────────── */
+    .kink-vis {
+      background: var(--bg-elevated);
+      border: 1.5px solid var(--stroke-primary);
+      border-radius: var(--r-lg);
+      padding: 1.25rem;
+      margin: 1.25rem 0;
+    }
+    .kink-profile {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      justify-content: center;
+      margin: 0.75rem 0;
+    }
+    .kp-cell {
+      width: 32px; height: 32px;
+      border-radius: var(--r-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+    .kp-vac-l { background: rgba(59,130,246,0.15); border: 1.5px solid rgba(59,130,246,0.4); color: #3B82F6; }
+    .kp-trans  { background: rgba(16,185,129,0.15); border: 1.5px solid rgba(16,185,129,0.4); color: #10B981; }
+    .kp-vac-r  { background: rgba(139,92,246,0.15); border: 1.5px solid rgba(139,92,246,0.4); color: #8B5CF6; }
+    .kink-arrow { color: var(--text-tertiary); font-size: 1rem; }
+
+    /* ── Winding sector table ────────────────────────────────────── */
+    .winding-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.85rem;
+    }
+    .winding-table th {
+      background: var(--bg-card);
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+      font-weight: 700;
+      border-bottom: 1px solid var(--stroke-primary);
+      color: var(--text-secondary);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .winding-table td {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--stroke-secondary);
+    }
+    .winding-table tr:last-child td { border-bottom: none; }
+    .winding-table tr.psc-pass td { background: rgba(16,185,129,0.04); }
+    .winding-table tr.psc-fail td { background: rgba(239,68,68,0.04); opacity: 0.7; }
+    .w-num { font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+    .psc-yes { color: #10B981; font-weight: 700; }
+    .psc-no  { color: #EF4444; }
+
+    /* ── BPS bound display ───────────────────────────────────────── */
+    .bps-formula {
+      background: var(--bg-elevated);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--r-md);
+      padding: 0.75rem 1rem;
+      margin: 0.75rem 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+    }
+
+    /* ── Stability reasons ───────────────────────────────────────── */
+    .stability-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin: 0.75rem 0;
+    }
+    .stab-box {
+      background: var(--bg-elevated);
+      border: 1.5px solid var(--stroke-primary);
+      border-radius: var(--r-md);
+      padding: 0.9rem;
+    }
+    .stab-box .sb-title { font-weight: 700; font-size: 0.88rem; margin-bottom: 0.35rem; color: var(--accent); }
+    .stab-box .sb-body  { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.55; }
+
+    /* ── Vacuum ring interactive ─────────────────────────────────── */
+    .vac-ring-wrap {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 1rem 0;
+    }
+    .vr-node {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700; font-size: 0.95rem;
+      border: 2.5px solid var(--stroke-primary);
+      background: var(--bg-elevated);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .vr-node:hover { transform: scale(1.1); }
+    .vr-node.vr-selected { border-color: var(--accent); background: rgba(16,185,129,0.15); color: var(--accent); }
+    .vr-node.vr-vacuum   { border-color: #3B82F6; background: rgba(59,130,246,0.1); color: #3B82F6; }
+    .vr-detail {
+      background: var(--bg-elevated);
+      border: 1px solid var(--stroke-primary);
+      border-radius: var(--r-md);
+      padding: 0.75rem 1rem;
+      font-size: 0.85rem;
+      min-height: 60px;
+      margin-top: 0.5rem;
+      transition: all 0.2s;
+    }
+  </style>
+</head>
+<body style="--path-current: var(--path-3)" data-path="3" data-lesson="3" data-total="6">
+
+  <header class="site-header">
+    <a href="../../index.html" class="site-logo">UGP Physics</a>
+    <nav class="breadcrumb">
+      <a href="../../index.html">Tutorial Series</a>
+      <span class="bc-sep">›</span>
+      <a href="../index.html">Path 3: Particles</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">L14: Particles as Topological Kinks</span>
+    </nav>
+  </header>
+
+  <main class="page-wrapper">
+
+    <div class="lesson-header">
+      <div class="path-label">Path 3 — Particles · Lesson 14 of 17</div>
+      <h1>Particles as Topological Kinks</h1>
+      <p class="lesson-subtitle">
+        In GTE, a particle is not a point object inserted into a field. It is a normalizable
+        excitation certified by a stable twist in Φ_MDL — a topological domain wall that
+        cannot unwind because the topology forbids it.
+      </p>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:50%"></div>
+      </div>
+    </div>
+
+    <!-- ═══ Section 1: What Is a Particle? ═══ -->
+    <section class="lesson-section" id="what-is-particle">
+      <h2>What Is a Particle in GTE?</h2>
+
+      <div class="callout callout--neutral">
+        <div class="callout-title">The one-sentence answer</div>
+        <p>
+          In GTE, a particle is not the stable <em>twist</em> in the Φ_MDL field itself —
+          the region where the field transitions from one vacuum state to another without
+          being able to unwind. That twist is not a compact spatial blob: any field
+          configuration carrying a nonzero twist in three dimensions is necessarily
+          <em>extended</em> (domain-wall-like), never a localized lump of finite size.
+          The particle is the normalizable excitation this extended twist certifies within
+          its topological sector. There is only one object: the field. Particles emerge
+          from it as excitations identified by topology, not by occupying a small region
+          of space.
+        </p>
+      </div>
+
+      <p>
+        In the Standard Model, elementary particles are fundamental objects defined by their 
+        quantum numbers (charge, spin, color). The SM writes down a Lagrangian and adds the 
+        particles as separate ingredients; their masses are free parameters fitted to experiment.
+      </p>
+      <p>
+        In GTE, there is only one object: the Φ_MDL field, a quantum field with internal 
+        symmetry group F₂₁ = ℤ₇ ⋊ ℤ₃ evolving on ℝ³⁺¹. Particles are not added separately — 
+        they emerge as excitations of this field, certified by classical field configurations
+        carrying a conserved topological invariant called <strong>topological kink solitons</strong>.
+      </p>
+    </section>
+
+    <!-- ═══ Section 2: What a Kink Is ═══ -->
+    <section class="lesson-section" id="kink-definition">
+      <h2>What a Kink Is</h2>
+      <p>
+        The Φ_MDL potential has exactly seven degenerate minima, labeled 
+        w ∈ {0, 1, 2, 3, 4, 5, 6} — the elements of ℤ₇. At any point in space, 
+        the field lives in one of these minima. The vacuum (ground state) sits uniformly at w = 0.
+      </p>
+      <p>
+        A <strong>kink</strong> is a field configuration that interpolates smoothly from one 
+        vacuum w = a on the left to a different vacuum w = b on the right as a function 
+        of position along one spatial axis. The integer Δw = b − a (mod 7) is the 
+        <strong>winding number</strong> of the kink.
+      </p>
+
+      <div class="kink-vis">
+        <p style="font-size:0.78rem;color:var(--text-tertiary);text-align:center;margin-bottom:0.5rem">
+          An electron kink: the field transitions from vacuum w=0 (left) to vacuum w=4 (right)
+        </p>
+        <div class="kink-profile">
+          <div class="kp-cell kp-vac-l">0</div>
+          <div class="kp-cell kp-vac-l">0</div>
+          <div class="kp-cell kp-vac-l">0</div>
+          <div class="kink-arrow">→</div>
+          <div class="kp-cell kp-trans">2</div>
+          <div class="kp-cell kp-trans">3</div>
+          <div class="kink-arrow">→</div>
+          <div class="kp-cell kp-vac-r">4</div>
+          <div class="kp-cell kp-vac-r">4</div>
+          <div class="kp-cell kp-vac-r">4</div>
+        </div>
+        <p style="font-size:0.78rem;color:var(--text-tertiary);text-align:center">
+          The transition region (green) is the kink background — a domain wall with 
+          definite energy (mass), charge, and quantum numbers that the particle inherits 
+          as a topological excitation. Winding number Δw = 4.
+        </p>
+      </div>
+
+      <p>
+        Think of the seven vacua as seven towns on a circular road. A kink is a road segment 
+        connecting two towns. You cannot straighten it out without leaving the road — the 
+        topology forbids it. The kink is therefore <strong>topologically protected</strong>: 
+        it cannot decay into the vacuum by any continuous deformation of the field.
+      </p>
+    </section>
+
+    <!-- ═══ Section 3: Why Kinks Are Stable ═══ -->
+    <section class="lesson-section" id="stability">
+      <h2>Why Kinks Are Stable</h2>
+      <p>There are two independent reasons for kink stability:</p>
+
+      <div class="stability-split">
+        <div class="stab-box">
+          <div class="sb-title">Topological reason</div>
+          <div class="sb-body">
+            The winding number Δw is an exact conserved charge of the ℤ₇ field algebra 
+            <span data-lean="gte_baryon_number_topological_charge" class="lean-badge">CatAL</span>. 
+            It cannot change value by any process that acts locally on the field. 
+            A kink with Δw = 1 cannot become a kink with Δw = 0 (vacuum) — 
+            that would require changing the topology globally.
+          </div>
+        </div>
+        <div class="stab-box">
+          <div class="sb-title">Energetic reason (BPS)</div>
+          <div class="sb-body">
+            Kinks satisfying the BPS condition (see below) saturate a lower bound on 
+            their energy set by topology alone. They are the <em>lowest-energy</em> 
+            configurations in their winding class. There is no lower-energy state 
+            with the same winding number — the kink cannot radiate away its energy 
+            while conserving winding number.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 4: BPS Kinks ═══ -->
+    <section class="lesson-section" id="bps">
+      <h2>BPS Kinks: The Bogomolny Bound</h2>
+      <p>
+        A BPS (Bogomolny–Prasad–Sommerfield) kink is one that saturates the 
+        <strong>Bogomolny bound</strong>: the minimum energy possible given its winding number.
+      </p>
+
+      <div class="card">
+        <div class="card-header">The Bogomolny bound</div>
+        <div class="card-body">
+          <p>For any field configuration with winding number Δw, the energy satisfies:</p>
+          <div class="bps-formula">
+            E ≥ |ΔW| · E_kink_min
+          </div>
+          <p style="margin-top:0.5rem;font-size:0.85rem;color:var(--text-secondary)">
+            BPS kinks saturate this bound with equality: E = |Δw| · E_kink_min. 
+            They are the minimal-energy representatives of their topological sector. 
+            In quantum field theory, this means they are absolutely stable — they cannot 
+            radiate energy without violating conservation of the winding number.
+          </p>
+        </div>
+      </div>
+
+      <p>
+        The kink mass is therefore determined entirely by the topology: 
+        M_kink = E_kink_min × |Δw|. 
+        The actual numerical value — how many MeV — comes from the arithmetic of the 
+        GTE cascade, as explained in 
+        <a href="../L16_masses_from_arithmetic/index.html">L16</a>.
+      </p>
+    </section>
+
+    <!-- ═══ Section 5: The Winding Sectors ═══ -->
+    <section class="lesson-section" id="winding-sectors">
+      <h2>The Seven Winding Sectors → Particle Families</h2>
+      <p>
+        ℤ₇ has seven elements, so there are seven possible winding numbers: 
+        Δw ∈ {0, 1, 2, 3, 4, 5, 6}. Each defines a distinct topological sector. 
+        But not all sectors are physically accessible — the 
+        <strong>PSC (Perfect Self-Containment) criterion</strong> filters them.
+      </p>
+      <p>
+        Exactly five of the seven sectors pass PSC. 
+        These five correspond to the Standard Model particle families:
+      </p>
+
+      <table class="winding-table">
+        <thead>
+          <tr>
+            <th>Winding Δw</th>
+            <th>PSC status</th>
+            <th>SM particle class</th>
+            <th>Examples</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="psc-pass">
+            <td><span class="w-num">0</span></td>
+            <td><span class="psc-yes">✓ PASS</span></td>
+            <td>Vacuum / photon / neutrino</td>
+            <td>photon, ν_e, ν_μ, ν_τ</td>
+          </tr>
+          <tr class="psc-fail">
+            <td><span class="w-num">1</span></td>
+            <td><span class="psc-no">✗ FAIL</span></td>
+            <td>—</td>
+            <td>dark-mirror sector, no SM particle</td>
+          </tr>
+          <tr class="psc-pass">
+            <td><span class="w-num">2</span></td>
+            <td><span class="psc-yes">✓ PASS</span></td>
+            <td>Up-type quarks</td>
+            <td>u, c, t</td>
+          </tr>
+          <tr class="psc-pass">
+            <td><span class="w-num">3</span></td>
+            <td><span class="psc-yes">✓ PASS</span></td>
+            <td>W⁺ boson / positron</td>
+            <td>W⁺, e⁺</td>
+          </tr>
+          <tr class="psc-pass">
+            <td><span class="w-num">4</span></td>
+            <td><span class="psc-yes">✓ PASS</span></td>
+            <td>Charged leptons / W⁻</td>
+            <td>e⁻, μ⁻, τ⁻, W⁻</td>
+          </tr>
+          <tr class="psc-fail">
+            <td><span class="w-num">5</span></td>
+            <td><span class="psc-no">✗ FAIL</span></td>
+            <td>—</td>
+            <td>dark-mirror sector, no SM particle</td>
+          </tr>
+          <tr class="psc-pass">
+            <td><span class="w-num">6</span></td>
+            <td><span class="psc-yes">✓ PASS</span></td>
+            <td>Down-type quarks</td>
+            <td>d, s, b</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout--neutral">
+        <div class="callout-title">Click the vacua to explore winding sectors</div>
+        <div class="vac-ring-wrap" id="vac-ring">
+          <div class="vr-node vr-vacuum" data-w="0" title="Click to explore">0</div>
+          <div class="vr-node" data-w="1">1</div>
+          <div class="vr-node" data-w="2">2</div>
+          <div class="vr-node" data-w="3">3</div>
+          <div class="vr-node" data-w="4">4</div>
+          <div class="vr-node" data-w="5">5</div>
+          <div class="vr-node" data-w="6">6</div>
+        </div>
+        <div class="vr-detail" id="vac-detail">
+          Click a vacuum node to see what particle a kink in that winding sector certifies.
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 6: Antiparticles ═══ -->
+    <section class="lesson-section" id="antiparticles">
+      <h2>Antiparticles = Antikinks</h2>
+      <p>
+        If a kink has winding Δw = k (mod 7), its antiparticle is an 
+        <strong>antikink</strong> with winding Δw = −k ≡ 7−k (mod 7). 
+        A kink and antikink can annihilate: their winding numbers add to 0 (mod 7), 
+        which is the vacuum sector.
+      </p>
+      <p>
+        For example: the electron has winding Δw = 4. The positron (antielectron) 
+        has winding Δw = 3. 4 + 3 = 7 ≡ 0 (mod 7): they annihilate to the vacuum 
+        (producing photons, which are sector Δw = 0 gauge bosons).
+      </p>
+      <div class="card">
+        <div class="card-header">Particle spectrum is topological</div>
+        <div class="card-body">
+          <p>
+            The set of particle types is determined entirely by the topology of the Z₇ 
+            vacuum manifold and the PSC filter. This is a categorical fact — it does not 
+            depend on any free parameter. The Standard Model particle content is the 
+            <em>only</em> set of topologically stable excitations of a Z₇-symmetric field 
+            consistent with PSC.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Nav -->
+    <nav class="lesson-nav">
+      <a href="../L13_three_tape_cmca/index.html" class="lesson-nav-btn lesson-nav-prev">← L13: Three-Tape CMCA</a>
+      <a href="../L15_quantum_numbers/index.html" class="lesson-nav-btn lesson-nav-next">L15: Quantum Numbers →</a>
+    </nav>
+
+  </main>
+
+  <footer class="site-footer">
+    UGP Physics Tutorial Series · Nova Spivack · 
+    <a href="https://novaspivack.com/research">novaspivack.com/research</a>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script src="../../common/interactive.js"></script>
+  <script src="../../common/nav.js"></script>
+  <script>
+    const WINDING_INFO = {
+      0: { psc: true,  label: 'w = 0 — Vacuum / photon / neutrino sector', desc: 'PSC-admissible. The vacuum (empty space), the photon, and the neutrinos (ν_e, ν_μ, ν_τ). Charge Q = 0. Winding number zero means no topological twist — the field is in the same vacuum on both sides.' },
+      1: { psc: false, label: 'w = 1 — Dark-mirror sector (PSC-forbidden)', desc: 'PSC-forbidden in the Standard Model branch. The ℤ₇ winding number 1 is not a stable asymptotic state in the SM branch — it is the dark-sector mirror partner of the down-type-quark sector (1 + 6 ≡ 0 mod 7), stable only in the dark branch.' },
+      2: { psc: true,  label: 'w = 2 — Up-type quark sector', desc: 'PSC-admissible. The up-type quarks: up, charm, top. Charge Q = +2/3. Fermionic. All three generations share this winding number; the generation index comes from the orbit position in the GTE cascade, not from winding.' },
+      3: { psc: true,  label: 'w = 3 — W⁺ boson / positron sector', desc: 'PSC-admissible. The W⁺ boson and the positron (antielectron). Charge Q = +1. Bosonic; w = 3 is the generator of ℤ₇* (order 6).' },
+      4: { psc: true,  label: 'w = 4 — Charged lepton / W⁻ sector', desc: 'PSC-admissible. The charged leptons (electron, muon, tau) and the W⁻ boson. Charge Q = −1. Fermionic (for the leptons). All three lepton generations share this winding number; the generation index comes from the orbit position in the GTE cascade, not from winding.' },
+      5: { psc: false, label: 'w = 5 — Dark-mirror sector (PSC-forbidden)', desc: 'PSC-forbidden in the Standard Model branch. The ℤ₇ winding number 5 is not a stable asymptotic state in the SM branch — it is the dark-sector mirror partner of the up-type-quark sector (5 + 2 ≡ 0 mod 7), stable only in the dark branch.' },
+      6: { psc: true,  label: 'w = 6 — Down-type quark sector', desc: 'PSC-admissible. The down-type quarks: down, strange, bottom. Charge Q = −1/3. Fermionic. All three generations share this winding number; the generation index comes from the orbit position in the GTE cascade, not from winding.' },
+    };
+
+    const LEAN_REFS = {
+      "gte_baryon_number_topological_charge": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Algebra/BaryonNumber.lean"
+      }
+    };
+    document.addEventListener('DOMContentLoaded', () => {
+      autoRenderLeanBadges(LEAN_REFS);
+      const nodes = document.querySelectorAll('.vr-node');
+      const detail = document.getElementById('vac-detail');
+      nodes.forEach(n => {
+        n.addEventListener('click', () => {
+          nodes.forEach(x => x.classList.remove('vr-selected'));
+          n.classList.add('vr-selected');
+          const w = parseInt(n.dataset.w);
+          const info = WINDING_INFO[w];
+          detail.innerHTML = `
+            <strong style="color:${info.psc ? '#10B981' : '#EF4444'}">${info.label}</strong><br>
+            <span style="color:var(--text-secondary);font-size:0.85rem">${info.desc}</span>
+          `;
+        });
+      });
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left:'$$',right:'$$',display:true},
+          {left:'$',right:'$',display:false}
+        ]
+      });
+    });
+  </script>
+</body>
+</html>

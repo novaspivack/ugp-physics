@@ -1,0 +1,30 @@
+experiment:
+  name: lock_stability
+  description: "Stress test lock laws across seeds/scales/policy variants."
+  
+  inputs:
+    runs:
+      - "UGP_discovery_lab_runs/exp_*/results/reports/experiment_results.json"
+      - "UGP_discovery_lab_runs/exp_*/results/reports/*_results.json"
+  params:
+    seeds:
+      - [1,73,823]
+      - [1,73,2137]
+      - [2,89,1597]
+      - [3,97,2203]
+      - [5,101,2357]
+      - [7,103,2467]
+      - [11,107,2683]
+      - [13,109,2791]
+    windows: [10, 11, 12, 13, 14, 15]
+    laws:
+      - { c_policy: mersenne, b_policy: fib, a_policy: gte, mirror: d2 }
+      - { c_policy: mersenne, b_policy: lucas, a_policy: gte, mirror: d2 }
+      - { c_policy: repunit, repunit_base: 3, b_policy: fib, a_policy: gte, mirror: d2 }
+  fit:
+    quarterlock: { tol: 1e-6 }
+    dihedral:    { min_r2: 0.996, pslq_max_denominator: 64 }
+    index:       { tolerance: 1e-6, min_support: 25 }
+  report:
+    heatmaps: true
+    export_md: true

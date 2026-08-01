@@ -1,0 +1,20 @@
+experiment:
+  name: index_lock
+  description: "Search for new fixed |q_t - q_{t-1}| locks across lawful evolutions."
+  
+  inputs:
+    runs:
+      - "UGP_discovery_lab_runs/**/lawful_evolution_*_summary.json"
+      - "UGP_discovery_lab_runs/**/LE_*_summary.json"
+      - "UGP_discovery_lab_runs/**/gte_*_summary.json"
+      
+  detection:
+    event_types: ["ridge", "mirror"]
+    min_support_fraction: 0.95  # A lock must cover 95% of events
+    min_support: 20             # Minimum absolute number of events
+    tolerance: 0                # Exact equality required
+    
+  report:
+    export_md: true
+    export_json: true
+    plots: true

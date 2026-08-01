@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L19: The Weinberg Angle and Fine-Structure Constant — UGP Physics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="../../common/style.css">
+  <style>
+    /* ── Mixing angle diagram ──────────────────────────────── */
+    .mixing-diagram {
+      max-width: 400px;
+      margin: 1.5rem auto;
+      position: relative;
+    }
+
+    /* ── Prediction comparison card ──────────────────────── */
+    .prediction-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1px;
+      background: var(--stroke-primary);
+      border-radius: var(--r-md);
+      overflow: hidden;
+      margin: 1rem 0;
+    }
+    .prediction-cell {
+      background: var(--bg-card);
+      padding: 1rem;
+      text-align: center;
+    }
+    .prediction-cell .pval {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .prediction-cell .plabel {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      margin-top: 0.25rem;
+    }
+    .prediction-cell.gte-val .pval { color: var(--accent); }
+    .prediction-cell.match-val .pval { color: var(--cert-lean); }
+
+    /* ── Interactive orbit counter ──────────────────────── */
+    .orbit-counter {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: var(--bg-elevated);
+      border: 1px solid var(--stroke-primary);
+      border-radius: var(--r-lg);
+      padding: 1.25rem;
+      margin: 1rem 0;
+    }
+    .orbit-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      min-width: 3rem;
+      text-align: center;
+    }
+    .orbit-desc { font-size: 0.875rem; color: var(--text-secondary); }
+
+    /* ── Formula highlight box ───────────────────────────── */
+    .formula-highlight {
+      text-align: center;
+      background: var(--bg-elevated);
+      border: 2px solid var(--accent);
+      border-radius: var(--r-lg);
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .formula-highlight .formula-main {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+    .formula-highlight .formula-sub {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    /* ── Claim tabs ─────────────────────────────────────── */
+    .claim-tabs { display:flex; gap:6px; margin-bottom:1rem; flex-wrap:wrap; }
+    .claim-tab {
+      padding: 6px 14px; border-radius: var(--r-full); font-size: 0.8rem;
+      font-weight: 600; border: 1.5px solid var(--stroke-primary);
+      background: transparent; color: var(--text-secondary);
+      cursor: pointer; font-family: inherit; transition: all 0.14s;
+    }
+    .claim-tab:hover { border-color:var(--accent); color:var(--text-primary); }
+    .claim-tab.active { background:var(--accent); border-color:var(--accent); color:#fff; }
+    .claim-panel { display:none; }
+    .claim-panel.active { display:block; }
+  </style>
+</head>
+<body style="--path-current: var(--path-4)">
+
+  <header class="site-header">
+    <a href="../../index.html" class="site-logo">UGP Physics</a>
+    <nav class="breadcrumb">
+      <a href="../../index.html">Tutorial Series</a>
+      <span class="bc-sep">›</span>
+      <a href="../index.html">Path 4: Forces</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">L19: Weinberg Angle & α</span>
+    </nav>
+  </header>
+
+  <main class="page-wrapper">
+
+    <!-- ═══ Lesson Header ═══ -->
+    <div class="lesson-header">
+      <div class="path-label">Path 4 — Forces · Lesson 2 of 4</div>
+      <h1>The Weinberg Angle and Fine-Structure Constant</h1>
+      <p class="lesson-subtitle">
+        The Standard Model treats these as measured inputs — numbers that cannot be predicted.
+        GTE derives both with zero free parameters — from two related but algebraically
+        distinct GF(7) cellular-automaton rules (the 19-bit polynomial for α; a separate,
+        76-bit interaction rule for sin²θ_W).
+      </p>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:50%"></div>
+      </div>
+    </div>
+
+    <!-- ═══ Section 1: The Problem ═══ -->
+    <section class="lesson-section" id="the-problem">
+      <h2>The Standard Model's Embarrassing Numbers</h2>
+      <p>
+        The Standard Model is the most successful physical theory ever written. But it contains
+        roughly 25 numbers that it cannot predict — you measure them and insert them by hand.
+        Among the most fundamental are:
+      </p>
+
+      <div class="split-3" style="margin: 1.5rem 0;">
+        <div class="card">
+          <div class="card-header">Fine-structure constant α</div>
+          <div class="card-body">
+            <p><strong>α ≈ 1/137.036</strong></p>
+            <p>The electromagnetic coupling strength. It controls how strongly charged particles interact via photons. One of the most precisely measured constants in all of physics.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">Weinberg angle θ_W</div>
+          <div class="card-body">
+            <p><strong>sin²θ_W ≈ 0.231</strong></p>
+            <p>The mixing angle between the weak and electromagnetic forces. It determines the mass ratio of the W and Z bosons — and every SM calculation involving neutral currents.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">Strong coupling α_s</div>
+          <div class="card-body">
+            <p><strong>α_s(M_Z) ≈ 0.118</strong></p>
+            <p>The strength of the strong nuclear force at the Z boson mass scale. Also a free parameter — also derived in GTE.</p>
+          </div>
+        </div>
+      </div>
+
+      <p>
+        None of these can be explained by the Standard Model. You measure them in experiments
+        and insert them. GTE derives all three from the orbit structure of the GTE arithmetic
+        substrate — though, as the note below explains, α and sin²θ_W come from two different,
+        non-interchangeable rules within that substrate. This lesson covers α and sin²θ_W.
+      </p>
+    </section>
+
+    <!-- ═══ Section 2: The Weinberg Angle ═══ -->
+    <section class="lesson-section" id="weinberg">
+      <h2>The Weinberg Angle: sin²θ_W = 3/13</h2>
+
+      <div class="card" style="margin: 1rem 0; border-left: 3px solid var(--accent);">
+        <div class="card-body">
+          <p style="margin:0"><strong>A note on which rule is used here.</strong>
+          This section uses a rule called f_MDL, not the 19-bit polynomial p used
+          below for the fine-structure-constant identity. The two are proved to be
+          algebraically and dynamically distinct: f_MDL is the unique
+          minimum-description-length map (76 bits to specify, vs. 19 bits for p)
+          that agrees with Wolfram's binary Rule 110 on purely binary inputs and
+          reproduces the observed three-generation Standard Model orbit; a
+          companion paper's Schwartz–Zippel zero-counting argument shows f_MDL is
+          <em>not</em> a low-degree polynomial at all (only 14 nonzero outputs
+          among 343 possible inputs, vs. 300 for p). The two rules agree only on
+          the 8 purely binary inputs they share as a common Rule 110 sublayer.</p>
+        </div>
+      </div>
+
+      <h3>What is the Weinberg angle?</h3>
+      <p>
+        Electromagnetism and the weak nuclear force are actually two aspects of a single
+        <em>electroweak</em> force. At high energies they were unified; at low energies they
+        look completely different because the symmetry broke.
+      </p>
+      <p>
+        The breaking is geometric. There are two underlying gauge fields, $W^3_\mu$ (SU(2)_L) and
+        $B_\mu$ (U(1)_Y). At low energies these mix at a specific angle $\theta_W$:
+      </p>
+
+      <div class="card" style="margin: 1rem 0;">
+        <div class="card-body">
+          <p style="text-align:center;margin-bottom:0.5rem"><strong>Electroweak mixing</strong></p>
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.9rem;text-align:center">
+            photon (A_μ) = cos θ_W · B_μ + sin θ_W · W³_μ<br>
+            Z boson (Z_μ) = −sin θ_W · B_μ + cos θ_W · W³_μ
+          </p>
+          <p style="margin-top:0.75rem;color:var(--text-secondary);font-size:0.875rem">
+            The angle θ_W ≈ 28.7° determines how much of each underlying field becomes
+            the photon and how much becomes the Z. The ratio sin²θ_W = g′²/(g² + g′²).
+          </p>
+        </div>
+      </div>
+
+      <h3>The GTE derivation</h3>
+      <p>
+        In the GTE framework, sin²θ_W is the ratio of the generation count to the
+        Higgs-sector orbit count:
+      </p>
+
+      <div class="formula-highlight">
+        <div class="formula-main">sin²θ_W = N_gen / c_H = 3/13 = 0.23077</div>
+        <div class="formula-sub">
+          N_gen = 3 (number of SM generations) · c_H = 13 (Higgs color orbit count)
+        </div>
+      </div>
+
+      <h3>Where do 3 and 13 come from?</h3>
+
+      <div class="split" style="margin: 1.5rem 0;">
+        <div>
+          <div class="orbit-counter">
+            <div class="orbit-number">3</div>
+            <div class="orbit-desc">
+              <strong>N_gen = 3</strong> — the number of SM generations. Derived
+              from four independent orbit-arithmetic mechanisms: Garden of Eden structure,
+              ℤ₅ ring uniqueness, ridge minimality, and MDL seed selection.
+              Not assumed — forced by the f_MDL orbit structure.
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="orbit-counter">
+            <div class="orbit-number">13</div>
+            <div class="orbit-desc">
+              <strong>c_H = 13</strong> — the Higgs branch capacity. Forced by the
+              electroweak boson "staircase": the three electroweak bosons occupy
+              consecutive GTE branch capacities with unit steps, c_W+ = 11, c_Z = 12,
+              c_H0 = 13. Equivalently, c_H = N_gen + 2·N_fam = 3 + 10 = 13.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Comparison to experiment</h3>
+
+      <div class="prediction-row">
+        <div class="prediction-cell gte-val">
+          <div class="pval">3/13 = 0.23077</div>
+          <div class="plabel">GTE tree-level prediction</div>
+        </div>
+        <div class="prediction-cell">
+          <div class="pval">0.23129</div>
+          <div class="plabel">GTE 2-loop corrected</div>
+        </div>
+        <div class="prediction-cell match-val">
+          <div class="pval">0.23122 ± 0.00003</div>
+          <div class="plabel">PDG 2024 on-shell</div>
+        </div>
+      </div>
+
+      <p>
+        The tree-level result (pure arithmetic) deviates by −0.20% from PDG. With
+        two-loop electroweak threshold corrections — all inputs from GTE, no PDG parameters
+        borrowed — the prediction reaches <strong>+0.030%</strong> from the PDG central value.
+      </p>
+      <p class="small" style="color:var(--text-secondary)">
+        Lean cert: <code>weinberg_sin_sq_from_ngen_ch</code> (CatAL, zero sorry)
+      </p>
+    </section>
+
+    <!-- ═══ Section 3: Fine-Structure Constant ═══ -->
+    <section class="lesson-section" id="alpha">
+      <h2>The Fine-Structure Constant: α⁻¹ = 2⁷ + 3² = 137</h2>
+
+      <h3>What α controls</h3>
+      <p>
+        The fine-structure constant α ≈ 1/137 sets the overall strength of electromagnetism.
+        It appears in every QED calculation: the binding energy of atoms, the magnetic moment
+        of the electron, the width of spectral lines.
+      </p>
+      <p>
+        Richard Feynman called it "one of the greatest damn mysteries of physics."
+        Its value is measured to extraordinary precision but never explained.
+      </p>
+
+      <h3>The GTE identity</h3>
+      <p>
+        In GTE, the electromagnetic coupling comes from counting how many ways
+        virtual loops can arrange themselves under the winding constraints of the polynomial:
+      </p>
+
+      <div class="formula-highlight">
+        <div class="formula-main">α⁻¹ = 2⁷ + 3² = 128 + 9 = 137</div>
+        <div class="formula-sub">
+          2⁷ = 128: number of binary configurations of 7 ℤ₇ winding sectors<br>
+          3² = 9: lepton-sector loop contribution from N_gen² = 3²
+        </div>
+      </div>
+
+      <h3>Where each term comes from</h3>
+
+      <div class="claim-tabs">
+        <button class="claim-tab active" id="ct0">The 2⁷ = 128 term</button>
+        <button class="claim-tab" id="ct1">The 3² = 9 term</button>
+        <button class="claim-tab" id="ct2">Why this is a prediction, not numerology</button>
+      </div>
+
+      <div id="cp0" class="claim-panel active">
+        <div class="card">
+          <div class="card-body">
+            <p>
+              The GTE polynomial operates over GF(7) — clock arithmetic with 7 positions.
+              This gives rise to ℤ₇ with 7 winding sectors.
+            </p>
+            <p>
+              In QED, the photon emission probability is determined by summing over all
+              virtual configurations of the winding sectors. Each of the 7 sectors is either
+              "active" or "inactive" in a given loop. The total number of binary configurations:
+            </p>
+            <div class="example-box">
+              <div class="example-header">Winding sector count</div>
+              <p style="font-family:'JetBrains Mono',monospace;margin:0">
+                2^|ℤ₇| = 2^7 = 128 configurations
+              </p>
+            </div>
+            <p>
+              The more ways a loop can be arranged, the smaller each individual channel's
+              probability → the weaker the coupling. The 128 is the combinatorial weight
+              that sets the electromagnetic coupling strength. Lean cert: <code>alpha_em_inverse_structural_identity</code> (CatAL).
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div id="cp1" class="claim-panel">
+        <div class="card">
+          <div class="card-body">
+            <p>
+              The Standard Model has exactly three generations of fermions. In GTE,
+              N_gen = 3 is derived — not assumed — from the orbit depth of the generation
+              sequence under the f_MDL map.
+            </p>
+            <p>
+              When computing quantum loop contributions to the electromagnetic coupling,
+              you sum over all fermion species running around the loop. For leptons, this
+              sum acquires a double factor of N_gen:
+            </p>
+            <div class="example-box">
+              <div class="example-header">Lepton loop contribution</div>
+              <p style="font-family:'JetBrains Mono',monospace;margin:0">
+                N_gen × N_gen = 3 × 3 = 9 = 3²
+              </p>
+            </div>
+            <p>
+              One factor from the generation index of each lepton in the loop; one from
+              each vertex. The net lepton-sector contribution is proportional to N_gen² = 9.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div id="cp2" class="claim-panel">
+        <div class="card">
+          <div class="card-body">
+            <p>
+              With two free integers one could always search for a representation of 137.
+              But these integers are <em>not free</em>:
+            </p>
+            <ul style="margin: 0.75rem 0; padding-left: 1.25rem; line-height: 2;">
+              <li>|ℤ₇| = 7 is forced by MDL minimality of the polynomial — the only prime giving the five-role winding class property</li>
+              <li>N_gen = 3 is forced by four independent orbit-arithmetic mechanisms unrelated to α</li>
+            </ul>
+            <p>
+              Both numbers were determined by independent physical reasoning before the
+              fine-structure constant was considered. Their combination giving α⁻¹ is a
+              <strong>genuine prediction</strong>, not a fit.
+            </p>
+            <p class="small" style="color:var(--text-secondary)">
+              Lean cert: <code>alpha_em_inverse_structural_identity</code> (CatAL, zero sorry,
+              <code>AlphaEMStructuralIdentity.lean</code>)
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <h3>Comparison to measurement</h3>
+
+      <div class="prediction-row">
+        <div class="prediction-cell gte-val">
+          <div class="pval">α⁻¹ = 137</div>
+          <div class="plabel">GTE prediction (integer)</div>
+        </div>
+        <div class="prediction-cell">
+          <div class="pval">α⁻¹ = 137.036</div>
+          <div class="plabel">PDG 2024 measured</div>
+        </div>
+        <div class="prediction-cell match-val">
+          <div class="pval">−0.026%</div>
+          <div class="plabel">Deviation</div>
+        </div>
+      </div>
+
+      <p>
+        The GTE prediction gives the integer part exactly. The 0.036 fractional
+        correction comes from higher-order loop contributions — the same QED radiative
+        corrections that apply to any tree-level calculation.
+      </p>
+
+      <h3>A second route to the same identity</h3>
+      <p>
+        The first-generation orbit value b₁ = 73 satisfies b₁ = 2<sup>φ(7)</sup> + N<sub>gen</sub>²,
+        where φ(7) = |GF(7)*| = 6 is the order of the multiplicative group of GF(7).
+        Since φ(7) = 2 × N<sub>gen</sub> (a structural identity relating the GF(7) group order to the
+        generation count), the two known routes to α⁻¹ = 137 — the direct route
+        2<sup>7</sup> + N<sub>gen</sub>² and the orbit route via b₁ — are algebraically equivalent.
+        The two expressions count the same arithmetic structure from different angles.
+      </p>
+    </section>
+
+    <!-- ═══ Section 4: The Strong Coupling ═══ -->
+    <section class="lesson-section" id="strong-coupling">
+      <h2>Bonus: The Strong Coupling α_s(M_Z)</h2>
+      <p>
+        The strong coupling is also derived in GTE — from the β-function coefficient
+        $b_0 = |\mathbb{Z}_7| = 7$ (Lean cert: <code>b0_eq_z7_order</code>, CatAL):
+      </p>
+
+      <div class="prediction-row">
+        <div class="prediction-cell gte-val">
+          <div class="pval">0.11822</div>
+          <div class="plabel">GTE prediction α_s(M_Z)</div>
+        </div>
+        <div class="prediction-cell match-val">
+          <div class="pval">0.1180 ± 0.0009</div>
+          <div class="plabel">PDG 2024</div>
+        </div>
+        <div class="prediction-cell">
+          <div class="pval">+0.24σ</div>
+          <div class="plabel">Agreement</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 5: Why These Are Predictions ═══ -->
+    <section class="lesson-section" id="predictions">
+      <h2>Why These Are Predictions, Not Fits</h2>
+      <p>
+        The distinction between a prediction and a fit is crucial for scientific credibility:
+      </p>
+
+      <div class="split" style="margin: 1.5rem 0;">
+        <div class="card">
+          <div class="card-header" style="color: var(--cert-conj)">A fit (not this)</div>
+          <div class="card-body">
+            <p>You choose parameters <em>after</em> seeing the experimental value. The agreement is guaranteed. The fit has zero predictive power.</p>
+            <p class="small" style="color:var(--text-tertiary)">Example: SM — measure sin²θ_W, insert it into the theory.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header" style="color: var(--cert-lean)">A prediction (this)</div>
+          <div class="card-body">
+            <p>The numbers N_gen = 3 and |ℤ₇| = 7 are derived from independent physical requirements (orbit structure, MDL selection) that have nothing to do with α or sin²θ_W.</p>
+            <p class="small" style="color:var(--text-tertiary)">The theory is then confronted with measurement — and agrees.</p>
+          </div>
+        </div>
+      </div>
+
+      <p>
+        Both α⁻¹ = 137 and sin²θ_W = 3/13 are falsifiable predictions. An experiment that
+        measures sin²θ_W = 0.250 or α⁻¹ = 150 would refute GTE in this sector.
+        The values agree with PDG to within fractions of a percent — with zero free parameters.
+      </p>
+    </section>
+
+    <!-- See also -->
+    <div class="see-also">
+      <h2>See Also</h2>
+      <div class="see-also-group">
+        <div class="see-also-label">Lean 4 proofs (ugp-lean)</div>
+        <ul class="source-list">
+          <li><code>weinberg_sin_sq_from_ngen_ch</code> — sin²θ_W = N_gen/c_H</li>
+          <li><code>ew_c_staircase</code> — c_H = 13 from the EW boson staircase</li>
+          <li><code>alpha_em_inverse_structural_identity</code> — α⁻¹ = 2⁷ + 3²</li>
+          <li><code>b0_eq_z7_order</code> — β-function coefficient from ℤ₇</li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Source tutorial (PDF)</div>
+        <ul class="source-list">
+          <li><a href="https://doi.org/10.5281/zenodo.20657923" target="_blank" rel="noopener">The Weinberg Angle, Fine-Structure Constant, and Gauge Couplings from GTE ↗</a></li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Source paper</div>
+        <ul class="source-list">
+          <li><a href="https://doi.org/10.5281/zenodo.20560550" target="_blank" rel="noopener">P48 — The Complete GTE Framework, Ch. 7 ↗</a></li>
+        </ul>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ═══ Lesson Footer Navigation ═══ -->
+  <div class="page-wrapper">
+    <footer class="lesson-footer">
+      <a href="../L18_four_forces/index.html" class="nav-btn nav-btn--prev">← L18: The Four Forces</a>
+      <a href="../L20_strong_cp/index.html" class="nav-btn nav-btn--next">L20: The Strong CP Problem →</a>
+    </footer>
+  </div>
+
+  <!-- Math -->
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})">
+  </script>
+
+  <script src="../../common/interactive.js"></script>
+  <script src="../../common/nav.js"></script>
+  <script>
+    const LEAN_REFS = {
+      "weinberg_sin_sq_from_ngen_ch": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/GUTStructure.lean"
+      },
+      "alpha_em_inverse_structural_identity": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/AlphaEMStructuralIdentity.lean"
+      },
+      "b0_eq_z7_order": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/BetaCoefficientIdentity.lean"
+      }
+    };
+
+    function initClaimTabs() {
+      const tabs = document.querySelectorAll('.claim-tab');
+      const panels = document.querySelectorAll('.claim-panel');
+      tabs.forEach((tab, i) => {
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          panels.forEach(p => p.classList.remove('active'));
+          tab.classList.add('active');
+          panels[i].classList.add('active');
+        });
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initClaimTabs();
+      autoRenderLeanBadges(LEAN_REFS);
+    });
+  </script>
+</body>
+</html>
