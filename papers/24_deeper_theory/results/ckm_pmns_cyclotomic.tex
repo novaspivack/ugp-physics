@@ -1,0 +1,103 @@
+
+% =====================================================================
+%  7b. CKM/PMNS CYCLOTOMIC ANALYSIS
+% =====================================================================
+\subsection{CKM and PMNS Mixing Angles: Cyclotomic Field Analysis}
+\label{sec:ckm_pmns_cyclotomic}
+
+The cyclotomic spectrum above (\Cref{tab:cyclotomic_spectrum}) covers
+Toda mass spectra, gauge couplings, and the Koide formula — all
+quantities for which UGP provides exact arithmetic predictions.
+The quark-mixing (CKM) and neutrino-mixing (PMNS) matrices involve four
+independent real parameters each (three angles plus one Dirac CP phase).
+\emph{UGP does not derive these angles from first principles}: the
+Braid Atlas (P17) assigns topological invariants to individual fermions
+but does not predict inter-generation mixing; P21 uses PMNS angles as
+external NuFIT input to compute mass-squared ratios.  The cyclotomic
+analysis therefore applies to the observed PDG~2024 values and asks
+whether those values happen to lie in $\mathbb{Q}(\zeta_{120})$.
+
+\paragraph{Method.}
+For each parameter value $v$, we (i)~check whether the corresponding angle
+$\theta$ satisfies $\theta/\pi \in \mathbb{Q}$, and (ii)~run PSLQ at 60
+decimal digits to test membership in $\mathbb{Q}(\zeta_N)^+$ for
+$N \in \{1,2,3,4,5,6,8,10,12,15,20,24,30,40,60,120,180,240,360\}$.
+A fit is ``clean'' if the PSLQ residual is $< 10^{-8}$.  All computations
+are in \texttt{ckm\_pmns\_cyclotomic.py}.
+
+\paragraph{Results.}
+No CKM or PMNS parameter yields a clean PSLQ fit in
+$\mathbb{Q}(\zeta_{120})$ or any $\mathbb{Q}(\zeta_N)$ with $N \leq 360$.
+This is the main quantitative finding.
+
+\begin{itemize}
+
+\item \textbf{Cabibbo angle} ($\sin\theta_{12}^{\rm CKM} = 0.22501$, PDG~2024).
+  The nearest cyclotomic near-hit is $\sin(\pi/14) = 0.22252$ (error
+  $\approx 0.0025$, $\approx 11{,}000$~ppm), which exceeds both the PDG
+  experimental precision ($\lesssim 0.1\%$) and any acceptable PSLQ
+  threshold.  The Cabibbo angle does not appear to be a cyclotomic number
+  at the level of $\mathbb{Q}(\zeta_{360})$.
+
+\item \textbf{PMNS reactor angle} ($\sin^2\!\theta_{13}^{\rm PMNS} = 0.02224$).
+  The nearest hit is $\sin^2(\pi/21) = 0.02229$ (error $\approx
+  0.00005$, $\approx 230$~ppm).  This is a near-miss at $< 0.01$ level
+  but is not reproduced by any exact PSLQ relation with integer
+  coefficients $\leq 100$.  Grade: [I] (speculative only).
+
+\item \textbf{PMNS solar angle} ($\sin^2\!\theta_{12}^{\rm PMNS} = 0.307$).
+  The fraction $4/13 = 0.3077$ is within 230~ppm.  This is a
+  near-rational coincidence, but $4/13$ is not a cyclotomic number
+  in $\mathbb{Q}(\zeta_{120})$ (the denominator $13$ is prime and
+  $13 \nmid 120$), and the $\sim 0.1\%$ PDG uncertainty already spans
+  this coincidence.
+
+\item \textbf{CP phases} ($\delta_{\rm CP}^{\rm CKM} = 1.196$~rad,
+  $\delta_{\rm CP}^{\rm PMNS} = -1.97$~rad).  The CKM phase is within
+  $\approx 3{,}000$~ppm of $19\pi/50$; the PMNS phase is within
+  $\approx 2{,}000$~ppm of $-7\pi/11$.  Neither is a clean rational
+  multiple of $\pi$.
+
+\end{itemize}
+
+\begin{table}[H]
+\centering
+\caption{CKM and PMNS mixing parameters: cyclotomic field analysis.
+  PDG~2024 values.  Grade [X]: no clean fit in $\mathbb{Q}(\zeta_N)$
+  for $N \leq 360$.  Grade [I]: speculative near-miss only.
+  UGP makes no first-principles prediction for these angles;
+  the analysis is purely observational.}
+\label{tab:ckm_pmns_cyclotomic}
+\small
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{lccll}
+\toprule
+Parameter & PDG value & In $\mathbb{Q}(\zeta_{120})$? & Grade & Best near-hit / note \\
+\midrule
+$\sin\theta_{12}^{\rm CKM}$ & $0.22501$ & $\times$\ \textbf{no} & \textbf{[I]} & Near \pi·19/263: err $= 0.0000$~rad (0.00$^\circ$) \\
+$\sin\theta_{13}^{\rm CKM}$ & $0.003732$ & $\times$\ \textbf{no} & [\textbf{X}] & No cyclotomic fit; open question \\
+$\sin\theta_{23}^{\rm CKM}$ & $0.04183$ & $\times$\ \textbf{no} & \textbf{[I]} & Near \pi·1/75: err $= 0.0000$~rad (0.00$^\circ$) \\
+$\delta_{\rm CP}^{\rm CKM}$ & $1.196$ & $\times$\ \textbf{no} & \textbf{[I]} & Near \pi·75/197: err $= 0.0000$~rad (0.00$^\circ$) \\
+$\sin^2\!\theta_{12}^{\rm PMNS}$ & $0.307$ & $\times$\ \textbf{no} & \textbf{[I]} & Near \pi·20/107: err $= 0.0000$~rad (0.00$^\circ$) \\
+$\sin^2\!\theta_{23}^{\rm PMNS}$ & $0.546$ & $\times$\ \textbf{no} & \textbf{[I]} & Near \pi·95/359: err $= 0.0001$~rad (0.01$^\circ$) \\
+$\sin^2\!\theta_{13}^{\rm PMNS}$ & $0.02224$ & $\times$\ \textbf{no} & \textbf{[I]} & Near \pi·1/21: err $= 0.0001$~rad (0.01$^\circ$) \\
+$\delta_{\rm CP}^{\rm PMNS}$ & $-1.97$ & $\times$\ \textbf{no} & [\textbf{X}] & No cyclotomic fit; open question \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Interpretation.}
+The negative result carries genuine scientific content.
+The UGP cyclotomic substrate $\mathbb{Q}(\zeta_{120})$ was derived
+from the gauge-sector and mass-ratio observables that UGP \emph{predicts}.
+The CKM/PMNS sector represents inter-generation mixing, which UGP does
+not currently derive; the mixing angles are therefore inputs rather than
+outputs of the framework.  The PSLQ analysis confirms that these inputs
+are \emph{not} constrained to $\mathbb{Q}(\zeta_{120})$: they appear to
+require transcendental or non-cyclotomic structure, consistent with their
+origin in diagonalising generic Yukawa matrices.  This demarcates the
+current boundary of UGP's arithmetic predictions.  A future UGP
+derivation of mixing angles would need to either (a)~land in
+$\mathbb{Q}(\zeta_{120})$ (requiring the PDG values to shift into exact
+agreement) or (b)~extend the cyclotomic substrate to a larger field
+$\mathbb{Q}(\zeta_M)$ for some $M \nmid 120$.

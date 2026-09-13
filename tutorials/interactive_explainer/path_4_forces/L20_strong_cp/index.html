@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L20: Why the Strong CP Problem Is Solved — UGP Physics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="../../common/style.css">
+  <style>
+    /* ── Theta scale visualization ────────────────────────── */
+    .theta-scale {
+      background: var(--bg-elevated);
+      border: 1px solid var(--stroke-primary);
+      border-radius: var(--r-lg);
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    .theta-bar-wrap {
+      position: relative;
+      height: 24px;
+      background: linear-gradient(to right, var(--accent) 0%, #8B5CF6 50%, #EF4444 100%);
+      border-radius: 12px;
+      margin: 1rem 0;
+      overflow: visible;
+    }
+    .theta-marker {
+      position: absolute;
+      top: -8px;
+      width: 4px;
+      height: 40px;
+      background: var(--cert-lean);
+      border-radius: 2px;
+    }
+    .theta-marker-label {
+      position: absolute;
+      top: -26px;
+      transform: translateX(-50%);
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--cert-lean);
+      white-space: nowrap;
+    }
+    .theta-bar-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      font-family: 'JetBrains Mono', monospace;
+      margin-top: 0.5rem;
+    }
+
+    /* ── Proof accordion ─────────────────────────────────── */
+    .proof-accordion {
+      margin: 1rem 0;
+    }
+    .proof-item {
+      border: 1.5px solid var(--stroke-primary);
+      border-radius: var(--r-md);
+      overflow: hidden;
+      margin-bottom: 0.75rem;
+    }
+    .proof-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem 1.25rem;
+      cursor: pointer;
+      background: var(--bg-card);
+      user-select: none;
+      transition: background 0.14s;
+    }
+    .proof-header:hover { background: var(--bg-elevated); }
+    .proof-num {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .proof-title { font-weight: 600; flex: 1; }
+    .proof-toggle {
+      color: var(--text-tertiary);
+      transition: transform 0.2s;
+      font-size: 1.1rem;
+    }
+    .proof-item.open .proof-toggle { transform: rotate(90deg); }
+    .proof-body {
+      display: none;
+      padding: 1.25rem;
+      background: var(--bg-elevated);
+      border-top: 1px solid var(--stroke-primary);
+    }
+    .proof-item.open .proof-body { display: block; }
+
+    /* ── Comparison table ───────────────────────────────── */
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    @media (max-width: 600px) { .compare-grid { grid-template-columns: 1fr; } }
+
+    /* ── Falsifiability callout ─────────────────────────── */
+    .falsify-box {
+      background: rgba(239,68,68,0.08);
+      border: 1.5px solid #EF4444;
+      border-radius: var(--r-lg);
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .falsify-box h3 { color: #EF4444; margin-bottom: 0.5rem; }
+  </style>
+</head>
+<body style="--path-current: var(--path-4)">
+
+  <header class="site-header">
+    <a href="../../index.html" class="site-logo">UGP Physics</a>
+    <nav class="breadcrumb">
+      <a href="../../index.html">Tutorial Series</a>
+      <span class="bc-sep">›</span>
+      <a href="../index.html">Path 4: Forces</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">L20: The Strong CP Problem</span>
+    </nav>
+  </header>
+
+  <main class="page-wrapper">
+
+    <!-- ═══ Lesson Header ═══ -->
+    <div class="lesson-header">
+      <div class="path-label">Path 4 — Forces · Lesson 3 of 4</div>
+      <h1>Why the Strong CP Problem Is Solved</h1>
+      <p class="lesson-subtitle">
+        θ_QCD could be anything from 0 to 2π — but experiments show it is less than 10⁻¹⁰.
+        For decades the only explanation was a hypothetical particle nobody has found.
+        GTE gives a structural proof: θ_QCD = 0 exactly, by group theory alone.
+      </p>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:75%"></div>
+      </div>
+    </div>
+
+    <!-- ═══ Section 1: The Problem ═══ -->
+    <section class="lesson-section" id="the-problem">
+      <h2>The Mystery: A Number That Should Be Random But Isn't</h2>
+
+      <h3>What is the strong force?</h3>
+      <p>
+        The strong nuclear force binds quarks into protons and neutrons, and holds nuclei
+        together. It is described by <em>Quantum Chromodynamics</em> (QCD) — one of the
+        most precisely tested theories in physics.
+      </p>
+
+      <h3>The θ term</h3>
+      <p>
+        The QCD Lagrangian (its "recipe") contains all terms allowed by the symmetries of the
+        strong force. Most terms are required. But one term is <em>allowed but not forced</em>:
+      </p>
+
+      <div class="card" style="margin:1rem 0;background:rgba(245,158,11,0.06);border-color:var(--accent)">
+        <div class="card-body">
+          <p style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:1rem;margin-bottom:0.5rem">
+            ℒ_θ = θ_QCD · (g_s²/32π²) · tr(F^μν F̃_μν)
+          </p>
+          <p style="font-size:0.875rem;color:var(--text-secondary);margin:0;text-align:center">
+            θ_QCD is a free parameter from 0 to 2π. This term violates CP symmetry in the strong force.
+          </p>
+        </div>
+      </div>
+
+      <h3>The measurement — and the mystery</h3>
+      <p>
+        If θ_QCD is nonzero, the neutron develops an electric dipole moment proportional to |θ_QCD|.
+        Decades of precision experiments have measured this — and found essentially nothing:
+      </p>
+
+      <div class="theta-scale">
+        <p style="font-size:0.875rem;color:var(--text-secondary);margin-bottom:0.75rem">
+          The allowed range of θ_QCD (from QCD alone):
+        </p>
+        <div class="theta-bar-wrap">
+          <div class="theta-marker" style="left: 0.05%;">
+            <span class="theta-marker-label">measured &lt; 10⁻¹⁰</span>
+          </div>
+        </div>
+        <div class="theta-bar-labels">
+          <span>0</span>
+          <span>π/2</span>
+          <span>π</span>
+          <span>3π/2</span>
+          <span>2π ≈ 6.28</span>
+        </div>
+        <p style="margin-top:0.75rem;font-size:0.875rem;color:var(--text-secondary)">
+          If you picked a random number between 0 and 6, the chance it would be smaller than 10⁻¹⁰
+          is about <strong>one in 60 billion</strong>. Yet there it sits, essentially at zero.
+        </p>
+      </div>
+
+      <div class="card" style="margin:1rem 0;background:rgba(16,185,129,0.06);border-color:#10B981">
+        <div class="card-body">
+          <p style="margin:0"><strong>The pencil on its tip:</strong> Imagine balancing a pencil perfectly on its tip for the entire history of the universe. You would want to know <em>why</em>. θ_QCD is that pencil. The Standard Model has no explanation for this extraordinary balance.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 2: The Standard "Solution" ═══ -->
+    <section class="lesson-section" id="axion">
+      <h2>The Standard Answer: The Axion (and Its Problems)</h2>
+      <p>
+        In 1977, Roberto Peccei and Helen Quinn proposed a solution: add a new global symmetry
+        U(1)_PQ that spontaneously breaks and produces a new particle — the <em>axion</em>.
+        The axion dynamically relaxes θ_QCD to zero, like a ball rolling to the bottom of a bowl.
+      </p>
+
+      <div class="compare-grid">
+        <div class="card">
+          <div class="card-header" style="color: var(--cert-lean)">Why the axion is clever</div>
+          <div class="card-body">
+            <ul style="padding-left:1.25rem;line-height:2;margin:0">
+              <li>The axion field settles to a value that exactly cancels θ_QCD</li>
+              <li>The mechanism is mathematically consistent</li>
+              <li>Axions are also a dark matter candidate</li>
+            </ul>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header" style="color: var(--cert-conj)">Why the axion is unsatisfying</div>
+          <div class="card-body">
+            <ul style="padding-left:1.25rem;line-height:2;margin:0">
+              <li>50+ years of searching: no axion found</li>
+              <li>Adds a new unexplained symmetry U(1)_PQ</li>
+              <li>Adds a new free parameter (the PQ breaking scale)</li>
+              <li>Replaces one mystery with another</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin:1rem 0;background:rgba(245,158,11,0.06);border-color:var(--accent)">
+        <div class="card-body">
+          <p style="margin:0"><strong>The key question:</strong> Is there a <em>structural</em> reason, built into the mathematics of the theory itself, that forces θ = 0? A reason that needs no new particle?</p>
+          <p style="margin:0.5rem 0 0;font-weight:600;color:var(--accent)">The GTE answer is: yes.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 3: The GTE Answer ═══ -->
+    <section class="lesson-section" id="f21-answer">
+      <h2>The GTE Answer: F₂₁ Group Theory Forbids θ ≠ 0</h2>
+
+      <h3>What is F₂₁?</h3>
+      <p>
+        As established in L18, the symmetry group of the GTE polynomial is the Frobenius group
+        F₂₁ = ℤ₇ ⋊ ℤ₃. This is also the MDL-minimal color group — the discrete arithmetic
+        skeleton of the strong force.
+      </p>
+      <p>
+        In the Standard Model, the color group is SU(3), which has a rich vacuum structure
+        that <em>admits</em> instantons — the topological configurations that θ_QCD couples to.
+        F₂₁ has a fundamentally different structure. Three independent algebraic properties
+        each independently forbid a nonzero θ_QCD.
+      </p>
+
+      <div class="card" style="margin:1rem 0;background:rgba(245,158,11,0.06);border-color:var(--accent)">
+        <div class="card-body">
+          <p style="margin:0;font-weight:600">Result: θ_QCD = 0 exactly from F₂₁ group theory.</p>
+          <p style="margin:0.5rem 0 0;font-size:0.875rem;color:var(--text-secondary)">
+            Three independent machine-certified proofs, each with zero sorry.
+            Lean cert: <code>f21_theta_term_vanishes</code> (ugp-lean, CatAL)
+          </p>
+        </div>
+      </div>
+
+      <h3>The three independent proofs</h3>
+      <p>Click each proof to expand it:</p>
+
+      <div class="proof-accordion">
+
+        <div class="proof-item" id="proof1">
+          <div class="proof-header" onclick="toggleProof('proof1')">
+            <div class="proof-num">1</div>
+            <div class="proof-title">Trivial Centre — Group Theory</div>
+            <span class="proof-toggle">›</span>
+          </div>
+          <div class="proof-body">
+            <p>
+              <strong>The centre</strong> of a group is the set of elements that commute with everything else.
+              In SU(3), the centre is ℤ₃ (three elements), and this non-trivial centre is precisely
+              what makes instanton configurations possible.
+            </p>
+            <p>
+              In F₂₁, the centre is <em>trivial</em> — it contains only the identity element:
+              $Z(F_{21}) = \{e\}$.
+            </p>
+            <p>
+              For the θ term to contribute, the gauge group must have non-contractible holonomy
+              in the vacuum sector — the structure that instantons need. A group with trivial centre
+              has no such non-contractible holonomy. No instantons exist in the F₂₁ color sector,
+              so there is nothing for θ to couple to.
+            </p>
+            <div class="example-box">
+              <div class="example-header">Analogy</div>
+              <p style="margin:0">Instantons are like loops in a city with unavoidable roundabouts. If the city has no roundabouts (trivial centre → trivial fundamental group in the relevant sector), there are no unavoidable loops, and the topological winding number is always zero.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="proof-item" id="proof2">
+          <div class="proof-header" onclick="toggleProof('proof2')">
+            <div class="proof-num">2</div>
+            <div class="proof-title">Rational Phase — Representation Theory</div>
+            <span class="proof-toggle">›</span>
+          </div>
+          <div class="proof-body">
+            <p>
+              The θ term produces CP violation through a complex phase in the path integral measure.
+              For this phase to be CP-violating, it must be irrational (or more precisely, it must
+              not be an algebraic integer).
+            </p>
+            <p>
+              F₂₁ only produces phases that are algebraic integers — rational combinations of roots of
+              unity. All characters of F₂₁ are algebraic integers. An algebraic phase cannot represent
+              an irrational θ. Therefore θ_QCD must be zero.
+            </p>
+            <p>
+              This proof does not invoke group topology — it is purely representation-theoretic.
+              It is a second, entirely independent reason for θ = 0.
+            </p>
+          </div>
+        </div>
+
+        <div class="proof-item" id="proof3">
+          <div class="proof-header" onclick="toggleProof('proof3')">
+            <div class="proof-num">3</div>
+            <div class="proof-title">Zero Character Sum — Colour-Singlet Sector</div>
+            <span class="proof-toggle">›</span>
+          </div>
+          <div class="proof-body">
+            <p>
+              The θ term requires a nonzero trace over the gauge group representation:
+              tr(F^μν F̃_μν) must be nonzero in the colour-singlet sector for θ to have
+              physical effect.
+            </p>
+            <p>
+              For F₂₁, the sum over all irreducible characters in the colour-singlet
+              representation is exactly zero. This is a direct consequence of the Frobenius
+              character table structure — the sum telescopes to zero by the orthogonality
+              of characters in a Frobenius group.
+            </p>
+            <p>
+              Zero trace → zero contribution from the θ term → θ_QCD has no physical effect,
+              which is equivalent to θ_QCD = 0.
+            </p>
+            <p class="small" style="color:var(--text-secondary);margin-top:0.75rem">
+              This is the third independent proof, established purely from the character theory
+              of Frobenius groups.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="card" style="margin:1.5rem 0;background:rgba(34,197,94,0.06);border-color:var(--cert-lean)">
+        <div class="card-body">
+          <p style="margin:0"><strong>Three proofs, zero assumptions:</strong> Each of the three proofs above
+          is independently machine-certified in Lean 4 with zero sorry. They use three different branches
+          of algebra (group topology, representation theory, character theory) and all arrive at the same
+          conclusion: θ_QCD = 0 exactly.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 4: No Axion ═══ -->
+    <section class="lesson-section" id="no-axion">
+      <h2>The Falsifiable Prediction: No Axion</h2>
+      <p>
+        The GTE resolution of the strong CP problem carries a sharp experimental consequence:
+        <strong>no axion exists, and none will be found</strong>.
+      </p>
+      <p>
+        In the axion framework, the axion exists as a physical particle — it was invented
+        precisely to do the relaxation job. In the GTE framework, θ = 0 is structural.
+        There is no dynamical relaxation, no new symmetry, and no new particle.
+      </p>
+
+      <div class="falsify-box">
+        <h3>Falsifiability</h3>
+        <p>
+          GTE predicts the strong CP problem is resolved by the algebraic structure of F₂₁ —
+          not by a new particle. This is a testable claim:
+        </p>
+        <ul style="padding-left:1.25rem;line-height:2;margin:0.75rem 0 0">
+          <li>If an axion is detected in ADMX, HAYSTAC, BabyIAXO, or any future experiment,
+              <strong>GTE is refuted in this sector</strong></li>
+          <li>If no axion is found (consistent with 50+ years of null results so far),
+              the GTE structural explanation gains further credibility</li>
+        </ul>
+        <p style="margin-top:0.75rem;font-size:0.875rem;color:var(--text-tertiary)">
+          A theory that makes no falsifiable predictions is not science. GTE makes a specific,
+          checkable prediction here: no axion.
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══ Section 5: Connection to L18 ═══ -->
+    <section class="lesson-section" id="connection">
+      <h2>The Connection to the Rest of the Story</h2>
+      <p>
+        The strong CP proof relies directly on the fact that the MDL-minimal color group
+        is F₂₁, not SU(3). This was established in L18 (The Four Forces).
+      </p>
+      <p>
+        The chain is: MDL selects the 19-bit polynomial → the polynomial has symmetry group F₂₁
+        → F₂₁ has trivial centre → no instantons → θ_QCD = 0.
+      </p>
+      <p>
+        Every step in this chain is machine-certified. The strong CP problem is not "solved"
+        by inventing new physics — it simply does not arise in a theory whose color symmetry
+        has the algebraic structure of F₂₁.
+      </p>
+
+      <table class="data-table" style="margin-top:1rem">
+        <thead><tr><th>Framework</th><th>Color group</th><th>Instanton problem</th><th>θ = 0?</th><th>New particle needed?</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Standard Model</td><td>SU(3) (postulated)</td><td>Yes — exists</td>
+            <td style="color:var(--cert-conj)">Not forced</td>
+            <td>Yes — axion (undetected)</td>
+          </tr>
+          <tr>
+            <td>GTE</td><td>F₂₁ (derived by MDL)</td><td>No — trivial centre</td>
+            <td style="color:var(--cert-lean)">Yes — structural theorem</td>
+            <td>No</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- See also -->
+    <div class="see-also">
+      <h2>See Also</h2>
+      <div class="see-also-group">
+        <div class="see-also-label">Lean 4 proofs (ugp-lean)</div>
+        <ul class="source-list">
+          <li><code>f21_theta_term_vanishes</code> — θ_QCD = 0 from F₂₁ structure (CatAL)</li>
+          <li><code>algebraic_necessity_master_bundle</code> — MDL selection of F₂₁</li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Source tutorial (PDF)</div>
+        <ul class="source-list">
+          <li><a href="https://doi.org/10.5281/zenodo.20657902" target="_blank" rel="noopener">Why the Strong CP Problem Is Solved: θ_QCD = 0 from F₂₁ Group Theory ↗</a></li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Cross-path connection</div>
+        <ul class="source-list">
+          <li><a href="../L18_four_forces/index.html">L18: The Four Forces</a> — F₂₁ as the polynomial symmetry group</li>
+        </ul>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ═══ Lesson Footer Navigation ═══ -->
+  <div class="page-wrapper">
+    <footer class="lesson-footer">
+      <a href="../L19_weinberg_alpha/index.html" class="nav-btn nav-btn--prev">← L19: Weinberg Angle & α</a>
+      <a href="../L21_master_quadratic/index.html" class="nav-btn nav-btn--next">L21: The Master Quadratic →</a>
+    </footer>
+  </div>
+
+  <!-- Math -->
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})">
+  </script>
+
+  <script src="../../common/interactive.js"></script>
+  <script src="../../common/nav.js"></script>
+  <script>
+    const LEAN_REFS = {
+      "f21_theta_term_vanishes": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/SylowIndexCouplingHierarchy.lean"
+      },
+      "algebraic_necessity_master_bundle": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/AlgebraicNecessityTheorem.lean"
+      }
+    };
+
+    function toggleProof(id) {
+      const item = document.getElementById(id);
+      item.classList.toggle('open');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      autoRenderLeanBadges(LEAN_REFS);
+    });
+  </script>
+</body>
+</html>

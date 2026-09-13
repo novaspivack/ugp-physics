@@ -1,0 +1,115 @@
+experiments:
+  # Core integrity and bias detection
+  - name: negative_control_bias
+    inputs:
+      runs: ["UGP_discovery_lab_runs/**/experiment_results.json"]
+    integrity:
+      fail_on_warning: true
+      require_real_data: true
+    report:
+      export_md: true
+      export_json: true
+
+  # Independent alpha* pipelines
+  - name: rg_fixedpoint_variational
+    inputs:
+      runs: ["UGP_discovery_lab_runs/**/LE_*_summary.json"]
+    variational:
+      win: 64
+      stride: 16
+      lambda_drift: 1.0
+      alpha_bounds: [-0.5, 0.5]
+      tol: 1.0e-8
+    integrity:
+      fail_on_warning: true
+      require_real_data: true
+    report:
+      export_md: true
+      export_json: true
+
+  - name: rg_fixedpoint_spectral
+    inputs:
+      runs: ["UGP_discovery_lab_runs/**/LE_*_summary.json"]
+    integrity:
+      fail_on_warning: true
+      require_real_data: true
+    report:
+      export_md: true
+      export_json: true
+
+  # Claims gate system - all three validation tests
+  - name: derivation_consistency
+    inputs:
+      sourceA:
+        - "UGP_discovery_lab_runs/**/rg_fixedpoint_variational_summary.json"
+        - "UGP_discovery_lab_runs/**/rg_fixedpoint_spectral_summary.json"
+      sourceB:
+        - "UGP_discovery_lab_runs/**/rg_sweep_summary.json"
+    fit:
+      tol_abs: 1.0e-4
+      min_pairs: 20
+    integrity:
+      fail_on_warning: true
+      require_real_data: true
+    report:
+      export_md: true
+      export_json: true
+
+  - name: persistence_cv
+    inputs:
+      runs:
+        - "UGP_discovery_lab_runs/**/rg_sweep_summary.json"
+    cv:
+      K: 5
+      cv_max_delta: 1.0e-4
+    integrity:
+      fail_on_warning: true
+      require_real_data: true
+    report:
+      export_md: true
+      export_json: true
+
+  - name: null_surrogates
+    inputs:
+      runs:
+        - "UGP_discovery_lab_runs/**/rg_sweep_summary.json"
+    tests:
+      n_perm: 500
+      p_thresh: 0.01
+    integrity:
+      fail_on_warning: true
+      require_real_data: true
+    report:
+      export_md: true
+      export_json: true
+
+  # Equivalence testing
+  - name: equivalence_test_alpha
+    inputs:
+      runs:
+        - "UGP_discovery_lab_runs/**/rg_fixedpoint_variational_summary.json"
+        - "UGP_discovery_lab_runs/**/rg_fixedpoint_spectral_summary.json"
+        - "UGP_discovery_lab_runs/**/rg_sweep_summary.json"
+    equivalence:
+      delta: 1.0e-4
+      candidates:
+        - { name: "sin_pi_37", expr: "sin(pi/37)" }
+        - { name: "cos_pi_n_minus_1", expr: "cos(pi/n)-1", n_vals: [6,8,10,12,37,42] }
+        - { name: "halfsec_pi_n", expr: "1/(2*cos(pi/n))", n_vals: [6,8,10,12,37,42] }
+    integrity:
+      fail_on_warning: true
+      require_real_data: true
+    report:
+      export_md: true
+      export_json: true
+
+  # Final claim guard
+  - name: claim_guard
+    inputs:
+      runs: ["UGP_discovery_lab_runs/**/experiment_results.json"]
+    integrity:
+      fail_on_warning: true
+      require_real_data: true
+    report:
+      export_md: true
+      export_json: true

@@ -1,0 +1,222 @@
+% P45 Figure: holographic DOF — full-page three-pane layout
+\begin{figure}[p]
+\centering
+\vspace*{0.15cm}
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+  x=0.52cm, y=0.52cm,
+  every node/.style={font=\small},
+]
+  \tikzset{
+    pane/.style={draw,rounded corners=6pt,line width=0.8pt,inner sep=0pt},
+    paneTitle/.style={font=\normalsize,anchor=north west,align=left},
+    tapeLabel/.style={font=\small,anchor=west,align=left},
+    clockLabel/.style={font=\scriptsize,anchor=west,align=left},
+  }
+
+  % ---- layout constants (all panes share half-width \W, centred at x=0) ----
+  \def\W{21.0}           % half-width — full span 42 tikz units; scaled to \textwidth
+  \def\gapV{3.0}          % vertical gap between regions
+  \def\gapH{4.5}          % horizontal gap between (b) and (c)
+  \pgfmathsetmacro{\bLeft}{-\W}
+  \pgfmathsetmacro{\bRight}{-\gapH/2}
+  \pgfmathsetmacro{\cLeft}{\gapH/2}
+  \pgfmathsetmacro{\cRight}{\W}
+
+  % pane (a) tape geometry: label column + centred rails (~75% of inner width)
+  \pgfmathsetmacro{\labelX}{-\W+0.65}
+  \pgfmathsetmacro{\tapeSpan}{0.75*(2*\W-9.0)}
+  \pgfmathsetmacro{\tapeL}{-\tapeSpan/2}
+  \pgfmathsetmacro{\tapeR}{\tapeSpan/2}
+  \pgfmathsetmacro{\timeTip}{\tapeR+1.0}
+
+  % ===========================================================
+  % Pane (a): three spatial tapes + shared clock
+  % ===========================================================
+  \def\aTop{38.0}
+  \def\aBot{18.5}
+  \draw[pane,fill=blue!5] (-\W,\aBot) rectangle (\W,\aTop);
+  \node[paneTitle] at (-\W+0.55,\aTop-0.45)
+    {\textbf{(a)} three-tape CMCA --- \textbf{actual architecture}};
+
+  % bottom of (a): full-width dual-clock inset (anchored low inside taller pane)
+  \pgfmathsetmacro{\dualInsetBot}{\aBot+0.38}
+  \pgfmathsetmacro{\dualInsetTop}{\aBot+4.75}
+  \draw[pane,fill=white] ({-\W+0.4},\dualInsetBot) rectangle ({\W-0.4},\dualInsetTop);
+  \node[font=\scriptsize,anchor=north west] at ({-\W+0.65},\dualInsetTop-0.22)
+    {\textbf{Dual clocks per cell}};
+  \node[font=\scriptsize,anchor=west] at ({-\W+0.65},\dualInsetBot+1.62)
+    {each tape $=$ outer$_{+}$/outer$_{-}$/inner~$\tau$};
+  \node[font=\scriptsize,anchor=west] at ({-\W+0.65},\dualInsetBot+0.88)
+    {(inner clock local; not the top bus)};
+  \node[font=\scriptsize,anchor=center] at (0,\dualInsetBot+2.05) {
+    \tikz[baseline=-0.55ex,x=0.38cm,y=0.38cm,every node/.style={font=\scriptsize}]{
+      \draw[gray!70!black] (0,1.05) -- (3.15,1.05);
+      \foreach \i in {0,...,6} {
+        \draw (\i*0.45,0.96) -- (\i*0.45,1.14);
+      }
+      \node[anchor=west] at (3.25,1.05) {inner~$\tau$: every step};
+      \draw[gray!70!black] (0,0) -- (3.15,0);
+      \foreach \i in {0,2,4} {
+        \fill[black] (\i*0.45,0) circle (0.09);
+      }
+      \node[anchor=west] at (3.25,0) {gate $\to$ outer + $\tau_c^{\rm out}$};
+    }
+  };
+  \node[font=\scriptsize,anchor=east,align=right,text width=9.5cm]
+    at ({\W-0.65},\dualInsetBot+1.62)
+    {shared outer $\tau_c^{\rm out}$: DPP simultaneity\\[2pt]
+     SR: $\tau_{\rm proper}/\tau_{\rm lab}=3/7$};
+
+  \pgfmathsetmacro{\tapeTop}{\aTop-2.9}
+  \pgfmathsetmacro{\tapeBot}{\dualInsetTop+1.25}
+  \pgfmathsetmacro{\tapeStep}{(\tapeTop-\tapeBot)/3}
+  \pgfmathsetmacro{\yClock}{\tapeTop}
+  \pgfmathsetmacro{\yZ}{\tapeTop-\tapeStep}
+  \pgfmathsetmacro{\yY}{\tapeTop-2*\tapeStep}
+  \pgfmathsetmacro{\yX}{\tapeBot}
+
+  \foreach \i in {0,...,13} {
+    \pgfmathsetmacro{\dotX}{\tapeL+\i*(\tapeR-\tapeL)/13}
+    \fill[black] (\dotX,\yClock) circle (3pt);
+    \draw[ugparr,dashed,gray!70!black] (\dotX,{\yClock-0.15}) -- (\dotX,{\yZ+0.15});
+  }
+  \draw[very thick,dashed,black] (\tapeL,\yClock) -- (\tapeR,\yClock);
+  \node[clockLabel] at (\labelX,\yClock) {shared outer clock $\tau_c^{\rm out}$};
+  \draw[ugparr] (\tapeR,\yClock) -- (\timeTip,\yClock)
+    node[right,font=\scriptsize,inner sep=1pt] {lab time};
+
+  \draw[very thick,blue!60] (\tapeL,\yZ) -- (\tapeR,\yZ);
+  \node[tapeLabel] at (\labelX,\yZ) {tape~z};
+  \draw[very thick,green!50!black] (\tapeL,\yY) -- (\tapeR,\yY);
+  \node[tapeLabel] at (\labelX,\yY) {tape~y};
+  \draw[very thick,orange!70!black] (\tapeL,\yX) -- (\tapeR,\yX);
+  \node[tapeLabel] at (\labelX,\yX) {tape~x};
+  \foreach \i/\c in {0/blue!40,1/red!40,2/green!40,3/orange!40,4/purple!40,5/blue!40,6/red!40,7/green!40,8/blue!40,9/red!40,10/green!40,11/orange!40,12/purple!40,13/blue!40} {
+    \pgfmathsetmacro{\dotX}{\tapeL+\i*(\tapeR-\tapeL)/13}
+    \fill[\c] (\dotX,\yZ) circle (3.5pt);
+    \fill[\c] (\dotX,\yY) circle (3.5pt);
+    \fill[\c] (\dotX,\yX) circle (3.5pt);
+  }
+
+  % sync column + dual-clock / SR annotation (DPP simultaneity + gating)
+  \pgfmathsetmacro{\syncX}{\tapeL+7*(\tapeR-\tapeL)/13}
+  \draw[dashed,very thick,gray!70!black] (\syncX,{\yX-0.35}) -- (\syncX,{\yClock+0.35});
+  \node[font=\scriptsize,gray!70!black,anchor=north] at (\syncX,{\yX-0.42}) {index~$p$};
+
+  \node[font=\small,anchor=east] at (\W-0.65,\aTop-1.05)
+    {$|\mathcal{S}_{\rm 3\text{-}tape}| = 7^{3L}$ \quad $O(L)$ per axis};
+
+  % ===========================================================
+  % Ratio strip
+  % ===========================================================
+  \pgfmathsetmacro{\rTop}{\aBot-\gapV}
+  \pgfmathsetmacro{\rBot}{\rTop-4.2}
+  \draw[pane,fill=white] (-\W,\rBot) rectangle (\W,\rTop);
+  \node[font=\small,anchor=north,align=center,text width=24cm] at (0,\rTop-0.55)
+    {\textbf{State-space ratio} \;(compares panels~(a) and~(b); not labels on tape cells)};
+  \node[font=\small] at (0,{(\rTop+\rBot)/2-0.85})
+    {$\dfrac{\log|\mathcal{S}_{\rm 3\text{-}tape}|}{\log|\mathcal{S}_{\rm 3D\,lattice}|}
+      = \dfrac{3L}{L^3} \;\xrightarrow{L\to\infty}\; 0$};
+
+  % ===========================================================
+  % Bottom row: tall panes (b) and (c)
+  % ===========================================================
+  \pgfmathsetmacro{\bTop}{\rBot-\gapV}
+  \def\bBot{-3.0}        % bottom row pane height
+
+  % ---- Pane (b) ----
+  \draw[pane,fill=gray!8] (\bLeft,\bBot) rectangle (\bRight,\bTop);
+  \node[paneTitle,font=\small,text=gray!70!black,text width=7.5cm] at (\bLeft+0.55,\bTop-0.45)
+    {\textbf{(b)} direct 3D CA\\\textbf{--- not used}};
+  \pgfmathsetmacro{\bCx}{(\bLeft+\bRight)/2}
+  \pgfmathsetmacro{\bCy}{(\bBot+\bTop)/2-0.55}
+  \begin{scope}[shift={(\bCx-2.3,\bCy-2.05)},opacity=0.45,scale=1.12]
+    \foreach \i in {0,...,8} {
+      \foreach \j in {0,...,8} {
+        \foreach \k in {0,...,8} {
+          \fill[gray] (\i*0.40+\k*0.17,\j*0.40+\k*0.25) circle (2.1pt);
+        }
+      }
+    }
+    \draw[red!70!black,line width=2.4pt] (0.05,0.05) -- (4.4,3.9);
+    \draw[red!70!black,line width=2.4pt] (4.4,0.05) -- (0.05,3.9);
+  \end{scope}
+  \node[font=\small,align=left,gray!70!black,anchor=south west,text width=6.5cm]
+    at (\bLeft+0.55,\bBot+0.55)
+    {$|\mathcal{S}_{\rm 3D\,lattice}| = 7^{L^3}$\\[4pt]$O(L^3)$ naive volume};
+
+  % ---- Pane (c) ----
+  \draw[pane,fill=green!5] (\cLeft,\bBot) rectangle (\cRight,\bTop);
+  \node[paneTitle,font=\small,text width=9.5cm] at (\cLeft+0.5,\bTop-0.45)
+    {\textbf{(c)} emergent $3{+}1$D ---\\\textbf{coordination at $\tau_c^{\rm out}$}};
+
+  \pgfmathsetmacro{\cPaneW}{\cRight-\cLeft}
+  \pgfmathsetmacro{\cPaneMid}{(\cLeft+\cRight)/2}
+  \pgfmathsetmacro{\cTapeL}{\cPaneMid-3.4}
+  \pgfmathsetmacro{\cTapeR}{\cPaneMid-0.2}
+  \pgfmathsetmacro{\cSyncX}{\cPaneMid-1.9}
+  \pgfmathsetmacro{\cyZ}{\bTop-4.2}
+  \pgfmathsetmacro{\cyY}{\cyZ-2.0}
+  \pgfmathsetmacro{\cyX}{\cyZ-4.0}
+
+  \draw[very thick] (\cTapeL,\cyZ) -- (\cTapeR,\cyZ);
+  \node[font=\small,anchor=east] at (\cTapeL-0.2,\cyZ) {tape~z};
+  \foreach \i in {0,...,5} {
+    \pgfmathsetmacro{\dotX}{\cTapeL+\i*(\cTapeR-\cTapeL)/5}
+    \fill[black] (\dotX,\cyZ) circle (3.2pt);
+  }
+  \draw[very thick] (\cTapeL,\cyY) -- (\cTapeR,\cyY);
+  \node[font=\small,anchor=east] at (\cTapeL-0.2,\cyY) {tape~y};
+  \foreach \i in {0,...,5} {
+    \pgfmathsetmacro{\dotX}{\cTapeL+\i*(\cTapeR-\cTapeL)/5}
+    \fill[black] (\dotX,\cyY) circle (3.2pt);
+  }
+  \draw[very thick] (\cTapeL,\cyX) -- (\cTapeR,\cyX);
+  \node[font=\small,anchor=east] at (\cTapeL-0.2,\cyX) {tape~x};
+  \foreach \i in {0,...,5} {
+    \pgfmathsetmacro{\dotX}{\cTapeL+\i*(\cTapeR-\cTapeL)/5}
+    \fill[black] (\dotX,\cyX) circle (3.2pt);
+  }
+  \draw[dashed,very thick,gray] (\cSyncX,{\cyX-0.45}) -- (\cSyncX,{\cyZ+0.45});
+  \node[font=\small,gray,anchor=north] at (\cSyncX,{\cyX-0.5}) {$p$};
+
+  \pgfmathsetmacro{\cBoxMid}{(\cyZ+\cyX)/2}
+  \pgfmathsetmacro{\cEpointX}{\cPaneMid+1.8}
+  \node[draw,rounded corners=3pt,fill=yellow!12,inner sep=7pt,
+        font=\scriptsize,align=center,anchor=west]
+    (epoint) at (\cEpointX,\cBoxMid)
+    {emergent point\\[3pt]$(p;\,w_x,w_y,w_z)$};
+  \draw[ugparr,very thick] (\cTapeR+0.5,\cBoxMid) -- (epoint.west);
+
+  \node[font=\scriptsize\itshape,align=left,anchor=south west,text width=9.5cm]
+    at (\cLeft+0.55,\bBot+0.45)
+    {volume is \emph{read out} at each shared clock tick,\\
+     not stored as $L^3$ voxels};
+
+  % ===========================================================
+  % Footer
+  % ===========================================================
+  \pgfmathsetmacro{\fTop}{\bBot-\gapV}
+  \pgfmathsetmacro{\fBot}{\fTop-2.6}
+  \draw[pane,fill=orange!8] (-\W,\fBot) rectangle (\W,\fTop);
+  \node[font=\small,align=center] at (0,{(\fTop+\fBot)/2})
+    {gravity from cubic term $-w_x w_y w_z$: all three tapes non-vacuum at~$p$};
+\end{tikzpicture}%
+}%
+\vspace*{0.15cm}
+\caption{Holographic information structure of the three-tape CMCA.
+  \textbf{(a)}~Three one-dimensional arrays plus a shared outer clock
+  $\tau_c^{\rm out}$ specify the state ($|\mathcal{S}|=7^{3L}$).
+  Each tape is a full single-tape CMCA (outer$_{+}$, outer$_{-}$, inner~$\tau$):
+  the inner clock advances every micro-step, while outer layers and
+  $\tau_c^{\rm out}$ advance only on gate fire---giving proper time at
+  rate $\tau_{\rm proper}/\tau_{\rm lab}=3/7$ (special-relativistic time dilation).
+  \textbf{(b)}~A naive $L^3$ voxel lattice would require $7^{L^3}$ states and is \emph{not}
+  the architecture.
+  The ratio strip compares~(a) and~(b) state counts; it is not a label on individual tape cells.
+  \textbf{(c)}~Emergent $3{+}1$D spatial structure arises when the shared outer clock
+  synchronizes index~$p$ across tapes and correlates windings
+  $(w_x,w_y,w_z)$---coordination, not co-located storage.}
+\label{fig:holographic_dof}
+\end{figure}

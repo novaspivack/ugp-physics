@@ -1,0 +1,56 @@
+suite:
+  name: "Discovery II Suite"
+  description: "Second wave of UGP discovery experiments"
+  
+experiments:
+  - name: quarterlock_anchor
+    inputs: 
+      runs: ["UGP_discovery_lab_runs/**/LE_*_summary.json"]
+    fit: 
+      model: "kM = kG + alpha*kL"
+      target_value: "1/4"
+      tol_abs: 1e-6
+      min_points: 300
+
+  - name: dihedral_consistency
+    inputs: 
+      runs: ["UGP_discovery_lab_runs/**/dihedral_lock_*_summary.json"]
+    fit:
+      min_points: 300
+      min_r2: 0.997
+      bootstrap_samples: 200
+      pslq_max_denominator: 64
+      algebraic_basis: ["sqrt2","sqrt3","phi","sqrt(2+sqrt2)","(sqrt6+sqrt2)/2"]
+
+  - name: rg_sweep
+    rg:
+      iterations: 8
+      crop_policy: center
+      rescale_policy: normalize
+      tol_plane: 1e-3
+      tol_param: 1e-3
+      tol_cycle: 1e-4
+    param_grid:
+      seeds: [[1,73,823],[1,73,2137]]
+      windows: [10,11,12]
+      laws:
+        - { c_policy: mersenne, b_policy: fib,   a_policy: gte, mirror: d2 }
+        - { c_policy: repunit,  repunit_base: 3, b_policy: fib, a_policy: gte, mirror: d2 }
+
+  - name: noether_quadratic_scan
+    search: 
+      coeff_grid: [-2,-1,0,1,2]
+      max_hits: 10
+      tolerance_abs: 1e-8
+      sample_fraction: 0.5
+    inputs: 
+      runs: ["UGP_discovery_lab_runs/**/LE_*_summary.json"]
+      
+  run:
+    workers: 8
+    timeout: 3600
+    
+  report:
+    export_md: true
+    export_json: true
+    plots: true

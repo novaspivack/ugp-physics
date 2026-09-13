@@ -1,0 +1,38 @@
+experiment:
+  name: residual_quotient_formal
+  description: "Implements machine-checkable residual/quotient mapping that formalizes how local redundancies are removed by the topos/gauge quotient, leaving only orbit-invariant factors (Phase 10.2.4)."
+  inputs:
+    runs:
+      - "foundational_validation_results.json"  # For consistency with framework
+  analysis:
+    components:
+      - "pre_quotient_encoding"     # Two universal encoders implementation
+      - "topos_gauge_quotient"      # Quotient implementation
+      - "residual_grammar"         # Machine-checkable grammar
+      - "collapse_analysis"        # Information collapse analysis
+    validation_parameters:
+      tolerance: 1e-10             # Machine precision tolerance
+      encoder_types: ["elias_delta", "log_star"]  # Universal encoder types
+      quotient_method: "canonical_normalization"  # Quotient method
+    residual_factors:
+      wedge_factor_2:
+        exponent: 4
+        base: 2
+        description: "Discrete wedge factor 2^4"
+      wedge_factor_5:
+        exponent: 3
+        base: 5
+        description: "Discrete wedge factor 5^3"
+      S3_redundancy:
+        factor: 3
+        description: "S3 permutation gauge factor"
+  report:
+    export_md: true
+    export_json: true
+    plots: true                     # Generate token breakdown plots
+    csv_export: true               # Export token analysis tables
+  integrity:
+    fail_on_warning: true
+    require_real_data: false       # This is a formalization exercise
+    validate_machine_precision: true
+    check_quotient_correctness: true

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Z&#8327; Kink Field — Live Visualization</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+  <header>
+    <h1>Z<sub>7</sub> scalar kink field <span class="sub">&nbsp;·&nbsp; V(&Phi;) = (m&sup2;/49)(1 &minus; cos 7&Phi;) &nbsp;·&nbsp; m = 1776.86 MeV</span></h1>
+    <nav class="tabs">
+      <button id="tab-1d" class="active">1D kinks</button>
+      <button id="tab-2d">2D domains</button>
+      <button id="tab-3d">3D structure</button>
+    </nav>
+    <div id="readouts">
+      <span class="ro">t<b id="ro-time">0.00 fm/c</b></span>
+      <span class="ro">E<b id="ro-energy">—</b></span>
+      <span class="ro">&Delta;E/E<b id="ro-drift">—</b></span>
+      <span class="ro">kinks<b id="ro-kinks">0</b></span>
+      <span class="ro">winding<b id="ro-winding">+0</b></span>
+    </div>
+  </header>
+
+  <aside>
+    <div class="card" id="dynamics-card">
+      <h2>Dynamics</h2>
+      <div class="seg">
+        <button id="btn-pure" class="active pure">Pure (exact)</button>
+        <button id="btn-pert" class="pert">Perturbed (proxy)</button>
+      </div>
+      <div class="row" id="eta-row" style="margin-top:10px; display:none;">
+        <label>&eta;</label>
+        <input type="range" id="eta-slider" min="0.005" max="0.05" step="0.005" value="0.05">
+        <output id="eta-out">0.050</output>
+      </div>
+      <div class="mode-badge pure" id="mode-badge">
+        Pure sector: exactly integrable. Kinks always pass through each other
+        (phase shift only); kink&ndash;antikink pairs never annihilate; no radiation.
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Simulation</h2>
+      <div class="row">
+        <button class="ctl primary" id="btn-pause">Pause</button>
+        <button class="ctl" id="btn-step">Step</button>
+        <button class="ctl danger" id="btn-reset">Reset</button>
+      </div>
+      <div class="row">
+        <label>speed</label>
+        <input type="range" id="speed-slider" min="0" max="100" step="1" value="100">
+        <output id="speed-out"></output>
+      </div>
+      <div class="row">
+        <label>zoom</label>
+        <input type="range" id="zoom-slider" min="0" max="100" step="1" value="0">
+        <output id="zoom-out"></output>
+      </div>
+      <div class="row" id="gas-row">
+        <label>gas N</label>
+        <input type="range" id="gas-slider" min="2" max="40" step="1" value="24">
+        <output id="gas-out">24</output>
+      </div>
+      <div class="row" id="gas-btn-row">
+        <button class="ctl" id="btn-gas" style="flex:1">Random gas</button>
+      </div>
+      <div class="row" id="preset2d-row" style="display:none;">
+        <label>preset</label>
+        <select id="preset2d-select" style="flex:2; background:#1d2433; color:var(--text); border:1px solid var(--border); border-radius:6px; padding:4px;">
+          <option value="random" selected>random (self-organizing)</option>
+          <option value="vacuum">blank vacuum (paint your own)</option>
+          <option value="bubble">single bubble</option>
+          <option value="particles">N particles (SM sectors)</option>
+          <option value="proton">proton (uud, illustrative)</option>
+          <option value="neutron">neutron (udd, illustrative)</option>
+          <option value="stripes">stripes (all 7 vacua)</option>
+          <option value="checker">checkerboard</option>
+          <option value="junction">triple junction</option>
+        </select>
+      </div>
+      <div class="row" id="particlecount2d-row" style="display:none;">
+        <label>particle N</label>
+        <input type="range" id="particlecount2d-slider" min="2" max="12" step="1" value="3">
+        <output id="particlecount2d-out">3</output>
+      </div>
+      <div class="row" id="reseed2d-row" style="display:none;">
+        <button class="ctl" id="btn-reseed" style="flex:1">Apply preset</button>
+      </div>
+      <div class="row" id="replay-row">
+        <label>replay</label>
+        <select id="replay-select" style="flex:2; background:#1d2433; color:var(--text); border:1px solid var(--border); border-radius:6px; padding:4px;">
+          <option value="">live simulation</option>
+          <option value="pure">24-kink gas (pure, reference run)</option>
+          <option value="perturbed">12-kink gas (&eta;=0.05, 3 annihilations)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card" id="hint-card-1d">
+      <h2>Controls</h2>
+      <div class="hint">
+        <b>Drag on the field strip / curve panel above</b> (not the spacetime
+        history panel below &mdash; that panel is history-only and does not
+        respond to clicks): add a kink at that point; drag distance sets its
+        velocity, shown live as a red/blue arrow while dragging.
+        <kbd>shift</kbd>+drag: antikink.<br>
+        <kbd>wheel</kbd> zoom (0.5&ndash;100 fm), <kbd>right-drag</kbd> /
+        <kbd>alt</kbd>+drag pan.<br>
+        Top strip: field colored by vacuum index; white curve: &Phi;(x).
+        Bottom panel: scrolling spacetime history (worldlines) &mdash; view
+        only, no interaction.
+      </div>
+    </div>
+
+    <div class="card" id="hint-card-2d" style="display:none;">
+      <h2>Controls</h2>
+      <div class="seg" style="margin-bottom:8px;">
+        <button id="btn-pan2d" class="active">Pan</button>
+        <button id="btn-paint2d">Paint</button>
+      </div>
+      <div id="paint2d-controls" style="display:none;">
+        <label style="display:block; margin-bottom:6px; color:var(--muted); font-size:12.5px;">paint vacuum</label>
+        <div class="legend-vacua" id="paint2d-palette" style="margin-bottom:8px;"></div>
+        <div class="row">
+          <label>brush</label>
+          <input type="range" id="brush2d-slider" min="1" max="15" step="1" value="5">
+          <output id="brush2d-out">5%</output>
+        </div>
+      </div>
+      <div class="hint">
+        <kbd>wheel</kbd> zoom always. In <b>Pan</b> mode, drag pans. In
+        <b>Paint</b> mode, drag stamps the selected vacuum color (right-drag
+        / <kbd>alt</kbd>+drag still pans). Use a preset above for a
+        ready-made scenario, or paint your own and watch it evolve.<br><br>
+        Note: even in the exactly-integrable pure sector, 2D domain walls are
+        <b>not</b> solitons like 1D kinks &mdash; integrability is special to
+        1+1D. Curved walls have tension-driven curvature flow, so domains
+        shrink/merge/annihilate from geometry alone, with or without the
+        &eta; perturbation. The clean pure-vs-perturbed contrast (transmit
+        vs. annihilate) is the 1D view. The <b>triple junction</b> preset is
+        the 2D analog of the open question of whether three walls meeting at
+        a point can carry genuinely localized excess energy.<br><br>
+        The <b>proton/neutron</b> presets place charge-correct quark
+        clusters (uud / udd) close together &mdash; illustrative, not a
+        derived bound state. This field has no color/gauge sector, so
+        nothing here actually confines them; watch whether they stay
+        clustered or drift apart under &Phi;-only dynamics alone.
+      </div>
+    </div>
+
+    <div class="card" id="stats-card-2d" style="display:none;">
+      <h2>Domain statistics</h2>
+      <div class="row"><label>domains</label><output id="stat-domains">&mdash;</output></div>
+      <div class="row"><label>largest domain</label><output id="stat-largest">&mdash;</output></div>
+      <div class="row"><label>wall-cell fraction</label><output id="stat-wall">&mdash;</output></div>
+      <div class="hint">Computed every ~2s on a 128&times;128 downsample via
+      connected-component flood fill; updates lag slightly behind the view.</div>
+    </div>
+
+    <div class="card" id="history-card-2d" style="display:none;">
+      <h2>Isolated-domain size vs. time</h2>
+      <canvas id="chart-domain-history" class="chart-canvas"></canvas>
+      <div class="row" style="margin-top:8px;">
+        <output id="domain-trend-readout" style="flex:1; text-align:left; white-space:normal;">collecting samples&hellip;</output>
+      </div>
+      <div class="row">
+        <button class="ctl" id="btn-reset-measurement" style="flex:1">Reset measurement</button>
+      </div>
+      <div class="hint">Tracks the largest domain <b>other than</b> the
+      background (area fraction, 0&ndash;100%) over time, sampled on the same
+      ~2s cadence as the statistics above, and fits a trend to it. Cleanest
+      with a single isolated domain (the <b>single bubble</b> preset) &mdash;
+      with several domains present, "largest non-background" can jump
+      between different bubbles as they evolve at different rates,
+      contaminating a clean single-object measurement. "Reset measurement"
+      clears the history and starts timing fresh without touching the
+      field, so you can re-time a clean window after painting or applying a
+      new preset.</div>
+    </div>
+
+    <div class="card" id="hint-card-3d" style="display:none;">
+      <h2>Controls</h2>
+      <div class="hint">
+        <label style="display:block; margin-bottom:6px; color:var(--muted);">structure</label>
+        <div class="seg" style="margin-bottom:10px;">
+          <button id="btn-wall3d" class="active">Single wall</button>
+          <button id="btn-junction3d">Triple junction</button>
+        </div>
+        <div id="sector3d-row">
+          <label style="display:block; margin-bottom:6px; color:var(--muted);">far-side vacuum (wall mode)</label>
+          <select id="sector3d-select" style="width:100%; background:#1d2433; color:var(--text); border:1px solid var(--border); border-radius:6px; padding:4px; margin-bottom:8px;"></select>
+        </div>
+        <button class="ctl" id="btn-reset3d" style="width:100%; margin-bottom:8px;">Reset view</button>
+        <kbd>drag</kbd> rotate, <kbd>wheel</kbd> zoom. Dragging pauses the
+        slow auto-orbit; it resumes automatically a few seconds after you let
+        go. The thin gray lines are a fixed spatial ruler (1/m tick spacing)
+        to make rotation legible &mdash; they are not part of the field.
+        This view shows a static illustration of the certified <b>extended</b>
+        structure (a domain wall, or three walls meeting along an axis) &mdash;
+        never a compact particle blob.
+      </div>
+    </div>
+
+    <div class="card" id="nogo-card-3d" style="display:none;">
+      <h2>Why not a compact particle?</h2>
+      <div class="hint" id="nogo-text"></div>
+    </div>
+
+    <div class="card">
+      <h2>Legend — vacua &amp; sectors</h2>
+      <div class="legend-vacua" id="legend-vacua"></div>
+      <table class="sectors">
+        <tr><th>w</th><th>particle sector</th><th>Q</th></tr>
+        <tbody id="sector-rows"></tbody>
+      </table>
+    </div>
+
+    <div class="card info">
+      <h2>What am I looking at?</h2>
+      <p>A real scalar field &Phi; with seven degenerate vacua
+      &Phi;<sub>k</sub> = 2&pi;k/7. A <b>kink</b> is a moving boundary between
+      two vacuum colors — width 1/m &asymp; 0.111 fm, rest mass
+      (8/49)m = <b>290.10 MeV</b>. Net winding (a Z<sub>7</sub> charge) maps
+      composite sectors to particle quantum numbers.</p>
+      <p><span class="lvl exact">EXACT</span> Pure sector: integrable dynamics —
+      collisions are always transmissive; no annihilation, no radiation.
+      Transient dips in the kink census during overlap are level-crossing
+      occlusion, not annihilation.</p>
+      <p><span class="lvl proxy">PROXY</span> Perturbed mode: an
+      integrability-breaking perturbation (double-sine-Gordon proxy,
+      PROVISIONAL). Slow kink&ndash;antikink pairs (v<sub>rel</sub> &#8818; 0.10
+      at &eta; = 0.05) capture into oscillating bions and decay by radiation —
+      genuine annihilation.</p>
+      <p><span class="lvl exact">PROVEN</span> 3D view: no compact,
+      finite-energy 3D particle exists in this field theory &mdash; two
+      general theorems rule out every tested shape.
+      GTE particles are Fock-space excitations certified by an
+      <b>extended</b> classical background instead (Lean-certified, zero
+      sorry). The view renders that certified extended
+      structure &mdash; a single domain wall, or three walls meeting along
+      an axis &mdash; as a static illustration only, never a claim of a
+      localized particle.</p>
+      <p>2D scalar sector: topological objects are domain <b>walls</b>, not
+      point particles.</p>
+    </div>
+
+    <div class="card" id="advanced-card">
+      <button class="advanced-toggle" id="btn-advanced-toggle" aria-expanded="false">
+        <span id="advanced-toggle-arrow">&#9656;</span> Advanced / Verification
+      </button>
+      <div id="advanced-body" style="display:none;">
+
+        <div class="adv-section">
+          <div class="row">
+            <label id="chk-exact-label" for="chk-exact">Show exact solution</label>
+            <input type="checkbox" id="chk-exact">
+          </div>
+          <div class="hint" id="exact-status"></div>
+          <div class="row" id="exact-residual-row" style="display:none;">
+            <label>residual max|&Phi;<sub>sim</sub>&minus;&Phi;<sub>exact</sub>|</label>
+            <output id="exact-residual-out">&mdash;</output>
+          </div>
+          <div class="hint">
+            1D pure sector only (exactly integrable): overlays
+            the closed-form Hirota N-soliton solution for the kinks currently on
+            the strip (dashed amber curve) on top of the simulated field, and
+            reports the live max discrepancy between them &mdash; small and
+            stable, not exactly zero, is the expected and correct result.
+            Disabled in Perturbed mode (no closed-form solution exists there),
+            above 10 active kinks (real-time performance limit), and for
+            degenerate configurations (equal velocities, or kinks placed too
+            close together).
+          </div>
+        </div>
+
+        <div class="adv-section">
+          <div class="row">
+            <label id="chk-scc-label" for="chk-scc">Explore: what if the SCC weren&rsquo;t satisfied?</label>
+            <input type="checkbox" id="chk-scc">
+          </div>
+          <div id="scc-body" style="display:none;">
+            <div class="row">
+              <label>m<sub>&phi;</sub></label>
+              <div class="scc-slider-wrap">
+                <input type="range" id="scc-slider" min="400" max="3600" step="0.01" value="1776.86">
+                <div class="scc-tick" id="scc-tick" title="real (SCC) value: 1776.86 MeV"></div>
+              </div>
+              <output id="scc-out">1776.86</output> MeV
+            </div>
+            <button class="ctl" id="btn-scc-reset" style="width:100%; margin:6px 0 10px;">Reset to SCC value (1776.86 MeV)</button>
+            <table class="sectors scc-table">
+              <tr><th>quantity</th><th>at slider m<sub>&phi;</sub></th><th>derived (real, SCC) value</th></tr>
+              <tbody id="scc-rows"></tbody>
+            </table>
+            <div class="hint" id="scc-verdict" style="margin-top:8px;"></div>
+            <div class="hint" style="margin-top:8px;">
+              The running simulation itself is shown at this hypothetical
+              m<sub>&phi;</sub>: the natural-unit field equation never
+              contains m<sub>&phi;</sub> (it is absorbed into the length/time
+              units), so this is not a re-run at an approximate value &mdash;
+              it is the literal, exact statement of scale covariance,
+              re-expressed in physical units (fm, fm/c, MeV) via the slider
+              value instead of the derived one. Watch the scale bar, the time
+              readout, and the energy readout change live.
+            </div>
+          </div>
+          <div class="hint" id="scc-off-hint">
+            m<sub>&phi;</sub> = m<sub>&tau;</sub> = 1776.86 MeV is a
+            <b>derived</b> result (the Self-Consistency Condition), not a
+            free parameter &mdash; enable this to see numerically why.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </aside>
+
+  <main>
+    <div class="view active" id="view-1d">
+      <div style="position:relative;"><canvas id="field-canvas"></canvas>
+        <div class="panel-caption">field strip · &Phi;(x) curve</div>
+      </div>
+      <div style="position:relative;"><canvas id="history-canvas"></canvas>
+        <div class="panel-caption">spacetime history (t &darr;)</div>
+      </div>
+    </div>
+    <div class="view" id="view-2d">
+      <canvas id="canvas-2d"></canvas>
+      <div class="overlay-label">2D scalar sector: topological objects are domain walls</div>
+    </div>
+    <div class="view" id="view-3d">
+      <canvas id="canvas-3d"></canvas>
+      <div class="overlay-label extended">Extended structure (illustrative) &middot;
+        no compact 3D particle exists in this field theory</div>
+    </div>
+  </main>
+</div>
+<script type="module" src="js/main.js?v=7"></script>
+</body>
+</html>

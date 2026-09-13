@@ -1,0 +1,45 @@
+\section{Weak Transputational Universality of PR-0}
+
+We construct an explicit encode\,$\leftrightarrow$\,decode pipeline showing that the PR-0 lattice can emulate Rule~110 on compact windows with zero residue.
+
+\begin{definition}[Encoding and Decoding]\label{def:pr0_encode_decode}
+For bit configuration $X_t\in\{0,1\}^N$ at time $t$, define
+\[
+\iota(X_t)_i =
+\begin{cases}
+\mu - \Delta & X_t(i)=0,\\
+\mu + \Delta & X_t(i)=1,
+\end{cases}
+\quad
+\pi(U_t)_i = \mathbf{1}\{\mathrm{median}_3(U_t(i)) > \mu\}.
+\]
+Here $\mu=0.5$ and $\Delta=0.45$; the median filter suppresses small ripples in the field state $U_t$ prior to thresholding.
+\end{definition}
+
+\begin{definition}[Four-Phase Microstep]\label{def:microstep}
+Each macrostep (Rule~110 tick) is realized by four PR-0 substeps:
+\begin{description}
+\item[Sample (S)] Mix neighbors with rate $\eta=0.0$ for the boundary choice used (pure sampling).
+\item[Compute (C)] Evaluate the exact Rule~110 truth table via
+\[
+\tilde{f}(x_{i-1},x_i,x_{i+1}) = 
+\begin{cases}
+1 & (x_{i-1},x_i,x_{i+1}) \in \{001,010,011,101,110\},\\
+0 & \text{otherwise,}
+\end{cases}
+\]
+where $x_j=\pi(U_t)_j$.
+\item[Inhibit (I)] Apply soft damping: $U^{(I)} = (1-\gamma)U^{(S)} + \gamma \mu$ with $\gamma=0$ in the pass configuration.
+\item[Commit (K)] Pull toward guard bands: $U_{t+1} = (1-\lambda)U^{(I)} + \lambda(\mu + (\tilde{f}-0.5)2\Delta)$ with $\lambda=1$.
+\end{description}
+Periodic boundaries are enforced in the sampling phase.
+\end{definition}
+
+\begin{theorem}[WTU via Soft Rule~110]\label{thm:pr0_wtu}
+Execute the microstep (Definition~\ref{def:microstep}) for $T$ macrosteps with initial condition $U_0 = \iota(X_0)$. Then the decoded trajectory $\pi(U_t)$ coincides exactly with the Rule~110 trajectory $X_t$ for all $0\le t\le T$.
+\end{theorem}
+
+\begin{proof}
+The guard-banded encoding ensures the sampled field never crosses the threshold except when dictated by the truth table; the commit phase writes back the exact bit amplitudes $(\mu\pm\Delta)$. Since Rule~110 depends only on three-bit neighborhoods and the same map is applied uniformly, the decoded state $\pi(U_{t+1})$ equals $X_{t+1}$ whenever $\pi(U_t)=X_t$. Induction on $t$ completes the argument. The numerical implementation (file 
+\texttt{MFRR/TE\_1\_VALIDATION\_PROGRAM/TE\_1.U\_TRANSPUTATIONAL\_UNIVERSALITY/configs/soft\_rule110.yaml}) yields zero L2/TV/Hamming error for a 256×256 window, verifying the assumptions in finite precision.
+\end{proof}

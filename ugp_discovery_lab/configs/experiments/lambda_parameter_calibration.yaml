@@ -1,0 +1,47 @@
+experiment:
+  name: lambda_parameter_calibration
+  description: "Calibrate parameters for improved Λ prediction accuracy"
+  inputs:
+    runs:
+      - "lambda_derivation_data.json"  # Uses Λ derivation data
+
+physics:
+  hubble_constant: 67.4  # km/s/Mpc
+  omega_lambda: 0.689
+  speed_of_light: 2.998e8  # m/s
+
+calibration:
+  target_accuracy_ratio: 1.0  # Target Λ_predicted/Λ_observed = 1.0
+  accuracy_tolerance: 0.1  # Within 10% of target
+  max_iterations: 100  # Maximum optimization iterations
+  
+  parameter_bounds:
+    scaling_factor: [0.01, 10.0]  # Scaling factor for residual length
+    encoder_weight: [0.1, 2.0]  # Weight for encoder calculation
+    quotient_threshold: [0.1, 0.9]  # Threshold for quotient operation
+    redundancy_factor: [1.0, 5.0]  # Factor for adding redundancy
+
+optimization:
+  method: "L-BFGS-B"  # Optimization method
+  convergence_tolerance: 1e-6  # Convergence tolerance
+  gradient_estimation: true  # Use gradient estimation
+
+validation:
+  improvement_threshold: 0.1  # Minimum 10% improvement required
+  convergence_required: true  # Require convergence for success
+  accuracy_required: true  # Require accuracy within tolerance
+
+report:
+  export_md: true
+  export_json: true
+  export_csv: true
+  plots: true
+  
+artifacts:
+  - "lambda_parameter_calibration_results.json"
+  - "parameter_optimization_history.csv"
+  - "accuracy_improvement_analysis.csv"
+  - "optimal_parameters_summary.csv"
+  - "plot_parameter_optimization_convergence.png"
+  - "plot_accuracy_ratio_improvement.png"
+  - "plot_parameter_sensitivity_analysis.png"

@@ -1,0 +1,70 @@
+# Configuration for UGP Yukawa/CKM/PMNS mixing matrix calculation
+# Research Question 1.2: Final implementation with HM/Δ² rigidity and Quarter-Lock face metric
+
+experiment:
+  name: ugp_yukawa_ckm_pmns
+  description: "UGP → Yukawas & CKM/PMNS mixing matrices from Elegant Kernel + Canonical GTE Triples"
+  inputs:
+    runs:
+      - "canonical_gte_triples.json"  # Uses canonical GTE triples
+
+# Options (minimal; no continuous knobs)
+options:
+  neutrino_model: "majorana"  # "majorana" (Takagi) or "dirac" (Hermitian Gram)
+  down_sector_permutation_policy: "optimize"  # "optimize" (scan 6 perms) or "fixed"
+  down_sector_perm_fixed: [0, 1, 2]  # used only if policy == "fixed"
+  pdg_targets_ckm: [0.2245, 0.041, 0.00365]  # |Vus|, |Vcb|, |Vub| for score logging
+
+# Elegant Kernel constants (exact where feasible)
+kernel_constants:
+  phi: 1.618033988749895  # golden ratio
+  k_L2: 0.013671875  # 7/512
+  k_gen2: -0.8090169943749475  # -phi/2
+  k_gen: 1.5707963267948966  # pi/2
+  k_a: 0.125  # 1/8
+  k_b: -1.5  # -3/2
+  k_c: 1.3333333333333333  # 4/3
+  k_M: -0.8056640625  # k_gen2 + 0.25*k_L2
+
+# Canonical GTE triples (Verifier V8 standard)
+canonical_triples:
+  leptons:
+    electron: [1, 73, 823]
+    muon: [9, 42, 1023]
+    tau: [5, 275, 65535]
+  up_quarks:
+    up: [5, 9, 275]
+    charm: [5, 275, 65535]
+    top: [76, 337920, -1]
+  down_quarks:
+    down: [9, 5, 42]
+    strange: [9, 186, 1023]
+    bottom: [5, 8191, 65535]
+  neutrinos:
+    electron_neutrino: [1, 1, 823]
+    muon_neutrino: [9, 1, 1023]
+    tau_neutrino: [5, 1, 65535]
+
+# Analysis parameters
+analysis:
+  face_weights_calculation: "harmonic_mean"  # HM rigidity
+  sector_weights_calculation: "delta_squared"  # Δ² rigidity
+  face_metric: "quarter_lock_adjacency"  # Quarter-Lock face metric
+  phase_source: "kernel_generational"  # only k_gen, k_gen2 phases
+  pdg_ordering: true  # enforce PDG row/col ordering
+
+# Output configuration
+output:
+  save_matrices: true
+  save_angles: true
+  save_eigenvalues: true
+  save_vectors: true
+  save_permutation_choice: true
+  format: "csv"  # csv, json, both
+
+# Validation
+validation:
+  unitary_check: true
+  pdg_ordering_check: true
+  eigenvalue_ordering: true
+  jarlskog_invariant_check: true

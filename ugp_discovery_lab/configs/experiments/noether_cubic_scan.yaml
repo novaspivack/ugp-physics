@@ -1,0 +1,19 @@
+experiment:
+  name: noether_cubic_scan
+  description: "Search for cubic Noether currents in real UGP data"
+  
+  inputs:
+    runs:
+      - "UGP_discovery_lab_runs/exp_*/results/reports/experiment_results.json"
+      - "UGP_discovery_lab_runs/exp_*/results/reports/*_results.json"
+  
+  search:
+    coeff_grid: [-1, 1]     # Binary coefficients for cubic terms to reduce combinations
+    tolerance_abs: 1e-8     # Absolute tolerance for conservation
+    sample_fraction: 0.1    # Fraction of data to sample for efficiency
+    max_hits: 5            # Maximum number of hits to report
+    max_combos_per_task: 1000  # Maximum combinations per chunk to avoid OOM
+  
+  integrity:
+    fail_on_warning: true
+    require_real_data: true

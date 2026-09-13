@@ -1,0 +1,29 @@
+experiments:
+  - name: derivation_consistency
+    config: configs/experiments/derivation_consistency.yaml
+    inputs:
+      sourceA: ["UGP_discovery_lab_runs/**/rg_sweep_summary.json"]
+      sourceB: ["UGP_discovery_lab_runs/**/kernel_fit_alpha_summary.json"]
+    fit: 
+      tol_abs: 1.0e-4
+      min_pairs: 20
+
+  - name: persistence_cv
+    config: configs/experiments/persistence_cv.yaml
+    inputs: 
+      runs: ["results/reports/rg_sweep_summary.json"]
+    cv: 
+      K: 5
+      cv_max_delta: 1.0e-4
+
+  - name: null_surrogates
+    config: configs/experiments/null_surrogates.yaml
+    inputs: 
+      runs: ["results/reports/rg_sweep_summary.json"]
+    tests: 
+      n_perm: 500
+      p_thresh: 0.01
+
+  - name: claim_guard
+    config: configs/experiments/claim_guard_alpha.yaml
+    claim_path: "claims/alpha_attractor.json"

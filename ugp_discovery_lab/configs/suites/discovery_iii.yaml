@@ -1,0 +1,77 @@
+suite:
+  name: discovery_iii
+  description: "Advanced UGP Discovery Suite - Phase III with integrity guardrails and real data analysis"
+  
+  experiments:
+    # Integrity and validation experiments
+    - name: negative_control_bias
+      config: configs/experiments/negative_control_bias.yaml
+      description: "Test integrity guardrails with deliberately biased generators"
+      
+    # Core discovery experiments  
+    - name: quarterlock_anchor
+      config: configs/experiments/quarterlock_real_data_test.yaml
+      description: "Quarter-Lock anchor validation on real UGP data"
+      
+    - name: dihedral_consistency
+      config: configs/experiments/dihedral_consistency.yaml
+      description: "Dihedral-Lock consistency with PSLQ analysis"
+      
+    - name: rg_sweep
+      config: configs/experiments/rg_sweep.yaml
+      description: "RG flow sweep across multiple policies"
+      
+    - name: lock_stability_phase2
+      config: configs/experiments/lock_stability_phase2.yaml
+      description: "Lock stability analysis with deeper windows"
+      
+    # Advanced analysis experiments
+    - name: noether_quadratic_scan
+      config: configs/experiments/noether_quadratic_scan.yaml
+      description: "Quadratic Noether current search"
+      
+    - name: noether_cubic_scan
+      config: configs/experiments/noether_cubic_scan.yaml
+      description: "Cubic Noether current search"
+      
+    - name: holographic_transducer
+      config: configs/experiments/holographic_transducer.yaml
+      description: "Holographic boundary-to-bulk reconstruction"
+      
+    - name: rg_long_cycles
+      config: configs/experiments/rg_long_cycles.yaml
+      description: "Long cycle detection in RG flow"
+      
+    # Information theory and statistical analysis
+    - name: info_theory_scan
+      config: configs/experiments/info_theory_scan.yaml
+      description: "Mutual information and transfer entropy analysis"
+      
+    - name: alpha_changepoint_scan
+      config: configs/experiments/alpha_changepoint_scan.yaml
+      description: "Change-point detection in alpha evolution"
+      
+    - name: permutation_tests
+      config: configs/experiments/permutation_tests.yaml
+      description: "Statistical significance testing via permutations"
+      
+    # Real data analysis
+    - name: real_data_analysis
+      config: configs/experiments/real_data_analysis_test.yaml
+      description: "Analysis of existing UGP experiment results"
+
+  execution:
+    workers: 8
+    timeout: 3600  # 1 hour timeout per experiment
+    retry_failed: true
+    max_retries: 2
+    
+  reporting:
+    generate_plots: true
+    include_provenance: true
+    integrity_badges: true
+    
+  integrity:
+    require_analysis_only: true
+    fail_on_warnings: true
+    validate_data_sources: true

@@ -1,0 +1,55 @@
+# SYNTHETIC CA DATA — NOT GTE TRIPLE EVOLUTION DATA
+# This experiment uses Rule-110 CA synthetic boundary/bulk data, NOT genuine
+# GTE trajectory data. Do NOT cite these results for the holographic claim.
+# The GTE-native re-run is COMP-P04-A: scripts/holographic_transducer_gte.py
+# (result: R² ≈ -9.4e9, holographic claim REMOVED — 2026-04-20).
+
+experiment:
+  name: holographic_transducer
+  description: "Boundary→bulk reconstruction from ridge/mirror data (SYNTHETIC CA DATA — NOT GTE)"
+  
+  # Boundary data generation
+  boundary_types:
+    - "ridge"      # Local maxima along evolution
+    - "mirror"     # Symmetric boundary conditions
+
+  # Seed and window parameters
+  seed_range: [42, 100, 200, 500]
+  window_sizes: [8, 10, 12]
+  evolution_steps: 50
+
+  # Transducer model types
+  transducer_models:
+    - "linear"        # Linear regression
+    - "quadratic"     # Quadratic features
+    - "neural_1layer" # Single hidden layer neural network
+
+  # Holographic analysis thresholds
+  holographic_threshold: 0.8
+  stability_threshold: 0.1
+
+  # Training parameters
+  training:
+    max_iterations: 1000
+    validation_split: 0.2
+    random_state: 42
+
+  # Per-task code uses synthetic boundary data from the config below. Legacy YAMLs used a glob for
+  # `LE_*_summary.json`, but the current lawful-evolution pipeline only ships `experiment_results.json`
+  # (no separate LE_* files in the archive). Pointing at bundled real GTE JSON keeps path checks honest.
+  inputs:
+    runs:
+      - "UGP_discovery_lab_runs/exp_20250917_112647/results/reports/experiment_results.json"
+      
+  filters:
+    min_steps: 32
+    min_points: 100
+    
+  run:
+    steps: 1000
+    window: 64
+    seed: [42, 173, 823]
+    
+  report:
+    export_md: true
+    export_json: true

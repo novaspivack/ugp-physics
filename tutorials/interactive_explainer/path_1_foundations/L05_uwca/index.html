@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L05: How the UWCA Works — UGP Physics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="../../common/style.css">
+  <style>
+    /* ── Tape cell rows ─────────────────────────────────────── */
+    .tape-row {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+      margin: 0.75rem 0;
+    }
+
+    .tape-cell {
+      width: 56px; height: 56px;
+      border-radius: 8px;
+      border: 1.5px solid var(--stroke-primary);
+      background: var(--bg-elevated);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.2rem;
+      font-weight: 700;
+      position: relative;
+    }
+
+    .tape-cell .cell-pos {
+      position: absolute;
+      bottom: -18px;
+      font-size: 0.65rem;
+      color: var(--text-tertiary);
+      font-weight: 400;
+    }
+
+    .tape-cell.active  { background: rgba(59,130,246,0.18); border-color: var(--accent); }
+    .tape-cell.wL      { border-color: #8B5CF6; background: rgba(139,92,246,0.12); }
+    .tape-cell.wC      { border-color: var(--accent); background: rgba(59,130,246,0.2); }
+    .tape-cell.wR      { border-color: #10B981; background: rgba(16,185,129,0.12); }
+    .tape-cell.result  { border-color: var(--cert-lean); background: rgba(34,197,94,0.15); }
+
+    .cell-wlabel {
+      position: absolute;
+      top: -20px;
+      font-size: 0.68rem;
+      font-weight: 700;
+    }
+
+    .wL .cell-wlabel { color: #8B5CF6; }
+    .wC .cell-wlabel { color: var(--accent); }
+    .wR .cell-wlabel { color: #10B981; }
+
+    /* ── Register table ─────────────────────────────────────── */
+    .reg-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      margin: 0.75rem 0;
+    }
+
+    .reg-table th {
+      padding: 6px 12px;
+      text-align: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+      border-bottom: 1px solid var(--stroke-primary);
+    }
+
+    .reg-table td {
+      padding: 7px 12px;
+      text-align: center;
+      border-bottom: 1px solid var(--stroke-secondary);
+    }
+
+    .reg-table tr:last-child td { border-bottom: none; }
+    .reg-table .changed { color: var(--accent); font-weight: 700; }
+    .reg-table .zero    { color: var(--text-tertiary); }
+    .reg-table .match   { color: var(--cert-lean); font-weight: 700; }
+    .reg-table .result-row td { background: rgba(34,197,94,0.07); }
+
+    /* ── Pass label ─────────────────────────────────────────── */
+    .pass-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--stroke-primary);
+      border-radius: var(--r-full);
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+
+    .pass-num {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+    }
+
+    /* ── Minterm list ────────────────────────────────────────── */
+    .minterm-grid {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 0.75rem 0;
+    }
+
+    .minterm-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      padding: 4px 10px;
+      background: rgba(59,130,246,0.1);
+      border: 1px solid rgba(59,130,246,0.25);
+      border-radius: var(--r-full);
+      color: var(--accent);
+    }
+
+    .minterm-pill.matched {
+      background: rgba(34,197,94,0.15);
+      border-color: rgba(34,197,94,0.35);
+      color: var(--cert-lean);
+      font-weight: 700;
+    }
+
+    /* ── Timeline arrows ─────────────────────────────────────── */
+    .time-arrow {
+      text-align: center;
+      color: var(--text-tertiary);
+      font-size: 1.4rem;
+      margin: 0.5rem 0;
+    }
+
+    .time-label {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      margin-bottom: 0.3rem;
+    }
+  </style>
+</head>
+<body style="--path-current: var(--path-1)">
+
+  <header class="site-header">
+    <a href="../../index.html" class="site-logo">UGP Physics</a>
+    <nav class="breadcrumb">
+      <a href="../../index.html">Tutorial Series</a>
+      <span class="bc-sep">›</span>
+      <a href="../index.html">Path 1: Foundations</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">L05: The UWCA</span>
+    </nav>
+  </header>
+
+  <main class="page-wrapper">
+
+    <!-- ═══ Lesson Header ═══ -->
+    <div class="lesson-header">
+      <div class="path-label">Path 1 — Foundations · Lesson 5 of 7</div>
+      <h1>How the UWCA Works</h1>
+      <p class="lesson-subtitle">
+        Four local passes. One sweep. One time step. 
+        And the UGP substrate becomes computationally universal.
+      </p>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:71%"></div>
+      </div>
+    </div>
+
+    <!-- ═══ Section 1: The Question ═══ -->
+    <section class="lesson-section" id="the-question">
+      <h2>The Question</h2>
+      <p>
+        In L04 you learned that the UWCA is intrinsic to the survivor space — 
+        its tiles are the natural building blocks of the space's topology, 
+        not machinery placed on top. But what does the UWCA actually <em>do</em> 
+        when it runs? How does a sweep of four local passes produce a new generation?
+      </p>
+      <p>
+        This lesson answers that question concretely — with actual register values, 
+        a complete worked example, and the theorem that guarantees it always works.
+      </p>
+    </section>
+
+    <!-- ═══ Section 2: The Setup ═══ -->
+    <section class="lesson-section" id="setup">
+      <h2>The Setup</h2>
+      <p>
+        Fix a tape of binary cells. Each cell position has its own prime. 
+        The cell holds a binary state — 0 or 1 — encoded as a residue in that prime's field. 
+        A <strong>neighborhood</strong> is a frozen triple (L, C, R) — the left neighbor, 
+        the center, and the right neighbor at the current time step.
+      </p>
+
+      <div class="diagram-wrap" style="margin:1.5rem 0">
+        <div class="tape-row" style="margin-bottom:2rem">
+          <div class="tape-cell">
+            <span class="cell-wlabel" style="color:var(--text-tertiary)">p=3</span>
+            0<span class="cell-pos">−1</span>
+          </div>
+          <div class="tape-cell wC">
+            <span class="cell-wlabel wC">p=5</span>
+            1<span class="cell-pos">0</span>
+          </div>
+          <div class="tape-cell">
+            <span class="cell-wlabel" style="color:var(--text-tertiary)">p=7</span>
+            1<span class="cell-pos">+1</span>
+          </div>
+        </div>
+        <p class="diagram-caption">
+          Three-cell tape [0, 1, 1] with assigned primes. 
+          Each cell's state is a binary residue in its prime's field.
+        </p>
+      </div>
+
+      <p>
+        The <strong>goal</strong> of the UWCA: compute the next state of every cell simultaneously, 
+        using only local information — no cell looks beyond its immediate neighbors.
+      </p>
+    </section>
+
+    <!-- ═══ Section 3: The Penalty Function ═══ -->
+    <section class="lesson-section" id="penalty">
+      <h2>The Penalty Function</h2>
+      <p>
+        For each cell position <code>i</code>, define the <strong>penalty</strong>:
+      </p>
+
+      <div class="card">
+        <div class="card-body" style="text-align:center">
+          <p style="font-family:'JetBrains Mono',monospace;font-size:1.05rem;margin:0">
+            e<sub>i</sub> = 0 &nbsp;if&nbsp; x<sub>i,next</sub> = R(L<sub>i</sub>, C<sub>i</sub>, R<sub>i</sub>)
+          </p>
+          <p style="font-family:'JetBrains Mono',monospace;font-size:1.05rem;margin:0.5rem 0 0">
+            e<sub>i</sub> = 1 &nbsp;otherwise
+          </p>
+        </div>
+      </div>
+
+      <p>
+        In plain language: the penalty is zero when the proposed next state for cell <code>i</code> 
+        equals what Rule 110 demands given the frozen neighborhood (L, C, R). 
+        The penalty is one when it doesn't match.
+      </p>
+
+      <p>
+        The UWCA looks for the assignment of next states that makes 
+        <strong>every cell's penalty simultaneously zero</strong>. 
+        This is not a minimization with a cost function — it is a constraint satisfaction. 
+        Every cell must be exactly right.
+      </p>
+
+      <div class="callout callout--success">
+        <div class="callout-title">Local determinism — why there is always exactly one answer</div>
+        <p>
+          Rule 110 is a function: for any (L, C, R), it outputs exactly one value. 
+          The binary alphabet has exactly two symbols: {0, 1}. Therefore, 
+          for any frozen neighborhood, exactly one of the two symbols satisfies e<sub>i</sub> = 0 
+          — the one that equals R(L, C, R). The sweep never faces a choice. 
+          It never needs to backtrack. 
+          <span data-lean="uwca_sweep_implements_rule110"></span>
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══ Section 4: The Four Passes ═══ -->
+    <section class="lesson-section" id="four-passes">
+      <h2>The Four Passes (P1–P4)</h2>
+      <p>
+        The UWCA does not evaluate the penalty with a global lookup. Instead, it distributes 
+        the work across four local passes. Each cell carries a small set of working registers 
+        that are set, used, and cleared within a single time step.
+      </p>
+
+      <p><strong>Rule 110's five minterms</strong> (the input triples that produce output 1):</p>
+      <div class="minterm-grid">
+        <span class="minterm-pill">(1,1,0)</span>
+        <span class="minterm-pill">(1,0,1)</span>
+        <span class="minterm-pill">(0,1,1)</span>
+        <span class="minterm-pill">(0,1,0)</span>
+        <span class="minterm-pill">(0,0,1)</span>
+      </div>
+      <p class="small">Any triple NOT in this list produces output 0. (Note: (1,1,1) → 0 and (1,0,0) → 0.)</p>
+
+      <!-- 4-pass step-through -->
+      <div class="steps" id="steps-passes" style="margin-top:1.5rem">
+        <div class="steps-nav">
+          <button class="step-pill">P1 — Copy</button>
+          <button class="step-pill">P2 — Detect</button>
+          <button class="step-pill">P3 — Accumulate</button>
+          <button class="step-pill">P4 — Commit</button>
+        </div>
+
+        <!-- P1 -->
+        <div class="step-panel">
+          <div class="pass-label">
+            <div class="pass-num">1</div>
+            P1 — Neighbor distribution
+          </div>
+          <p>Each cell copies its neighbors' bits onto its own local working registers L and R. 
+          After P1, every cell holds its own current value (C) plus local copies of its neighbors' values.</p>
+          <p><em>No cell has looked beyond its immediate neighborhood yet. Everything is local.</em></p>
+
+          <div class="example-box">
+            <div class="example-header">Tape [0, 1, 1] after P1</div>
+            <table class="reg-table">
+              <thead>
+                <tr><th>Cell</th><th>C (own state)</th><th>L (copied)</th><th>R (copied)</th><th>N (accumulator)</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>−1</td><td>0</td><td class="changed">0 ← boundary</td><td class="changed">1 ← cell 0</td><td class="zero">0</td></tr>
+                <tr><td> 0</td><td>1</td><td class="changed">0 ← cell −1</td><td class="changed">1 ← cell +1</td><td class="zero">0</td></tr>
+                <tr><td>+1</td><td>1</td><td class="changed">1 ← cell 0</td><td class="changed">0 ← boundary</td><td class="zero">0</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="small">Blue values are the ones that changed in this pass. N is the next-bit accumulator, still zero.</p>
+        </div>
+
+        <!-- P2 -->
+        <div class="step-panel">
+          <div class="pass-label">
+            <div class="pass-num">2</div>
+            P2 — Minterm detection
+          </div>
+          <p>Each cell checks whether its local triple (L, C, R) matches any of Rule 110's five minterms. 
+          It sets a flag for each matching minterm. A cell can match at most one minterm 
+          (the minterms are disjoint).</p>
+
+          <div class="example-box">
+            <div class="example-header">Tape [0, 1, 1] — minterm check</div>
+            <table class="reg-table">
+              <thead>
+                <tr><th>Cell</th><th>(L, C, R)</th><th>Matches?</th><th>Which minterm</th></tr>
+              </thead>
+              <tbody>
+                <tr><td>−1</td><td>(0, 0, 1)</td><td class="match">Yes</td><td class="match">(0,0,1)</td></tr>
+                <tr><td> 0</td><td>(0, 1, 1)</td><td class="match">Yes</td><td class="match">(0,1,1)</td></tr>
+                <tr><td>+1</td><td>(1, 1, 0)</td><td class="match">Yes</td><td class="match">(1,1,0)</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="small">All three cells matched a minterm — all three will output 1. If a cell's triple is NOT in the five minterms (e.g., (1,1,1) or (1,0,0)), its minterm flag stays 0 and its output will be 0.</p>
+        </div>
+
+        <!-- P3 -->
+        <div class="step-panel">
+          <div class="pass-label">
+            <div class="pass-num">3</div>
+            P3 — OR-accumulation
+          </div>
+          <p>Each cell OR-accumulates its minterm flags into the next-bit accumulator N:</p>
+          <div class="card" style="margin:0.75rem 0">
+            <div class="card-body" style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:1.05rem">
+              N<sub>i</sub> = M<sup>u₁</sup><sub>i</sub> ∨ M<sup>u₂</sup><sub>i</sub> ∨ M<sup>u₃</sup><sub>i</sub> ∨ M<sup>u₄</sup><sub>i</sub> ∨ M<sup>u₅</sup><sub>i</sub>
+            </div>
+          </div>
+          <p>N<sub>i</sub> = 1 if and only if any minterm matched, which is exactly when Rule 110 outputs 1.</p>
+
+          <div class="example-box">
+            <div class="example-header">After P3 — N accumulator values</div>
+            <table class="reg-table">
+              <thead>
+                <tr><th>Cell</th><th>Minterm matched?</th><th>N (next-bit accumulator)</th></tr>
+              </thead>
+              <tbody>
+                <tr class="result-row"><td>−1</td><td class="match">Yes</td><td class="changed">1</td></tr>
+                <tr class="result-row"><td> 0</td><td class="match">Yes</td><td class="changed">1</td></tr>
+                <tr class="result-row"><td>+1</td><td class="match">Yes</td><td class="changed">1</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- P4 -->
+        <div class="step-panel">
+          <div class="pass-label">
+            <div class="pass-num">4</div>
+            P4 — Commit and clear
+          </div>
+          <p>Each cell commits the accumulated next-bit to its main state register, 
+          then clears all working registers back to zero:</p>
+          <div class="card" style="margin:0.75rem 0">
+            <div class="card-body" style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:1.05rem">
+              C<sub>i</sub> ← N<sub>i</sub> &nbsp;;&nbsp; clear L, R, all minterm flags, N to 0
+            </div>
+          </div>
+
+          <div class="example-box">
+            <div class="example-header">After P4 — new tape state</div>
+            <table class="reg-table">
+              <thead>
+                <tr><th>Cell</th><th>New C (main state)</th><th>L</th><th>R</th><th>N</th></tr>
+              </thead>
+              <tbody>
+                <tr class="result-row"><td>−1</td><td class="match">1</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td></tr>
+                <tr class="result-row"><td> 0</td><td class="match">1</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td></tr>
+                <tr class="result-row"><td>+1</td><td class="match">1</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>
+            After P4, each cell is back to a clean state with only C set. 
+            The tape [0, 1, 1] has become [1, 1, 1]. 
+            All working registers are cleared — ready for the next time step.
+          </p>
+          <p>
+            <strong>Verify with the polynomial:</strong> 
+            p(0,0,1) = 1 ✓ &nbsp; p(0,1,1) = 1 ✓ &nbsp; p(1,1,0) = 1 ✓
+          </p>
+        </div>
+
+        <div class="steps-footer">
+          <button class="btn btn--secondary" data-action="prev">← Previous</button>
+          <button class="btn btn--primary"   data-action="next">Next →</button>
+          <span class="steps-counter">Pass 1 of 4</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 5: Full Worked Example ═══ -->
+    <section class="lesson-section" id="worked-example">
+      <h2>Full Worked Example — Two Time Steps</h2>
+      <p>
+        Starting tape: [0, 1, 1] — cells at positions −1, 0, +1 with primes p=3, p=5, p=7. 
+        Fixed-zero boundary on both sides. Run P1→P2→P3→P4, then roll the window and run again.
+      </p>
+
+      <div class="steps" id="steps-example">
+        <div class="steps-nav">
+          <button class="step-pill">Start</button>
+          <button class="step-pill">After P1</button>
+          <button class="step-pill">After P2</button>
+          <button class="step-pill">After P3</button>
+          <button class="step-pill">After P4</button>
+          <button class="step-pill">Roll →t+1</button>
+          <button class="step-pill">Step 2 result</button>
+        </div>
+
+        <!-- Start -->
+        <div class="step-panel">
+          <p class="time-label">Generation t = 0:</p>
+          <div class="tape-row" style="margin-bottom:1.5rem">
+            <div class="tape-cell">0<span class="cell-pos">−1</span></div>
+            <div class="tape-cell">1<span class="cell-pos">0</span></div>
+            <div class="tape-cell">1<span class="cell-pos">+1</span></div>
+          </div>
+          <p>All four registers (C, L, R, N) initialized. C = tape values. L, R, N = 0.</p>
+          <table class="reg-table">
+            <thead><tr><th>Cell</th><th>C</th><th>L</th><th>R</th><th>N</th></tr></thead>
+            <tbody>
+              <tr><td>−1</td><td>0</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td></tr>
+              <tr><td> 0</td><td>1</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td></tr>
+              <tr><td>+1</td><td>1</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- After P1 -->
+        <div class="step-panel">
+          <p><strong>P1 complete</strong> — each cell copied its neighbors:</p>
+          <table class="reg-table">
+            <thead><tr><th>Cell</th><th>C</th><th>L</th><th>R</th><th>N</th></tr></thead>
+            <tbody>
+              <tr><td>−1</td><td>0</td><td class="changed">0</td><td class="changed">1</td><td class="zero">0</td></tr>
+              <tr><td> 0</td><td>1</td><td class="changed">0</td><td class="changed">1</td><td class="zero">0</td></tr>
+              <tr><td>+1</td><td>1</td><td class="changed">1</td><td class="changed">0</td><td class="zero">0</td></tr>
+            </tbody>
+          </table>
+          <p class="small">Boundary cells outside the tape contribute 0.</p>
+        </div>
+
+        <!-- After P2 -->
+        <div class="step-panel">
+          <p><strong>P2 complete</strong> — minterm detection. Rule 110 minterms: (1,1,0) (1,0,1) (0,1,1) (0,1,0) (0,0,1)</p>
+          <table class="reg-table">
+            <thead><tr><th>Cell</th><th>(L,C,R)</th><th>Minterm?</th></tr></thead>
+            <tbody>
+              <tr><td>−1</td><td>(0,0,1)</td><td class="match">✓ (0,0,1)</td></tr>
+              <tr><td> 0</td><td>(0,1,1)</td><td class="match">✓ (0,1,1)</td></tr>
+              <tr><td>+1</td><td>(1,1,0)</td><td class="match">✓ (1,1,0)</td></tr>
+            </tbody>
+          </table>
+          <p class="small">All three matched. They will all output 1. A cell whose triple is <em>not</em> a minterm — like (1,1,1) — would get no flag and output 0.</p>
+        </div>
+
+        <!-- After P3 -->
+        <div class="step-panel">
+          <p><strong>P3 complete</strong> — OR-accumulation into N:</p>
+          <table class="reg-table">
+            <thead><tr><th>Cell</th><th>C</th><th>L</th><th>R</th><th>N (updated)</th></tr></thead>
+            <tbody>
+              <tr><td>−1</td><td>0</td><td>0</td><td>1</td><td class="changed">1</td></tr>
+              <tr><td> 0</td><td>1</td><td>0</td><td>1</td><td class="changed">1</td></tr>
+              <tr><td>+1</td><td>1</td><td>1</td><td>0</td><td class="changed">1</td></tr>
+            </tbody>
+          </table>
+          <p>N<sub>i</sub> = 1 for all cells — each will commit 1 in P4.</p>
+        </div>
+
+        <!-- After P4 -->
+        <div class="step-panel">
+          <p><strong>P4 complete</strong> — commit N → C; clear all working registers:</p>
+          <table class="reg-table">
+            <thead><tr><th>Cell</th><th>C (new state)</th><th>L</th><th>R</th><th>N</th></tr></thead>
+            <tbody>
+              <tr class="result-row"><td>−1</td><td class="match">1</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td></tr>
+              <tr class="result-row"><td> 0</td><td class="match">1</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td></tr>
+              <tr class="result-row"><td>+1</td><td class="match">1</td><td class="zero">0</td><td class="zero">0</td><td class="zero">0</td></tr>
+            </tbody>
+          </table>
+          <p class="time-label" style="margin-top:1rem">New tape (generation t = 1):</p>
+          <div class="tape-row">
+            <div class="tape-cell result">1<span class="cell-pos">−1</span></div>
+            <div class="tape-cell result">1<span class="cell-pos">0</span></div>
+            <div class="tape-cell result">1<span class="cell-pos">+1</span></div>
+          </div>
+        </div>
+
+        <!-- Roll window -->
+        <div class="step-panel">
+          <p><strong>Rolling the window</strong> — the t=1 tape becomes the new t=0:</p>
+
+          <p class="time-label">t = 0 (old — discard):</p>
+          <div class="tape-row">
+            <div class="tape-cell" style="opacity:0.3">0</div>
+            <div class="tape-cell" style="opacity:0.3">1</div>
+            <div class="tape-cell" style="opacity:0.3">1</div>
+          </div>
+
+          <div class="time-arrow">↓ roll</div>
+
+          <p class="time-label">t = 0 (new = former t=1):</p>
+          <div class="tape-row" style="margin-bottom:1.5rem">
+            <div class="tape-cell">1<span class="cell-pos">−1</span></div>
+            <div class="tape-cell">1<span class="cell-pos">0</span></div>
+            <div class="tape-cell">1<span class="cell-pos">+1</span></div>
+          </div>
+
+          <p>
+            The prime assignment shifts accordingly. The computation can continue indefinitely — 
+            each sweep produces one CA time step. No state needs to be stored externally.
+          </p>
+        </div>
+
+        <!-- Step 2 result -->
+        <div class="step-panel">
+          <p><strong>Running P1–P4 on [1, 1, 1]:</strong></p>
+
+          <table class="reg-table" style="margin-bottom:1rem">
+            <thead><tr><th>Cell</th><th>(L,C,R)</th><th>Minterm?</th><th>N</th></tr></thead>
+            <tbody>
+              <tr><td>−1</td><td>(0,1,1)</td><td class="match">✓</td><td class="changed">1</td></tr>
+              <tr><td> 0</td><td>(1,1,1)</td><td style="color:var(--cert-conj)">✗ (not a minterm)</td><td class="zero">0</td></tr>
+              <tr><td>+1</td><td>(1,1,0)</td><td class="match">✓</td><td class="changed">1</td></tr>
+            </tbody>
+          </table>
+
+          <p class="time-label">Generation t = 2:</p>
+          <div class="tape-row">
+            <div class="tape-cell result">1<span class="cell-pos">−1</span></div>
+            <div class="tape-cell">0<span class="cell-pos">0</span></div>
+            <div class="tape-cell result">1<span class="cell-pos">+1</span></div>
+          </div>
+
+          <p style="margin-top:1.5rem">
+            <strong>Verify with polynomial:</strong><br>
+            p(0,1,1) = 1+1−1−0 = <strong>1</strong> ✓ &nbsp;
+            p(1,1,1) = 1+1−1−1 = <strong>0</strong> ✓ &nbsp;
+            p(1,1,0) = 1+0−0−0 = <strong>1</strong> ✓
+          </p>
+          <p>
+            Two complete time steps computed. The 4-pass mechanism and the polynomial give identical results — 
+            they are two descriptions of the same computation.
+          </p>
+        </div>
+
+        <div class="steps-footer">
+          <button class="btn btn--secondary" data-action="prev">← Previous</button>
+          <button class="btn btn--primary"   data-action="next">Next →</button>
+          <span class="steps-counter">Step 1 of 7</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 6: Computational Universality ═══ -->
+    <section class="lesson-section" id="universality">
+      <h2>What This Means: Computational Universality</h2>
+
+      <div class="split">
+        <div>
+          <p>
+            The UWCA running on the binary sub-sector of the UGP survivor space implements Rule 110. 
+            This was proved by exhaustive case analysis and machine-certified in Lean 4.
+          </p>
+          <p>
+            In 2004, Matthew Cook proved that Rule 110 can simulate any Turing machine — 
+            any algorithm, any computation, on any finite input. This is called 
+            <strong>computational universality</strong>.
+          </p>
+          <p>
+            Therefore: the UGP substrate is computationally universal. 
+            It can, in principle, compute anything that any computer can compute.
+            <span data-lean="phimdl_turing_universal"></span>
+          </p>
+          <div class="callout callout--neutral" style="margin-top:1rem">
+            <p>
+              <strong>The UWCA is not the same as Rule 110.</strong> Rule 110 is a specific CA rule 
+              — a lookup table on {0,1}³. The UWCA is the evaluation mechanism that runs that rule 
+              (and the full GTE dynamics) using prime-residue arithmetic on the survivor space. 
+              Rule 110 is a program. The UWCA is the machine it runs on.
+            </p>
+          </div>
+          <div class="callout callout--info" style="margin-top:1rem">
+            <p>
+              <strong>A second, independent proof.</strong> The Rule-110 argument above is not the
+              only way the Lean library establishes this. A completely separate proof shows the UGP
+              substrate can simulate a <em>register machine</em> — a simple model of computation from
+              1960s computer science (Minsky, 1967) that was already known to be exactly as powerful
+              as a Turing machine. This route doesn't go through Rule 110 or Cook's theorem at all; it
+              rests on one named, textbook-standard axiom (that register machines and Turing machines
+              are computationally equivalent). Two independent proofs, same conclusion.
+              <span data-lean="ugp_is_turing_universal"></span>
+            </p>
+          </div>
+        </div>
+        <div>
+          <h3>The chain of reasoning</h3>
+          <div style="display:flex;flex-direction:column;gap:0;border:1px solid var(--stroke-primary);border-radius:var(--r-lg);overflow:hidden">
+            <div style="padding:0.8rem 1rem;border-bottom:1px solid var(--stroke-secondary)">
+              <div style="font-size:0.7rem;color:var(--text-tertiary);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.3rem">Step 1</div>
+              <p style="margin:0;font-size:0.88rem">
+                The GTE polynomial on binary inputs equals Rule 110 on all 8 cases.
+                <span data-lean="uwca_sweep_implements_rule110"></span>
+              </p>
+            </div>
+            <div style="padding:0.8rem 1rem;border-bottom:1px solid var(--stroke-secondary)">
+              <div style="font-size:0.7rem;color:var(--text-tertiary);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.3rem">Step 2</div>
+              <p style="margin:0;font-size:0.88rem">
+                The UWCA 4-pass sweep realizes this polynomial via local register operations.
+                <span data-lean="uwca_simulates_rule110_real"></span>
+              </p>
+            </div>
+            <div style="padding:0.8rem 1rem;border-bottom:1px solid var(--stroke-secondary)">
+              <div style="font-size:0.7rem;color:var(--text-tertiary);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.3rem">Step 3</div>
+              <p style="margin:0;font-size:0.88rem">
+                Rule 110 is Turing universal (Cook 2004).
+              </p>
+            </div>
+            <div style="padding:0.8rem 1rem">
+              <div style="font-size:0.7rem;color:var(--cert-lean);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.3rem">Conclusion</div>
+              <p style="margin:0;font-size:0.88rem">
+                The UGP substrate is Turing universal.
+                <span data-lean="phimdl_turing_universal"></span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Key Takeaways ═══ -->
+    <section class="lesson-section" id="takeaways">
+      <h2>Key Takeaways</h2>
+      <ul class="takeaway-list">
+        <li>
+          The UWCA runs in four passes per time step. Every pass is purely local — 
+          each cell looks only at itself and its immediate neighbors.
+          <strong>P1</strong> copies neighbors. <strong>P2</strong> checks minterms. 
+          <strong>P3</strong> accumulates via OR. <strong>P4</strong> commits and clears.
+        </li>
+        <li>
+          <strong>Local determinism</strong>: Rule 110 is a function; the binary alphabet has two symbols; 
+          exactly one satisfies zero penalty for any neighborhood. The sweep never faces a choice 
+          and never backtracks. <span data-lean="uwca_sweep_implements_rule110"></span>
+        </li>
+        <li>
+          A time step produces one new tape layer. Rolling the window forward 
+          (new layer becomes t=0) allows any number of steps. No external state needed.
+        </li>
+        <li>
+          The UWCA running in the binary sub-sector is equivalent to Rule 110 — same outputs, 
+          every step. The 4-pass mechanism and the polynomial formula are two descriptions 
+          of the same computation. <span data-lean="uwca_simulates_rule110_real"></span>
+        </li>
+        <li>
+          Since Rule 110 is computationally universal (Cook 2004), the UGP substrate is 
+          Turing universal — it can compute anything any computer can compute. 
+          <span data-lean="phimdl_turing_universal"></span>
+          A second, independent Lean proof reaches the same conclusion via a register-machine
+          simulation (Minsky, 1967), without relying on Rule 110 or Cook's theorem at all.
+          <span data-lean="ugp_is_turing_universal"></span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ═══ See Also ═══ -->
+    <div class="see-also">
+      <h2>See Also</h2>
+      <div class="see-also-group">
+        <div class="see-also-label">Lean 4 proofs (ugp-lean)</div>
+        <ul class="source-list">
+          <li><code>uwca_sweep_implements_rule110</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/UWCASimulation.lean" target="_blank" rel="noopener">view on GitHub ↗</a></li>
+          <li><code>uwca_simulates_rule110_real</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/UWCASimulation.lean" target="_blank" rel="noopener">view on GitHub ↗</a></li>
+          <li><code>phimdl_turing_universal</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/PhiMDLUniversality.lean" target="_blank" rel="noopener">view on GitHub ↗</a> (Cook route)</li>
+          <li><code>ugp_is_turing_universal</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/TuringUniversal.lean" target="_blank" rel="noopener">view on GitHub ↗</a> (independent register-machine route)</li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Source papers</div>
+        <ul class="source-list">
+          <li><a href="https://novaspivack.com/research" target="_blank" rel="noopener">P08 — The Universal Generative Principle ↗</a></li>
+          <li><a href="https://novaspivack.com/research" target="_blank" rel="noopener">P28 — Computational Universality of the UGP Substrate ↗</a></li>
+          <li><a href="https://doi.org/10.5281/zenodo.20560550" target="_blank" rel="noopener">P48 — The Complete GTE Framework, Ch 3 ↗</a></li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Full tutorial (PDF)</div>
+        <ul class="source-list">
+          <li><a href="https://novaspivack.com/research" target="_blank" rel="noopener">How the UWCA Works — UGP Physics Tutorial Series ↗</a></li>
+        </ul>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ═══ Lesson Footer ═══ -->
+  <div class="page-wrapper">
+    <footer class="lesson-footer">
+      <a href="../L04_ugp_state_space/index.html" class="nav-btn nav-btn--prev">← L04: The State Space</a>
+      <a href="../L06_gte_orbits/index.html"       class="nav-btn nav-btn--next">L06: GTE Orbits →</a>
+    </footer>
+  </div>
+
+  <!-- Math -->
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})">
+  </script>
+
+  <script src="../../common/interactive.js"></script>
+  <script src="../../common/nav.js"></script>
+  <script>
+    const LEAN_REFS = {
+      "uwca_sweep_implements_rule110": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/UWCASimulation.lean"
+      },
+      "uwca_simulates_rule110_real": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/UWCASimulation.lean"
+      },
+      "ugp_is_turing_universal": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/TuringUniversal.lean"
+      },
+      "phimdl_turing_universal": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/PhiMDLUniversality.lean"
+      }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initSteps('steps-passes');
+      initSteps('steps-example');
+      autoRenderLeanBadges(LEAN_REFS);
+    });
+  </script>
+</body>
+</html>

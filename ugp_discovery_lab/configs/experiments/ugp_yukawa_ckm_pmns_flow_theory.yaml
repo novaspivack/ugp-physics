@@ -1,0 +1,113 @@
+# Configuration for UGP-Locked Flow Theoretical Implementation
+# Based on expert analysis: Flow-based approach with hierarchy-by-order mechanism
+
+experiment:
+  name: ugp_yukawa_ckm_pmns_flow_theory
+  description: "UGP-locked flow theoretical implementation with E and A2 generators"
+  inputs:
+    runs:
+      - "canonical_gte_triples.json"  # Uses canonical GTE triples
+
+# Flow-Based Theoretical Framework
+theoretical_framework:
+  flow_based_evolution: true
+  kernel_locked_flow_parameters: true
+  tau_star_from_residual_kraft_L: true
+  hierarchy_by_order_mechanism: true
+  projective_normalization: true
+
+# Flow Parameters (Kernel-Locked)
+flow_parameters:
+  epsilon: "k_L"  # Flow strength from kernel
+  epsilon_prime: "k_L/φ"  # Antisymmetric flow strength
+  tau_star: "L_residual"  # From residual Kraft length L
+  
+# Residual Kraft Length (from Lambda derivation)
+residual_kraft_length: 9.382  # Theory-fixed from Lambda work
+
+# Flow Equation
+flow_equation:
+  description: "dM/dtau = epsilon*(E_op*M + M*E_op^T) + i*epsilon_prime*[A_op, M]"
+  E_generator: "Symmetric operator from pairwise E closeness"
+  A_generator: "Antisymmetric operator from oriented Delta and E direction"
+  evolution_method: "ODE integration from tau=0 to tau=tau_star"
+
+# Kernel Constants (Elegant Kernel)
+kernel_constants:
+  phi: 1.618033988749895  # golden ratio
+  k_L2: 0.013671875  # 7/512
+  k_gen2: -0.8090169943749475 # -phi/2
+  k_gen: 1.5707963267948966 # pi/2
+  k_a: 0.125 # 1/8
+  k_b: -1.5 # -3/2
+  k_c: 1.3333333333333333 # 4/3
+  k_M: -0.8056640625 # k_gen2 + 0.25*k_L2
+
+# Derived Flow Constants
+derived_constants:
+  k_L: "3 * k_L2 * ln(φ) ≈ 0.019744"  # From kernel
+  epsilon: "k_L"  # Flow strength
+  epsilon_prime: "k_L / φ"  # Antisymmetric strength
+
+# Hierarchy Mechanism
+hierarchy_mechanism:
+  Vus_growth: "~ epsilon * tau_star * ||E_op_12||"
+  Vcb_growth: "~ epsilon * tau_star * ||E_op_23||"
+  Vub_growth: "~ epsilon_prime * tau_star and/or (epsilon * tau_star)^2"
+  wolfenstein_scaling: "Natural λ, Aλ², Aλ³ from flow order"
+
+# Options
+options:
+  neutrino_model: "majorana"  # "majorana" (Takagi) or "dirac" (Hermitian Gram)
+  down_sector_permutation_policy: "optimize"  # "optimize" (scan 6 perms) or "fixed"
+  down_sector_perm_fixed: [0, 1, 2]  # used only if policy == "fixed"
+  pdg_targets_ckm: [0.2245, 0.041, 0.00365]  # |Vus|, |Vcb|, |Vub| for score logging
+
+# PDG Experimental Targets for comparison
+pdg_targets:
+  # CKM mixing elements
+  Vus: 0.2245
+  Vcb: 0.041
+  Vub: 0.00365
+  # PMNS mixing angles (degrees)
+  theta12: 33.44  # Solar mixing angle
+  theta13: 8.57    # Reactor mixing angle  
+  theta23: 49.2    # Atmospheric mixing angle
+
+# Analysis parameters
+analysis:
+  projective_normalization: "Remove local scale from triples"
+  irrep_feature_extraction: "A1_E_A2_decomposition_with_generation_phases"
+  generator_construction: "Fixed E_op and A_op from irrep features"
+  flow_evolution: "ODE integration with kernel-locked parameters"
+  hierarchy_validation: "Check Wolfenstein scaling from flow order"
+
+# Output configuration
+output:
+  save_matrices: true
+  save_angles: true
+  save_eigenvalues: true
+  save_vectors: true
+  save_permutation_choice: true
+  save_flow_parameters: true
+  save_evolution_trajectory: true
+  save_experimental_errors: true
+  format: "json"
+
+# Validation
+validation:
+  unitary_check: true
+  pdg_ordering_check: true
+  eigenvalue_ordering: true
+  jarlskog_invariant_check: true
+  experimental_error_calculation: true
+  flow_parameter_validation: true
+  hierarchy_mechanism_validation: true
+
+# Performance monitoring
+performance:
+  track_flow_evolution: true
+  track_hierarchy_growth: true
+  enable_detailed_logging: true
+  flow_analysis: true
+  theoretical_framework_validation: true

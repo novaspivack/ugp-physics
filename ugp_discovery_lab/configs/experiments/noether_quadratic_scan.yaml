@@ -1,0 +1,26 @@
+experiment:
+  name: noether_quadratic_scan
+  description: "Search for conserved quadratic currents J(M,G,L)"
+  
+  search:
+    coeff_grid: [-2, -1, 0, 1, 2]     # coefficient candidates
+    max_hits: 10
+    tolerance_abs: 1e-8                # |ΔJ| ≤ tol per step
+    sample_fraction: 0.5               # fraction of available steps to test
+    
+  inputs:
+    runs:
+      - "UGP_discovery_lab_runs/**/experiment_results.json"
+      
+  filters:
+    min_steps: 64
+    min_points: 200
+    
+  run:
+    steps: 5000
+    window: 64
+    seed: [42, 173, 823]
+    
+  report:
+    export_md: true
+    export_json: true

@@ -1,0 +1,126 @@
+% Appendix D: Statistical Mechanics of the Reflexive Landauer Inequality
+% Microphysical derivation of the Reflexive Landauer bound
+
+\section{Statistical Mechanics of the Reflexive Landauer Inequality}
+\label{app:stat-mech-rlb}
+
+This appendix provides a rigorous microphysical derivation of the Reflexive Landauer bound (Theorem~\ref{thm:RefLandauer-rigorous}) using Crooks--Jarzynski fluctuation relations~\cite{Crooks1999,Jarzynski1997} and Ginzburg--Landau theory.
+
+\subsection{Setup and Assumptions}
+
+Consider a transputational event \(\PT\) acting on a system with:
+\begin{itemize}[leftmargin=1.2em]
+  \item \textbf{Coherence field} \(\Psifield(\mathbf{x})\): macroscopic order parameter (real scalar or complex magnitude)
+  \item \textbf{Thermal bath} at temperature \(T\): provides stochastic fluctuations
+  \item \textbf{Choice Point} at time \(t=0\): system must select among \(n\) degenerate macro-branches
+  \item \textbf{Adjudication protocol}: \(\PT\) collapses the degeneracy by minimizing global dissonance \(D\)
+\end{itemize}
+
+We model the coherence field via a Ginzburg--Landau free energy functional:
+\begin{equation}
+F[\Psifield] = \int \left[ \frac{\lambda_1}{2} \Psifield^2 + \frac{\lambda_2}{2} |\nabla \Psifield|^2 + V_{\mathrm{ext}}(\Psifield) \right] dV,
+\end{equation}
+where \(\lambda_1,\lambda_2>0\) are phenomenological coefficients (bulk and gradient stiffness) and \(V_{\mathrm{ext}}\) captures any external potential or higher-order terms.
+
+\subsection{Liouville Dynamics and Trajectory Ensemble}
+
+The full phase space \(\Gamma=\{(\Psifield,\dot{\Psifield},\ldots)\}\) evolves under Liouville dynamics with Hamiltonian \(H(\Gamma)\). The non-equilibrium work performed along a trajectory \(\gamma:[0,\tau]\to\Gamma\) is
+\begin{equation}
+W[\gamma] = \int_0^\tau \frac{\partial H}{\partial\lambda}(t)\,\dot{\lambda}(t)\,dt,
+\end{equation}
+where \(\lambda(t)\) represents time-dependent control parameters (e.g., external fields, boundary conditions) manipulated by the \(\PT\) operator.
+
+\subsection{Crooks--Jarzynski Fluctuation Relation}
+
+For a process driving the system from equilibrium at \(t=0\) (before \(\PT\)) to a final state at \(t=\tau\) (after \(\PT\)), the Jarzynski equality~\cite{Jarzynski1997} states:
+\begin{equation}
+\langle e^{-\beta W} \rangle = e^{-\beta \Delta F},
+\end{equation}
+where \(\beta=1/(k_B T)\), \(W\) is the work performed, \(\Delta F = F[\Psifield_\tau] - F[\Psifield_0]\) is the free energy change, and the ensemble average is over all trajectories weighted by the forward protocol probability.
+
+By Jensen's inequality (\(e^{-\beta W}\ge e^{-\beta\langle W\rangle}\)),
+\begin{equation}
+\langle W \rangle \ge \Delta F.
+\label{eq:jarzynski-ineq}
+\end{equation}
+
+This is the \emph{second-law inequality} for non-equilibrium processes: the average work exceeds the free energy change, with equality only for reversible (infinitely slow) protocols.
+
+\subsection{Entropy Production and Dissipation}
+
+The total entropy change of the \emph{universe} (system + bath) is
+\begin{equation}
+\Delta S_{\mathrm{tot}} = \Delta S_{\mathrm{sys}} + \Delta S_{\mathrm{bath}},
+\end{equation}
+where \(\Delta S_{\mathrm{bath}} = Q/T\) (\(Q=\langle W\rangle - \Delta E\) is the heat dissipated to the bath) and \(\Delta S_{\mathrm{sys}}\) is the system's entropy change.
+
+For a \(\PT\) event that \emph{erases} \(\log n\) bits of information (collapsing \(n\) degenerate branches to 1), Landauer's principle~\cite{Landauer1961} requires:
+\begin{equation}
+\Delta S_{\mathrm{tot}} \ge k_B \log n.
+\end{equation}
+
+Combining with the Jarzynski bound \eqref{eq:jarzynski-ineq} and the relation \(\Delta E = \Delta F + T\Delta S_{\mathrm{sys}}\), we obtain:
+\begin{equation}
+\langle W \rangle = \Delta E + Q \ge \Delta F + k_B T \log n.
+\end{equation}
+
+\subsection{Coherence Field Contribution}
+
+The free energy change for the coherence field \(\Psifield\) is
+\begin{equation}
+\Delta F[\Psifield] = F[\Psifield_\tau] - F[\Psifield_0] = \int \left[ \frac{\lambda_1}{2}(\Psifield_\tau^2 - \Psifield_0^2) + \frac{\lambda_2}{2}(|\nabla\Psifield_\tau|^2 - |\nabla\Psifield_0|^2) \right] dV + \Delta V_{\mathrm{ext}}.
+\end{equation}
+
+For a \(\PT\) event that \emph{increases} coherence (\(\Psifield_\tau > \Psifield_0\)), the field \(\Psifield\) becomes more ordered (lower entropy), so \(\Delta F[\Psifield]>0\) (storing free energy in the coherence structure).
+
+Approximating \(\Delta V_{\mathrm{ext}}\approx 0\) (no external potential change) and setting \(\alpha_1=\lambda_1\), \(\alpha_2=\lambda_2\) for notational consistency with the main text, we obtain:
+\begin{equation}
+\Delta F[\Psifield] \approx \int \left[ \frac{\alpha_1}{2}(\Psifield_\tau^2 - \Psifield_0^2) + \frac{\alpha_2}{2}(|\nabla\Psifield_\tau|^2 - |\nabla\Psifield_0|^2) \right] dV.
+\end{equation}
+
+For \(\Psifield_0 \approx 0\) (initial low-coherence state) and \(\Psifield_\tau = \Psifield\) (final coherent state after \(\PT\)),
+\begin{equation}
+\Delta F[\Psifield] \approx \int \left[ \frac{\alpha_1}{2}\Psifield^2 + \frac{\alpha_2}{2}|\nabla\Psifield|^2 \right] dV.
+\end{equation}
+
+\subsection{Reflexive Landauer Bound}
+
+Combining the informational Landauer cost (\(k_B T \log n\)) with the coherence field free energy cost (\(\Delta F[\Psifield]\)), the \emph{total energetic cost} of a \(\PT\) event is:
+\begin{equation}
+\Delta E_{\PT} \ge k_B T \log n + \lambda_\Psi \int \left( \alpha_1 \Psifield^2 + \alpha_2 |\nabla\Psifield|^2 \right) dV,
+\label{eq:rlb-derived}
+\end{equation}
+where \(\lambda_\Psi \ge 0\) is a coupling constant (dimensionless or with units to match dimensions of \(E\) and \(\Psifield\)).
+
+\paragraph{Interpretation.}
+\begin{itemize}[leftmargin=1.2em]
+  \item \textbf{First term} (\(k_B T \log n\)): Standard Landauer erasure cost for resolving \(n\)-way degeneracy.
+  \item \textbf{Second term} (\(\lambda_\Psi \int (\alpha_1 \Psifield^2 + \alpha_2 |\nabla\Psifield|^2) dV\)): \emph{Reflexive correction} due to coherence field work. Building spatial structure in \(\Psifield\) costs additional free energy beyond bit erasure.
+\end{itemize}
+
+This is precisely Theorem~\ref{thm:RefLandauer-rigorous} (Reflexive Landauer Inequality) stated in Section 3.
+
+\subsection{Empirical Verification}
+
+Appendix~\ref{app:pr0-validation-summary} reports that the PR-0 field substrate satisfies \eqref{eq:rlb-derived} with 100\% pass rate across confinement, long-range, short-range, and geometric regimes, providing empirical confirmation of the bound.
+
+\subsection{Units and Dimensional Analysis}
+
+To ensure dimensional consistency:
+\begin{itemize}[leftmargin=1.2em]
+  \item \([E] = \mathrm{energy}\)
+  \item \([k_B T] = \mathrm{energy}\)
+  \item \([\Psifield] = \mathrm{dimensionless}\) or \(\mathrm{energy}^{1/2}\cdot\mathrm{volume}^{-1/2}\) (Ginzburg--Landau convention)
+  \item \([\lambda_1] = \mathrm{energy}\cdot\mathrm{volume}^{-1}\) (bulk term)
+  \item \([\lambda_2] = \mathrm{energy}\cdot\mathrm{length}\cdot\mathrm{volume}^{-1}\) (gradient term)
+  \item \([\lambda_\Psi] = \mathrm{dimensionless}\) (if \(\Psifield\) normalized) or \(\mathrm{energy}\cdot(\mathrm{energy}\cdot\mathrm{volume}^{-1})^{-1}\) otherwise
+\end{itemize}
+
+In the main text, we absorb numerical factors into \(\alpha_1,\alpha_2,\lambda_\Psi\) and verify dimensional consistency with the PR-0 simulations, where all quantities are expressed in code units and rescaled post hoc for physical interpretation.
+
+\subsection{Connection to Reflexive Fluctuation Theorem}
+
+The derivation above is consistent with the Reflexive Fluctuation Theorem (Theorem~\ref{thm:RFT}), which generalizes the Crooks/Jarzynski relation to include the reflexive entropy \(\mathcal{S}_{\mathrm{ref}} = S(1 + C I_{\mathrm{holo}}^p)\). The holographic information \(I_{\mathrm{holo}}\) couples to the coherence field \(\Psifield\) via the complexity--curvature correspondence (Theorem~\ref{thm:ChoiceCurv}), ensuring that the energetic cost of \(\PT\) reflects both standard thermodynamic (Landauer) and geometric (field--curvature) contributions.
+
+% End of Appendix D
+

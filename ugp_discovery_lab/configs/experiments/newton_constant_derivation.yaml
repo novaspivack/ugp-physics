@@ -1,0 +1,40 @@
+experiment:
+  name: newton_constant_derivation
+  description: "Derives Newton's gravitational constant G from UGP's fundamental constants using the entanglement thermodynamics framework from the Theoretical Architecture Document (TAD)."
+  inputs:
+    # This experiment uses theoretical calculations, not external data files
+    runs:
+      - "foundational_validation_results.json"  # For consistency with framework
+  analysis:
+    # UGP Elegant Kernel constants
+    k_L_squared: 0.013671875  # 7/512 (exact value)
+    
+    # Geometric factor candidates to test
+    alpha_star_candidates: [1.0, 2.0, 4.0, 8.0]  # Test different α_⋆ values
+    
+    # Physical constants (SI units)
+    speed_of_light: 299792458.0  # c in m/s
+    planck_constant: 6.62607015e-34  # ħ in J·s
+    newton_constant_experimental: 6.67430e-11  # G in m³/(kg·s²)
+    
+    # Entanglement density calculation
+    H_LL_formula: "2 * k_L_squared"  # Fisher curvature of L component
+    eta_formula: "alpha_star * H_LL"  # Entanglement density
+    
+    # Validation parameters
+    validation_tolerance: 1e-6    # For perfect match detection
+    physical_bounds:
+      G_min: 1e-15          # Minimum reasonable G (m³/(kg·s²))
+      G_max: 1e-5           # Maximum reasonable G (m³/(kg·s²))
+  
+  report:
+    export_md: true
+    export_json: true
+    plots: true  # Generate G comparison and α_⋆ analysis plots
+    csv_export: true  # Export detailed results table
+  
+  integrity:
+    fail_on_warning: true
+    require_real_data: false  # This is a theoretical derivation
+    validate_physical_bounds: true
+    check_formula_consistency: true

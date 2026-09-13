@@ -1,0 +1,29 @@
+experiment:
+  name: equivalence_test_attractor_b
+  description: "Equivalence testing for Attractor B against sin(π/42) with rigorous TOST protocol"
+  inputs:
+    runs:
+      - "UGP_discovery_lab_runs/exp_20250917_170920/results/reports/experiment_results.json"
+  equivalence:
+    target: 0.07541304042454709
+    candidates:
+      - expression: "sin(π/42)"
+        value: 0.074730093586424
+        description: "Dihedral group sin(π/42) candidate"
+      - expression: "1/(2*cos(π/42))"
+        value: 0.076553663973897
+        description: "Dihedral group cos candidate"
+      - expression: "π/42"
+        value: 0.074799881570107
+        description: "Simple π/42 candidate"
+  tost:
+    delta: 1.0e-4
+    alpha: 0.05
+    n_bootstrap: 1000
+    fdr_correction: true
+  integrity:
+    fail_on_warning: true
+    require_real_data: true
+  report:
+    export_md: true
+    export_json: true

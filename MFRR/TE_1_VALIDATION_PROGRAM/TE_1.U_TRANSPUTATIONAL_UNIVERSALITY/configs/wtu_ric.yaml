@@ -1,0 +1,23 @@
+# RIC classifier trajectory encoding configuration
+# Uses TE1.F inference logs to generate reference trajectories
+
+benchmark:
+  name: ric_classifier
+  description: "RIC temporal classifier score trajectories"
+  data_source: MFRR/TE_1_VALIDATION_PROGRAM/TE_1.F_RIC/results/run_20251110_193126/summary.json
+  timesteps: 150
+  feature_dim: 64
+
+encoding:
+  pr0_cli: pr0_system/cli/transmute.py
+  mapping:
+    method: affine
+    scale: 1.0
+    bias: 0.0
+  horizon: 150
+
+metrics:
+  epsilon_norm: L2
+  auc_delta: true
+  calibration: true
+  output_dir: results/wtu/ric

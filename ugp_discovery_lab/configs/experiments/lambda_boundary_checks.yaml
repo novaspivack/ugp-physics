@@ -1,0 +1,33 @@
+experiment:
+  name: lambda_boundary_checks
+  description: "Performs cross-checks with other cosmological observables to validate the UGP → Λ mapping through Gibbons-Hawking entropy deficit and de Sitter temperature normalization (Phase 10.2.3)."
+  inputs:
+    runs:
+      - "foundational_validation_results.json"  # For consistency with framework
+      - "UGP_discovery_lab_runs/**/experiment_results.json"  # For trajectory integration
+  analysis:
+    cross_checks:
+      - "gh_entropy_deficit"        # Gibbons-Hawking entropy deficit analysis
+      - "de_sitter_temperature"     # De Sitter temperature normalization
+      - "boundary_identity"         # Boundary identity validation
+      - "trajectory_level_validation" # Trajectory-level cross-checks
+    validation_parameters:
+      tolerance: 1e-6              # Cross-check tolerance
+      L_values: [9.380821783940931, 13.59708042548158]  # Current and dS limit
+      R_values: [1e26, 1e27, 1e28] # Horizon radius range in meters
+      G_value: 6.67430e-11         # Newton constant in SI
+      c_value: 299792458.0         # Speed of light in SI
+    boundary_identities:
+      entropy_deficit: "ΔS_bits / S_bits = GΛ"
+      temperature_normalization: "T(L)/T_dS = √((ln 2 · L)/(3π))"
+      boundary_consistency: "Mathematical exactness from Λ mapping"
+  report:
+    export_md: true
+    export_json: true
+    plots: true                     # Generate cross-check plots
+    csv_export: true               # Export detailed analysis tables
+  integrity:
+    fail_on_warning: true
+    require_real_data: false       # Cross-checks can use theoretical calculations
+    validate_physical_consistency: true
+    check_boundary_identities: true

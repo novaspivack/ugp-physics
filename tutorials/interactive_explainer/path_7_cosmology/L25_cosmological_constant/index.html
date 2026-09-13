@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L25: The Cosmological Constant — UGP Physics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="../../common/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
+  <style>
+    .level-stack { display: flex; flex-direction: column; gap: 0.75rem; margin: 1rem 0; }
+    .level-row {
+      display: flex; align-items: flex-start; gap: 1rem;
+      background: var(--bg-elevated); border: 1px solid var(--stroke-primary);
+      border-radius: var(--r-md); padding: 1rem;
+    }
+    .level-badge {
+      flex-shrink: 0; width: 56px; height: 56px; border-radius: var(--r-md);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: var(--accent); color: #fff; font-weight: 700;
+    }
+    .level-badge .lv-num { font-size: 1.4rem; line-height: 1; }
+    .level-badge .lv-lbl { font-size: 0.55rem; text-transform: uppercase; letter-spacing: 0.05em; }
+    .level-body { flex: 1; }
+    .level-body h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.3rem; color: var(--text-primary); }
+    .level-body p  { font-size: 0.875rem; color: var(--text-secondary); margin: 0; }
+    .result-box {
+      background: rgba(249,115,22,0.08); border: 1.5px solid var(--accent);
+      border-radius: var(--r-md); padding: 1.25rem 1.5rem; margin: 1rem 0;
+    }
+    .result-box .rb-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--accent); margin-bottom: 0.5rem; }
+    .result-box .rb-eq { font-size: 1.3rem; text-align: center; padding: 0.5rem 0; }
+    .result-box .rb-sub { font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.4rem; }
+    .energy-budget { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; margin: 1rem 0; }
+    .eb-item { background: var(--bg-elevated); border: 1px solid var(--stroke-primary);
+      border-radius: var(--r-md); padding: 0.75rem; text-align: center; }
+    .eb-pct { font-size: 1.6rem; font-weight: 700; color: var(--accent); }
+    .eb-lbl { font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem; }
+    .bracket-vis {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg-elevated); border: 1px solid var(--stroke-primary);
+      border-radius: var(--r-md); padding: 1.25rem; text-align: center; margin: 1rem 0;
+      font-size: 1rem;
+    }
+    .bracket-val { color: var(--accent); font-weight: 700; }
+    .bracket-obs { color: #22C55E; font-weight: 700; }
+  </style>
+</head>
+<body style="--path-current: var(--path-7)">
+
+  <header class="site-header">
+    <a href="../../index.html" class="site-logo">UGP Physics</a>
+    <nav class="breadcrumb">
+      <a href="../../index.html">Tutorial Series</a>
+      <span class="bc-sep">›</span>
+      <a href="../index.html">Path 7: Cosmology</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">L25: The Cosmological Constant</span>
+    </nav>
+  </header>
+
+  <main class="page-wrapper">
+
+    <div class="lesson-header">
+      <div class="path-label">Path 7 — Cosmology · Lesson 1 of 4</div>
+      <h1>The Cosmological Constant</h1>
+      <p class="lesson-subtitle">
+        The worst fine-tuning problem in physics — answered in three levels.
+        Λ = 0 from Z₇ symmetry. Quantum loops suppressed 10<sup>83</sup>-fold.
+        Ω<sub>Λ</sub> ≠ 0 forced by the PSC incompleteness theorem.
+      </p>
+      <div class="progress-bar"><div class="progress-fill" style="width:25%"></div></div>
+    </div>
+
+    <!-- ═══ Section 1: The Problem ═══ -->
+    <section class="lesson-section" id="the-problem">
+      <h2>The Worst Fine-Tuning Problem in Physics</h2>
+
+      <p>
+        The universe is accelerating. In 1998, two independent teams measuring distant
+        supernovae found that the expansion of space is speeding up — not slowing down,
+        as gravity alone would predict. Something is providing a repulsive push on cosmic
+        scales. The simplest model adds a constant energy density Λ to Einstein's equations:
+        dark energy, which makes up about 69% of all the energy in the universe.
+      </p>
+
+      <div class="energy-budget">
+        <div class="eb-item">
+          <div class="eb-pct">~69%</div>
+          <div class="eb-lbl">Dark energy (Ω<sub>Λ</sub>)</div>
+        </div>
+        <div class="eb-item">
+          <div class="eb-pct">~26%</div>
+          <div class="eb-lbl">Dark matter</div>
+        </div>
+        <div class="eb-item">
+          <div class="eb-pct">~5%</div>
+          <div class="eb-lbl">Ordinary matter</div>
+        </div>
+      </div>
+
+      <p>
+        Now for the problem. Quantum field theory predicts that empty space should be
+        seething with virtual particle fluctuations that contribute an enormous vacuum energy.
+        When you add up contributions from all quantum fields up to the Planck scale:
+      </p>
+
+      <div class="callout callout--warn">
+        <strong>The mismatch:</strong> QFT predicts ρ<sub>Λ</sub> ~ M<sub>Pl</sub>⁴ ≈ 10<sup>76</sup> GeV⁴.
+        The observed value is ρ<sub>Λ</sub> ≈ 10<sup>−47</sup> GeV⁴.
+        The ratio is 10<sup>123</sup>. This is the largest discrepancy between theory
+        and observation in the history of science.
+      </div>
+
+      <p>
+        There are actually two puzzles: (1) Why is Λ so incredibly small but not zero?
+        (2) Why do enormous QFT contributions cancel to 120 decimal places, with a tiny
+        nonzero remainder? Both must be explained simultaneously. The Standard Model has
+        no answer to either.
+      </p>
+    </section>
+
+    <!-- ═══ Section 2: Three-Level GTE Answer ═══ -->
+    <section class="lesson-section" id="three-levels">
+      <h2>The Three-Level GTE Answer</h2>
+      <p>
+        GTE addresses the cosmological constant at three distinct levels of the theory.
+        Each level corresponds to a different structural layer of the framework.
+      </p>
+
+      <div class="level-stack">
+        <div class="level-row">
+          <div class="level-badge" style="background: rgba(249,115,22,0.7)">
+            <div class="lv-num">0</div>
+            <div class="lv-lbl">Algebra</div>
+          </div>
+          <div class="level-body">
+            <h4>Λ = 0 exactly — Z₇ symmetry kills the classical vacuum energy</h4>
+            <p>
+              The Φ<sub>MDL</sub> field has exactly seven degenerate ground states, related by Z₇ symmetry.
+              Because all seven are geometrically identical, their contributions to the vacuum
+              energy cancel exactly. No fine-tuning required — just symmetry.
+              <span data-lean="z7_vacuum_energy_mass_independent"></span>
+            </p>
+          </div>
+        </div>
+
+        <div class="level-row">
+          <div class="level-badge" style="background: rgba(249,115,22,0.85)">
+            <div class="lv-num">2</div>
+            <div class="lv-lbl">Cert.</div>
+          </div>
+          <div class="level-body">
+            <h4>Quantum loops suppressed by 10<sup>−83</sup> — holographic mode count</h4>
+            <p>
+              Standard QFT assumes L³ modes in a box of volume L³. GTE's CMCA encodes 3D space
+              on three 1D tapes: only 3L independent modes exist. This holographic suppression
+              reduces the one-loop quantum correction by a factor of ≈ 7.4 × 10<sup>−83</sup> —
+              eliminating 83 of the 120 orders of magnitude.
+            </p>
+          </div>
+        </div>
+
+        <div class="level-row">
+          <div class="level-badge" style="background: var(--accent)">
+            <div class="lv-num">3</div>
+            <div class="lv-lbl">Field</div>
+          </div>
+          <div class="level-body">
+            <h4>Ω<sub>Λ</sub> ≠ 0 forced — PSC incompleteness theorem</h4>
+            <p>
+              A universe that must carry its own complete description (PSC Reflexive Closure)
+              encounters an irreducible undecidable fragment — Gödel's incompleteness applied
+              to physics. The physical cost of adjudicating that fragment is a strictly positive
+              energy density: dark energy.
+              <span data-lean="incompleteness_implies_nonzero_omega_lambda"></span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 3: Level 0 Detail ═══ -->
+    <section class="lesson-section" id="level-zero">
+      <h2>Level 0: Why the Classical Vacuum Energy Is Zero</h2>
+
+      <p>
+        The Z₇ symmetry of the Φ<sub>MDL</sub> potential places seven identical
+        vacuum valleys at equal energies:
+      </p>
+
+      <div class="result-box">
+        <div class="rb-label">Z₇ vacuum degeneracy</div>
+        <div class="rb-eq">V(φ₀) = V(φ₁) = V(φ₂) = ⋯ = V(φ₆) = 0</div>
+        <div class="rb-sub">
+          All seven vacua are related by a discrete shift symmetry φ → φ + 2π/7.
+          When you average over them, contributions cancel exactly.
+          <span data-lean="z7_vacuum_sectors_equiprobable"></span>
+        </div>
+      </div>
+
+      <p>
+        Think of it like three identical weights placed symmetrically on a scale: the torques
+        cancel exactly, not because someone adjusted them, but because of the symmetry of
+        their placement. Similarly, the seven Z₇ vacua cancel the classical Λ exactly —
+        not by fine-tuning, but by structure.
+      </p>
+
+      <div class="callout callout--info">
+        <strong>What this resolves:</strong> The classical fine-tuning problem is dissolved.
+        There is no enormous classical Λ to cancel. But quantum loops still contribute —
+        Level 2 addresses those.
+      </div>
+    </section>
+
+    <!-- ═══ Section 4: Level 3 and the Bracket ═══ -->
+    <section class="lesson-section" id="bracket">
+      <h2>The Derived Bracket: Ω<sub>Λ</sub> ∈ [3π/14, 0.6899]</h2>
+
+      <p>
+        After Level 0 removes the classical contribution and Level 2 suppresses quantum loops
+        by 10<sup>−83</sup>, is Ω<sub>Λ</sub> simply zero? No — the universe tells us
+        Ω<sub>Λ</sub> ≈ 0.689. Level 3 explains why a small nonzero value is unavoidable.
+      </p>
+
+      <p>
+        The PSC Adjudication Theorem establishes that the irreducible self-referential
+        fragment of the substrate has a strictly positive physical cost D<sub>res</sub> > 0.
+        This cost enters the PMDL action and maps via the Friedmann equation to a nonzero
+        Ω<sub>Λ</sub>. The theorem is machine-certified at CatAL.
+      </p>
+
+      <p>
+        GTE derives Ω<sub>Λ</sub> from two independent structural routes, giving a bracket:
+      </p>
+
+      <div class="bracket-vis">
+        <span class="bracket-val">3π/14 ≈ 0.6732</span>
+        &nbsp;≤&nbsp;
+        <span class="bracket-obs">Ω<sub>Λ</sub><sup>obs</sup> = 0.6889</span>
+        &nbsp;≤&nbsp;
+        <span class="bracket-val">0.6899</span>
+        <div style="margin-top:0.6rem; font-size:0.8rem; color:var(--text-secondary)">
+          Lower bound: PSC entropy floor · Upper bound: census ceiling (orbit capacity)
+          · Planck 2018: 0.6889 ± 0.0056 — inside the bracket
+          <span data-lean="psp_epoch_selection_master"></span>
+        </div>
+      </div>
+
+      <p>
+        Every factor in both bounds traces to a GTE structural constant certified independently
+        of Ω<sub>Λ</sub>: D = 4 (spacetime dimension, CatAL), N<sub>fam</sub> = 5 (Z₇ orbit, CatAL),
+        N<sub>gen</sub> = 3 (PSC, CatAL), |Z₇| = 7 (MDL, CatAL). This is not a fit — it is a
+        prediction.
+      </p>
+
+      <div class="callout callout--success">
+        <strong>The key insight:</strong> Dark energy is not a mysterious substance.
+        It is the irreducible cost of the universe being self-consistent and self-describing.
+        The universe must "remember itself" — and that act of self-memory costs energy.
+        The same incompleteness that drives quantum randomness also prevents Λ from being
+        exactly zero.
+      </div>
+    </section>
+
+    <!-- ═══ Key Points ═══ -->
+    <section class="lesson-section" id="key-points">
+      <h2>Key Points</h2>
+      <ul class="key-points">
+        <li>
+          The standard QFT prediction for Λ overshoots by 10<sup>123</sup>: the largest
+          discrepancy in physics. The GTE framework addresses it in three structural levels —
+          not by cancellation or fine-tuning.
+        </li>
+        <li>
+          Level 0: The Z₇ vacuum symmetry forces the classical vacuum energy to exactly zero.
+          Three Lean-certified theorems establish this at CatAL.
+          <span data-lean="phimdl_tmunu_vacuum_zero"></span>
+        </li>
+        <li>
+          Level 2: The GTE holographic mode count (3L modes, not L³) suppresses one-loop
+          quantum corrections by ≈ 7.4 × 10<sup>−83</sup>, eliminating 83 of the 120 orders.
+        </li>
+        <li>
+          Level 3: PSC Reflexive Closure + Gödel incompleteness forces D<sub>res</sub> > 0
+          → Ω<sub>Λ</sub> ≠ 0. The PSC Adjudication Theorem is CatAL.
+          <span data-lean="incompleteness_implies_nonzero_omega_lambda"></span>
+        </li>
+        <li>
+          Prediction: Ω<sub>Λ</sub> ∈ [3π/14, 0.6899]. Planck 2018 gives 0.6889 ± 0.0056 —
+          inside the bracket. Zero free parameters.
+        </li>
+      </ul>
+    </section>
+
+    <!-- ═══ See Also ═══ -->
+    <div class="see-also">
+      <h2>See Also</h2>
+      <div class="see-also-group">
+        <div class="see-also-label">Lean 4 proofs (ugp-lean)</div>
+        <ul class="source-list">
+          <li><code>z7_vacuum_sectors_equiprobable</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Gravity/Z7AnomalyFree.lean" target="_blank" rel="noopener">view on GitHub ↗</a></li>
+          <li><code>phimdl_tmunu_vacuum_zero</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Spacetime/StressEnergyTensor.lean" target="_blank" rel="noopener">view on GitHub ↗</a></li>
+          <li><code>incompleteness_implies_nonzero_omega_lambda</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Gravity/PSCEpochSelection.lean" target="_blank" rel="noopener">view on GitHub ↗</a></li>
+          <li><code>psp_epoch_selection_master</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Gravity/PSCEpochSelection.lean" target="_blank" rel="noopener">view on GitHub ↗</a></li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Source paper</div>
+        <ul class="source-list">
+          <li><a href="https://doi.org/10.5281/zenodo.20560550" target="_blank" rel="noopener">P48 — The Complete GTE Framework, Ch 8 (Cosmological Constant) ↗</a></li>
+          <li><a href="https://doi.org/10.5281/zenodo.20657864" target="_blank" rel="noopener">Tutorial: The Cosmological Constant (full PDF) ↗</a></li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Cross-links</div>
+        <ul class="source-list">
+          <li><a href="../../path_6_quantum/L23_transputation/index.html" class="xref">L23: Transputation — the same incompleteness drives quantum measurement ↗</a></li>
+          <li><a href="L26_cmb_inflation/index.html" class="xref">L26: CMB, Inflation, and Baryon Asymmetry →</a></li>
+        </ul>
+      </div>
+    </div>
+
+  </main>
+
+  <div class="page-wrapper">
+    <footer class="lesson-footer">
+      <a href="../index.html" class="nav-btn nav-btn--prev">← Path 7: Cosmology</a>
+      <a href="../L26_cmb_inflation/index.html" class="nav-btn nav-btn--next">L26: CMB &amp; Baryon Asymmetry →</a>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
+  <script src="../../common/interactive.js"></script>
+  <script src="../../common/nav.js"></script>
+  <script>
+    const LEAN_REFS = {
+      "z7_vacuum_sectors_equiprobable": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Gravity/Z7AnomalyFree.lean"
+      },
+      "phimdl_tmunu_vacuum_zero": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Spacetime/StressEnergyTensor.lean"
+      },
+      "z7_vacuum_energy_mass_independent": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Gravity/NRTVacuumEnergy.lean"
+      },
+      "incompleteness_implies_nonzero_omega_lambda": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Gravity/PSCEpochSelection.lean"
+      },
+      "psp_epoch_selection_master": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Gravity/PSCEpochSelection.lean"
+      }
+    };
+    document.addEventListener('DOMContentLoaded', () => {
+      autoRenderLeanBadges(LEAN_REFS);
+    });
+  </script>
+</body>
+</html>

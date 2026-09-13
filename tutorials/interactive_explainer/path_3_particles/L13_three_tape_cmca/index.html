@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L13: The Three-Tape CMCA — UGP Physics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="../../common/style.css">
+  <style>
+    /* ── Three-tape diagram ───────────────────────────────────────── */
+    .tape-diagram {
+      background: var(--bg-elevated);
+      border: 1.5px solid var(--stroke-primary);
+      border-radius: var(--r-lg);
+      padding: 1.5rem;
+      margin: 1.25rem 0;
+    }
+    .tape-row {
+      display: grid;
+      grid-template-columns: 60px 1fr;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 0.75rem;
+    }
+    .tape-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 1rem;
+      text-align: center;
+      color: var(--accent);
+    }
+    .tape-cells {
+      display: flex;
+      gap: 3px;
+    }
+    .tape-cell {
+      width: 28px; height: 28px;
+      border-radius: var(--r-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      background: var(--bg-card);
+      border: 1px solid var(--stroke-secondary);
+      color: var(--text-tertiary);
+    }
+    .tape-cell.tc-on { background: rgba(16,185,129,0.2); border-color: #10B981; color: #10B981; }
+    .tape-cell.tc-mid { background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.3); color: rgba(16,185,129,0.7); }
+    .clock-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--stroke-secondary);
+    }
+    .clock-box {
+      background: rgba(245,158,11,0.12);
+      border: 2px solid rgba(245,158,11,0.4);
+      border-radius: var(--r-md);
+      padding: 0.5rem 0.9rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      color: #F59E0B;
+      font-size: 0.9rem;
+    }
+    .clock-arrow {
+      font-size: 1.1rem;
+      color: var(--text-tertiary);
+    }
+
+    /* ── CMCA layers table ───────────────────────────────────────── */
+    .cmca-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1rem 0;
+      font-size: 0.85rem;
+    }
+    .cmca-table th {
+      background: var(--bg-card);
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+      font-weight: 700;
+      border-bottom: 1px solid var(--stroke-primary);
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .cmca-table td {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--stroke-secondary);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .cmca-table tr:last-child td { border-bottom: none; }
+    .rule-110 { color: #10B981; font-weight: 700; }
+    .rule-124 { color: #3B82F6; font-weight: 700; }
+
+    /* ── DPP forcing argument ────────────────────────────────────── */
+    .dpp-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+    .dpp-card {
+      background: var(--bg-elevated);
+      border: 1.5px solid var(--stroke-primary);
+      border-radius: var(--r-md);
+      padding: 0.9rem;
+    }
+    .dpp-card .dpp-header {
+      font-weight: 700; font-size: 0.88rem; margin-bottom: 0.35rem;
+      color: var(--accent);
+    }
+    .dpp-card .dpp-body { font-size: 0.82rem; color: var(--text-secondary); }
+
+    /* ── Error formula ───────────────────────────────────────────── */
+    .error-formula {
+      background: var(--bg-elevated);
+      border: 1px solid var(--stroke-primary);
+      border-radius: var(--r-md);
+      padding: 0.75rem 1rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      margin: 0.75rem 0;
+      text-align: center;
+    }
+  </style>
+</head>
+<body style="--path-current: var(--path-3)" data-path="3" data-lesson="2" data-total="6">
+
+  <header class="site-header">
+    <a href="../../index.html" class="site-logo">UGP Physics</a>
+    <nav class="breadcrumb">
+      <a href="../../index.html">Tutorial Series</a>
+      <span class="bc-sep">›</span>
+      <a href="../index.html">Path 3: Particles</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">L13: The Three-Tape CMCA</span>
+    </nav>
+  </header>
+
+  <main class="page-wrapper">
+
+    <div class="lesson-header">
+      <div class="path-label">Path 3 — Particles · Lesson 13 of 17</div>
+      <h1>The Three-Tape CMCA</h1>
+      <p class="lesson-subtitle">
+        A single 1D rule operates on a line. The universe has three spatial dimensions. 
+        The solution: three CMCA tapes sharing a single clock — one tape per spatial dimension, 
+        one shared clock for time.
+      </p>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:33%"></div>
+      </div>
+    </div>
+
+    <!-- ═══ Section 1: The Problem ═══ -->
+    <section class="lesson-section" id="problem">
+      <h2>The Dimensionality Problem</h2>
+      <p>
+        The GTE polynomial <code>p(L,C,R) = C+R−CR−LCR mod 7</code> defines a 7-state, 
+        radius-1 cellular automaton operating on a <strong>one-dimensional tape</strong>: 
+        every cell has a left neighbor and a right neighbor. The universe we live in has 
+        <strong>three spatial dimensions plus time</strong>.
+      </p>
+      <p>
+        This is not merely a size problem. It is structural. In 1D, there is no notion 
+        of "angle between two directions" — only left and right. Lorentz symmetry requires 
+        boosts <em>and</em> rotations, and rotations require at least two spatial dimensions.
+      </p>
+
+      <div class="card">
+        <div class="card-header">
+          The fine-angles theorem
+          <span data-lean="no_finite_ca_exact_lorentz_replica" class="lean-badge">CatAL</span>
+        </div>
+        <div class="card-body">
+          <p>
+            For any finite 1D cellular automaton of size M, the angular resolution error 
+            in the Lorentz group satisfies:
+          </p>
+          <div class="error-formula">
+            ε(M) = π²/(3M²) &gt; 0
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary)">
+            The error never reaches zero. No single 1D CA can achieve exact Lorentz symmetry, 
+            no matter how large it is. A different architecture is required.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 2: The CMCA Building Block ═══ -->
+    <section class="lesson-section" id="building-block">
+      <h2>The CMCA Building Block</h2>
+      <p>
+        Before describing three tapes, we need to understand one tape. A single 
+        <strong>CMCA (Chiral Minkowski Cellular Automaton)</strong> is a 1+1D system 
+        consisting of three coupled binary arrays on a 1D lattice:
+      </p>
+
+      <table class="cmca-table">
+        <thead>
+          <tr>
+            <th>Layer</th>
+            <th>Rule</th>
+            <th>Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>outer₊[x]</td>
+            <td><span class="rule-110">Rule 110</span></td>
+            <td>right-chiral dynamics</td>
+          </tr>
+          <tr>
+            <td>outer₋[x]</td>
+            <td><span class="rule-124">Rule 124</span></td>
+            <td>left-chiral dynamics</td>
+          </tr>
+          <tr>
+            <td>inner[x]</td>
+            <td><span class="rule-110">Rule 110</span></td>
+            <td>inner clock τ_c</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>
+        The inner clock fires at a rate τ_c that is a fixed fraction of the outer update step. 
+        The ℤ₇ winding number w[x] = τ_c[x] mod 7 encodes the Standard Model quantum numbers 
+        of whatever excitation lives at position x.
+      </p>
+      <p>
+        Rule 110 and Rule 124 are a <strong>chiral pair</strong>: they are mirror images of 
+        each other, related by left-right reflection. This chirality is crucial — it is what 
+        produces parity violation in the weak force. (See 
+        <a href="../../path_1_foundations/L03_polynomial/index.html" class="xref">L03</a> 
+        for why the GTE polynomial's binary restriction gives exactly Rule 110.)
+      </p>
+    </section>
+
+    <!-- ═══ Section 3: Three Tapes, One Clock ═══ -->
+    <section class="lesson-section" id="three-tapes">
+      <h2>Three Tapes, One Shared Clock</h2>
+
+      <div class="callout callout--neutral">
+        <div class="callout-title">The key idea</div>
+        <p>
+          Use <strong>three</strong> 1D CMCA tapes — one for each spatial dimension — 
+          all synchronized by a single shared clock. The three tapes provide three spatial 
+          dimensions; the shared clock provides time. Together they define a 3+1D coordinate system.
+        </p>
+      </div>
+
+      <div class="tape-diagram">
+        <p style="font-size:0.78rem;color:var(--text-tertiary);margin-bottom:1rem;text-align:center">
+          Three CMCA tapes sharing a common outer clock τ_c. Each tape provides one spatial dimension.
+        </p>
+        <div class="tape-row">
+          <div class="tape-label">Tape X</div>
+          <div class="tape-cells">
+            <div class="tape-cell tc-mid">·</div><div class="tape-cell tc-on">1</div>
+            <div class="tape-cell tc-mid">·</div><div class="tape-cell tc-on">1</div>
+            <div class="tape-cell tc-mid">·</div><div class="tape-cell tc-mid">·</div>
+            <div class="tape-cell tc-on">1</div><div class="tape-cell tc-mid">·</div>
+            <div class="tape-cell tc-mid">·</div><div class="tape-cell tc-on">1</div>
+            <div class="tape-cell tc-mid">·</div><div class="tape-cell tc-mid">·</div>
+          </div>
+        </div>
+        <div class="tape-row">
+          <div class="tape-label">Tape Y</div>
+          <div class="tape-cells">
+            <div class="tape-cell tc-mid">·</div><div class="tape-cell tc-mid">·</div>
+            <div class="tape-cell tc-on">1</div><div class="tape-cell tc-mid">·</div>
+            <div class="tape-cell tc-on">1</div><div class="tape-cell tc-on">1</div>
+            <div class="tape-cell tc-mid">·</div><div class="tape-cell tc-mid">·</div>
+            <div class="tape-cell tc-on">1</div><div class="tape-cell tc-mid">·</div>
+            <div class="tape-cell tc-mid">·</div><div class="tape-cell tc-on">1</div>
+          </div>
+        </div>
+        <div class="tape-row">
+          <div class="tape-label">Tape Z</div>
+          <div class="tape-cells">
+            <div class="tape-cell tc-on">1</div><div class="tape-cell tc-mid">·</div>
+            <div class="tape-cell tc-mid">·</div><div class="tape-cell tc-on">1</div>
+            <div class="tape-cell tc-mid">·</div><div class="tape-cell tc-mid">·</div>
+            <div class="tape-cell tc-mid">·</div><div class="tape-cell tc-on">1</div>
+            <div class="tape-cell tc-mid">·</div><div class="tape-cell tc-mid">·</div>
+            <div class="tape-cell tc-on">1</div><div class="tape-cell tc-mid">·</div>
+          </div>
+        </div>
+        <div class="clock-row">
+          <div class="clock-box">τ_c (shared clock)</div>
+          <span class="clock-arrow">→→→</span>
+          <span style="font-size:0.82rem;color:var(--text-secondary)">
+            All three tapes step together. Each clock tick advances X, Y, and Z simultaneously. 
+            The shared clock tick is the definition of one moment in time.
+          </span>
+        </div>
+      </div>
+
+      <h3>Why the shared clock is crucial</h3>
+      <p>
+        Without a shared clock, three tapes running independently would have no way to 
+        synchronize events: "particle A is at position x=5, y=3, z=2 at time t=10" would 
+        be ambiguous, because "t=10" could mean different things on each tape.
+      </p>
+      <p>
+        With a shared outer clock period τ_c<sup>out</sup>, all three tapes advance together. 
+        This shared simultaneity is exactly what defines Minkowski spacetime: events are 
+        simultaneous when they occur at the same clock tick. The shared clock is the physical 
+        time coordinate.
+      </p>
+    </section>
+
+    <!-- ═══ Section 4: The DPP ═══ -->
+    <section class="lesson-section" id="dpp">
+      <h2>The Dimensional Protocol Principle (DPP)
+        <span data-lean="dimensional_protocol_principle_master" class="lean-badge">CatAL</span>
+      </h2>
+      <p>
+        The three-tape construction is not arbitrary — it is forced by the 
+        <strong>Dimensional Protocol Principle (DPP)</strong>, a machine-certified theorem, 
+        which asks: given that the polynomial p must describe a universe with exactly three 
+        spatial dimensions, what is the minimum-description-length way to achieve this?
+      </p>
+      <div class="dpp-grid">
+        <div class="dpp-card">
+          <div class="dpp-header">Why exactly 3 tapes?</div>
+          <div class="dpp-body">
+            One tape gives 1+1D — not enough for rotation invariance. 
+            Two tapes give 2+1D — no Z axis, no 3D chirality. 
+            Three tapes give exactly 3+1D, and three is the minimum 
+            where the full Lorentz group (with parity violation) can be represented.
+          </div>
+        </div>
+        <div class="dpp-card">
+          <div class="dpp-header">Why the same polynomial on each?</div>
+          <div class="dpp-body">
+            MDL: any description of the three-tape system that uses three different 
+            polynomials costs more bits than one that uses the same polynomial three times. 
+            The DPP forces the same p on every tape — the MDL-cheapest option.
+          </div>
+        </div>
+        <div class="dpp-card">
+          <div class="dpp-header">Why a shared clock?</div>
+          <div class="dpp-body">
+            Three independent clocks would require specifying their relative drift — 
+            extra bits. One shared clock is the minimum-description choice. 
+            The shared clock also enables the tensor product structure that gives 
+            Minkowski geometry in the continuum limit.
+          </div>
+        </div>
+        <div class="dpp-card">
+          <div class="dpp-header">What about 4 or more tapes?</div>
+          <div class="dpp-body">
+            More tapes cost more bits and produce more spatial dimensions than observed. 
+            Three is the unique MDL minimum that produces exactly the 3+1D geometry 
+            confirmed by experiment.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 5: Emergent Spacetime ═══ -->
+    <section class="lesson-section" id="spacetime">
+      <h2>Emergent 3+1D Spacetime Geometry</h2>
+      <p>
+        The three-tape CMCA is a Level 2 (algebraic certificate) object — a discrete 
+        finite system. But in the continuum limit, it gives rise to a Level 3 (physical) 
+        object: Minkowski spacetime with the correct Lorentz geometry.
+      </p>
+
+      <div class="steps" id="steps-spacetime">
+        <div class="steps-nav">
+          <button class="step-pill">Tensor product</button>
+          <button class="step-pill">Causal diamond</button>
+          <button class="step-pill">Lorentz symmetry</button>
+          <button class="step-pill">Summary</button>
+        </div>
+
+        <div class="steps-body">
+          <div class="step-panel">
+            <div class="step-panel-content">
+              <h4>Step 1 — Tensor product structure</h4>
+              <p>
+                Three tapes running the same polynomial, synchronized by a shared clock, 
+                form a tensor product: the state space is 
+                <strong>Tape X ⊗ Tape Y ⊗ Tape Z</strong>. 
+                Each tensor factor contributes one spatial dimension. The shared clock 
+                contributes the time dimension. The result is a 4D coordinate lattice: 
+                each cell (x, y, z) at clock time t is a well-defined spacetime event.
+              </p>
+            </div>
+          </div>
+          <div class="step-panel">
+            <div class="step-panel-content">
+              <h4>Step 2 — The causal diamond</h4>
+              <p>
+                In the CMCA, causality is automatic: a cell at position (x, t) can only 
+                influence cells at (x±1, t+1). This is a discrete lightcone. 
+                The set of cells that can causally influence a given event forms a 
+                "causal diamond" — a finite diamond-shaped region in the spacetime lattice.
+              </p>
+              <p style="margin-top:0.5rem;font-size:0.85rem;color:var(--text-secondary)">
+                In the continuum limit (lattice spacing → 0), this discrete causal diamond 
+                becomes the Minkowski lightcone exactly. The causal structure of the CA 
+                directly encodes the causal structure of spacetime.
+              </p>
+            </div>
+          </div>
+          <div class="step-panel">
+            <div class="step-panel-content">
+              <h4>Step 3 — Lorentz symmetry recovered</h4>
+              <p>
+                The three-tape construction solves the fine-angles problem 
+                (ε(M) = π²/(3M²) from the No-CA-Replica theorem). Each tape contributes 
+                one plane of rotation; three planes give the full SO(3) rotation group. 
+                In the continuum limit, the discrete rotation symmetry of the lattice 
+                becomes the continuous Lorentz group.
+              </p>
+              <p style="margin-top:0.5rem;font-size:0.85rem;color:var(--text-secondary)">
+                The key: on any single tape, rotations within the tape are not possible. 
+                But <em>between</em> tapes (e.g., rotating the X-Y plane) they are. 
+                Three tapes provide all three rotation planes: X-Y, Y-Z, X-Z.
+              </p>
+            </div>
+          </div>
+          <div class="step-panel">
+            <div class="step-panel-content">
+              <h4>Summary</h4>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+                <div class="card">
+                  <div class="card-header" style="font-size:0.78rem">Level 2 (CMCA)</div>
+                  <div class="card-body" style="font-size:0.85rem">
+                    Three discrete tapes, shared clock, tensor product structure, 
+                    discrete causal diamonds, finite angular resolution.
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header" style="font-size:0.78rem">Level 3 (Φ_MDL)</div>
+                  <div class="card-body" style="font-size:0.85rem">
+                    Continuous Minkowski ℝ³⁺¹, full Lorentz group, 
+                    lightcone causal structure, exact rotation invariance.
+                  </div>
+                </div>
+              </div>
+              <p style="font-size:0.85rem;margin-top:0.75rem">
+                The Algebraic Lifting Theorem (from <a href="../L12_phimdl_field/index.html">L12</a>) 
+                carries the causal structure and winding-number properties from the discrete 
+                CMCA to the continuum field Φ_MDL.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="steps-footer">
+          <button class="step-nav-btn" data-action="prev" disabled>← Prev</button>
+          <span class="steps-counter">Step 1 of 4</span>
+          <button class="step-nav-btn" data-action="next">Next →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Nav -->
+    <nav class="lesson-nav">
+      <a href="../L12_phimdl_field/index.html" class="lesson-nav-btn lesson-nav-prev">← L12: The Φ_MDL Field</a>
+      <a href="../L14_particles_as_kinks/index.html" class="lesson-nav-btn lesson-nav-next">L14: Particles as Kinks →</a>
+    </nav>
+
+  </main>
+
+  <footer class="site-footer">
+    UGP Physics Tutorial Series · Nova Spivack · 
+    <a href="https://novaspivack.com/research">novaspivack.com/research</a>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+  <script src="../../common/interactive.js"></script>
+  <script src="../../common/nav.js"></script>
+  <script>
+    const LEAN_REFS = {
+      "no_finite_ca_exact_lorentz_replica": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Framework/CMCAContinuumLimit.lean"
+      },
+      "dimensional_protocol_principle_master": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Classification/NgenUniqueness.lean"
+      }
+    };
+    document.addEventListener('DOMContentLoaded', () => {
+      initSteps('steps-spacetime');
+      autoRenderLeanBadges(LEAN_REFS);
+      renderMathInElement(document.body, {
+        delimiters: [
+          {left:'$$',right:'$$',display:true},
+          {left:'$',right:'$',display:false}
+        ]
+      });
+    });
+  </script>
+</body>
+</html>

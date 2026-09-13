@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L24: The Born Rule as a Theorem — UGP Physics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="../../common/style.css">
+  <style>
+    /* ── Four-routes convergence diagram ─────────────────────── */
+    .routes-diagram { margin: 2rem 0; }
+
+    /* ── Route cards ─────────────────────────────────────────── */
+    .route-card {
+      display: grid;
+      grid-template-columns: 44px 1fr;
+      gap: 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--stroke-primary);
+      border-radius: var(--r-lg);
+      padding: 1rem 1.2rem;
+      margin-bottom: 0.75rem;
+    }
+    .route-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .route-badge.cat-al { background: var(--cert-lean); }
+    .route-badge.cat-ad { background: var(--cert-ad); }
+    .route-body h3 { margin: 0 0 0.3rem; font-size: 0.95rem; }
+    .route-body p  { margin: 0; font-size: 0.84rem; color: var(--text-secondary); line-height: 1.6; }
+    .route-body .cert { margin-left: 0.5rem; }
+
+    /* ── Key result box ─────────────────────────────────────── */
+    .key-result {
+      background: rgba(6,182,212,0.07);
+      border: 1.5px solid rgba(6,182,212,0.35);
+      border-radius: var(--r-lg);
+      padding: 1.4rem 1.6rem;
+      margin: 1.5rem 0;
+    }
+    .key-result .kr-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    .key-result .kr-formula {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0.4rem 0;
+    }
+    .key-result .kr-note {
+      font-size: 0.83rem;
+      color: var(--text-secondary);
+      margin-top: 0.4rem;
+      line-height: 1.6;
+    }
+
+    /* ── MDL unification table ─────────────────────────────── */
+    .mdl-row { display: grid; grid-template-columns: 1fr 1.5fr 1.5fr auto; gap: 0.75rem; padding: 0.6rem 0; border-bottom: 1px solid var(--stroke-secondary); align-items: center; }
+    .mdl-row:last-child { border-bottom: none; }
+    .mdl-row:first-child { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-tertiary); }
+    @media (max-width: 600px) { .mdl-row { grid-template-columns: 1fr 1fr; gap: 0.5rem; } }
+  </style>
+</head>
+<body style="--path-current: var(--path-6)">
+
+  <header class="site-header">
+    <a href="../../index.html" class="site-logo">UGP Physics</a>
+    <nav class="breadcrumb">
+      <a href="../../index.html">Tutorial Series</a>
+      <span class="bc-sep">›</span>
+      <a href="../index.html">Path 6: Quantum</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">L24: Born Rule</span>
+    </nav>
+  </header>
+
+  <main class="page-wrapper">
+
+    <div class="lesson-header">
+      <div class="path-label">Path 6 — Quantum · Lesson 24 of 24</div>
+      <h1>The Born Rule as a Theorem, Not a Postulate</h1>
+      <p class="lesson-subtitle">
+        P(k) = |⟨k|ψ⟩|² is Max Born's 1926 postulate — stated as a fact, never explained.
+        GTE derives it four independent ways, two machine-certified in Lean 4 with zero sorry.
+        The Born rule is a structural necessity of any PSC-consistent theory.
+      </p>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:100%"></div>
+      </div>
+    </div>
+
+    <!-- ═══ Section 1: The Born Rule as Standard QM Postulates It ═══ -->
+    <section class="lesson-section" id="postulate">
+      <h2>The Born Rule in Standard Quantum Mechanics</h2>
+      <p>
+        In standard quantum mechanics, a quantum state is written as a superposition:
+      </p>
+      <div style="background:var(--bg-elevated);border:1px solid var(--stroke-primary);border-radius:var(--r-md);padding:1rem 1.25rem;margin:1rem 0;font-family:'JetBrains Mono',monospace;font-size:0.95rem">
+        |ψ⟩ = c₀|0⟩ + c₁|1⟩ + c₂|2⟩ + … + c₆|6⟩
+      </div>
+      <p>
+        The coefficients c<sub>k</sub> are complex numbers called <strong>amplitudes</strong>.
+        The Born rule says: when you measure the system, the probability of getting
+        outcome k is:
+      </p>
+
+      <div class="key-result">
+        <div class="kr-label">The Born Rule — as a postulate in standard QM</div>
+        <div class="kr-formula">P(k) = |c_k|²</div>
+        <div class="kr-note">
+          This is Postulate 5 of standard quantum mechanics. It is stated, not derived.
+          It is confirmed by experiment to extraordinary precision. But <em>why</em> the
+          probability is the squared amplitude — why not |c<sub>k</sub>|, or |c<sub>k</sub>|⁴,
+          or some other function — is not explained by any standard formulation of QM.
+        </div>
+      </div>
+
+      <p>
+        The Born rule has been tested billions of times across all of quantum chemistry,
+        particle physics, quantum computing, and quantum optics. It always works. The
+        question of <em>why</em> it works — what physical principle forces it — is
+        what the GTE derivation answers.
+      </p>
+    </section>
+
+    <!-- ═══ Section 2: Why Derivations Are Hard ═══ -->
+    <section class="lesson-section" id="difficulty">
+      <h2>Why Previous Derivation Attempts Fell Short</h2>
+      <p>
+        Deriving the Born rule is notoriously difficult. Previous attempts either:
+      </p>
+      <div class="split-3" style="margin:1.5rem 0">
+        <div class="card">
+          <div class="card-header">Circular reasoning</div>
+          <div class="card-body">
+            <p>Many derivations secretly assume some form of the Born rule — or a
+            probabilistic principle equivalent to it — in their premises. The conclusion
+            is then not independently derived.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">Additional axioms</div>
+          <div class="card-body">
+            <p>Gleason's theorem derives the Born rule from the structure of quantum
+            measurements, but requires assuming the measurement outcomes form a
+            noncontextual probability frame — an independent postulate.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">Many-worlds dependence</div>
+          <div class="card-body">
+            <p>Everettian derivations (decision-theoretic and envariance) require
+            accepting many-worlds, which has its own unresolved problems. The Born
+            rule is derived within one interpretation — not generally.</p>
+          </div>
+        </div>
+      </div>
+      <div class="callout callout--neutral">
+        <p>
+          <strong>The GTE requirement:</strong> A valid derivation must derive the Born rule
+          without assuming any form of it, within a self-contained framework that also explains
+          why measurement happens at all (the transputation mechanism from L23). The derivation
+          must be non-circular and independently verifiable.
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══ Section 3: Four Routes Diagram ═══ -->
+    <section class="lesson-section" id="four-routes">
+      <h2>Four Independent Derivation Routes</h2>
+      <p>
+        The GTE derivation does not rely on a single argument. Four logically independent
+        routes all converge on the same formula P(k) = |c<sub>k</sub>|². The redundancy is
+        intentional: each route uses different mathematical tools and different premises,
+        making the result extremely robust.
+      </p>
+
+      <!-- Convergence diagram -->
+      <div class="routes-diagram">
+        <svg id="convergence-diagram" viewBox="0 0 640 260" aria-label="Four routes converging on the Born rule">
+        </svg>
+      </div>
+
+      <!-- Route α -->
+      <div class="route-card">
+        <div class="route-badge cat-al">α</div>
+        <div class="route-body">
+          <h3>Route α — ℤ₇ superselection
+            <span class="cert" data-lean="born_rule_unconditional"></span>
+          </h3>
+          <p>
+            The GTE kink Hilbert space decomposes into sectors labeled by winding number
+            (the ℤ₇ charge from Path 3). The only probability assignment compatible with
+            the ℤ₇ block structure and the Hilbert-space inner product is |c<sub>k</sub>|².
+            Any other assignment would fail to respect the superselection sectors.
+          </p>
+        </div>
+      </div>
+
+      <!-- Route β -->
+      <div class="route-card">
+        <div class="route-badge cat-al">β</div>
+        <div class="route-body">
+          <h3>Route β — PSC closure + Gleason
+            <span class="cert" data-lean="born_rule_from_psc_mdl"></span>
+          </h3>
+          <p>
+            PSC forces quantum probabilities to form a noncontextual effect algebra —
+            this is derivable from PSC rather than postulated. By Gleason's theorem,
+            the unique measure on a Hilbert space that respects noncontextuality is the
+            Born trace formula. Both the noncontextuality and the Born rule follow.
+          </p>
+        </div>
+      </div>
+
+      <!-- Route γ -->
+      <div class="route-card">
+        <div class="route-badge cat-ad">γ</div>
+        <div class="route-body">
+          <h3>Route γ — 't Hooft information-loss (CatAD)</h3>
+          <p>
+            The f<sub>MDL</sub> cellular automaton on ℤ₇⁵ is irreversible: 98.71% of states
+            collapse to the vacuum attractor. The remaining ~1.29% — the PSC-admissible orbit
+            states — carry a natural invariant measure. The fraction of this measure belonging
+            to winding sector k equals |c<sub>k</sub>|² because both the measure and the
+            amplitudes are governed by the same ℤ₇ superselection structure as route α.
+          </p>
+        </div>
+      </div>
+
+      <!-- Route δ -->
+      <div class="route-card">
+        <div class="route-badge cat-ad">δ</div>
+        <div class="route-body">
+          <h3>Route δ — Page-Wootters clock (CatAD)</h3>
+          <p>
+            The GTE shared causal clock τ<sub>c</sub> = 3/7 satisfies the
+            Page-Wootters prerequisites for a timeless relational formulation of
+            quantum mechanics. The Born rule emerges from the relational formalism
+            applied to the GTE three-tape substrate, using the shared clock as the
+            reference frame.
+          </p>
+        </div>
+      </div>
+
+      <div class="callout callout--info">
+        <p>
+          <strong>Routes α and β</strong> are machine-certified at CatAL — Lean 4, zero sorry,
+          zero custom axioms — and are logically independent: different premises, different
+          mathematical frameworks, same conclusion.
+          <strong>Routes γ and δ</strong> are fully analytic derivations at CatAD, providing
+          two further independent convergences.
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══ Section 4: Non-circularity ═══ -->
+    <section class="lesson-section" id="non-circular">
+      <h2>Why the Argument Is Not Circular</h2>
+      <p>
+        A natural concern: did these derivations secretly assume the Born rule
+        in order to derive it? The answer is no, and this is checked formally.
+      </p>
+      <div class="tabs" id="circularity-tabs">
+        <div class="tab-bar">
+          <button class="tab-btn">Route α (no Born input)</button>
+          <button class="tab-btn">Route β (no Born input)</button>
+          <button class="tab-btn">Lean verification</button>
+        </div>
+        <div class="tab-panel">
+          <h3>Route α premises</h3>
+          <p>
+            Route α uses only: (1) the ℤ₇ superselection structure of the GTE kink
+            Hilbert space, and (2) the standard Hilbert-space inner product. Neither of
+            these is a statement of the Born rule or equivalent to it. The Born rule is
+            the output — not a hidden input.
+          </p>
+        </div>
+        <div class="tab-panel">
+          <h3>Route β premises</h3>
+          <p>
+            Route β uses: (1) PSC — Perfect Self-Containment — which is the fundamental
+            axiom of the GTE framework, not a quantum-mechanical postulate; and (2) Gleason's
+            theorem — a pure mathematical result about measures on Hilbert spaces that makes
+            no probabilistic assumptions. No Born-rule assumption appears anywhere.
+          </p>
+        </div>
+        <div class="tab-panel">
+          <h3>Machine-verified non-circularity</h3>
+          <p>
+            The Lean proof of <code>born_rule_from_psc_mdl</code> uses no axiom whose
+            statement is equivalent to the Born rule. Lean's type checker independently
+            verifies that every step in the proof follows from its stated hypotheses.
+            The proof is:
+          </p>
+          <ul style="font-size:0.86rem;line-height:2;padding-left:1.5rem;margin-top:0.5rem">
+            <li>Zero sorry — no gaps skipped</li>
+            <li>Zero custom axioms — no undischarged assumptions</li>
+            <li>Machine-checkable by anyone with Lean 4 installed</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 5: Why Complex Amplitudes ═══ -->
+    <section class="lesson-section" id="complex">
+      <h2>Why Quantum Amplitudes Are Complex Numbers</h2>
+      <p>
+        The Born rule tells us what to do with amplitudes. A deeper question: why are
+        amplitudes complex numbers in the first place? Why ℂ rather than ℝ?
+      </p>
+      <p>
+        The GTE substrate provides a structural answer. The master quadratic
+        <code>m(x) = x² + x − 1</code> is irreducible over GF(7) — the discriminant
+        is 5, which is a quadratic non-residue mod 7. Its splitting field is therefore
+        GF(49) = GF(7²), a degree-2 Galois extension. The Frobenius automorphism
+        x ↦ x⁷ acts on the two roots exactly as complex conjugation z ↦ z̄.
+      </p>
+      <div class="callout callout--info">
+        <p>
+          <strong>The consequence:</strong> In the continuum limit, the base field is ℝ,
+          and ℂ is the unique degree-2 extension of ℝ. The amplitude field is therefore
+          forced to be ℂ — not a choice, but a consequence of the GF(7) arithmetic.
+          This is a first-principles derivation of the complex structure of quantum
+          mechanics (CatAD).
+        </p>
+      </div>
+      <p>
+        This result is consistent with recent experimental exclusions of real-valued
+        quantum mechanics — experiments confirm that the imaginary unit is not a
+        formal convenience but a physical requirement.
+      </p>
+    </section>
+
+    <!-- ═══ Section 6: Three-Level MDL Unification ═══ -->
+    <section class="lesson-section" id="mdl-unification">
+      <h2>Three-Level MDL Unification</h2>
+      <p>
+        The Born rule derivation reveals a deeper pattern. The same principle —
+        Minimum Description Length (MDL) — appears at three distinct, non-circular levels
+        of the GTE framework:
+      </p>
+      <div style="background:var(--bg-card);border:1px solid var(--stroke-primary);border-radius:var(--r-lg);padding:1.2rem;margin:1rem 0">
+        <div class="mdl-row" style="font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;color:var(--text-tertiary)">
+          <div>Level</div><div>Domain</div><div>Result</div><div>Cert</div>
+        </div>
+        <div class="mdl-row">
+          <div style="font-weight:600;color:var(--text-primary)">Theory selection</div>
+          <div style="font-size:0.85rem;color:var(--text-secondary)">All ℤ<sub>N</sub> CA rules</div>
+          <div style="font-size:0.85rem;color:var(--text-secondary)">p is MDL-unique (19-bit)</div>
+          <div><span class="cert cert--lean">CatAL</span></div>
+        </div>
+        <div class="mdl-row">
+          <div style="font-weight:600;color:var(--text-primary)">Field dynamics</div>
+          <div style="font-size:0.85rem;color:var(--text-secondary)">Φ<sub>MDL</sub> configurations</div>
+          <div style="font-size:0.85rem;color:var(--text-secondary)">PMDL variational solution (gravity)</div>
+          <div><span class="cert cert--ad">CatAD</span></div>
+        </div>
+        <div class="mdl-row">
+          <div style="font-weight:600;color:var(--text-primary)">Event adjudication</div>
+          <div style="font-size:0.85rem;color:var(--text-secondary)">Realizations given record w</div>
+          <div style="font-size:0.85rem;color:var(--text-secondary)">Born rule P(k) = |c<sub>k</sub>|²</div>
+          <div><span class="cert cert--lean">CatAL</span></div>
+        </div>
+      </div>
+      <p>
+        The three levels are logically disjoint — MDL at the theory-selection level does
+        not presuppose MDL at the adjudication level. The same principle applies
+        independently at each scale, from the most abstract (which rule governs the
+        universe?) to the most concrete (which measurement outcome is realized?).
+      </p>
+    </section>
+
+    <!-- ═══ Section 7: Key Takeaways ═══ -->
+    <section class="lesson-section" id="summary">
+      <h2>Key Results</h2>
+      <ul class="takeaway-list">
+        <li>The Born rule P(k) = |c<sub>k</sub>|² is Postulate 5 of standard QM — stated, never derived,
+          and not explained by Copenhagen or many-worlds.</li>
+        <li>GTE derives it by four independent routes (α, β, γ, δ). Routes α and β are
+          machine-certified in Lean 4 with zero sorry (<code>born_rule_from_psc_mdl</code>, CatAL).</li>
+        <li>The derivation is non-circular: no route assumes any form of the Born rule in its premises.
+          Lean's type checker independently verifies this.</li>
+        <li>Complex amplitudes are not a convention — they are forced by the GF(7) arithmetic of
+          the master quadratic m(x) = x² + x − 1 (CatAD).</li>
+        <li>The Born rule sits at the third level of Three-Level MDL Unification: one minimization
+          principle (MDL) governing theory selection, field dynamics, and event adjudication.</li>
+        <li>Together with transputation (L23), this closes the quantum measurement problem within
+          the GTE framework without any new postulates.</li>
+      </ul>
+    </section>
+
+    <!-- ═══ See Also ═══ -->
+    <div class="see-also">
+      <h2>Source material</h2>
+      <div class="see-also-group">
+        <div class="see-also-label">Tutorial</div>
+        <ul class="source-list">
+          <li><a href="https://doi.org/10.5281/zenodo.20657861" target="_blank" rel="noopener">The Born Rule as a Theorem, Not a Postulate — full tutorial ↗</a></li>
+        </ul>
+      </div>
+      <div class="see-also-group" style="margin-top:0.75rem">
+        <div class="see-also-label">Lean proofs</div>
+        <ul class="source-list">
+          <li><a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/BeableWindingPartitionInstance.lean" target="_blank" rel="noopener">BeableWindingPartitionInstance.lean — born_rule_unconditional, Route α (CatAL) ↗</a></li>
+          <li><a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/BornRuleMDL.lean" target="_blank" rel="noopener">BornRuleMDL.lean — born_rule_from_psc_mdl, Route β (CatAL) ↗</a></li>
+          <li><a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/DualFrameBornRule.lean" target="_blank" rel="noopener">DualFrameBornRule.lean — dual-frame Born rule ↗</a></li>
+        </ul>
+      </div>
+      <div class="see-also-group" style="margin-top:0.75rem">
+        <div class="see-also-label">What comes next</div>
+        <ul class="source-list">
+          <li><a href="../../path_7_cosmology/index.html">Path 7 — Cosmology</a>: the cosmological constant, baryon asymmetry, defect cosmology</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ─── Path Complete ─── -->
+    <div class="path-complete">
+      <h3>Path 6 Complete</h3>
+      <p>You've seen how quantum measurement is not a postulate but a necessity —
+         transputation forced by PSC, the Born rule derived four independent ways,
+         two machine-certified. Quantum mechanics is a theorem of the GTE framework.</p>
+    </div>
+
+  </main>
+
+  <div class="page-wrapper">
+    <footer class="lesson-footer">
+      <a href="../L23_transputation/index.html" class="nav-btn nav-btn--prev">← L23: Transputation</a>
+      <a href="../../path_7_cosmology/index.html" class="nav-btn nav-btn--next">Path 7: Cosmology →</a>
+    </footer>
+  </div>
+
+  <footer class="site-footer">
+    UGP Physics Tutorial Series · Nova Spivack ·
+    <a href="https://novaspivack.com/research">novaspivack.com/research</a>
+  </footer>
+
+  <script src="../../common/interactive.js"></script>
+  <script src="../../common/nav.js"></script>
+  <script>
+    const LEAN_REFS = {
+      // Route β (PSC closure + Gleason): conditional structural theorem
+      "born_rule_from_psc_mdl": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/BornRuleMDL.lean"
+      },
+      // Route α (ℤ₇ superselection): unconditional theorem from winding structure
+      "born_rule_unconditional": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/BeableWindingPartitionInstance.lean"
+      }
+    };
+
+    function drawConvergenceDiagram(svgEl) {
+      if (!svgEl) return;
+      const ns = 'http://www.w3.org/2000/svg';
+      const W = 640, H = 260;
+      const style = getComputedStyle(document.documentElement);
+      const accent = style.getPropertyValue('--accent').trim() || '#06B6D4';
+      const bgCard = style.getPropertyValue('--bg-card').trim() || '#27272A';
+      const bgElev = style.getPropertyValue('--bg-elevated').trim() || '#1F1F23';
+      const text1  = style.getPropertyValue('--text-primary').trim() || '#F4F4F5';
+      const text2  = style.getPropertyValue('--text-secondary').trim() || '#A1A1AA';
+      const text3  = style.getPropertyValue('--text-tertiary').trim() || '#71717A';
+      const stroke = style.getPropertyValue('--stroke-primary').trim() || 'rgba(255,255,255,0.12)';
+      const green  = style.getPropertyValue('--cert-lean').trim() || '#22C55E';
+      const blue   = style.getPropertyValue('--cert-ad').trim() || '#3B82F6';
+
+      svgEl.setAttribute('viewBox', `0 0 ${W} ${H}`);
+
+      const defs = document.createElementNS(ns, 'defs');
+      const mk = (id, col) => {
+        const m = document.createElementNS(ns, 'marker');
+        m.setAttribute('id', id); m.setAttribute('markerWidth', '7');
+        m.setAttribute('markerHeight', '6'); m.setAttribute('refX', '6');
+        m.setAttribute('refY', '3'); m.setAttribute('orient', 'auto');
+        const p = document.createElementNS(ns, 'path');
+        p.setAttribute('d', 'M0,0 L7,3 L0,6 Z'); p.setAttribute('fill', col);
+        m.appendChild(p); return m;
+      };
+      defs.appendChild(mk('arr-g', green));
+      defs.appendChild(mk('arr-b', blue));
+      svgEl.appendChild(defs);
+
+      // Route boxes (left side)
+      const routes = [
+        { y: 20,  label: 'α  Z₇ superselection',    cert: 'CatAL', col: green },
+        { y: 80,  label: 'β  PSC + Gleason',         cert: 'CatAL', col: green },
+        { y: 150, label: 'γ  information-loss CA',   cert: 'CatAD', col: blue  },
+        { y: 210, label: 'δ  Page–Wootters clock',   cert: 'CatAD', col: blue  },
+      ];
+
+      routes.forEach(({ y, label, cert, col }) => {
+        const rect = document.createElementNS(ns, 'rect');
+        rect.setAttribute('x', 12); rect.setAttribute('y', y);
+        rect.setAttribute('width', 195); rect.setAttribute('height', 40);
+        rect.setAttribute('rx', '6'); rect.setAttribute('fill', bgCard);
+        rect.setAttribute('stroke', col); rect.setAttribute('stroke-width', '1.5');
+        svgEl.appendChild(rect);
+
+        const t = document.createElementNS(ns, 'text');
+        t.setAttribute('x', 110); t.setAttribute('y', y + 17);
+        t.setAttribute('text-anchor', 'middle'); t.setAttribute('font-size', '9.5');
+        t.setAttribute('font-weight', '600'); t.setAttribute('fill', text1);
+        t.setAttribute('font-family', 'inherit'); t.textContent = label;
+        svgEl.appendChild(t);
+
+        const tc = document.createElementNS(ns, 'text');
+        tc.setAttribute('x', 110); tc.setAttribute('y', y + 32);
+        tc.setAttribute('text-anchor', 'middle'); tc.setAttribute('font-size', '8');
+        tc.setAttribute('fill', col); tc.setAttribute('font-family', 'inherit');
+        tc.setAttribute('font-weight', '700'); tc.textContent = cert;
+        svgEl.appendChild(tc);
+
+        // Arrow to center
+        const centerX = 430;
+        const centerY = 130;
+        const arrowX1 = 207;
+        const arrowY1 = y + 20;
+        const arr = document.createElementNS(ns, 'line');
+        arr.setAttribute('x1', arrowX1); arr.setAttribute('y1', arrowY1);
+        arr.setAttribute('x2', centerX - 72); arr.setAttribute('y2', centerY);
+        arr.setAttribute('stroke', col); arr.setAttribute('stroke-width', '1.5');
+        arr.setAttribute('marker-end', cert === 'CatAL' ? 'url(#arr-g)' : 'url(#arr-b)');
+        svgEl.appendChild(arr);
+      });
+
+      // Born rule target box (right)
+      const tRect = document.createElementNS(ns, 'rect');
+      tRect.setAttribute('x', 360); tRect.setAttribute('y', 96);
+      tRect.setAttribute('width', 270); tRect.setAttribute('height', 68);
+      tRect.setAttribute('rx', '10'); tRect.setAttribute('fill', bgElev);
+      tRect.setAttribute('stroke', green); tRect.setAttribute('stroke-width', '2');
+      svgEl.appendChild(tRect);
+
+      [
+        { t: 'Born Rule', fs: '13', fw: '700', col: text1, dy: 0 },
+        { t: 'P(k) = |cₖ|²', fs: '13', fw: '700', col: accent, dy: 20 },
+        { t: '4 independent routes · 2 machine-certified', fs: '8', fw: '400', col: text3, dy: 38 },
+      ].forEach(({ t, fs, fw, col, dy }) => {
+        const el = document.createElementNS(ns, 'text');
+        el.setAttribute('x', 495); el.setAttribute('y', 120 + dy);
+        el.setAttribute('text-anchor', 'middle'); el.setAttribute('font-size', fs);
+        el.setAttribute('font-weight', fw); el.setAttribute('fill', col);
+        el.setAttribute('font-family', 'inherit'); el.textContent = t;
+        svgEl.appendChild(el);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      drawConvergenceDiagram(document.getElementById('convergence-diagram'));
+      tabSwitch('circularity-tabs');
+      autoRenderLeanBadges(LEAN_REFS);
+    });
+  </script>
+</body>
+</html>

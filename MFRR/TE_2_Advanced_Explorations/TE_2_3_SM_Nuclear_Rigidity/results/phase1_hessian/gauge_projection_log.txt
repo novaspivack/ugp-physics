@@ -1,0 +1,167 @@
+
+================================================================================
+TESTING GAUGE PROJECTION
+================================================================================
+
+[Test] Running Phase 1 to compute Hessian...
+
+================================================================================
+TE_2.3 PHASE 1: HESSIAN AT SM FIXED POINT
+================================================================================
+
+[TheorySpace] Initialized with dim = 8
+[TheorySpace] Coordinates: ['g_1', 'g_2', 'g_3', 'm_H', 'v', 'y_t', 'y_b', 'y_tau']
+[TheorySpace] SM fixed point initialized:
+  g_1 = 0.357421, g_2 = 0.651731, g_3 = 1.217200
+  α_1(M_Z) = 1.016602e-02, α_2(M_Z) = 3.380084e-02, α_3(M_Z) = 1.179000e-01
+  m_H = 125.10 GeV, v = 246.22 GeV, λ = 0.129074
+  y_t = 0.992281, y_b = 0.024009, y_tau = 0.010206
+[HessianAnalyzer] Compiling JAX functions...
+[HessianAnalyzer] ✓ JAX functions compiled
+
+================================================================================
+Computing Hessian at SM Fixed Point
+================================================================================
+
+[Functional] C[k_SM] = 2.388558e+01
+[Gradient] ||∇C||_{k_SM} = 4.315710e+00 (computed in 0.055s)
+  ⚠ Warning: Gradient is large at SM fixed point!
+  This suggests k_SM may not be a true fixed point of C[k].
+[Hessian] Computed 8×8 matrix in 0.148s
+[Hessian] Symmetry error: 0.000000e+00
+
+================================================================================
+Eigenvalue Analysis
+================================================================================
+
+[Eigenvalues] Computed in 0.001s
+[Eigenvalues] Range: [1.999872e+00, 9.069199e+00]
+[Eigenvalues] Positive: 8, Negative: 0, Zero: 0
+
+[Eigenvalues] Smallest 5:
+  λ_1 = 1.999872e+00
+  λ_2 = 1.999967e+00
+  λ_3 = 2.007808e+00
+  λ_4 = 2.529865e+00
+  λ_5 = 3.996545e+00
+
+[Eigenvalues] Largest 5:
+  λ_4 = 2.529865e+00
+  λ_5 = 3.996545e+00
+  λ_6 = 3.999375e+00
+  λ_7 = 8.182959e+00
+  λ_8 = 9.069199e+00
+
+[Positive Definiteness] True
+
+================================================================================
+Identifying Redundant Directions
+================================================================================
+
+[Redundancies] Found 0 near-zero eigenvalues
+[Redundancies] Threshold: 1.000000e-06
+
+[Redundancies] Near-zero eigenvalues:
+
+[Redundancies] Expected ~20 redundant directions
+[Redundancies] Found 0 redundant directions
+  ⚠ Warning: Fewer redundancies than expected!
+  This may indicate:
+    1. Functional does not capture all gauge symmetries
+    2. Numerical threshold is too strict
+
+================================================================================
+Projecting to Physical Subspace
+================================================================================
+
+[Physical Subspace] Dimension: 8 (out of 8)
+[Physical Hessian] Shape: (8, 8)
+[Physical Hessian] Eigenvalue range: [1.999872e+00, 9.069199e+00]
+[Physical Hessian] Positive definite: True
+  ✓ SM is a local minimum in physical subspace!
+
+[Results] Saved to results/phase1_hessian/hessian_analysis.json
+[Results] Saved numpy arrays to results/phase1_hessian
+
+================================================================================
+✓ PHASE 1 COMPLETE
+================================================================================
+
+
+[Summary]
+  Theory space dimension: 8
+  Redundant dimensions: 0
+  Physical dimensions: 8
+  Positive definite (physical): True
+
+[Test] Running gauge projection...
+
+================================================================================
+TE_2.3 PHASE 1: GAUGE PROJECTION
+================================================================================
+
+
+================================================================================
+Constructing Gauge Generators
+================================================================================
+
+[SU(3)] Constructing 8 generators...
+[SU(3)] ✓ Added 8 generators
+[SU(2)] Constructing 3 generators...
+[SU(2)] ✓ Added 3 generators
+[U(1)] Constructing 1 generator...
+[U(1)] ✓ Added 1 generator
+[Quarter-Lock] Constructing 1 generator...
+[Quarter-Lock] ✓ Added 1 generator
+[Quarter-Lock] Violation at SM: -1.632986e-02
+[Field Redefinitions] Constructing ~5 generators...
+[Field Redefinitions] ✓ Added 5 generators
+[Higgs Rescaling] Constructing 1 generator...
+[Higgs Rescaling] ✓ Added 1 generator
+
+[Generators] Total constructed: 19
+[Generators] Matrix shape: (8, 19)
+
+[Orthogonalization] Applying Gram-Schmidt...
+  Discarding generator 4 (SU(3)_4): linearly dependent
+  Discarding generator 5 (SU(3)_5): linearly dependent
+  Discarding generator 6 (SU(3)_6): linearly dependent
+  Discarding generator 7 (SU(3)_7): linearly dependent
+  Discarding generator 8 (SU(3)_8): linearly dependent
+  Discarding generator 10 (SU(2)_2): linearly dependent
+  Discarding generator 11 (SU(2)_3): linearly dependent
+  Discarding generator 13 (Quarter-Lock): linearly dependent
+  Discarding generator 15 (Field_Redef_2): linearly dependent
+  Discarding generator 17 (Field_Redef_4): linearly dependent
+  Discarding generator 19 (Higgs_Rescaling): linearly dependent
+[Orthogonalization] Kept 8 / 19 generators
+[Orthogonalization] Orthogonal matrix shape: (8, 8)
+[Orthogonalization] Orthonormality error: 2.220446e-16
+
+[GaugeProjector] Initialized with 8 orthogonal generators
+
+================================================================================
+Constructing Projection Operator
+================================================================================
+
+[Projection] Idempotency error (||P² - P||): 2.355139e-16
+[Projection] Symmetry error (||P - P^T||): 0.000000e+00
+[Projection] Rank(P) = 0 (expected 0)
+
+================================================================================
+Projecting Hessian to Physical Subspace
+================================================================================
+
+[Projected Hessian] Shape: (8, 8)
+[Projected Hessian] Physical eigenvalues: 0
+[Projected Hessian] Redundant eigenvalues: 8
+Traceback (most recent call last):
+  File "MFRR/TE_2_Advanced_Explorations/TE_2_3_SM_Nuclear_Rigidity/src/phase1_hessian/te2_3_gauge_projection.py", line 654, in <module>
+    results = run_gauge_projection(analyzer.H, analyzer.theory_space)
+  File "MFRR/TE_2_Advanced_Explorations/TE_2_3_SM_Nuclear_Rigidity/src/phase1_hessian/te2_3_gauge_projection.py", line 617, in run_gauge_projection
+    H_phys = projector.project_hessian(H)
+  File "MFRR/TE_2_Advanced_Explorations/TE_2_3_SM_Nuclear_Rigidity/src/phase1_hessian/te2_3_gauge_projection.py", line 523, in project_hessian
+    print(f"[Projected Hessian] Eigenvalue range: [{eigenvalues_physical.min():.6e}, {eigenvalues_physical.max():.6e}]")
+  File "/opt/anaconda3/lib/python3.10/site-packages/numpy/core/_methods.py", line 45, in _amin
+    return umr_minimum(a, axis, None, out, keepdims, initial, where)
+ValueError: zero-size array to reduction operation minimum which has no identity

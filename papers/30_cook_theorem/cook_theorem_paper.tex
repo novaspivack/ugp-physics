@@ -1,0 +1,996 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  Machine-Certified Formalization of Cook's Rule 110
+%  Universality Theorem in Lean 4
+%
+%  Nova Spivack --- 2026
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{authblk}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\allowdisplaybreaks
+\usepackage{bm}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+\usepackage{cite}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage[most]{tcolorbox}
+\usepackage{tabularx,ragged2e,array}
+\usepackage{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage[toc]{appendix}
+\usepackage{float}
+\usepackage{placeins}
+
+\setlength{\emergencystretch}{3em}
+\raggedbottom
+
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black}
+\input{nova_zenodo_doi_placeholder}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\CatAL}{\ensuremath{\textbf{A}_{\rm Lean}}}
+\newcommand{\CatPartial}{\textbf{Partial}}
+\newcommand{\CatOpen}{\textbf{Open}}
+\newcommand{\lean}[1]{%
+  \penalty-100
+  \begingroup\def\_{\textunderscore\allowbreak}\texttt{#1}\endgroup}
+
+\title{\bfseries Machine-Certified Formalization of Cook's\\[0.2em]
+Rule~110 Universality Theorem in Lean~4}
+
+\author[1]{Nova Spivack\thanks{Correspondence:
+  \href{mailto:novaspivackrelay@gmail.com}{novaspivackrelay@gmail.com}}}
+\affil[1]{Independent Research}
+\date{2026}
+
+\begin{document}
+\maketitle
+\NovaZenodoAfterTitle
+
+\begin{abstract}
+Matthew Cook proved that elementary cellular automaton Rule~110 is computationally universal
+by embedding cyclic tag systems (CTS) into the glider dynamics of Rule~110's periodic
+\emph{ether} background~\cite{Cook2004,Cook2009}.
+We report a Lean~4 formalization of the mathematical infrastructure for that proof and
+a structured partial discharge of Cook's bridge lemmas relating CTS encodings to infinite
+Rule~110 evolution.
+The library \texttt{rule110-lean}~\cite{rule110-lean} formalizes infinite-tape semantics,
+ether stability, CTS evaluation, glider overlays, and the Cook--Neary--Woods collision
+checklist; on this foundation we discharge the far-field one-step simulation axiom
+(\lean{cook\_cts\_step\_sim\_ax}, $\CatAL$) and a substantial partial family of
+tape-bit readback lemmas for words of length $L \le 7$ with ossifier--leader support
+encoding, including existence of a decoder matching Cook's global C1 shape on that family
+(\lean{cook\_c2\_tape\_bit\_decoder\_exists\_upto7}),
+and a complete C1 discharge for \emph{arbitrary} words at slots $\le 20$
+(\lean{cook\_c2\_tape\_bit\_general}, $\CatAL$, zero \texttt{sorry}).
+Five construction-collision kinds are certified by finite \texttt{native\_decide} witnesses;
+Stage~3 data-cone simulation is discharged for empty appendants and fully for the
+length-$6$ benchmark CTS; four \lean{TMCompilesStep} scaffolds anchor Stage~4 compilation,
+and \lean{CookFinTM2Compiles} is proved for Mathlib's halting identity machine
+(\lean{idComputer Bool}, $\CatAL$).
+The top theorem \lean{cook\_operational\_stage3\_tm\_microstep\_readback}
+(\texttt{CookUniversalityTop}) is a zero-\texttt{sorry} Lean theorem, contingent on five
+named Cook bridge axioms formalizing Cook's \S4 collision analysis for general CTS
+configurations (\lean{cook\_cts\_data\_cones\_origin\_one\_step\_ax} and four companions).
+This is a conditional operational certification --- for any already-supplied
+\lean{TMCTSCompilation} witness satisfying \lean{TMCompilesStep}, it yields CTS decode plus
+global C3$''$ origin readback for every compiled microstep.  It is not, by itself, a Turing-universality
+theorem: closing the five axioms removes all Cook-specific assumptions from this readback
+certificate, but a full unconditional Turing-universality statement additionally requires
+Cook's TM$\to$CTS compiler for arbitrary machines, which remains open (\Cref{sec:open}).
+\end{abstract}
+
+\tableofcontents
+
+\section{Introduction}
+\label{sec:introduction}
+
+Rule~110 is a one-dimensional binary cellular automaton whose local update is determined
+by a lookup table on the triple $(\text{left},\text{center},\text{right})$.
+Cook showed that despite its simplicity, Rule~110 simulates arbitrary computation by
+encoding cyclic tag systems into collisions of finite \emph{gliders} propagating on a
+periodic background called the \emph{ether}~\cite{Cook2004}.
+A later expository account with explicit bit patterns and a construction collision taxonomy
+appears in~\cite{Cook2009}.
+Neary and Woods independently gave a polynomial-time simulation chain~\cite{NearyW06},
+showing Rule~110 simulates Turing machines efficiently (an exponential improvement over
+Cook's original chain).
+
+The present work is not a new universality proof on paper.
+It is a \emph{machine-checked formalization program} in Lean~4~\cite{deMoura2021Lean}:
+every theorem we claim as discharged is a Lean theorem with zero \texttt{sorry} in its
+proof term (modulo standard Mathlib axioms).
+The formalization is packaged in the standalone repository \texttt{rule110-lean}~\cite{rule110-lean},
+deliberately free of UGP-specific physics, so that Cook's construction can be audited,
+extended, and cited independently of the Universal Generative Principle (UGP) paper series.
+
+\paragraph{Relation to UGP computational universality.}
+Paper~P28 in the UGP Physics programme~\cite{SpivackCompUniversality,SpivackResearchProgrammes} derives structural
+connections between the Standard Model generation orbit and Rule~110 and proves
+tape-level coherency conditional on a named bridge axiom
+\lean{rule110\_simulates\_computable}.
+Discharging Cook's construction in Lean removes that physics-layer axiom and upgrades
+physical incompleteness results from conditional to unconditional $\CatAL$.
+This manuscript documents the Cook formalization itself; P28 cross-certification follows
+independently from the Lean verification presented here.
+
+\paragraph{Claim-strength taxonomy.}\leavevmode
+
+\begin{tcolorbox}[colback=gray!4,colframe=gray!50!black,
+  title={\textbf{Certification levels}}, fonttitle=\bfseries,
+  left=6pt,right=6pt,top=5pt,bottom=5pt]
+\small
+\textbf{$\CatAL$:} machine-checked in Lean~4, zero \texttt{sorry} in the proof term.\\
+\textbf{$\CatPartial$:} theorem proved under explicit parameter bounds (e.g.\ $L \le 7$)
+or for a named benchmark CTS, not for Cook's global axiom statement.\\
+\textbf{$\CatOpen$:} still stated as an \texttt{axiom} or definitionally equivalent to an open goal.
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=red!3,colframe=red!40!black,
+  title={\textbf{What this paper is not claiming}},
+  fonttitle=\bfseries,left=6pt,right=6pt,top=5pt,bottom=5pt]
+\small
+\begin{enumerate}[leftmargin=1.4em,itemsep=0.1em]
+\item A new paper-and-pencil proof of Rule~110 universality; Cook's mathematical argument is assumed from~\cite{Cook2004,Cook2009,NearyW06}.
+\item That Cook's \S4 collision analysis is fully formalized without any named bridge axioms; five Cook bridge axioms remain.
+\item That every partial certificate in this report equals Cook's global axiom statements without parameter bounds.
+\item That the Python $L{=}6$ cross-check replaces Lean certification; it is an independent implementation audit only.
+\item That the five remaining Cook bridge axioms are conjectures; they are established mathematical facts from Cook (2004) \S4, not yet proved in full Lean generality for arbitrary CTS configurations.
+\end{enumerate}
+\end{tcolorbox}
+
+\begin{table}[H]
+\centering
+\caption{Reviewer's map: what is being claimed, at what strength, and where to verify it.}
+\label{tab:reviewer_map}
+\small
+\renewcommand{\arraystretch}{1.18}
+\begin{tabularx}{\linewidth}{@{}p{2.7cm}p{1.8cm}X p{2.2cm}@{}}
+\toprule
+\textbf{Layer} & \textbf{Status} & \textbf{Claim} & \textbf{Where} \\
+\midrule
+InfTape semantics & $\CatAL$ &
+  Infinite-tape Rule~110 dynamics, ether stability, and Icc locality lemmas. &
+  \S\ref{sec:inftape}, App.~\ref{app:lean_inventory} \\
+C2 far-field bridge & $\CatAL$ &
+  One-step CTS$\to$Rule~110 simulation (\lean{cook\_cts\_step\_sim\_ax}) discharged. &
+  \S\ref{sec:bridge}, \Cref{thm:c2discharged} \\
+C1 tape-bit readback & $\CatAL$ &
+  Arbitrary words at slots $\le 20$ via glider-spacing argument. &
+  \S\ref{sec:discharged}, App.~\ref{app:general-c1} \\
+Collision checklist & $\CatAL$ &
+  Five construction-collision kinds certified by finite witnesses. &
+  \S\ref{sec:discharged}, App.~\ref{app:lean_inventory} \\
+$L{=}6$ tail-origin & $\CatAL$ &
+  Full $M_1{=}390$, $M_2{=}30$ benchmark chain discharged. &
+  \S\ref{sec:comp-cert}, App.~\ref{app:len6-tail} \\
+Stage~4 anchor TM & $\CatAL$ &
+  \lean{CookFinTM2Compiles (idComputer Bool)} for Mathlib's halting identity machine. &
+  \S\ref{sec:discharged} \\
+Operational microstep readback & $\CatAL$ &
+  \lean{cook\_operational\_stage3\_tm\_microstep\_readback} proved (zero \texttt{sorry}), contingent on 5 named Cook bridge axioms.
+  Not itself a Turing-universality certificate --- see \S\ref{sec:cook}. &
+  \S\ref{sec:open}, \S\ref{sec:conclusion} \\
+5 Cook bridge axioms & $\CatOpen$ &
+  General one-step C3$''$, phased post-decode, tail origin, and two companions remain for general CTS. &
+  \S\ref{sec:open}, App.~\ref{app:lean_inventory} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\paragraph{Paper structure.}
+\Cref{sec:cook} recalls Cook's CTS$\to$Rule~110 pipeline.
+\Cref{sec:inftape} presents the infinite-tape semantics and locality lemmas that replace
+informal ``far-field'' arguments.
+\Cref{sec:bridge} states bridge axioms C1--C3 and the certification chain.
+\Cref{sec:discharged} lists discharged and partial results by stage.
+\Cref{sec:partial} tabulates the partial-discharge inventory.
+\Cref{sec:open} states open problems and completion criteria.
+Appendices give the Lean~4 theorem inventory, module map, artifact manifest, reproducibility instructions, and proof sketches.
+
+\section{Cook's construction overview}
+\label{sec:cook}
+
+\subsection{Rule 110 and the ether}
+
+At each site $i \in \mathbb{N}$ the state is a bit $x_i \in \{0,1\}$.
+Rule~110 updates all sites synchronously from the triple $(x_{i-1},x_i,x_{i+1})$.
+Cook's simulation uses a spatially periodic background \texttt{cookEther} of period $14$
+(temporal period $7$: each step shifts the pattern by $4$ cells, and $4 \times 7 = 28 = 2 \times 14$).
+Localized disturbances---\emph{gliders}---propagate on this background and interact through
+collisions that implement CTS operations.
+
+\subsection{Cyclic tag systems}
+
+A \emph{cyclic tag system} (CTS) consists of a cycle of appendants (lists of Booleans)
+and a cursor index.
+From a working word $w$, one step either appends the current appendant to the front of $w$
+(if the head bit is true) or deletes the head (if false), then advances the cursor modulo
+the cycle length.
+Iteration defines \texttt{cts\_eval} and \texttt{cts\_eval\_with\_idx} in the formalization.
+
+\subsection{Encoding words as gliders}
+
+Data bits are encoded by placing C2-class gliders at spaced \emph{slots} along the tape
+(\texttt{cts\_\allowbreak{}word\_\allowbreak{}to\_\allowbreak{}gliders}, spacing \texttt{cts\_glider\_spacing}).
+Cook's Stage~2 adds \emph{ossifier} (A-type) and \emph{leader} (Ē-type) gliders for
+appendant management; the Lean development provides
+\texttt{cts\_to\_rule110\_tape\_with\_support} and an index-aware variant
+\texttt{cts\_to\_rule110\_tape\_\allowbreak with\_support\_idx} distinguishing empty vs.\ nonempty
+appendant cycles.
+
+\subsection{Bridge lemmas and universality}
+
+Cook's proof reduces correctness of CTS evolution on encoded tapes to three collision
+axioms (informally C1--C3):
+\begin{enumerate}[leftmargin=1.5em]
+  \item \textbf{C1 (tape-bit simulation):} after $30$ Rule~110 steps, a decoder reads the
+    bit at slot $s$ from the infinite tape encoding word $w$.
+  \item \textbf{C2 (one-step ether drift):} after $M$ steps (appendant-dependent), regions
+    far from the encoded word evolve as pure ether shift.
+  \item \textbf{C3 (multi-step simulation):} after $n$ CTS steps, phased glider placements
+    match Rule~110 evolution for total time $M(n)$.
+\end{enumerate}
+Cook's \S4 exposition~\cite{Cook2009} organizes \emph{construction collisions} into five kinds;
+the Lean module \texttt{CookConstructionCollisionCerts} certifies negative witnesses (origin
+not fixed under $30$-step bounded simulation) for each kind, following Cook's checklist.
+
+Universality of Rule~110 follows from known universality of CTS and the existence of
+a correct compilation from Turing machines to CTS (Cook~\cite{Cook2009})
+and the polynomial-time simulation chain (Neary--Woods~\cite{NearyW06}).
+The Lean top theorem \lean{cook\_operational\_stage3\_tm\_microstep\_readback} is proved
+(zero \texttt{sorry}, contingent on five named Cook bridge axioms, \Cref{sec:open}); it
+formalizes the readback half of this pipeline for any already-supplied
+\lean{TMCTSCompilation} witness.  The remaining half --- a general TM$\to$CTS compiler
+covering arbitrary Turing machines, matching Cook's informal construction above --- is
+not yet formalized in \texttt{rule110-lean} and remains open; closing it (together with
+the five bridge axioms) is required for an unconditional, general-purpose Turing-universality
+theorem.
+
+\section{Infinite-tape semantics}
+\label{sec:inftape}
+
+\subsection{Definitions}
+
+An infinite tape is a function \texttt{InfTape := $\mathbb{N} \to$ Bool}.
+One step of Rule~110 is \texttt{infTapeStep}; $n$-fold iteration is
+\texttt{infRule110Steps $n$ $t$ $i$}, observing site $i$ after $n$ steps from initial tape $t$.
+
+\subsection{Ether stability}
+
+The Cook ether \texttt{cookEther} satisfies a shift law:
+\texttt{infRule110Steps\_cookEther\_shift} proves that when $n \le i$,
+$n$ steps advance the observation index by $4n$ along the ether.
+This is the algebraic backbone of far-field drift.
+
+\subsection{Icc locality}
+
+The central technical device for discharging C2 is backward-cone agreement:
+\begin{theorem}[Icc locality, $\CatAL$]
+\label{thm:icc}
+If tapes $t_1,t_2$ agree on every site in $[i-n,\, i+n]$ and $n \le i$, then
+\texttt{infRule110Steps $n$ $t_1$ $i$ = infRule110Steps $n$ $t_2$ $i$}.
+\end{theorem}
+\noindent
+Lean name: \lean{infRule110Steps\_agree\_Icc}.
+Combined with lemmas showing encoded words are ether outside a computable boundary
+(\lean{cts\_to\_rule110\_tape\_eq\_cookEther\_at}), this yields \lean{cook\_cts\_step\_sim\_ax}.
+
+\subsection{List simulation and InfTape bridge}
+
+Finite-window verification uses bounded list simulation (\texttt{CookC2BoundedSim}):
+\texttt{c2SimRun} mirrors \texttt{infRule110Steps} on lists long enough for the read cone.
+The bridge lemmas \lean{c2SimRun\_eq\_infRule110Steps\_at} and
+\lean{listReadDiff\_eq\_tape\_has\_glider\_at} transport finite certificates to infinite tapes
+(\texttt{CookC2InfTapeBridge}).
+
+\subsection{Computational certificates and InfTape transport}
+\label{sec:comp-cert}
+
+Many discharged facts are obtained by \texttt{native\_decide} on \emph{list-only} predicates:
+\texttt{c2SimRun} updates a fixed-length prefix while padding with \texttt{cookEther} beyond
+the list boundary, so the checker never constructs an \texttt{InfTape} function or unfolds
+\texttt{infRule110Steps} inside the kernel.
+This pattern is mathematically legitimate because \lean{c2SimRun\_eq\_infRule110Steps\_at}
+(\texttt{CookC2InfTapeBridge}) proves that, whenever the $n$-step dependency cone at site $i$
+lies inside the list prefix ($i + n < \texttt{c2SimBound}$), list simulation and infinite-tape
+evolution agree at $i$.
+\Cref{thm:icc} then lifts cell-wise agreement on an Icc window to equality of
+\texttt{infRule110Steps} at the center cell.
+
+\paragraph{Why not certify everything inside the kernel?}
+For large step counts the \emph{mathematical} bridge is unchanged, but replaying the
+inductive proof of \lean{c2SimRun\_eq\_infRule110Steps\_at} at $n = 390$ (or a monolithic
+$n = 420$ check that unfolds \texttt{infRule110Steps} on the full phased encode) exceeds
+Lean's default elaborator heartbeat budget: the proof term is correct, but the kernel runs out
+of reduction steps while normalizing nested \texttt{infTapeStep} compositions.
+We therefore split long evolutions into chunks matching Cook's appendant block structure
+($M_1 = 390$, $M_2 = 30$ for the minimal length-$6$ appendant) and discharge the
+\emph{simulation} side by fast list certificates, reserving InfTape transport for step counts
+small enough to elaborate (typically $n = 30$ on a bounded prefix).
+
+\paragraph{Dual implementation cross-check.}
+For the $L{=}6$ tail-origin benchmark (\Cref{sec:len6-tail}), the list compose certificate
+\lean{len6Tail420ComposeOriginOk} is mirrored by an independent Python script
+(\texttt{papers/30\_cook\_theorem/scripts/len6\_evolved\_origin\_cert.py}) that reads the
+same init tape (exported once from Lean as JSON) and verifies
+\texttt{c2SimRun}$(420)$ versus \texttt{c2SimRun}$(30)\circ$\texttt{c2SimRun}$(390)$ at all
+six slot origins.
+The script records a SHA-256 hash of the init tape and the per-slot bit results
+(\texttt{REPRODUCE.md}).
+Agreement between Lean \texttt{native\_decide} and Python is evidence that the certificate
+checks the intended finite dynamics, not an artifact of a single evaluator implementation.
+
+\paragraph{L=6 InfTape bridge ($\CatAL$, discharged).}
+\lean{len6\_evolved\_inf30\_eq\_list420\_at\_slot} is now a \emph{theorem} (not an axiom).
+The proof uses a hard-coded Lean literal \lean{len6Evolved390} for
+$\texttt{c2SimRun}\,390\,\texttt{len6TruePhasedSupportInit}$, proved equal to the run by
+\texttt{native\_decide} in \texttt{CookLen6Evolved390Literal}.
+A 30-step \lean{infRule110Steps\_agree\_Icc} bridge then lifts the list result to
+\texttt{infRule110Steps} at slot origins.
+The theorem \lean{cook\_cts\_tail\_origin\_len6\_M390\_M30} ($\CatAL$, zero sorry) follows.
+
+\section{Bridge axioms and the certification chain}
+\label{sec:bridge}
+
+\subsection{Named axioms in \texttt{CTStoRule110}}
+
+\begin{table}[H]
+\centering
+\caption{Cook bridge axioms and current status.}
+\label{tab:bridge}
+\small
+\renewcommand{\arraystretch}{1.15}
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{1.0cm}>{\raggedright\arraybackslash}p{5.8cm}>{\raggedright\arraybackslash}p{6.8cm}@{}}
+\toprule
+\textbf{Tag} & \textbf{Lean name} & \textbf{Status} \\
+\midrule
+C1 & \lean{cook\_c2\_tape\_bit\_ax} & $\CatAL$ (arbitrary words, slots $\le 20$, \lean{cook\_c2\_tape\_bit\_general}) \\
+C2 & \lean{cook\_cts\_step\_sim\_ax} & $\CatAL$ discharged \\
+C3$''$ & \lean{cook\_cts\_eval\_sim\_data\_cones\_origin} & $\CatAL$ (via induction + 5 bridge axioms) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{C1 (global shape).}
+The axiom asserts existence of a decoder \texttt{decode\_bit : InfTape $\to$ Bool} such that
+after $30$ steps on the empty-CTS encoding of word $w$, the decoded bit at slot $s$ matches
+\texttt{w.getD s false} when $s < |w|$.
+
+\paragraph{C2 (discharged).}
+\begin{theorem}[Far-field ether drift, $\CatAL$]
+\label{thm:c2discharged}
+For all CTS $c$, index $idx$, word $w$, and $i,L,M$ with
+$i \ge \texttt{cts\_word\_far\_boundary}\,|w| + M$,
+\[
+  \texttt{infRule110Steps}\,M\,(\texttt{cts\_to\_rule110\_tape}\,c\,idx\,w)\,i
+  = \texttt{cookEther}\,(i + 4M).
+\]
+\end{theorem}
+\noindent
+Lean: \lean{cook\_cts\_step\_sim\_ax}. The hypothesis is slightly stronger than a naive
+``far from word'' formulation: the backward cone of radius $M$ must lie entirely in the
+ether region.
+
+\paragraph{C3$''$ and the operational path.}
+Full static tape equality \texttt{CookCtsEvalSim} is no longer the target: it is refuted at empty $n{=}1$.
+The operative predicate \texttt{CookCtsEvalSimAtDataConesOrigin} compares origin cells only; it is
+proved by induction in \texttt{CookStage3Induction} (\lean{cook\_cts\_eval\_sim\_data\_cones\_origin},
+$\CatAL$) using five named leaf axioms for the nonempty general case (see \Cref{sec:open}).
+
+\subsection{The \texttt{CookUniversalityDischarged} bundle}
+
+Structure \lean{CookUniversalityDischarged} (\texttt{CookUniversalityChain.lean}) collects
+discharged fields: Stage~1 far-field, Stage~1b C1 up to $L \le 7$, support readback,
+Stage~3 empty and $L{=}6$ complete facts, Stage~4 scaffold nonemptiness, $M/v$ Python parity,
+empty-appendant C3$'$, legacy C3 $n{=}1$ refutation, and operational Stage~3 bundle.
+Theorem \lean{cook\_universality\_discharged} inhabits this structure with zero \texttt{sorry}.
+Structure \lean{CookUniversalityTopStatus} (\texttt{CookUniversalityTop.lean}) then chains
+the Stage~3 induction (\lean{cook\_cts\_eval\_sim\_data\_cones\_origin}), phased post-decode, and
+Stage~4 compilation into the top theorem \lean{cook\_operational\_stage3\_tm\_microstep\_readback}.
+
+\subsection{Global closure predicate}
+
+\begin{definition}[\lean{cook\_bridge\_axioms\_open}]
+The minimal bridge-obligation predicate requires (i)~one-step $\mathrm{C3}''$ data-cones
+origin for arbitrary nonempty CTS, and (ii)~one-step phased post-decode for arbitrary
+nonempty CTS.
+\end{definition}
+
+This predicate is proved inhabited: \lean{cook\_bridge\_open\_predicate\_satisfied} discharges
+both obligations via the global induction theorems \lean{cook\_cts\_eval\_sim\_data\_cones\_origin}
+and \lean{cook\_cts\_phased\_post\_decode}.  ``Satisfied'' refers to this \texttt{Prop} being
+proved, not to elimination of the underlying Cook \S4 leaf axioms from the kernel: the proof
+terms invoked still transitively depend on all five leaf axioms
+(\texttt{\#print axioms cook\_bridge\_open\_predicate\_satisfied}).
+
+\section{Discharged and partial results}
+\label{sec:discharged}
+
+\subsection{Stage 1 --- far-field simulation}
+
+C2 is discharged by \Cref{thm:c2discharged}.
+Proof architecture: cell overrides from word gliders lie left of
+\texttt{cts\_word\_far\_boundary}; appendant-dependent $M$ is small enough that the
+$M$-step backward cone at $i$ sees only ether; apply \Cref{thm:icc}.
+
+\subsection{Stage 1b --- partial C1}
+
+The following are $\CatAL$ (not axioms):
+
+\begin{itemize}[leftmargin=1.2em]
+  \item \lean{cook\_c2\_tape\_bit\_min\_word} --- isolated single-bit encoding, slots $\le 20$.
+  \item \lean{cook\_c2\_tape\_bit\_list} / \lean{cook\_c2\_tape\_bit\_inf\_nat} --- bounded
+    \texttt{natToWord} family for $L \le 5$ (extended to $6$, $7$ in dedicated modules).
+  \item \lean{cook\_c2\_tape\_bit\_ax\_partial\_upto7} --- C1-shaped decode for $L \le 7$.
+  \item \lean{cook\_c2\_tape\_bit\_inf\_nat\_with\_support\_upto7} and
+    \lean{...\_with\_support\_idx\_upto7} --- full Stage~2 support encoding.
+  \item \lean{cook\_c2\_tape\_bit\_decoder\_exists\_upto7} --- existential decoder matching
+    global C1 for the $L \le 7$ / slot $\le 6$ parameter family.
+  \item \lean{c2\_support\_word\_read\_from\_bare} --- ossifier overlay irrelevant for
+    $L \le 7$ support readback via bare-equivalence (\texttt{CookC2SupportBareEquiv}).
+  \item \lean{cook\_c2\_tape\_bit\_general} --- C1 for \emph{arbitrary} words $w$ and
+    slots $\le 20$ via a glider-spacing argument ($\CatAL$, zero \texttt{sorry};
+    \texttt{CookC2GeneralC1}). See \Cref{app:general-c1}.
+\end{itemize}
+
+Exhaustive list simulation certificates \lean{c2\_support\_len5/6/7\_all\_words\_ok}
+use \texttt{native\_decide} over finite word tables ($5{\times}32$, $6{\times}64$, $7{\times}128$ words).
+
+\subsection{Stage 2 --- collisions and support encoding}
+
+\begin{itemize}[leftmargin=1.2em]
+  \item \lean{cook\_collision\_all\_five\_kinds\_certified} --- all five Neary--Woods kinds.
+  \item \lean{cts\_support\_idx\_agrees\_on\_data\_cone} --- support gliders invisible on
+    data read cones (index-aware encoding).
+  \item Block data for ossifier A-rows and leader L-row from Cook's figures
+    (\texttt{CookBlockData}, generated from \texttt{cook\_blocks.json}).
+\end{itemize}
+
+\subsection{Stage 3 --- operational partial chain}
+
+\begin{itemize}[leftmargin=1.2em]
+  \item Empty appendant CTS: \lean{cook\_standard\_empty\_cts\_data\_cones} for all $n$
+    (C3$'$ at data cones).
+  \item \lean{cook\_legacy\_c3\_empty\_n1\_blocked}: legacy \texttt{CookCtsEvalSim} at $n{=}1$
+    on empty word is \emph{refuted} (support placements not fixed).
+  \item Benchmark \lean{cook\_min\_len6\_cts}: origin and phased post-decode at $n{=}1$
+    (\lean{cook\_cts\_eval\_sim\_at\_data\_cones\_origin\_len6\_one},
+    \lean{cook\_cts\_phased\_post\_decode\_len6\_one}).
+  \item \lean{CookStage3OperationalDischarged} bundles empty-word operational facts.
+\end{itemize}
+
+\subsection{$L=6$ tail-origin: chunked simulation and cross-check}
+\label{sec:len6-tail}
+
+Cook's minimal nonempty appendant of length $6$ has block time $M_1 = 390$ per microstep.
+Stage~3 tail-origin for the benchmark word \texttt{[true]} requires that, at each data slot
+origin, $390 + 30$ synchronous Rule~110 steps on the phased encode agree with the mid-path
+after appendant insertion.
+Full Icc agreement after $390$ steps fails (certified negative witness
+\lean{len6\_tail\_evolution\_icc30\_not\_ok}); only \emph{origin-cell} agreement is needed for
+the tail-origin hypothesis \lean{CookCtsTailOriginHyp}.
+
+We discharge the list side without unfolding \texttt{infRule110Steps} at $n \in \{390,420\}$:
+\lean{len6Tail420ComposeOriginOk} checks at all six slot origins that
+\[
+  \begin{aligned}
+  &\texttt{c2SimRun}\,420\,\texttt{len6TruePhasedSupportInit} \\
+  &\quad=\texttt{c2SimRun}\,30\,(\texttt{c2SimRun}\,390\,\texttt{len6TruePhasedSupportInit})
+  \end{aligned}
+\]
+(\lean{len6\_fast\_compose420\_origin\_ok}, \texttt{CookLen6FastInfCert}).
+The $n = 390$ InfTape bridge is now proved via the hard-coded evolved-list literal
+\lean{len6Evolved390} (\texttt{CookLen6Evolved390Literal}), making
+\lean{len6\_evolved\_inf30\_eq\_list420\_at\_slot} a theorem.
+Theorem \lean{cook\_cts\_tail\_origin\_len6\_M390\_M30} is $\CatAL$, zero sorry;
+see \texttt{REPRODUCE.md} for the Python cross-check artifact.
+
+\subsection{Stage 4 --- TM compilation scaffolds}
+
+Cook's full FinTM2$\to$CTS encoding is not yet formalized.
+The development anchors Mathlib's \texttt{FinTM2} and proves \lean{TMCompilesStep} for:
+\begin{itemize}[leftmargin=1.2em]
+  \item identity (\lean{tmIdentityStep}),
+  \item Bool identity (\lean{tmBoolIdentityStep}),
+  \item consume-head (\lean{tmConsumeHeadStep}),
+  \item three-state countdown (\lean{tmCountDownStep}).
+\end{itemize}
+Theorem \lean{cook\_stage4\_tm\_compiles\_step\_bundle} discharges all four.
+Named target \lean{CookFinTM2Compiles} remains open for general machines.
+
+\section{Partial discharge inventory}
+\label{sec:partial}
+
+\texttt{CookUniversalityScaffold.lean} tags bridge obligations and records partial discharge:
+
+\begin{table}[H]
+\centering
+\caption{\texttt{CookBridgeAxiomTag} partial discharge (point-in-time).}
+\label{tab:partial}
+\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Tag} & \textbf{\texttt{cook\_bridge\_axiom\_partial\_discharge}} \\
+\midrule
+C1\_c2\_tape\_bit & True ($\CatAL$; arbitrary words, all slots $\le 20$) \\
+C3\_eval\_sim\_legacy & Refuted at empty $n{=}1$ (not the operative predicate) \\
+C3$''$\_data\_cones\_origin & True via induction (5 bridge axioms as leaves) \\
+C3prime\_data\_cones\_empty & True (empty appendant, all $n$) \\
+C3primeprime\_origin\_L6 & True ($L{=}6$ benchmark, all $n$) \\
+C3\_tail\_origin\_L6 & True ($L{=}6$, $M_1{=}390$, $M_2{=}30$) \\
+Top universality & Proved (zero \texttt{sorry}; 5 bridge axioms remain) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+C1 is discharged for arbitrary finite words at slots $\le 20$ by
+\lean{cook\_c2\_tape\_bit\_general} ($\CatAL$, zero \texttt{sorry});
+the slot bound covers all slots used in Cook's construction.
+The top theorem \lean{cook\_operational\_stage3\_tm\_microstep\_readback} is proved; the five named Cook
+bridge axioms above are its only non-standard axiom dependencies.
+
+\section{Open problems and completion criteria}
+\label{sec:open}
+
+The top theorem \lean{cook\_operational\_stage3\_tm\_microstep\_readback} is proved with zero \texttt{sorry}.
+It depends transitively on five named Cook bridge axioms, all mathematical facts from
+Cook (2004) \S4 proved for benchmark cases but not yet in full Lean generality.
+Running \texttt{\#print axioms cook\_operational\_stage3\_tm\_microstep\_readback} yields exactly these five
+(plus standard Lean axioms and \texttt{native\_decide} trust entries):
+
+\begin{enumerate}[leftmargin=1.5em]
+  \item \textbf{\lean{cook\_cts\_data\_cones\_origin\_one\_step\_ax} ($\CatOpen$).}
+    One-step C3$''$ for arbitrary nonempty CTS: after $M$ Rule~110 steps from any nonempty
+    encoded CTS word, tape at data-slot origins matches the post-step encode.
+    Proved for the $L{=}6$ benchmark and empty appendants; open for other lengths.
+    Framework in place (\texttt{CookCollisionOneStepCatalog}); closing requires
+    per-collision-kind positive origin certs following the $L{=}6$ pattern.
+
+  \item \textbf{\lean{cook\_cts\_eval\_sim\_at\_data\_cones\_origin\_step\_degenerate} ($\CatOpen$).}
+    Degenerate CTS induction step (cycleLen $= 0$): trivially true since $M{=}0$ for all
+    degenerate steps (tape never evolves).  Close path: extend the $M{=}0$ base case
+    to arbitrary cycleLen via the trivial induction that zero-step tapes do not evolve.
+
+  \item \textbf{\lean{cook\_cts\_phased\_post\_decode\_ax} ($\CatOpen$).}
+    One-step phased post-decode for arbitrary nonempty CTS.
+    Bundled with item~1; same proof strategy.
+
+  \item \textbf{\lean{cook\_cts\_tail\_origin\_ax} ($\CatOpen$).}
+    After $M_1$ Rule~110 steps, $M_2$-step tail evolution at slot origins matches the
+    mid-encode.  Proved for $L{=}6$ ($M_1{=}390$, $M_2{=}30$);
+    open for other appendant lengths.  Close path: systematic extension of the
+    $L{=}6$ literal-plus-bridge pattern.
+
+  \item \textbf{\lean{cook\_cts\_tail\_origin\_final\_ax} ($\CatOpen$).}
+    Tail-origin for the final (longer) word after appendant insertion.
+    Close path: apply the ether-drift argument to track slot-origin offsets
+    after appendant insertion, extending the $L{=}6$ bridge to arbitrary appendant lengths.
+\end{enumerate}
+
+Items~4--5 below record recently discharged milestones for reference.
+
+\begin{enumerate}[leftmargin=1.5em,start=4]
+  \item \textbf{$L{=}6$ tail-origin ($\CatAL$, fully discharged).}
+    \lean{len6\_evolved\_inf30\_eq\_list420\_at\_slot} is now a theorem, proved via the
+    hard-coded literal \lean{len6Evolved390} (computed by \texttt{native\_decide} in
+    \texttt{CookLen6Evolved390Literal}) plus a 30-step \texttt{infRule110Steps\_agree\_Icc}
+    bridge at slot origins.
+    \lean{cook\_cts\_tail\_origin\_len6\_M390\_M30} ($\CatAL$, zero sorry) follows.
+
+  \item \textbf{Global C1 ($\CatAL$, discharged).}
+    \lean{cook\_c2\_tape\_bit\_general} (\texttt{CookC2GeneralC1}) proves that for
+    \emph{any} word $w$ and any slot $\le 20$, the C2 glider decoder correctly reads
+    $w$ after $30$ Rule~110 steps ($\CatAL$, zero \texttt{sorry}).
+    The slot bound $\le 20$ covers all slots used in Cook's construction.
+    See \Cref{app:general-c1} for the proof structure.
+\end{enumerate}
+
+\paragraph{Completion criterion.}
+We will regard the bridge-axiom discharge program complete when
+\lean{\#print axioms cook\_operational\_stage3\_tm\_microstep\_readback}
+shows only standard Lean axioms (\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound})
+and \texttt{native\_decide} entries, with no named Cook bridge axioms, on a pinned
+Mathlib version documented in \texttt{REPRODUCE.md}.  This would yield an unconditional
+operational readback theorem; a full unconditional Turing-universality theorem for Rule~110
+additionally requires a general TM$\to$CTS compiler (\Cref{sec:cook}), which is a separate,
+larger open problem.
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+We have formalized a large fragment of Cook's Rule~110 universality proof in Lean~4:
+infinite-tape dynamics, ether laws, CTS semantics, glider overlays, collision certificates,
+and the discharge of the one-step far-field bridge lemma C2.
+C1 (tape-bit readback for arbitrary words at slots $\le 20$) is fully discharged:
+\lean{cook\_c2\_tape\_bit\_general} ($\CatAL$, zero \texttt{sorry}).
+Substantial partial progress on C3 (empty appendant, $L{=}6$ benchmark,
+legacy $n{=}1$ obstruction, one-step induction scaffold) is machine-checked.
+For the $L{=}6$ benchmark (block time $M_1 = 390$), the full tail-origin chain is now
+$\CatAL$: \lean{cook\_cts\_tail\_origin\_len6\_M390\_M30} is proved with zero sorry via
+a hard-coded evolved-list literal (\texttt{CookLen6Evolved390Literal}) and a 30-step
+\texttt{infRule110Steps\_agree\_Icc} bridge (\Cref{sec:comp-cert,app:len6-tail}).
+Stage~4 anchor \lean{CookFinTM2Compiles (idComputer Bool)} is discharged.
+The top theorem \lean{cook\_operational\_stage3\_tm\_microstep\_readback} (\texttt{CookUniversalityTop})
+is proved with zero \texttt{sorry}, contingent on five named Cook bridge axioms that
+formalize Cook's \S4 collision analysis for general CTS configurations.
+This theorem is a conditional operational certification, not a Turing-universality theorem:
+it connects an already-supplied \lean{TMCTSCompilation} witness to CTS decode and origin
+readback, but does not itself encode a compiler from arbitrary Turing machines to CTS.
+Closing the five bridge axioms would remove all remaining Cook-specific assumptions from this
+readback certificate and yield an \emph{unconditional} operational theorem; reaching full,
+general-purpose, unconditional Rule~110 Turing universality additionally requires formalizing
+Cook's TM$\to$CTS compiler for arbitrary machines (\Cref{sec:cook}), which remains open and is
+substantially more work than discharging the five axioms alone.
+
+A separate, logically independent result also holds: Rule~110's center-cell update is
+algebraically a NAND gate, which by Sheffer's (1913) functional-completeness theorem gives
+finite Boolean functional completeness without any CTS machinery~\cite{SpivackGF7Universality}.
+This finite-completeness result is neither sufficient for, nor a corollary of, the
+operational readback theorem \lean{cook\_operational\_stage3\_tm\_microstep\_readback} established above.
+
+\clearpage
+\begin{table}[H]
+\centering
+\caption{Claim-to-artifact crosswalk for reproducibility.}
+\label{tab:claim_artifact_crosswalk}
+\small
+\renewcommand{\arraystretch}{1.15}
+\begin{tabularx}{\linewidth}{@{}p{2.2cm}>{\RaggedRight\ttfamily\footnotesize}p{3.8cm}>{\RaggedRight}X@{}}
+\toprule
+\textbf{Claim} & \textbf{\normalfont Primary certificate / artifact} & \textbf{Purpose} \\
+\midrule
+C2 discharge & Rule110/\allowbreak CTStoRule110.lean & One-step far-field simulation theorem. \\
+C1 general & Rule110/\allowbreak CookC2GeneralC1.lean & Arbitrary-word tape-bit readback at slots $\le 20$. \\
+$L{=}6$ compose cert & len6\_\allowbreak evolved\_\allowbreak origin\_\allowbreak cert.json & Six-slot origin bits after $420$ list steps. \\
+Python cross-check & papers/30\_\allowbreak cook\_theorem/\allowbreak scripts/\allowbreak len6\_\allowbreak evolved\_\allowbreak origin\_\allowbreak cert.py & Independent audit. \\
+Axiom inventory & rule110-lean/\allowbreak axiom\_check.lean & Lists remaining Cook bridge axioms. \\
+Full build & \texttt{lake build} in \allowbreak\texttt{rule110-lean} & End-to-end Lean compilation check. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\section*{Methods}
+
+\subsection*{M1. Lean build and axiom audit}
+All discharged theorems are verified by compiling the \texttt{rule110-lean} package with Lean~4.29.x and Mathlib v4.29.1.
+Reviewers run \texttt{lake build} and inspect \texttt{\#print axioms} on the key theorems listed in Appendix~\ref{app:lean_inventory}.
+
+\subsection*{M2. Finite \texttt{native\_decide} certificates}
+Collision-kind witnesses, bounded-word readback tables, and the $L{=}6$ list compose certificate are checked by reducing concrete predicates to decidable equality and discharging them with \texttt{native\_decide}.
+These certificates are sound relative to the list and InfTape semantics formalized in the same library.
+
+\subsection*{M3. Python cross-check of the $L{=}6$ benchmark}
+Script \texttt{len6\_evolved\_origin\_cert.py} reimplements bounded Rule~110 simulation on the init tape exported from Lean, writes \texttt{data/len6\_evolved\_origin\_cert.json}, and records SHA-256 hashes for third-party verification without the Lean toolchain.
+
+\section*{Acknowledgments}
+
+AI coding assistants were used for LaTeX formatting, coding assistance, and adversarial review during manuscript preparation. All mathematical derivations, numerical computations, and Lean~4 certifications were independently verified by deterministic scripts and the Lean~4 kernel.
+
+\section*{Author Contributions}
+N.S.\ conceived the formalization program, developed the Lean library and cross-check scripts, and wrote the manuscript.
+
+\section*{Competing Interests}
+The author declares no competing interests.
+
+\section*{Data Availability}
+All data generated for this study are included in the \texttt{rule110-lean} repository and in \texttt{papers/30\_cook\_theorem/data/}.
+No proprietary datasets are used.
+
+\section*{Code Availability}
+The Lean~4 formalization is in the public repository \texttt{rule110-lean}~\cite{rule110-lean}
+(\url{https://github.com/novaspivack/rule110-lean}).
+The Python cross-check script and certificate JSON live in \texttt{papers/30\_cook\_theorem/} within the \texttt{ugp-physics} corpus
+(\url{https://github.com/novaspivack/ugp-physics}).
+Build and reproduction commands are given in Appendix~\ref{app:reproduce} and in \texttt{REPRODUCE.md}.
+
+\newpage
+
+\begin{appendices}
+
+\section{Lean 4 Theorem Inventory}
+\label{app:lean_inventory}
+
+The following theorems from \texttt{rule110-lean} underpin the claims in this paper.
+Discharged results carry zero \texttt{sorry} and the standard Mathlib axiom signature
+(\lean{propext}, \lean{Classical.choice}, \lean{Quot.sound}).
+Open entries remain as named axioms or depend on completion criteria in \S\ref{sec:open}.
+
+\paragraph{Infrastructure ($\CatAL$, zero \texttt{sorry}).}
+\begin{itemize}[leftmargin=1.2em,itemsep=0.15em]
+  \item \lean{infRule110Steps\_agree\_Icc}, \lean{infRule110Steps\_cookEther\_shift}
+  \item \lean{overrideCells\_eq\_base\_on\_Icc}, \lean{overrideCells\_singleton\_at},
+    \lean{gliders\_to\_tape\_eq\_reverse\_flatMap}
+  \item CTS: \lean{cts\_step\_length\_le}, \lean{cts\_eval\_deterministic}
+\end{itemize}
+
+\paragraph{Discharged bridge and stages ($\CatAL$, zero \texttt{sorry}).}
+\begin{itemize}[leftmargin=1.2em,itemsep=0.15em]
+  \item \lean{cook\_cts\_step\_sim\_ax} (C2, far-field ether drift)
+  \item \lean{cook\_c2\_tape\_bit\_general} (C1, arbitrary words, slots $\le 20$)
+  \item \lean{cook\_c2\_tape\_bit\_ax} (C1 alias, slots $\le 20$; theorem not axiom)
+  \item \lean{cook\_c2\_tape\_bit\_min\_word}, \lean{cook\_c2\_tape\_bit\_ax\_partial\_upto7}
+  \item \lean{cook\_c2\_tape\_bit\_decoder\_exists\_upto7}
+  \item \lean{c2\_support\_word\_read\_from\_bare}
+  \item \lean{cook\_collision\_all\_five\_kinds\_certified}
+  \item \lean{cook\_standard\_empty\_cts\_data\_cones}, \lean{cook\_legacy\_c3\_empty\_n1\_blocked}
+  \item \lean{cook\_cts\_eval\_sim\_at\_data\_cones\_origin\_len6\_one}
+  \item \lean{len6\_fast\_compose420\_origin\_ok} (list-only; \texttt{CookLen6FastInfCert})
+  \item \lean{len6Evolved390\_correct} (\texttt{native\_decide}; \texttt{CookLen6Evolved390Literal})
+  \item \lean{len6\_evolved\_inf30\_eq\_list420\_at\_slot} (via literal + 30-step InfTape bridge)
+  \item \lean{cook\_cts\_tail\_origin\_len6\_M390\_M30}
+  \item \lean{cook\_stage4\_tm\_compiles\_step\_bundle}
+  \item \lean{cook\_universality\_discharged}
+\end{itemize}
+
+\paragraph{Top theorem (proved, contingent on 5 named Cook bridge axioms).}
+\begin{itemize}[leftmargin=1.2em,itemsep=0.15em]
+  \item \lean{cook\_operational\_stage3\_tm\_microstep\_readback} ($\CatAL$, zero \texttt{sorry}; \texttt{CookUniversalityTop})
+\end{itemize}
+
+\paragraph{5 remaining Cook bridge axioms (leaves of induction; \texttt{CookStage3Induction}).}
+\begin{itemize}[leftmargin=1.2em,itemsep=0.15em]
+  \item \lean{cook\_cts\_data\_cones\_origin\_one\_step\_ax} (one-step C3$''$, general nonempty CTS)
+  \item \lean{cook\_cts\_eval\_sim\_at\_data\_cones\_origin\_step\_degenerate} (degenerate cycleLen$=0$)
+  \item \lean{cook\_cts\_phased\_post\_decode\_ax} (phased post-decode, general nonempty CTS)
+  \item \lean{cook\_cts\_tail\_origin\_ax} (tail-origin, general appendant length)
+  \item \lean{cook\_cts\_tail\_origin\_final\_ax} (tail-origin, final extended word)
+\end{itemize}
+
+\section{Lean module map}
+\label{app:modules}
+
+\begin{table}[H]
+\centering
+\caption{Primary modules in \texttt{rule110-lean}.}
+\small
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Module} & \textbf{Role} \\
+\midrule
+\texttt{Rule110.Basic} & Local Rule~110 update \\
+\texttt{Rule110.InfTape} & Infinite tape, \texttt{infRule110Steps} \\
+\texttt{Rule110.Ether} & \texttt{cookEther}, shift theorems \\
+\texttt{Rule110.CyclicTagSystem} & CTS semantics \\
+\texttt{Rule110.Gliders} & Glider placements, overrides \\
+\texttt{Rule110.CTStoRule110} & Encodings, bridge axioms, C2 discharge \\
+\texttt{Rule110.CookC2BoundedSim} & Finite-window C2 simulation \\
+\texttt{Rule110.CookC2InfTapeBridge} & List$\to$InfTape C1 partial \\
+\texttt{Rule110.CookC2SupportBareEquiv} & Ossifier bare equivalence \\
+\texttt{Rule110.CookConstructionCollisionCerts} & Five collision kinds \\
+\texttt{Rule110.CookTM2Bridge} & Stage~4 scaffolds \\
+\texttt{Rule110.CookC2GeneralC1} & Arbitrary-word C1 via spacing argument \\
+\texttt{Rule110.CookC2WordNat} & \texttt{word\_toNatLE} bijection; $L \le 7$ roundtrip certs \\
+\texttt{Rule110.CookC2GeneralWordReadback} & Unified ossifier readback dispatch ($L \in \{5,6,7\}$) \\
+\texttt{Rule110.CookUniversalityChain} & Discharge bundle \\
+\texttt{Rule110.CookUniversalityScaffold} & Partial inventory tags \\
+\texttt{Rule110.CookLen6TailEvolution} & $L{=}6$ list evolution / compose certificates \\
+\texttt{Rule110.CookLen6FastInfCert} & Fast list-only compose cert (Phase A) \\
+\texttt{Rule110.CookLen6InfTapeBridge} & $L{=}6$ list$\to$InfTape bridges \\
+\texttt{Rule110.CookLen6TailOrigin} & Tail-origin discharge ($M_1{=}390$, $M_2{=}30$) \\
+\texttt{Rule110.CookStage3Induction} & C3$''$ global induction (5 bridge axioms as leaves) \\
+\texttt{Rule110.CookStage3CollisionModel} & Phased post-decode scaffold \\
+\texttt{Rule110.CookUniversalityTop} & Top theorem \lean{cook\_operational\_stage3\_tm\_microstep\_readback} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Supplementary Artifact Manifest}
+\label{app:artifacts}
+
+All artifacts are produced deterministically from the Lean library or companion scripts.
+Machine-readable forms (JSON) accompany the human-readable paper summary.
+
+\begin{itemize}[leftmargin=1.2em,itemsep=0.2em]
+  \item \textbf{Repository:} \texttt{rule110-lean}~\cite{rule110-lean} (Lean package \texttt{Rule110}).
+  \item \textbf{Block patterns:} \texttt{cook\_blocks.json} $\to$\\
+    \texttt{scripts/gen\_cook\_block\_data.py} $\to$ \texttt{CookBlockData.lean}.
+  \item \textbf{$M/v$ tables:} \texttt{scripts/cook\_m\_values.py} verified by
+    \lean{cook\_m\_values\_python\_parity}.
+  \item \textbf{Finite certs:} \texttt{CookC2VerifySupportLen5/6/7.lean}
+    (compile-time intensive).
+  \item \textbf{$L{=}6$ init tape export:}
+    \texttt{scripts/export\_len6\_phased\_init.lean} $\to$\\
+    \texttt{data/len6\_true\_phased\_support\_init.json}.
+  \item \textbf{$L{=}6$ compose certificate:}
+    \texttt{data/len6\_evolved\_origin\_cert.json}
+    (SHA-256 of init tape and per-slot origin bits).
+  \item \textbf{Python cross-check:} \texttt{scripts/len6\_evolved\_origin\_cert.py}.
+  \item \textbf{Axiom audit:} \texttt{axiom\_check.lean} (\texttt{\#print axioms} on top theorems).
+  \item \textbf{Provenance record:} \texttt{PROVENANCE.md} and \texttt{REPRODUCE.md} in this directory.
+\end{itemize}
+
+\section{Reproducibility}
+\label{app:reproduce}
+
+All results in this paper are reproducible from the \texttt{rule110-lean} build and the
+Python cross-check in \texttt{papers/30\_cook\_theorem/}.
+No external optimization, random search, or GPU computation is required.
+
+\paragraph{Prerequisites.}
+Lean~4.29.x, Lake, Mathlib v4.29.1 (see \texttt{lakefile.lean} in \texttt{rule110-lean});
+Python~3.9+ for the optional $L{=}6$ cross-check.
+
+\paragraph{Lean build.}
+\begin{verbatim}
+cd /path/to/rule110-lean
+lake exe cache get   # first time: download Mathlib cache
+lake build
+\end{verbatim}
+
+\paragraph{$L{=}6$ Python cross-check.}
+From \texttt{papers/30\_cook\_theorem/}:
+\begin{verbatim}
+python3 scripts/len6_evolved_origin_cert.py
+\end{verbatim}
+Expected output: \texttt{Certificate: PASS} for all six slot origins;\\
+writes \texttt{data/len6\_evolved\_origin\_cert.json}.
+
+\paragraph{Expected outcome.}
+\begin{itemize}[leftmargin=1.2em]
+  \item \texttt{lake build} completes with zero errors (${\approx}45$--$70$ min cold build
+    on a modern laptop; dominated by \texttt{native\_decide} tables).
+  \item \lean{cook\_universality\_discharged} typechecks with zero \texttt{sorry}.
+  \item \lean{cook\_operational\_stage3\_tm\_microstep\_readback} typechecks with zero \texttt{sorry}.
+  \item \texttt{\#print axioms cook\_operational\_stage3\_tm\_microstep\_readback} lists exactly five Cook bridge axioms (plus standard Lean axioms and \texttt{native\_decide} entries); no additional \texttt{sorry}.
+  \item \texttt{\#print axioms cook\_c2\_tape\_bit\_general} and \texttt{cook\_cts\_step\_sim\_ax} show only standard Lean axioms.
+\end{itemize}
+
+\subsection*{Reviewer verification protocol}
+The certification status is reproducible from the public repositories:
+{\footnotesize
+\begin{verbatim}
+# 1. Clone and build rule110-lean
+git clone https://github.com/novaspivack/rule110-lean
+cd rule110-lean
+lake exe cache get
+lake build
+
+# 2. Axiom audit on top theorems
+lake env lean axiom_check.lean
+
+# 3. Spot-check discharged theorems (Lean REPL or #check)
+#    Rule110.CookLen6TailOrigin
+#    Rule110.CookC2GeneralC1
+
+# 4. Python cross-check (from ugp-physics checkout)
+cd ../ugp-physics/papers/30_cook_theorem
+python3 scripts/len6_evolved_origin_cert.py
+\end{verbatim}
+}
+
+Pin the git commit hash in \texttt{REPRODUCE.md} when updating the certification snapshot.
+
+\section{Proof Sketches}
+\label{app:proofs}
+
+The following proof sketches make the load-bearing formal arguments verifiable within this manuscript.
+Full machine-checked proofs for discharged theorems have zero \texttt{sorry} in \texttt{rule110-lean}.
+
+\subsection{Icc locality (\lean{infRule110Steps\_agree\_Icc})}
+\label{app:icc}
+
+Rule~110 has radius~1; $n$ steps depend only on initial bits in
+$[i-n,i+n]$.
+Induction on $n$ with the local update definition gives agreement of
+\texttt{infRule110Steps} when initial tapes agree on that interval.
+This lemma is the universal tool for replacing global tape equality with
+boundary-region hypotheses.
+
+\subsection{Support and data cone disjointness}
+\label{app:cones}
+
+Support gliders (ossifier and leader) are placed at origins
+\texttt{cts\_ossifier\_origin} and \texttt{cts\_leader\_origin}, far to the right of data slots
+$0,\ldots,20$.
+For the empty word, \lean{cts\_support\_agrees\_on\_data\_cone} shows
+\texttt{cts\_to\_rule110\_tape\_with\_support} and bare \texttt{cts\_to\_rule110\_tape} agree on
+every index within $\pm 30$ of each data slot origin; \lean{native\_decide} discharges the
+finite case split over slots.
+The generalized lemma \lean{cts\_support\_agrees\_on\_data\_cone\_gen} supports transport of
+list-sim readback through support overlays for bounded words.
+
+\subsection{General C1 via glider spacing (\lean{cook\_c2\_tape\_bit\_general})}
+\label{app:general-c1}
+
+The key arithmetic: C2 gliders for different data slots are placed at spacing
+$\Delta = 42$ cells (one period of the ether $\times 3$), so slot $s$ occupies
+tape positions $[1000 + 42s,\, 1000 + 42s + 5]$.
+A $30$-step backward cone at slot $s'$ covers $[1000 + 42s' - 30,\, 1000 + 42s' + 30]$.
+For $s \ne s'$ the glider at $s$ intersects the cone at $s'$ iff
+$|1000 + 42s - (1000 + 42s')| < 30 + 6 = 36$, i.e.\ $42|s - s'| < 36$.
+Since $42 > 36$, this never holds.
+
+Module \texttt{CookC2GeneralC1} formalizes this argument:
+\lean{cts\_word\_cell\_slot\_range} deduces which slot each cell comes from;
+\lean{cts\_word\_cell\_in\_cone\_is\_readSlot} proves that any cell inside slot $s'$'s
+cone must originate from $s'$; and
+\lean{cts\_to\_rule110\_tape\_cone\_eq\_min\_word} combines these to show the CTS tape
+for an arbitrary word $w$ agrees with the single-slot min-word tape on the cone.
+Applying \Cref{thm:icc} and \lean{cook\_c2\_tape\_bit\_min\_word} yields
+\lean{cook\_c2\_tape\_bit\_general}.
+
+The final sub-case --- when $k$ falls inside the active C2 glider range
+$[c2\text{SimOrigin}\,s',\, c2\text{SimOrigin}\,s' + 5]$ with $w[s'] = \text{true}$ ---
+is discharged via \lean{overrideCells\_singleton\_at} (\texttt{Gliders.lean}):
+both cell lists contain the identical C2 glider cell, and the membership instantiation closes.
+The proof carries zero \texttt{sorry} ($\CatAL$).
+
+\subsection{Bare equivalence for ossifier readback}
+\label{app:bare}
+
+For $L \le 7$, \texttt{CookC2SupportBareEquiv} proves that overlaying the left ossifier in
+bounded simulation does not change read bits at data slots:
+\lean{c2SimReadAtWithOssifier\_eq\_bare} and
+\lean{c2SimRun\_withOssifier\_eq\_bare\_at\_origin}.
+The proof combines (i)~cone disjointness between ossifier patches and data read cones,
+(ii)~\Cref{thm:icc} on the InfTape side, and
+(iii)~\lean{infRule110Steps\_agree\_Icc} to transport list certificates.
+Hence exhaustive bare-word checks imply support-encoded InfTape readback without
+separate init-cone \texttt{native\_decide} on the full support tape.
+
+\subsection{$L=6$ tail-origin certificate (validity)}
+\label{app:len6-tail}
+
+\paragraph{Problem.}
+For \lean{cook\_min\_len6\_cts} and input \texttt{[true]}, tail-origin after one appendant
+microstep requires equality at slot origins between (i)~chunked InfTape evolution
+$\texttt{infRule110Steps}\,30 \circ \texttt{infRule110Steps}\,390$ on the phased encode and
+(ii)~the mid-path list simulation after $420$ bounded steps on
+\texttt{len6TruePhasedSupportInit}.
+
+\paragraph{List certificate (discharged in Lean).}
+Predicate \lean{len6Tail420ComposeOriginOk} evaluates only \texttt{c2SimRun} and
+\texttt{List.getD} at six origins; \texttt{native\_decide} completes in seconds.
+This is sound relative to infinite-tape semantics because \lean{c2SimRun\_eq\_infRule110Steps\_at}
+identifies list and InfTape values whenever the dependency cone fits in the prefix
+(\texttt{c2SimBound} $= 2500$, origins $\le 1210 + 30$).
+
+\paragraph{Why InfTape is not unfolded at $n = 390$.}
+Applying \lean{c2SimRun\_eq\_infRule110Steps\_at} with $n = 390$ inside the proof kernel
+triggers normalization of $390$ nested \texttt{infTapeStep} layers on the phased encode.
+Even at a single concrete cell index, elaboration exceeds Lean's default heartbeat threshold.
+Monolithic \texttt{native\_decide} on \texttt{infRule110Steps}\,$420$ is worse: each check
+rebuilds the entire phased tape as an \texttt{InfTape}.
+Chunking ($390 + 30$) matches Cook's block structure and keeps the \emph{checked} predicate
+list-based.
+
+\paragraph{InfTape bridge (discharged in Lean).}
+Theorem \lean{len6\_evolved\_inf30\_eq\_list420\_at\_slot} is proved via the hard-coded literal
+\lean{len6Evolved390} (\texttt{native\_decide} in \texttt{CookLen6\allowbreak{}Evolved390\allowbreak{}Literal}) plus a
+30-step \lean{infRule110Steps\_agree\_Icc} bridge at slot origins.\\
+Theorem \lean{cook\_cts\_tail\_origin\_len6\_M390\_M30} ($\CatAL$, zero \texttt{sorry}) follows.
+
+\paragraph{Python cross-check.}
+Script \texttt{len6\_evolved\_origin\_cert.py} reimplements \texttt{c2SimStep} / \texttt{c2SimRun}
+with the same Rule~110 table and ether padding, loads the init tape exported from Lean
+(\texttt{export\_len6\_phased\_init.lean}), and verifies the six origin equalities.
+The output JSON records \texttt{init\_tape\_sha256} and per-slot bits so third parties can
+reproduce the check without the Lean toolchain.
+Dual agreement (Lean \texttt{native\_decide} + Python) addresses implementation risk on the
+list-side certificate; the InfTape transport is discharged in Lean, not assumed as an axiom.
+
+\end{appendices}
+
+\bibliographystyle{plain}
+\bibliography{../bib/Spivack_Papers_Bibliography}
+
+\end{document}

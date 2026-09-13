@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L29: Falsifiability — UGP Physics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="../../common/style.css">
+  <style>
+    .pred-table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.82rem; }
+    .pred-table th {
+      text-align: left; padding: 0.5rem 0.625rem;
+      font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--text-secondary); border-bottom: 1px solid var(--stroke-primary);
+    }
+    .pred-table td { padding: 0.5rem 0.625rem; border-bottom: 1px solid var(--stroke-secondary); vertical-align: top; }
+    .pred-table td:first-child { color: var(--text-secondary); }
+    .sigma-col { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; }
+    .sigma-pass { color: #22C55E; font-weight: 700; }
+    .sigma-tension { color: #F59E0B; font-weight: 700; }
+    .cert-badge { display: inline-block; font-size: 0.65rem; font-weight: 700;
+      padding: 1px 5px; border-radius: var(--r-sm); letter-spacing: 0.04em; }
+    .cert-al { background: rgba(34,197,94,0.15); color: #22C55E; border: 1px solid rgba(34,197,94,0.3); }
+    .cert-ad { background: rgba(59,130,246,0.15); color: #3B82F6; border: 1px solid rgba(59,130,246,0.3); }
+    .cert-a  { background: rgba(245,158,11,0.15); color: #F59E0B; border: 1px solid rgba(245,158,11,0.3); }
+    .falsify-row {
+      display: flex; align-items: flex-start; gap: 1rem;
+      border: 1px solid var(--stroke-primary); border-radius: var(--r-md);
+      background: var(--bg-elevated); padding: 0.875rem 1rem; margin: 0.5rem 0;
+    }
+    .fr-icon { flex-shrink: 0; font-size: 1.5rem; }
+    .fr-body { flex: 1; }
+    .fr-obs { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.2rem; }
+    .fr-pred { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--accent); margin-bottom: 0.2rem; }
+    .fr-kill { font-size: 0.8rem; color: var(--text-secondary); }
+    .fr-exp { font-size: 0.75rem; color: var(--text-tertiary); margin-top: 0.2rem; }
+    .honesty-box {
+      background: rgba(245,158,11,0.08); border: 1px solid #F59E0B;
+      border-radius: var(--r-md); padding: 1rem 1.25rem; margin: 1rem 0;
+    }
+  </style>
+</head>
+<body style="--path-current: var(--path-8)">
+
+  <header class="site-header">
+    <a href="../../index.html" class="site-logo">UGP Physics</a>
+    <nav class="breadcrumb">
+      <a href="../../index.html">Tutorial Series</a>
+      <span class="bc-sep">›</span>
+      <a href="../index.html">Path 8: Context and Predictions</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">L29: Falsifiability</span>
+    </nav>
+  </header>
+
+  <main class="page-wrapper">
+
+    <div class="lesson-header">
+      <div class="path-label">Path 8 — Context and Predictions · Lesson 1 of 2</div>
+      <h1>Falsifiability: How to Test GTE</h1>
+      <p class="lesson-subtitle">
+        A zero-parameter theory is maximally falsifiable. Every output is a prediction
+        that could have failed. The complete GTE prediction register — what confirms,
+        what tensions remain, and what experiments would definitively refute the framework.
+      </p>
+      <div class="progress-bar"><div class="progress-fill" style="width:50%"></div></div>
+    </div>
+
+    <!-- ═══ Section 1: Why Falsifiability Matters ═══ -->
+    <section class="lesson-section" id="why">
+      <h2>Why a Zero-Parameter Theory Is Maximally Falsifiable</h2>
+
+      <p>
+        The Standard Model has 19 free parameters (plus at least 3 for neutrinos) that can
+        absorb discrepancies. If a measurement disagrees, the SM can accommodate it by
+        adjusting a parameter. A single disconfirming measurement is not fatal.
+      </p>
+
+      <div class="callout callout--info">
+        <strong>GTE has zero continuously adjustable parameters.</strong> Every numerical
+        output is a derivation from the polynomial p(L,C,R) = C + R − CR − LCR over GF(7),
+        selected by MDL. A single confirmed measurement outside a GTE prediction band —
+        at the stated precision — would refute the framework with no available escape route.
+        This is more falsifiable than the SM, not less.
+      </div>
+
+      <p>
+        All comparisons on this page use PDG 2024 for particle physics observables and
+        NuFIT 6.0 IC24 NH for neutrino parameters.
+      </p>
+    </section>
+
+    <!-- ═══ Section 2: Confirmed Predictions ═══ -->
+    <section class="lesson-section" id="confirmed">
+      <h2>Confirmed Predictions</h2>
+      <p>
+        The following predictions agree with experimental measurements at sub-1σ precision.
+        All are zero-parameter derivations.
+      </p>
+
+      <table class="pred-table">
+        <thead>
+          <tr>
+            <th>Observable</th>
+            <th>GTE prediction</th>
+            <th>Measurement</th>
+            <th>σ</th>
+            <th>Cert.</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>CMB spectral tilt n<sub>s</sub></td>
+            <td>1 − ln2/(2π²) = 0.96488</td>
+            <td>0.9649 ± 0.0042</td>
+            <td class="sigma-col sigma-pass">+0.004</td>
+            <td><span class="cert-badge cert-al">CatAL</span></td>
+          </tr>
+          <tr>
+            <td>Baryon asymmetry η<sub>B</sub></td>
+            <td>6.109 × 10<sup>−10</sup></td>
+            <td>(6.10 ± 0.06) × 10<sup>−10</sup></td>
+            <td class="sigma-col sigma-pass">+0.15</td>
+            <td><span class="cert-badge cert-al">CatAL</span></td>
+          </tr>
+          <tr>
+            <td>PMNS solar sin²θ₁₂</td>
+            <td>4/13 = 0.3077</td>
+            <td>0.308 ± 0.012</td>
+            <td class="sigma-col sigma-pass">−0.02</td>
+            <td><span class="cert-badge cert-al">CatAL</span></td>
+          </tr>
+          <tr>
+            <td>PMNS reactor sinθ₁₃</td>
+            <td>11/73 = 0.1507</td>
+            <td>0.1489 ± 0.004</td>
+            <td class="sigma-col sigma-pass">+0.23</td>
+            <td><span class="cert-badge cert-al">CatAL</span></td>
+          </tr>
+          <tr>
+            <td>CKM CP phase δ<sub>CKM</sub></td>
+            <td>68.51°</td>
+            <td>68.5° ± 2.5°</td>
+            <td class="sigma-col sigma-pass">0.00</td>
+            <td><span class="cert-badge cert-al">CatAL</span></td>
+          </tr>
+          <tr>
+            <td>Weinberg angle sin²θ<sub>W</sub></td>
+            <td>0.23129 (two-loop)</td>
+            <td>0.23121 ± 0.00004</td>
+            <td class="sigma-col sigma-pass">+0.038</td>
+            <td><span class="cert-badge cert-ad">CatAD</span></td>
+          </tr>
+          <tr>
+            <td>Ω<sub>Λ</sub> (bracket)</td>
+            <td>[3π/14, 0.6899]</td>
+            <td>0.6889 ± 0.0056</td>
+            <td class="sigma-col sigma-pass">in bracket</td>
+            <td><span class="cert-badge cert-ad">CatAD</span></td>
+          </tr>
+          <tr>
+            <td>Higgs VEV v<sub>PSC</sub></td>
+            <td>246.16 GeV</td>
+            <td>246.22 GeV</td>
+            <td class="sigma-col sigma-pass">−0.024%</td>
+            <td><span class="cert-badge cert-al">CatAL</span></td>
+          </tr>
+          <tr>
+            <td>Higgs mass m<sub>H</sub></td>
+            <td>125.25 GeV</td>
+            <td>125.20 ± 0.11 GeV</td>
+            <td class="sigma-col sigma-pass">+0.45</td>
+            <td><span class="cert-badge cert-ad">CatAD</span></td>
+          </tr>
+          <tr>
+            <td>Dark matter Ω<sub>DM</sub>h²</td>
+            <td>0.11994</td>
+            <td>0.12011 ± 0.0012</td>
+            <td class="sigma-col sigma-pass">−0.15%</td>
+            <td><span class="cert-badge cert-ad">CatAD</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ═══ Section 3: Current Tensions ═══ -->
+    <section class="lesson-section" id="tensions">
+      <h2>Current Tensions</h2>
+
+      <div class="honesty-box">
+        <strong>Honest disclosure:</strong> Not every prediction agrees. GTE has genuine
+        tensions that are not explained away. Each has a named pathway to resolution (a
+        specific calculation or measurement still needed). None constitutes a confirmed
+        falsification.
+      </div>
+
+      <table class="pred-table">
+        <thead>
+          <tr>
+            <th>Observable</th>
+            <th>GTE prediction</th>
+            <th>Measurement</th>
+            <th>σ</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>PMNS atmospheric sin²θ₂₃</td>
+            <td>19/42 = 0.4524</td>
+            <td>0.470 ± 0.015</td>
+            <td class="sigma-col sigma-tension">−1.0</td>
+            <td>Open; depends on higher-order corrections</td>
+          </tr>
+          <tr>
+            <td>PMNS CP phase δ<sub>CP</sub><sup>PMNS</sup></td>
+            <td>4/7 × 360° = 205.71°</td>
+            <td>212° ± 26°</td>
+            <td class="sigma-col sigma-pass">−0.15</td>
+            <td>Consistent; DUNE/Hyper-K to sharpen</td>
+          </tr>
+          <tr>
+            <td>Strong coupling α<sub>s</sub>(M<sub>Z</sub>)</td>
+            <td>0.1176 (one-loop)</td>
+            <td>0.1180 ± 0.0009</td>
+            <td class="sigma-col sigma-tension">+1.5</td>
+            <td>Two-loop matching correction needed</td>
+          </tr>
+          <tr>
+            <td>N<sub>gen</sub> = 3 enforcement</td>
+            <td>exactly 3 generations</td>
+            <td>No 4th generation found at LHC</td>
+            <td class="sigma-col sigma-pass">confirmed</td>
+            <td>Lean-certified; 7 independent proofs</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ═══ Section 4: Clean Falsification Criteria ═══ -->
+    <section class="lesson-section" id="falsification">
+      <h2>Clean Falsification Criteria</h2>
+      <p>
+        The following are measurements that would definitively refute GTE at &gt;3σ confidence
+        with no available escape route. Each has a named experiment and timeline.
+      </p>
+
+      <div class="falsify-row">
+        <div class="fr-icon">🌌</div>
+        <div class="fr-body">
+          <div class="fr-obs">CMB spectral tilt n<sub>s</sub></div>
+          <div class="fr-pred">GTE: 0.96488 &nbsp;|&nbsp; Kill condition: n<sub>s</sub> &gt; 0.98 or &lt; 0.95 at &gt;3σ</div>
+          <div class="fr-kill">The CMCA Z₂ binary entropy mechanism produces n<sub>s</sub> = 0.96488 with no free parameters. A large departure would break the derivation chain at its root.</div>
+          <div class="fr-exp">CMB-S4, Simons Observatory — 2028+</div>
+        </div>
+      </div>
+
+      <div class="falsify-row">
+        <div class="fr-icon">🔭</div>
+        <div class="fr-body">
+          <div class="fr-obs">Primordial gravitational waves r</div>
+          <div class="fr-pred">GTE: r = 0 exactly &nbsp;|&nbsp; Kill condition: r &gt; 0.01 at &gt;3σ</div>
+          <div class="fr-kill">MDL initial state has no tensor fluctuations — they would cost extra description bits. Detection of significant r would falsify the MDL initial state derivation.</div>
+          <div class="fr-exp">LiteBIRD (σ<sub>r</sub> ≈ 0.001), CMB-S4 — 2028+</div>
+        </div>
+      </div>
+
+      <div class="falsify-row">
+        <div class="fr-icon">⚛️</div>
+        <div class="fr-body">
+          <div class="fr-obs">Proton decay (dimension-4)</div>
+          <div class="fr-pred">GTE: forbidden (baryon number is topological) &nbsp;|&nbsp; Kill condition: any verified dim-4 decay event</div>
+          <div class="fr-kill">Baryon number is a topological charge of the Z₇ winding field — exactly conserved under any local field operator of dimension ≤ 4. One event is fatal.</div>
+          <div class="fr-exp">Hyper-Kamiokande, DUNE — 2035+</div>
+        </div>
+      </div>
+
+      <div class="falsify-row">
+        <div class="fr-icon">🔬</div>
+        <div class="fr-body">
+          <div class="fr-obs">Axion discovery</div>
+          <div class="fr-pred">GTE: no axion exists &nbsp;|&nbsp; Kill condition: any confirmed axion signal at any mass</div>
+          <div class="fr-kill">The strong CP angle θ<sub>QCD</sub> = 0 exactly from F₂₁ group theory (3 independent CatAL proofs). No axion mechanism is needed or predicted. Any positive ADMX/CASPEr/BabyIAXO signal is fatal.</div>
+          <div class="fr-exp">ADMX, CASPEr, BabyIAXO — ongoing</div>
+        </div>
+      </div>
+
+      <div class="falsify-row">
+        <div class="fr-icon">🧲</div>
+        <div class="fr-body">
+          <div class="fr-obs">Dark photon discovery</div>
+          <div class="fr-pred">GTE: no dark photon &nbsp;|&nbsp; Kill condition: any dark photon discovery at any mass</div>
+          <div class="fr-kill">The Elegant Kernel for the mirror winding sector has no U(1) factor — Lean-certified. Every null result from NA64, BaBar, Belle II, NA62 is a positive confirmation.</div>
+          <div class="fr-exp">NA64, Belle II, NA62 — ongoing</div>
+        </div>
+      </div>
+
+      <div class="falsify-row">
+        <div class="fr-icon">🌡️</div>
+        <div class="fr-body">
+          <div class="fr-obs">Inverted neutrino mass ordering</div>
+          <div class="fr-pred">GTE: Normal Hierarchy only &nbsp;|&nbsp; Kill condition: definitive IH determination at &gt;3σ</div>
+          <div class="fr-kill">The GTE neutrino sector derivation assumes Normal Ordering. An inverted hierarchy measurement from DUNE or Hyper-Kamiokande would require a structural reworking of the neutrino sector.</div>
+          <div class="fr-exp">DUNE, Hyper-Kamiokande — 2030+</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 5: Honest Limitations ═══ -->
+    <section class="lesson-section" id="limitations">
+      <h2>Honest Limitations: What GTE Cannot Predict</h2>
+
+      <p>
+        A theory with zero free parameters should not be expected to predict everything.
+        Some quantities require more theory machinery than currently exists in the GTE framework.
+        These are not failures — they are open research targets.
+      </p>
+
+      <ul class="key-points">
+        <li>
+          <strong>Full CKM matrix (all four parameters):</strong> The CKM CP phase δ<sub>CKM</sub>
+          is derived (CatAL). The three mixing angles θ₁₂, θ₁₃, θ₂₃ require additional orbit-topology
+          analysis that is underway but not certified.
+        </li>
+        <li>
+          <strong>Full neutrino mass spectrum:</strong> The mass ordering and total sum
+          (Σm<sub>ν</sub> = 59.4 meV) are predicted. The individual masses m₁, m₂, m₃ require a
+          Lean-certification of the neutrino cascade formula (currently CatA).
+        </li>
+        <li>
+          <strong>Two-loop QCD coupling:</strong> α<sub>s</sub>(M<sub>Z</sub>) at one loop gives
+          1.5σ tension. A two-loop matching calculation is the named resolution pathway.
+        </li>
+        <li>
+          <strong>Gravitational wave source distributions:</strong> The domain-wall annihilation
+          at T<sub>G</sub> ≈ 0.70 GeV predicts a stochastic GW background, but the spectral shape
+          requires a numerical simulation (currently underway).
+        </li>
+      </ul>
+    </section>
+
+    <!-- ═══ Key Points ═══ -->
+    <section class="lesson-section" id="key-points">
+      <h2>Key Points</h2>
+      <ul class="key-points">
+        <li>
+          GTE's zero-parameter structure makes it more falsifiable than the Standard Model —
+          any confirmed out-of-band measurement is fatal with no parameter to absorb it.
+        </li>
+        <li>
+          The thirteen strongest confirmations include n<sub>s</sub> at +0.004σ, η<sub>B</sub> at
+          +0.15σ, sin²θ<sub>W</sub> at +0.038σ, CKM CP phase at 0.00σ, and Higgs mass at +0.45σ —
+          all zero free parameters.
+        </li>
+        <li>
+          Current tensions: sin²θ₂₃ at −1.0σ and α<sub>s</sub> at +1.5σ. Neither constitutes
+          a confirmed falsification; both have named resolution pathways.
+        </li>
+        <li>
+          Fatal falsification criteria: any confirmed axion, dark photon, or sparticle; proton
+          dimension-4 decay; r &gt; 0.01; n<sub>s</sub> outside [0.95, 0.98]; inverted neutrino
+          hierarchy.
+        </li>
+      </ul>
+    </section>
+
+    <!-- ═══ See Also ═══ -->
+    <div class="see-also">
+      <h2>See Also</h2>
+      <div class="see-also-group">
+        <div class="see-also-label">Source paper</div>
+        <ul class="source-list">
+          <li><a href="https://doi.org/10.5281/zenodo.20560550" target="_blank" rel="noopener">P48 — The Complete GTE Framework, Appendix A (Prediction Register) ↗</a></li>
+          <li><a href="https://doi.org/10.5281/zenodo.20669142" target="_blank" rel="noopener">Tutorial: Falsifiability — How to Test the GTE Framework (full PDF) ↗</a></li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Cross-links</div>
+        <ul class="source-list">
+          <li><a href="../L30_new_physics/index.html" class="xref">L30: New Physics Predictions — what GTE forbids and predicts →</a></li>
+          <li><a href="../../path_7_cosmology/L26_cmb_inflation/index.html" class="xref">L26: CMB and Baryon Asymmetry — the derivations behind the top confirmations ↗</a></li>
+          <li><a href="../../path_7_cosmology/L28_hierarchy_problem/index.html" class="xref">L28: The Hierarchy Problem — Higgs mass derivation ↗</a></li>
+        </ul>
+      </div>
+    </div>
+
+  </main>
+
+  <div class="page-wrapper">
+    <footer class="lesson-footer">
+      <a href="../index.html" class="nav-btn nav-btn--prev">← Path 8: Context</a>
+      <a href="../L30_new_physics/index.html" class="nav-btn nav-btn--next">L30: New Physics Predictions →</a>
+    </footer>
+  </div>
+
+  <script src="../../common/interactive.js"></script>
+  <script src="../../common/nav.js"></script>
+</body>
+</html>

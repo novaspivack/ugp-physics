@@ -1,0 +1,77 @@
+# Configuration for HM Constant Testing
+# Systematic test of alternative HM normalization constants from parallel-additivity proof
+
+experiment:
+  name: ugp_yukawa_ckm_pmns_hm_constant_test
+  description: "Systematic test of alternative HM normalization constants from parallel-additivity proof"
+  inputs:
+    runs:
+      - "canonical_gte_triples.json"  # Uses canonical GTE triples
+
+# HM Constants to test (based on mathematical principles from parallel-additivity proof)
+hm_constants_to_test:
+  - 1.0    # Unity
+  - 2.0    # Binary
+  - 3.0    # Ternary
+  - 4.0    # Current implementation
+  - 5.0    # Quinary
+  - 6.0    # Senary
+  - 7.0    # Septenary
+  - 8.0    # Octal
+  - 1.5    # Half-step
+  - 2.5    # Half-step
+  - 3.5    # Half-step
+  - 4.5    # Half-step
+  - 5.5    # Half-step
+  - 6.5    # Half-step
+  - 7.5    # Half-step
+  - 8.5    # Half-step
+  - 1.4142135623730951  # sqrt(2)
+  - 1.618033988749895   # Golden ratio
+  - 2.718281828459045   # e (Euler's number)
+  - 3.141592653589793   # pi
+  - 1.7320508075688772  # sqrt(3)
+  - 2.23606797749979    # sqrt(5)
+
+# Options
+options:
+  down_sector_permutation_policy: "optimize"  # "optimize" (scan 6 perms) or "fixed"
+  down_sector_perm_fixed: [0, 1, 2]  # used only if policy == "fixed"
+  pdg_targets_ckm: [0.2245, 0.041, 0.00365]  # |Vus|, |Vcb|, |Vub| for score logging
+
+# PDG Experimental Targets for comparison
+pdg_targets:
+  # CKM mixing elements
+  Vus: 0.2245
+  Vcb: 0.041
+  Vub: 0.00365
+  # PMNS mixing angles (degrees)
+  theta12: 33.44  # Solar mixing angle
+  theta13: 8.57    # Reactor mixing angle  
+  theta23: 49.2    # Atmospheric mixing angle
+
+# Analysis parameters
+analysis:
+  face_weights_calculation: "harmonic_mean_with_variable_normalization"  # HM rigidity + variable normalization
+  sector_weights_calculation: "delta_squared"  # Δ² rigidity
+  face_metric: "quarter_lock_adjacency"  # Quarter-Lock face metric
+  phase_source: "kernel_generational"  # only k_gen, k_gen2 phases
+  pdg_ordering: true  # enforce PDG row/col ordering
+
+# Output configuration
+output:
+  save_matrices: true
+  save_angles: true
+  save_eigenvalues: true
+  save_vectors: false  # Too many vectors for systematic test
+  save_permutation_choice: true
+  save_experimental_errors: true
+  format: "json"  # json for systematic results
+
+# Validation
+validation:
+  unitary_check: true
+  pdg_ordering_check: true
+  eigenvalue_ordering: true
+  jarlskog_invariant_check: true
+  experimental_error_calculation: true

@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L26: CMB, Inflation, and Baryon Asymmetry — UGP Physics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="../../common/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css">
+  <style>
+    .derivation-chain {
+      display: flex; flex-direction: column; gap: 0; margin: 1rem 0;
+    }
+    .deriv-step {
+      display: flex; align-items: flex-start; gap: 0.75rem;
+      background: var(--bg-elevated); border: 1px solid var(--stroke-secondary);
+      padding: 0.875rem 1rem;
+    }
+    .deriv-step:first-child { border-radius: var(--r-md) var(--r-md) 0 0; }
+    .deriv-step:last-child  { border-radius: 0 0 var(--r-md) var(--r-md); }
+    .deriv-step + .deriv-step { border-top: none; }
+    .step-num {
+      flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
+      background: var(--accent); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.8rem; font-weight: 700;
+    }
+    .step-body { flex: 1; }
+    .step-body strong { color: var(--text-primary); }
+    .step-body p { font-size: 0.875rem; color: var(--text-secondary); margin: 0.2rem 0 0; }
+    .result-highlight {
+      background: rgba(249,115,22,0.08); border: 2px solid var(--accent);
+      border-radius: var(--r-md); padding: 1.25rem 1.5rem; margin: 1.25rem 0;
+      text-align: center;
+    }
+    .rh-num { font-family: 'JetBrains Mono', monospace; font-size: 1.8rem; font-weight: 700;
+      color: var(--accent); display: block; }
+    .rh-label { font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.25rem; }
+    .rh-sigma { font-size: 0.9rem; font-weight: 600; color: #22C55E; }
+    .compare-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin: 1rem 0;
+    }
+    .compare-box { background: var(--bg-elevated); border: 1px solid var(--stroke-primary);
+      border-radius: var(--r-md); padding: 1rem; }
+    .compare-box .cb-head { font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--text-tertiary); margin-bottom: 0.4rem; }
+    .compare-box.cb-bad { border-color: #EF4444; }
+    .compare-box.cb-good { border-color: #22C55E; }
+  </style>
+</head>
+<body style="--path-current: var(--path-7)">
+
+  <header class="site-header">
+    <a href="../../index.html" class="site-logo">UGP Physics</a>
+    <nav class="breadcrumb">
+      <a href="../../index.html">Tutorial Series</a>
+      <span class="bc-sep">›</span>
+      <a href="../index.html">Path 7: Cosmology</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">L26: CMB, Inflation, and Baryon Asymmetry</span>
+    </nav>
+  </header>
+
+  <main class="page-wrapper">
+
+    <div class="lesson-header">
+      <div class="path-label">Path 7 — Cosmology · Lesson 2 of 4</div>
+      <h1>CMB, Inflation, and Baryon Asymmetry</h1>
+      <p class="lesson-subtitle">
+        The most precisely confirmed GTE prediction: n<sub>s</sub> = 0.96488 at +0.004σ from Planck.
+        Why there is no inflation field. And the baryon asymmetry from built-in parity asymmetry.
+      </p>
+      <div class="progress-bar"><div class="progress-fill" style="width:50%"></div></div>
+    </div>
+
+    <!-- ═══ Section 1: The CMB ═══ -->
+    <section class="lesson-section" id="cmb">
+      <h2>What the CMB Tells Us</h2>
+      <p>
+        The cosmic microwave background (CMB) is the afterglow of the early universe —
+        light emitted 380,000 years after the Big Bang when atoms first formed and photons
+        could travel freely. Its temperature fluctuates by roughly one part in 100,000 across
+        the sky, encoding the spectrum of initial density variations.
+      </p>
+
+      <p>
+        Two numbers characterize that spectrum. The <strong>spectral tilt n<sub>s</sub></strong>:
+        a value of 1 means perfectly scale-invariant fluctuations (equal power at every wavelength).
+        The observed value n<sub>s</sub> = 0.9649 ± 0.0042 (Planck 2018) is slightly less than 1 —
+        a <em>red tilt</em>, meaning slightly less power at short wavelengths. The
+        <strong>tensor-to-scalar ratio r</strong>: how much primordial gravitational radiation
+        was produced. Planck 2018 + BICEP/Keck give r &lt; 0.036 (95% CL).
+      </p>
+
+      <div class="compare-row">
+        <div class="compare-box cb-bad">
+          <div class="cb-head">Standard inflation</div>
+          <p style="font-size:0.875rem;color:var(--text-secondary);margin:0">
+            Requires a hypothetical inflaton field with an arbitrary potential V(φ).
+            Different potentials give different n<sub>s</sub> and r.
+            The agreement with Planck data constrains model <em>parameters</em> —
+            it does not derive them. n<sub>s</sub> is fitted, not predicted.
+          </p>
+        </div>
+        <div class="compare-box cb-good">
+          <div class="cb-head">GTE: MDL initial state</div>
+          <p style="font-size:0.875rem;color:var(--text-secondary);margin:0">
+            No inflaton field. The MDL principle selects the unique minimum-description
+            initial configuration. n<sub>s</sub> is derived from binary entropy and
+            geometry. r = 0 exactly — tensor modes would cost extra description bits
+            and are therefore MDL-forbidden.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 2: Derivation of n_s ═══ -->
+    <section class="lesson-section" id="ns-derivation">
+      <h2>Deriving n<sub>s</sub> in Four Steps</h2>
+      <p>
+        The GTE spectral index follows a four-step certified chain, each step CatAL.
+      </p>
+
+      <div class="derivation-chain">
+        <div class="deriv-step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <strong>Binary entropy H(Z₂) = ln 2</strong>
+            <p>
+              The CMCA center cell under Rule 110 implements a NAND gate:
+              p(L,1,R) = 1 − L·R = NAND(L,R). The NAND gate is the universal binary
+              operation. The entropy of a fair NAND gate is ln 2 — forced by the polynomial's
+              structure, not chosen.
+              <span data-lean="rule110_center1_is_nand"></span>
+            </p>
+          </div>
+        </div>
+        <div class="deriv-step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <strong>Z₇ superselection — only Z₂ drives primordial perturbations</strong>
+            <p>
+              The Φ<sub>MDL</sub> field has seven Z₇ winding sectors.
+              The DHR theorem forbids coherent perturbations across Z₇ sectors at the flat-metric
+              (cosmological) scale, because winding number is a topological invariant.
+              Only the Z₂ binary sublayer remains as a coherent quantum fluctuation driver.
+              If the full Z₇ contributed, n<sub>s</sub> would be 0.901 — 15σ off. The
+              superselection is what makes the prediction work.
+              <span data-lean="z7_superselection_preserved_by_flat_metric"></span>
+            </p>
+          </div>
+        </div>
+        <div class="deriv-step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <strong>Weyl miracle: mode density = 1 at the Planck scale</strong>
+            <p>
+              The number of modes with wavenumber ≤ k on the unit 3-sphere S³ follows
+              N(k) = k³/3 (Weyl law). The logarithmic derivative at k=1:
+              dN/d(ln k)|ₖ₌₁ = Vol(S³)/(2π²) = 2π²/(2π²) = 1 exactly. The S³ volume
+              and the Weyl denominator are both 2π² — they cancel. Mode density = 1.
+              <span data-lean="weyl_algebraic_miracle"></span>
+            </p>
+          </div>
+        </div>
+        <div class="deriv-step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <strong>β<sub>G</sub> = ln 2 / (2π²) → n<sub>s</sub> = 1 − β<sub>G</sub></strong>
+            <p>
+              The running rate is the binary entropy multiplied by the mode density:
+              β<sub>G</sub> = (ln 2) × 1 / (2π²) = ln 2 / (2π²) = 0.035124.
+              The spectral index: n<sub>s</sub> = 1 − β<sub>G</sub> = <strong>0.96488</strong>.
+              <span data-lean="n_s_formula"></span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-highlight">
+        <span class="rh-num">n<sub>s</sub> = 1 − ln 2 / (2π²) = <strong>0.96488</strong></span>
+        <div class="rh-label">
+          Planck 2018: 0.9649 ± 0.0042 &nbsp;|&nbsp;
+          <span class="rh-sigma">Deviation: +0.004σ</span>
+          &nbsp;|&nbsp; Zero free parameters &nbsp;|&nbsp; 14 Lean theorems, CatAL
+        </div>
+      </div>
+
+      <div class="callout callout--info">
+        <strong>Why ln 2 specifically?</strong> Because the NAND gate is binary — it operates
+        on two states, giving entropy ln 2. If the CA were ternary, entropy would be ln 3 and
+        n<sub>s</sub> would be wrong. The binary structure of Rule 110 is not adjustable — it
+        is forced by the GTE polynomial.
+      </div>
+    </section>
+
+    <!-- ═══ Section 3: r = 0 ═══ -->
+    <section class="lesson-section" id="r-zero">
+      <h2>r = 0: No Primordial Gravitational Waves</h2>
+      <p>
+        The GTE MDL initial state predicts <strong>r = 0 exactly</strong> — no primordial
+        gravitational waves. The argument is structural: primordial tensor modes require extra
+        information to specify beyond the scalar density field. MDL-minimality therefore selects
+        an initial state with zero tensor fluctuations.
+      </p>
+
+      <div class="callout callout--warn">
+        <strong>Sharp falsification criterion:</strong> Any confirmed detection of r &gt; 0.001
+        at 5σ significance by LiteBIRD (projected launch 2028, σ<sub>r</sub> ≈ 0.001) or CMB-S4
+        would definitively falsify the GTE MDL initial state derivation. Most standard inflation
+        models predict r &gt; 0.001. Current constraint: r &lt; 0.036 (95% CL).
+      </div>
+    </section>
+
+    <!-- ═══ Section 4: Baryon Asymmetry ═══ -->
+    <section class="lesson-section" id="baryon">
+      <h2>The Baryon Asymmetry: Why Matter Exists</h2>
+      <p>
+        For every billion photons in the CMB, there is exactly one more baryon than antibaryon.
+        This baryon asymmetry η<sub>B</sub> ≈ 6.1 × 10<sup>−10</sup> is the source of all
+        atomic matter. Without it, every baryon would have annihilated with an antibaryon —
+        no atoms, no stars, no us.
+      </p>
+
+      <p>
+        The Standard Model can explain baryogenesis in principle (Sakharov conditions: B-violation,
+        CP violation, out-of-equilibrium processes), but the SM-predicted asymmetry is far too
+        small. New physics is needed — and GTE provides it through the FKTT mechanism.
+      </p>
+
+      <p>
+        The GTE mechanism: the lightest right-handed neutrino N₁ (a kink excitation of Φ<sub>MDL</sub>)
+        decays with CP violation, generating a lepton asymmetry that electroweak sphalerons
+        partially convert to a baryon asymmetry. The key is the kink-top coupling:
+      </p>
+
+      <div class="result-highlight">
+        <span class="rh-num" style="font-size:1.4rem">
+          g<sub>kink-top</sub> = ε<sub>FN</sub> = exp(−π/N<sub>c</sub>) = exp(−π/3) ≈ 0.3506
+        </span>
+        <div class="rh-label">
+          N<sub>c</sub> = 3 colors (CatAL). BPS instanton action per CMCA tape = π/N<sub>c</sub>.
+          Not fitted — derived from the kink structure of the GTE field theory.
+          <span data-lean="kink_top_coupling_eq_eps_FN"></span>
+        </div>
+      </div>
+
+      <div class="result-highlight">
+        <span class="rh-num">η<sub>B</sub> = 6.109 × 10<sup>−10</sup></span>
+        <div class="rh-label">
+          Planck 2018 + BBN: (6.10 ± 0.06) × 10<sup>−10</sup> &nbsp;|&nbsp;
+          <span class="rh-sigma">Deviation: +0.15σ</span>
+          &nbsp;|&nbsp; Zero free parameters &nbsp;|&nbsp; CatAL
+          <span data-lean="fktt_coupling_bundle"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Key Points ═══ -->
+    <section class="lesson-section" id="key-points">
+      <h2>Key Points</h2>
+      <ul class="key-points">
+        <li>
+          GTE predicts n<sub>s</sub> = 1 − ln 2/(2π²) = 0.96488 from a four-step chain:
+          NAND binary entropy → Z₇ superselection → Weyl mode density → spectral index.
+          All 14 intermediate theorems are CatAL (zero sorry, zero axioms).
+          <span data-lean="n_s_formula"></span>
+        </li>
+        <li>
+          Planck 2018 measures n<sub>s</sub> = 0.9649 ± 0.0042. The GTE prediction deviates by
+          +0.004σ — the most precisely confirmed quantitative prediction in the GTE programme.
+        </li>
+        <li>
+          The MDL initial state predicts r = 0 (no primordial gravitational waves). LiteBIRD
+          and CMB-S4 can falsify this at σ<sub>r</sub> ≈ 0.001.
+        </li>
+        <li>
+          The baryon asymmetry η<sub>B</sub> = 6.109 × 10<sup>−10</sup> is derived from the
+          FKTT mechanism: BPS kink-top coupling ε<sub>FN</sub> = exp(−π/3), all CatAL.
+          Matches Planck 2018 + BBN at +0.15σ.
+        </li>
+      </ul>
+    </section>
+
+    <!-- ═══ See Also ═══ -->
+    <div class="see-also">
+      <h2>See Also</h2>
+      <div class="see-also-group">
+        <div class="see-also-label">Lean 4 proofs (ugp-lean)</div>
+        <ul class="source-list">
+          <li><code>rule110_center1_is_nand</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Gravity/CMBSpectralTilt.lean" target="_blank" rel="noopener">CMBSpectralTilt.lean ↗</a></li>
+          <li><code>z7_superselection_preserved_by_flat_metric</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Gravity/MinimalCoupling.lean" target="_blank" rel="noopener">MinimalCoupling.lean ↗</a></li>
+          <li><code>weyl_algebraic_miracle</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Gravity/CMBSpectralTilt.lean" target="_blank" rel="noopener">CMBSpectralTilt.lean ↗</a></li>
+          <li><code>n_s_formula</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Gravity/CMBSpectralTilt.lean" target="_blank" rel="noopener">CMBSpectralTilt.lean ↗</a></li>
+          <li><code>kink_top_coupling_eq_eps_FN</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Physics/FKTTCoupling.lean" target="_blank" rel="noopener">FKTTCoupling.lean ↗</a></li>
+          <li><code>fktt_coupling_bundle</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Physics/FKTTCoupling.lean" target="_blank" rel="noopener">FKTTCoupling.lean ↗</a></li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Source papers</div>
+        <ul class="source-list">
+          <li><a href="https://doi.org/10.5281/zenodo.20560550" target="_blank" rel="noopener">P48 — The Complete GTE Framework, Ch 9 (CMB and cosmology) ↗</a></li>
+          <li><a href="https://doi.org/10.5281/zenodo.20669138" target="_blank" rel="noopener">Tutorial: The CMB, Baryon Asymmetry, and Why There Was No Inflation (full PDF) ↗</a></li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Cross-links</div>
+        <ul class="source-list">
+          <li><a href="../L25_cosmological_constant/index.html" class="xref">L25: The Cosmological Constant — same PSC structure ↗</a></li>
+          <li><a href="../L27_defect_cosmology/index.html" class="xref">L27: Defect Cosmology — Z₇ domain walls in the early universe →</a></li>
+        </ul>
+      </div>
+    </div>
+
+  </main>
+
+  <div class="page-wrapper">
+    <footer class="lesson-footer">
+      <a href="../L25_cosmological_constant/index.html" class="nav-btn nav-btn--prev">← L25: The Cosmological Constant</a>
+      <a href="../L27_defect_cosmology/index.html" class="nav-btn nav-btn--next">L27: Defect Cosmology →</a>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js"></script>
+  <script src="../../common/interactive.js"></script>
+  <script src="../../common/nav.js"></script>
+  <script>
+    const LEAN_REFS = {
+      "rule110_center1_is_nand": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Gravity/CMBSpectralTilt.lean"
+      },
+      "z7_superselection_preserved_by_flat_metric": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Gravity/MinimalCoupling.lean"
+      },
+      "weyl_algebraic_miracle": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Gravity/CMBSpectralTilt.lean"
+      },
+      "n_s_formula": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Gravity/CMBSpectralTilt.lean"
+      },
+      "kink_top_coupling_eq_eps_FN": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Physics/FKTTCoupling.lean"
+      },
+      "fktt_coupling_bundle": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Physics/FKTTCoupling.lean"
+      }
+    };
+    document.addEventListener('DOMContentLoaded', () => {
+      autoRenderLeanBadges(LEAN_REFS);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L09: Why GF(7) — UGP Physics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="../../common/style.css">
+  <style>
+    /* ── Comparison table for candidates ───────────────────────────── */
+    .candidate-grid {
+      display: grid;
+      grid-template-columns: auto auto auto auto auto;
+      gap: 2px;
+      margin: 1.2rem 0;
+      border-radius: var(--r-md);
+      overflow: hidden;
+    }
+    .cg-cell {
+      background: var(--bg-elevated);
+      padding: 0.5rem 0.6rem;
+      font-size: 0.84rem;
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      border: 1px solid var(--stroke-secondary);
+    }
+    .cg-cell.cg-header { background: var(--bg-card); font-weight: 700; font-size: 0.72rem; color: var(--text-secondary); font-family: inherit; }
+    .cg-cell.cg-pass   { background: rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.3); color: var(--cert-lean); font-weight: 700; }
+    .cg-cell.cg-fail   { background: rgba(239,68,68,0.07); border-color: rgba(239,68,68,0.2); color: #F87171; }
+    .cg-cell.cg-win    { background: rgba(139,92,246,0.15); border-color: var(--accent); color: var(--accent); font-weight: 700; }
+
+    /* ── Subgroup diagram ───────────────────────────────────────────── */
+    .subgroup-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+    .sg-item {
+      background: var(--bg-elevated);
+      border: 1.5px solid var(--stroke-primary);
+      border-radius: var(--r-md);
+      padding: 0.6rem 0.4rem;
+      text-align: center;
+      font-size: 0.82rem;
+    }
+    .sg-item.sg-active { border-color: var(--accent); background: rgba(139,92,246,0.1); }
+    .sg-item .sg-name { font-weight: 700; color: var(--accent); font-size: 0.9rem; }
+    .sg-item .sg-elements { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem; }
+    .sg-item .sg-role { font-size: 0.68rem; color: var(--text-tertiary); margin-top: 0.25rem; }
+
+    /* ── MDL cost comparison ────────────────────────────────────────── */
+    .cost-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 0.5rem 0;
+    }
+    .cost-bar-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      min-width: 60px;
+      color: var(--text-secondary);
+    }
+    .cost-bar-track {
+      flex: 1;
+      height: 20px;
+      background: var(--bg-elevated);
+      border-radius: var(--r-full);
+      overflow: hidden;
+      position: relative;
+    }
+    .cost-bar-fill {
+      height: 100%;
+      border-radius: var(--r-full);
+      transition: width 0.5s ease;
+    }
+    .cost-bar-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      min-width: 60px;
+    }
+
+    /* ── Derivability checker ───────────────────────────────────────── */
+    .deriv-check {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin: 0.75rem 0;
+    }
+    .deriv-item {
+      padding: 0.3rem 0.6rem;
+      border-radius: var(--r-sm);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      border: 1px solid var(--stroke-primary);
+      background: var(--bg-elevated);
+    }
+    .deriv-item.di-pass { background: rgba(34,197,94,0.1); border-color: rgba(34,197,94,0.3); color: var(--cert-lean); }
+    .deriv-item.di-fail { background: rgba(239,68,68,0.07); border-color: rgba(239,68,68,0.2); color: #F87171; }
+
+    /* ── Ring elements display ──────────────────────────────────────── */
+    .ring-row {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 0.75rem 0;
+    }
+    .ring-el {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700; font-size: 0.9rem;
+      border: 2px solid var(--stroke-primary);
+      background: var(--bg-elevated);
+    }
+    .ring-el.re-z2 { border-color: #F59E0B; background: rgba(245,158,11,0.12); color: #F59E0B; }
+    .ring-el.re-z3 { border-color: #3B82F6; background: rgba(59,130,246,0.12); color: #3B82F6; }
+    .ring-el.re-both { border-color: var(--accent); background: rgba(139,92,246,0.15); color: var(--accent); }
+    .ring-el.re-gen { border-color: var(--stroke-primary); }
+  </style>
+</head>
+<body style="--path-current: var(--path-2)" data-path="2" data-lesson="2" data-total="4">
+
+  <header class="site-header">
+    <a href="../../index.html" class="site-logo">UGP Physics</a>
+    <nav class="breadcrumb">
+      <a href="../../index.html">Tutorial Series</a>
+      <span class="bc-sep">›</span>
+      <a href="../index.html">Path 2: Selection</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">L09: Why GF(7)</span>
+    </nav>
+  </header>
+
+  <main class="page-wrapper">
+
+    <!-- ═══ Lesson Header ═══ -->
+    <div class="lesson-header">
+      <div class="path-label">Path 2 — Selection · Lesson 9 of 11</div>
+      <h1>Why GF(7): The Minimal Prime Theorem</h1>
+      <p class="lesson-subtitle">
+        The alphabet size is not a free parameter — it is forced. 
+        Every prime smaller than 7 fails an explicit test. 
+        7 is the unique minimal prime where chirality and color are both derivable at zero extra cost.
+      </p>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:50%"></div>
+      </div>
+    </div>
+
+    <!-- ═══ Section 1: Two Questions ═══ -->
+    <section class="lesson-section" id="two-questions">
+      <h2>Two Questions, Answered in Sequence</h2>
+      <p>
+        The full MDL selection breaks into two questions:
+      </p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.25rem 0">
+        <div class="card">
+          <div class="card-header" style="color:var(--text-secondary)">Question 1</div>
+          <div class="card-body">
+            <strong>Which alphabet family?</strong>
+            <p style="font-size:0.88rem;margin-top:0.4rem;color:var(--text-secondary)">
+              Which prime p gives the smallest field GF(p) where 
+              all necessary symmetry groups are algebraically derivable?
+            </p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header" style="color:var(--text-secondary)">Question 2</div>
+          <div class="card-body">
+            <strong>Which rule within that family?</strong>
+            <p style="font-size:0.88rem;margin-top:0.4rem;color:var(--text-secondary)">
+              Among all GF(p) rules consistent with the orbit data, 
+              which one does the interpolation select?
+            </p>
+          </div>
+        </div>
+      </div>
+      <p>
+        <a href="../L08_mdl_selection/index.html" class="xref">L08</a> answered Question 2 — the orbit interpolation picks 
+        <code>p = C+R−CR−LCR</code>. This lesson answers Question 1: why p = 7.
+      </p>
+    </section>
+
+    <!-- ═══ Section 2: The Derivability Criterion ═══ -->
+    <section class="lesson-section" id="derivability">
+      <h2>The Derivability Criterion</h2>
+      <p>
+        MDL selects the shortest description. So the right question is: which field allows 
+        the necessary physical symmetry groups to be described for <em>free</em>, without 
+        extra axioms?
+      </p>
+
+      <h3>What "derivable" means</h3>
+      <p>
+        A cyclic group ℤ_M is <strong>algebraically derivable</strong> from the field GF(p) 
+        if ℤ_M is isomorphic to a subgroup of the multiplicative group GF(p)* — the set of 
+        nonzero field elements under multiplication.
+      </p>
+      <div class="callout callout--neutral">
+        <div class="callout-title">Why this matters for MDL cost</div>
+        <p>
+          When ℤ_M is derivable from GF(p), color rotations by M steps are already 
+          implemented by multiplication by existing field elements. No new axioms needed — 
+          zero extra bits.
+        </p>
+        <p>
+          When ℤ_M is <em>not</em> derivable, the theory must specify a separate multiplication 
+          table for the color group. That costs at least ⌈log₂ M⌉ extra bits per generation.
+        </p>
+      </div>
+      <p>
+        By Lagrange's theorem, GF(p)* has order p−1. For ℤ_M to be derivable, M must divide p−1.
+      </p>
+
+      <h3>Which groups must be derivable?</h3>
+      <p>The Standard Model requires two non-trivial symmetry groups to emerge:</p>
+      <div class="deriv-check">
+        <div class="deriv-item">ℤ₂ — chirality / weak-isospin parity</div>
+        <div class="deriv-item">ℤ₃ — QCD color charge</div>
+      </div>
+      <p>
+        For both to be derivable at zero cost, we need both 2 | (p−1) and 3 | (p−1), 
+        i.e. 6 | (p−1). The smallest prime p satisfying this is p = 7, since 7−1 = 6.
+      </p>
+    </section>
+
+    <!-- ═══ Section 3: Prime-by-prime elimination ═══ -->
+    <section class="lesson-section" id="elimination">
+      <h2>Prime-by-Prime Elimination</h2>
+      <p>
+        There are only four primes to check below 7. Each fails explicitly:
+      </p>
+
+      <div class="candidate-grid" id="candidate-table">
+        <div class="cg-cell cg-header">Prime p</div>
+        <div class="cg-cell cg-header">GF(p)* ≅</div>
+        <div class="cg-cell cg-header">2 | p−1?</div>
+        <div class="cg-cell cg-header">3 | p−1?</div>
+        <div class="cg-cell cg-header">Verdict</div>
+
+        <div class="cg-cell">2</div>
+        <div class="cg-cell">ℤ₁ (trivial)</div>
+        <div class="cg-cell cg-fail">No</div>
+        <div class="cg-cell cg-fail">No</div>
+        <div class="cg-cell cg-fail">Fails both</div>
+
+        <div class="cg-cell">3</div>
+        <div class="cg-cell">ℤ₂</div>
+        <div class="cg-cell cg-pass">Yes</div>
+        <div class="cg-cell cg-fail">No</div>
+        <div class="cg-cell cg-fail">Fails ℤ₃</div>
+
+        <div class="cg-cell">5</div>
+        <div class="cg-cell">ℤ₄</div>
+        <div class="cg-cell cg-pass">Yes</div>
+        <div class="cg-cell cg-fail">No</div>
+        <div class="cg-cell cg-fail">Fails ℤ₃</div>
+
+        <div class="cg-cell cg-win">7</div>
+        <div class="cg-cell cg-win">ℤ₆ ≅ ℤ₂×ℤ₃</div>
+        <div class="cg-cell cg-pass">Yes</div>
+        <div class="cg-cell cg-pass">Yes</div>
+        <div class="cg-cell cg-win">Passes both ✓</div>
+      </div>
+
+      <p>
+        The key insight about GF(5): 5−1 = 4. Since 3 does not divide 4, 
+        there is no 3-element subgroup in GF(5)*. Color charge cannot be derived from GF(5) — 
+        it must be specified as an additional axiom.
+      </p>
+
+      <p>
+        GF(7)*: since 7−1 = 6 = 2×3, the multiplicative group ℤ₆ automatically contains 
+        both ℤ₂ and ℤ₃ as subgroups. Both symmetries come for free.
+      </p>
+    </section>
+
+    <!-- ═══ Section 4: The internal structure of GF(7)* ═══ -->
+    <section class="lesson-section" id="internal-structure">
+      <h2>The Internal Structure of GF(7)*</h2>
+      <p>
+        The six nonzero elements of GF(7) are {1, 2, 3, 4, 5, 6}. Under multiplication mod 7, 
+        they form a cyclic group of order 6 with this subgroup structure:
+      </p>
+
+      <div class="subgroup-grid">
+        <div class="sg-item">
+          <div class="sg-name">ℤ₁</div>
+          <div class="sg-elements">{1}</div>
+          <div class="sg-role">Identity</div>
+        </div>
+        <div class="sg-item sg-active" style="border-color:#F59E0B;background:rgba(245,158,11,0.1)">
+          <div class="sg-name" style="color:#F59E0B">ℤ₂</div>
+          <div class="sg-elements">{1, 6}</div>
+          <div class="sg-role">Chirality / weak parity</div>
+        </div>
+        <div class="sg-item sg-active" style="border-color:#3B82F6;background:rgba(59,130,246,0.1)">
+          <div class="sg-name" style="color:#3B82F6">ℤ₃</div>
+          <div class="sg-elements">{1, 2, 4}</div>
+          <div class="sg-role">QCD color charge</div>
+        </div>
+        <div class="sg-item sg-active">
+          <div class="sg-name">ℤ₆</div>
+          <div class="sg-elements">{1,2,3,4,5,6}</div>
+          <div class="sg-role">Full mult. group</div>
+        </div>
+      </div>
+
+      <p>You can verify the subgroup structure by direct multiplication mod 7:</p>
+
+      <div class="tabs" id="subgroup-tabs">
+        <div class="tab-bar">
+          <button class="tab-btn">ℤ₂ subgroup</button>
+          <button class="tab-btn">ℤ₃ subgroup</button>
+          <button class="tab-btn">All elements</button>
+        </div>
+        <div class="tab-panel">
+          <p>The elements {1, 6} form the ℤ₂ subgroup under multiplication mod 7:</p>
+          <div class="example-box">
+            <div class="example-header">ℤ₂ = {1, 6} — chirality group</div>
+            <p style="font-family:'JetBrains Mono',monospace;margin:0;font-size:0.88rem">
+              1 × 1 = 1 &nbsp;(mod 7) → stays in {1, 6}<br>
+              1 × 6 = 6 &nbsp;(mod 7) → stays in {1, 6}<br>
+              6 × 6 = 36 = 1 (mod 7) → stays in {1, 6}<br><br>
+              Note: 6 ≡ −1 (mod 7). So {1, −1} is the chirality pair.
+            </p>
+          </div>
+          <div class="ring-row">
+            <div class="ring-el">0</div>
+            <div class="ring-el re-z2">1</div>
+            <div class="ring-el">2</div>
+            <div class="ring-el">3</div>
+            <div class="ring-el">4</div>
+            <div class="ring-el">5</div>
+            <div class="ring-el re-z2">6</div>
+          </div>
+          <p class="small" style="text-align:center">Yellow = ℤ₂ subgroup elements in GF(7)</p>
+        </div>
+        <div class="tab-panel">
+          <p>The elements {1, 2, 4} form the ℤ₃ subgroup under multiplication mod 7:</p>
+          <div class="example-box">
+            <div class="example-header">ℤ₃ = {1, 2, 4} — color group</div>
+            <p style="font-family:'JetBrains Mono',monospace;margin:0;font-size:0.88rem">
+              2¹ = 2 &nbsp;(mod 7)<br>
+              2² = 4 &nbsp;(mod 7)<br>
+              2³ = 8 = 1 (mod 7) → cycle closes<br><br>
+              The generator is 2. Cycle: 1 → 2 → 4 → 1 (period 3).
+            </p>
+          </div>
+          <div class="ring-row">
+            <div class="ring-el">0</div>
+            <div class="ring-el re-z3">1</div>
+            <div class="ring-el re-z3">2</div>
+            <div class="ring-el">3</div>
+            <div class="ring-el re-z3">4</div>
+            <div class="ring-el">5</div>
+            <div class="ring-el">6</div>
+          </div>
+          <p class="small" style="text-align:center">Blue = ℤ₃ subgroup elements in GF(7)</p>
+        </div>
+        <div class="tab-panel">
+          <p>GF(7)* is cyclic with generator 3 (verify: 3¹=3, 3²=2, 3³=6, 3⁴=4, 3⁵=5, 3⁶=1):</p>
+          <div class="ring-row">
+            <div class="ring-el">0</div>
+            <div class="ring-el re-both">1</div>
+            <div class="ring-el re-z3">2</div>
+            <div class="ring-el re-gen">3</div>
+            <div class="ring-el re-z3">4</div>
+            <div class="ring-el re-gen">5</div>
+            <div class="ring-el re-z2">6</div>
+          </div>
+          <p class="small" style="text-align:center">
+            Violet = both subgroups (element 1) · Blue = ℤ₃ only · Yellow = ℤ₂ only · Gray = generator elements
+          </p>
+          <p>
+            No other prime below 13 (the next prime with 6 | p−1) has this structure. 
+            GF(7) is the unique minimal solution.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 5: MDL cost comparison ═══ -->
+    <section class="lesson-section" id="mdl-cost">
+      <h2>The MDL Cost Comparison</h2>
+      <p>
+        Here is what happens to the description length if you try to use GF(5) instead of GF(7):
+      </p>
+
+      <h3>GF(5) — color not derivable</h3>
+      <p>
+        GF(5)* ≅ ℤ₄. There is no 3-element subgroup. To get color symmetry ℤ₃, 
+        you must specify it as an additional external structure — with its own multiplication table 
+        of 9 entries (a 3×3 table, each entry from {0,1,2}):
+      </p>
+      <div class="cost-bar">
+        <div class="cost-bar-label">GF(5)</div>
+        <div class="cost-bar-track">
+          <div class="cost-bar-fill" style="width:85%;background:#EF4444"></div>
+        </div>
+        <div class="cost-bar-num">field + ⌈log₂3⌉ extra bits per gen</div>
+      </div>
+
+      <h3>GF(7) — both derivable</h3>
+      <p>
+        GF(7)* ≅ ℤ₆. Both ℤ₂ and ℤ₃ are subgroups. No external specification needed:
+      </p>
+      <div class="cost-bar">
+        <div class="cost-bar-label">GF(7)</div>
+        <div class="cost-bar-track">
+          <div class="cost-bar-fill" style="width:52%;background:var(--cert-lean)"></div>
+        </div>
+        <div class="cost-bar-num">field only — zero extra</div>
+      </div>
+
+      <div class="callout callout--success" style="margin-top:1.5rem">
+        <div class="callout-title">The MDL Uniqueness Theorem</div>
+        <p>
+          GF(7) is the unique smallest field where both ℤ₂ (chirality) and ℤ₃ (color) 
+          are algebraically derivable as subgroups of the multiplicative group. 
+          Any field with a smaller prime incurs a strictly positive MDL penalty 
+          for color. Machine-certified:
+        </p>
+        <p>
+          <span data-lean="mdl_total_z7z3_strictly_beats_z5z3"></span>
+          &nbsp;
+          <span data-lean="multiplicative_substructure_embeddable_iff"></span>
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══ Section 6: Why not larger primes ═══ -->
+    <section class="lesson-section" id="larger">
+      <h2>Why Not a Larger Prime?</h2>
+      <p>
+        GF(13) also satisfies 6 | (13−1) = 12 — so ℤ₂ and ℤ₃ are both derivable there too. 
+        Why doesn't MDL choose GF(13)?
+      </p>
+      <p>
+        The answer is raw description cost. The alphabet size contributes directly to the 
+        description length:
+      </p>
+      <ul style="margin:0.75rem 0 0.75rem 1.5rem;line-height:2">
+        <li>GF(7): specifying the prime 7 costs ⌈log₂7⌉ = 3 bits</li>
+        <li>GF(13): specifying the prime 13 costs ⌈log₂13⌉ = 4 bits — one extra bit</li>
+        <li>GF(19): specifying 19 costs ⌈log₂19⌉ = 5 bits — two extra bits</li>
+      </ul>
+      <p>
+        The orbit classification (3 lepton generations, not 12 or 18) is also unique to GF(7): 
+        the PSC filter on GF(7) yields exactly 3 non-vacuum orbit types. Larger primes produce 
+        different orbit structures that do not match the three-generation pattern without 
+        additional tuning — which again costs extra bits.
+      </p>
+      <div class="callout callout--neutral">
+        <div class="callout-title">The exhaustive machine check</div>
+        <p>
+          The MDL Uniqueness Theorem is proved by exhaustive machine-verification over all 
+          3125 = 5⁵ Z₅×Z₃ neighborhood states, confirming that Z₇×Z₃ beats Z₅×Z₃ 
+          in total description cost. No Lean-formalized competitor produces a shorter description.
+        </p>
+        <p><span data-lean="mdl_total_z7z3_strictly_beats_z5z3"></span></p>
+      </div>
+    </section>
+
+    <!-- ═══ Section 7: What GF(7) certifies that Rule 110 alone cannot ═══ -->
+    <section class="lesson-section" id="beyond-rule110">
+      <h2>What GF(7) Certifies That Rule 110 Alone Cannot</h2>
+      <p>
+        Rule 110 is the binary restriction of the GTE polynomial — what you get when you 
+        plug in only 0s and 1s. It certifies one important thing: 
+        <strong>Turing universality</strong>. The substrate can compute anything. 
+        But Turing universality covers only 8 of the 19 bits. 
+        The remaining 11 bits — the GF(7) field structure — are needed to certify five 
+        things that a binary (2-state) system cannot even express.
+      </p>
+
+      <div class="callout callout--info">
+        <div class="callout-title">Why 19 bits and not 8?</div>
+        <p>A binary CA rule is fully specified by 8 bits — its truth table on {0,1}³ inputs.
+        Rule 110 taken alone costs only 8 bits. But Rule 110 alone certifies <em>only</em>
+        Turing universality. It cannot certify particle generations, charge quantization, 
+        color charge, chirality, or baryon number. Here is what each extra layer adds:</p>
+        <ol style="margin:0.75rem 0 0.75rem 1.5rem;line-height:2.1">
+          <li>
+            <strong>Generation arithmetic.</strong> The GTE orbit {73, 42, 275} lives in GF(7): 
+            you need 7 states to track the winding numbers across the three generations. 
+            A binary system has no way to represent the three distinct orbit types — it 
+            collapses them all to a single class.
+          </li>
+          <li>
+            <strong>Fractional electric charge.</strong> Charges like 1/3 and 2/3 arise from 
+            ℤ₇ winding ratios in the multiplicative group GF(7)*. A binary field produces 
+            only charges mod 2 — no fractional values.
+          </li>
+          <li>
+            <strong>Color charge (ℤ₃).</strong> The strong force's SU(3) color symmetry comes 
+            from the Sylow-3 subgroup of GF(7)* ≅ ℤ₆. There is no ℤ₃ subgroup in any 
+            binary field — GF(2)* is trivial.
+          </li>
+          <li>
+            <strong>Chirality (V−A).</strong> The left-handed asymmetry of the weak interaction 
+            is a GF(7) orbit property: the chiral ℤ₂ subgroup {1, 6} ⊂ GF(7)* distinguishes 
+            forward from mirror orbits. Binary systems are symmetric under all reflections.
+          </li>
+          <li>
+            <strong>Baryon number.</strong> Baryon number is conserved because of a ℤ₇ winding 
+            conservation law on the GTE orbit. It is not definable in a 2-state field, 
+            which has no non-trivial winding structure.
+          </li>
+        </ol>
+        <p style="margin-top:0.5rem">
+          Rule 110 is the <em>binary shadow</em> of the polynomial — what you see when 
+          you restrict to {0,1} inputs. The polynomial is primary; Rule 110 is the shadow 
+          it casts on the 8-corner subspace of the full {0,…,6}³ input domain.
+        </p>
+      </div>
+
+      <p>
+        This is the key upgrade GF(7) provides over any binary substrate: a 2-state system
+        can be computationally universal, but computational universality alone does not explain
+        why the universe has three generations, quarks with color, or left-handed neutrinos.
+        Those structures require the algebraic richness of a 7-state field. The GTE polynomial
+        is the unique compact specification that packages all of it in 19 bits.
+      </p>
+    </section>
+
+    <!-- ═══ Key Takeaways ═══ -->
+    <section class="lesson-section" id="takeaways">
+      <h2>Key Takeaways</h2>
+      <ul class="takeaway-list">
+        <li>
+          The alphabet size (7 states) is not chosen — it is forced by MDL's requirement 
+          that all necessary symmetry groups be derivable at zero extra description cost.
+        </li>
+        <li>
+          The key condition: ℤ_M is derivable from GF(p) if and only if M divides p−1. 
+          For both ℤ₂ (chirality) and ℤ₃ (color) to be derivable, we need 6 | (p−1). 
+          The smallest such prime is p = 7.
+        </li>
+        <li>
+          Every prime smaller than 7 fails an explicit test:
+          p=2 fails both; p=3 has no color; p=5 has no color (4 is not divisible by 3).
+        </li>
+        <li>
+          GF(7)* ≅ ℤ₆ ≅ ℤ₂ × ℤ₃. The subgroups {1,6} (chirality) and {1,2,4} (color) 
+          come for free with no additional axioms.
+        </li>
+        <li>
+          The MDL Uniqueness Theorem is machine-certified:
+          <span data-lean="mdl_total_z7z3_strictly_beats_z5z3"></span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ═══ See Also ═══ -->
+    <div class="see-also">
+      <h2>See Also</h2>
+      <div class="see-also-group">
+        <div class="see-also-label">Lean 4 proofs (ugp-lean)</div>
+        <ul class="source-list">
+          <li><code>mdl_total_z7z3_strictly_beats_z5z3</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/MDLDerivabilityCriterion.lean" target="_blank" rel="noopener">view on GitHub ↗</a></li>
+          <li><code>multiplicative_substructure_embeddable_iff</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/MDLDerivabilityCriterion.lean" target="_blank" rel="noopener">view on GitHub ↗</a></li>
+          <li><code>derivable_cost_lt_non_derivable</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/MDLDerivabilityCriterion.lean" target="_blank" rel="noopener">view on GitHub ↗</a></li>
+          <li><code>external_subgroup_penalty_pos</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/MDLDerivabilityCriterion.lean" target="_blank" rel="noopener">view on GitHub ↗</a></li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Source papers</div>
+        <ul class="source-list">
+          <li><a href="https://doi.org/10.5281/zenodo.20560550" target="_blank" rel="noopener">P48 — The Complete GTE Framework, Ch. 4 ↗</a></li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Full tutorial (PDF)</div>
+        <ul class="source-list">
+          <li><a href="https://doi.org/10.5281/zenodo.20657876" target="_blank" rel="noopener">How MDL Selects the 19-Bit Polynomial — UGP Tutorial Series ↗</a></li>
+        </ul>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ═══ Lesson Footer Navigation ═══ -->
+  <div class="page-wrapper">
+    <footer class="lesson-footer">
+      <a href="../L08_mdl_selection/index.html" class="nav-btn nav-btn--prev">← L08: MDL Selection</a>
+      <a href="../L10_19bit_accounting/index.html" class="nav-btn nav-btn--next">L10: 19-Bit Accounting →</a>
+    </footer>
+  </div>
+
+  <!-- Math -->
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})">
+  </script>
+
+  <script src="../../common/interactive.js"></script>
+  <script src="../../common/nav.js"></script>
+  <script>
+    const LEAN_REFS = {
+      "mdl_total_z7z3_strictly_beats_z5z3": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/MDLDerivabilityCriterion.lean"
+      },
+      "multiplicative_substructure_embeddable_iff": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/MDLDerivabilityCriterion.lean"
+      },
+      "derivable_cost_lt_non_derivable": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/MDLDerivabilityCriterion.lean"
+      },
+      "external_subgroup_penalty_pos": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/MDLDerivabilityCriterion.lean"
+      }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      tabSwitch('subgroup-tabs');
+      autoRenderLeanBadges(LEAN_REFS);
+    });
+  </script>
+</body>
+</html>

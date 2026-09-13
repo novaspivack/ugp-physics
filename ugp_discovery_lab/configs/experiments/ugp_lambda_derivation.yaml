@@ -1,0 +1,38 @@
+experiment:
+  name: ugp_lambda_derivation
+  description: "Derives the cosmological constant from UGP's holographic information curvature framework using MDL bit counting and holographic mapping (Phase 10.1, Round 10)."
+  inputs:
+    # This experiment uses theoretical calculations, not external data files
+    runs:
+      - "foundational_validation_results.json"  # For consistency with framework
+  analysis:
+    # MDL encoder configurations
+    mdl_encoders:
+      - "coarse_residual"    # 8 bits: OS-residual after gauge quotient
+      - "fine_structural"    # 118 bits: Pre-quotient longhand encoding
+      - "inferred"          # 9.382 bits: Exact match for observations
+    
+    # H0 range for calculations (km/s/Mpc)
+    h0_range: [64.0, 67.4, 70.0, 73.0, 76.0]
+    
+    # Cosmological parameters
+    omega_lambda: 0.69      # Dark energy density parameter
+    speed_of_light: 299792458.0  # m/s
+    
+    # Validation parameters
+    validation_tolerance: 1e-6    # For perfect match detection
+    physical_bounds:
+      lambda_min: 1e-60          # Minimum reasonable Λ
+      lambda_max: 1e-50          # Maximum reasonable Λ
+  
+  report:
+    export_md: true
+    export_json: true
+    plots: true  # Generate Λ vs H0 and Pred/Obs ratio plots
+    csv_export: true  # Export detailed results table
+  
+  integrity:
+    fail_on_warning: true
+    require_real_data: false  # This is a theoretical derivation
+    validate_physical_bounds: true
+    check_de_sitter_limit: true

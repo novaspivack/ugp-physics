@@ -1,0 +1,54 @@
+# 3D Phi_MDL spherical kink loop experiment.
+# Inserts a closed spherical domain wall of radius R=10 in a 64^3 grid
+# and lets it evolve for 200 steps.
+
+model: phimdl_3d
+params:
+  Nx: 64
+  Ny: 64
+  Nz: 64
+  dx: 1.0
+  dt: 0.01
+  c: 1.0
+  m: 0.5
+  g: 0.5
+  N_phi: 7
+  N_chi: 3
+
+steps: 200
+sample_every: 20
+
+initial_condition:
+  kind: vacuum
+
+injections:
+  - kind: spherical_kink
+    params:
+      R: 10.0
+
+measurements:
+  - binding_energy
+
+output:
+  data: phimdl_3d_spherical.json
+  figures:
+    - type: field_3d_three_slice
+      file: phimdl_3d_spherical_slices.png
+      params:
+        title: "Phi_MDL 3D — spherical kink loop, three axis-aligned slices"
+    - type: field_3d_volumetric
+      file: phimdl_3d_spherical_volume.png
+      params:
+        title: "Phi_MDL 3D — alpha-blended volumetric ray cast"
+        n_samples: 96
+        azim: 35.0
+        elev: 22.0
+    - type: field_3d_isosurface
+      file: phimdl_3d_spherical_isosurface.png
+      params:
+        title: "Phi_MDL 3D — marching-cubes isosurface (domain wall)"
+        iso_level: 0.0
+    - type: energy
+      file: phimdl_3d_spherical_energy.png
+      params:
+        title: "Total energy E(t) — spherical kink loop relaxation"

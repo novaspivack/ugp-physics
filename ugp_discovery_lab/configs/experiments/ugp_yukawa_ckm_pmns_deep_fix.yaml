@@ -1,0 +1,112 @@
+# Configuration for Deep Structural Fix Implementation
+# Integrates real Discovery Engine physics with proper ILR and seesaw implementation
+
+experiment:
+  name: ugp_yukawa_ckm_pmns_deep_fix
+  description: "Deep structural fix for UGP Yukawa/CKM/PMNS with real Discovery Engine physics integration"
+  inputs:
+    runs:
+      - "canonical_gte_triples.json"  # Uses canonical GTE triples
+
+# Deep Fix Configuration
+deep_fixes:
+  real_seesaw_integration: true
+  proper_ilr_implementation: true
+  claims_gate_validation: true
+  optimized_hm_constant: true
+
+# HM Normalization (optimized from testing)
+hm_normalization_constant: 3.0  # Best performing constant from systematic testing
+
+# Neutrino Physics Configuration
+neutrino_physics:
+  model: "majorana"  # "majorana" or "dirac"
+  ilr_enabled: true
+  real_seesaw_enabled: true
+  
+  # ILR Mapping (canonical n → constructible n')
+  ilr_mapping:
+    electron_neutrino: 10  # n=1 → n'=10
+    muon_neutrino: 12      # n=5 → n'=12
+    tau_neutrino: 16       # n=9 → n'=16
+  
+  # Seesaw Parameters (Discovery Engine standard)
+  seesaw_parameters:
+    sum_mnu_meV: 60.0
+    ordering: "NO"  # Normal ordering
+    n_set: [10, 12, 16]  # ILR mapped constructible n-values
+    mu_pattern: [1, 1, -1]  # Standard mu pattern
+  
+  # PDG Scaling Factors (for real seesaw integration)
+  pdg_scaling_factors:
+    electron_neutrino: 1770.0
+    muon_neutrino: 1036000.0
+    tau_neutrino: 358800.0
+
+# Options
+options:
+  down_sector_permutation_policy: "optimize"  # "optimize" (scan 6 perms) or "fixed"
+  down_sector_perm_fixed: [0, 1, 2]  # used only if policy == "fixed"
+  pdg_targets_ckm: [0.2245, 0.041, 0.00365]  # |Vus|, |Vcb|, |Vub| for score logging
+
+# PDG Experimental Targets for comparison
+pdg_targets:
+  # CKM mixing elements
+  Vus: 0.2245
+  Vcb: 0.041
+  Vub: 0.00365
+  # PMNS mixing angles (degrees)
+  theta12: 33.44  # Solar mixing angle
+  theta13: 8.57    # Reactor mixing angle  
+  theta23: 49.2    # Atmospheric mixing angle
+
+# Claims-Gate Configuration
+claims_gate:
+  enabled: true
+  stages:
+    - "independent_derivations"
+    - "persistence_cv"
+    - "null_surrogates"
+  significance_threshold: 0.01
+  stability_threshold: 0.7
+  null_surrogate_threshold: 0.05
+
+# Analysis parameters
+analysis:
+  face_weights_calculation: "harmonic_mean_with_optimized_normalization"
+  sector_weights_calculation: "delta_squared"
+  face_metric: "quarter_lock_adjacency"
+  phase_source: "kernel_generational"
+  pdg_ordering: true
+  ilr_physics_preservation: true
+
+# Output configuration
+output:
+  save_matrices: true
+  save_angles: true
+  save_eigenvalues: true
+  save_vectors: true
+  save_permutation_choice: true
+  save_seesaw_integration_details: true
+  save_ilr_usage_details: true
+  save_claims_gate_results: true
+  save_experimental_errors: true
+  format: "json"
+
+# Validation
+validation:
+  unitary_check: true
+  pdg_ordering_check: true
+  eigenvalue_ordering: true
+  jarlskog_invariant_check: true
+  experimental_error_calculation: true
+  seesaw_physics_validation: true
+  ilr_physics_validation: true
+  claims_gate_validation: true
+
+# Performance monitoring
+performance:
+  track_seesaw_integration_time: true
+  track_ilr_construction_time: true
+  track_claims_gate_time: true
+  enable_detailed_logging: true

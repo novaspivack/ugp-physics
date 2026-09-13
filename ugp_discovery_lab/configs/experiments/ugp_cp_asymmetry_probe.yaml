@@ -1,0 +1,33 @@
+experiment:
+  name: ugp_cp_asymmetry_probe
+  description: "UGP → CP Violation → Matter–Antimatter Asymmetry Probe"
+  inputs:
+    runs:
+      - "canonical_gte_triples.json"
+
+options:
+  # UGP kernel constants (fixed by theory)
+  kernel:
+    phi: 1.618033988749895  # golden ratio
+    k_gen: 1.5707963267948966  # π/2
+  
+  # UGP phase test configuration (discrete, no fitting)
+  ugp_phase_tests:
+    majorana_phase_fraction: [1.0, 0.5, 0.0]  # discrete fractions for Majorana phase
+    signs: [+1, -1]  # discrete sign choices
+  
+  # Optional: explicit input matrices (usually provided via producer)
+  inputs:
+    V_ckm: null  # CKM mixing matrix (3x3 complex)
+    U_pmns: null  # PMNS mixing matrix (3x3 complex)
+    M_eff: null   # Effective neutrino mass matrix (3x3 complex symmetric)
+
+# Run configuration
+run:
+  output_dir: "UGP_discovery_lab_runs"
+  save_artifacts: true
+  artifacts:
+    - "cp_probe_report.json"
+    - "jarlskog_analysis.json"
+    - "phase_test_results.json"
+    - "leptogenesis_proxy.json"

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L28: The Hierarchy Problem Dissolved — UGP Physics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="../../common/style.css">
+  <style>
+    .scale-vis {
+      display: flex; align-items: center; gap: 0; margin: 1.25rem 0;
+      border: 1px solid var(--stroke-primary); border-radius: var(--r-md); overflow: hidden;
+    }
+    .scale-seg {
+      flex: 1; padding: 0.75rem 0.5rem; text-align: center; font-size: 0.8rem;
+      border-right: 1px solid var(--stroke-primary);
+    }
+    .scale-seg:last-child { border-right: none; }
+    .scale-seg.ew { background: rgba(249,115,22,0.12); }
+    .scale-seg.pl { background: rgba(239,68,68,0.12); }
+    .scale-seg .sv-val { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; font-weight: 700; }
+    .scale-seg .sv-lbl { font-size: 0.7rem; color: var(--text-secondary); }
+    .poly-demo {
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--bg-elevated); border: 1px solid var(--stroke-primary);
+      border-radius: var(--r-md); padding: 1.25rem; margin: 1rem 0;
+    }
+    .poly-step { color: var(--text-secondary); font-size: 0.875rem; margin: 0.3rem 0; }
+    .poly-step .highlight { color: var(--accent); font-weight: 700; }
+    .result-card {
+      background: rgba(249,115,22,0.08); border: 2px solid var(--accent);
+      border-radius: var(--r-md); padding: 1.25rem 1.5rem; margin: 1.25rem 0;
+    }
+    .rc-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--accent); margin-bottom: 0.6rem; }
+    .rc-eq { font-size: 1.4rem; font-weight: 700; text-align: center;
+      color: var(--text-primary); padding: 0.5rem 0; }
+    .rc-detail { font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.4rem; }
+    .comparison-row {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 0.75rem; margin: 1rem 0;
+    }
+    .cmp-box { background: var(--bg-elevated); border: 1px solid var(--stroke-secondary);
+      border-radius: var(--r-md); padding: 0.875rem; text-align: center; }
+    .cmp-box.cmp-bad { border-color: #EF4444; }
+    .cmp-box.cmp-good { border-color: #22C55E; }
+    .cmp-head { font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.05em; color: var(--text-tertiary); margin-bottom: 0.4rem; }
+    .cmp-verdict { font-size: 0.85rem; }
+    .cmp-bad .cmp-verdict { color: #EF4444; }
+    .cmp-good .cmp-verdict { color: #22C55E; }
+  </style>
+</head>
+<body style="--path-current: var(--path-7)">
+
+  <header class="site-header">
+    <a href="../../index.html" class="site-logo">UGP Physics</a>
+    <nav class="breadcrumb">
+      <a href="../../index.html">Tutorial Series</a>
+      <span class="bc-sep">›</span>
+      <a href="../index.html">Path 7: Cosmology</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">L28: The Hierarchy Problem Dissolved</span>
+    </nav>
+  </header>
+
+  <main class="page-wrapper">
+
+    <div class="lesson-header">
+      <div class="path-label">Path 7 — Cosmology · Lesson 4 of 4</div>
+      <h1>The Hierarchy Problem Dissolved</h1>
+      <p class="lesson-subtitle">
+        Why x² + x − 1 = 0 has a root at the golden ratio — and why that root
+        is the Higgs VEV. The GTE polynomial's diagonal fixed point replaces
+        fine-tuning with arithmetic.
+      </p>
+      <div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div>
+    </div>
+
+    <!-- ═══ Section 1: The Problem ═══ -->
+    <section class="lesson-section" id="the-problem">
+      <h2>The Hierarchy Problem</h2>
+
+      <p>
+        The Higgs boson weighs 125 GeV. The Planck scale — where quantum gravity
+        becomes important — is at 10<sup>19</sup> GeV. That is 17 orders of magnitude apart.
+      </p>
+
+      <div class="scale-vis">
+        <div class="scale-seg ew">
+          <div class="sv-val">125 GeV</div>
+          <div class="sv-lbl">Higgs mass</div>
+        </div>
+        <div class="scale-seg ew">
+          <div class="sv-val">246 GeV</div>
+          <div class="sv-lbl">Higgs VEV</div>
+        </div>
+        <div class="scale-seg" style="flex:3;">
+          <div class="sv-val" style="color:var(--text-tertiary)">— — — — — 17 orders of magnitude — — — — —</div>
+          <div class="sv-lbl">the "naturalness desert"</div>
+        </div>
+        <div class="scale-seg pl">
+          <div class="sv-val">10<sup>19</sup> GeV</div>
+          <div class="sv-lbl">Planck scale</div>
+        </div>
+      </div>
+
+      <p>
+        The problem: quantum field theory predicts that the Higgs mass receives
+        quantum corrections proportional to the highest energy scale in the theory.
+        If the Standard Model is valid to the Planck scale:
+      </p>
+
+      <div class="callout callout--warn">
+        <strong>The fine-tuning:</strong> δm<sub>H</sub>² ~ Λ<sub>UV</sub>²/(16π²) ≈ (10<sup>18</sup> GeV)².
+        To get m<sub>H</sub> = 125 GeV, the bare mass and quantum corrections must cancel
+        to 32 decimal places. Two enormous numbers, each of order 10<sup>36</sup> GeV²,
+        cancel to give 10<sup>4</sup> GeV². The Standard Model has no explanation for this.
+      </div>
+
+      <div class="comparison-row">
+        <div class="cmp-box cmp-bad">
+          <div class="cmp-head">Supersymmetry</div>
+          <div class="cmp-verdict">No sparticles found at LHC up to ~2 TeV. Increasingly fine-tuned.</div>
+        </div>
+        <div class="cmp-box cmp-bad">
+          <div class="cmp-head">Extra dimensions</div>
+          <div class="cmp-verdict">No evidence of extra dimensions. Planck-scale deviations from GR: not seen.</div>
+        </div>
+        <div class="cmp-box cmp-good">
+          <div class="cmp-head">GTE: SRRG fixed point</div>
+          <div class="cmp-verdict">The electroweak scale is the polynomial's own fixed point. No cancellation needed.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 2: The GTE Polynomial on the Diagonal ═══ -->
+    <section class="lesson-section" id="diagonal">
+      <h2>The Polynomial Evaluated on the Diagonal</h2>
+
+      <p>
+        The GTE polynomial is p(L,C,R) = C + R − CR − LCR (mod 7).
+        A natural question: what happens when all three inputs are equal?
+        Setting L = C = R = x:
+      </p>
+
+      <div class="poly-demo">
+        <div class="poly-step">p(x,x,x) = x + x − x² − x³ = 2x − x² − x³</div>
+        <div class="poly-step" style="margin-top:0.5rem">When does a uniform state stay uniform? Set p(x,x,x) = x:</div>
+        <div class="poly-step">2x − x² − x³ = x</div>
+        <div class="poly-step">x − x² − x³ = 0</div>
+        <div class="poly-step">−x(x² + x − 1) = 0</div>
+        <div class="poly-step" style="margin-top:0.5rem">Two solutions:</div>
+        <div class="poly-step">&nbsp;&nbsp;(1) x = 0 &nbsp;&nbsp; (trivial vacuum)</div>
+        <div class="poly-step">&nbsp;&nbsp;(2) <span class="highlight">x² + x − 1 = 0</span> &nbsp;&nbsp; (the master quadratic)</div>
+      </div>
+
+      <p>
+        The non-trivial fixed-point equation x² + x − 1 = 0 has a unique positive real root:
+      </p>
+
+      <div class="result-card">
+        <div class="rc-label">The SRRG fixed point (CatAL)</div>
+        <div class="rc-eq">x* = (√5 − 1)/2 = 1/φ ≈ 0.61803…</div>
+        <div class="rc-detail">
+          The golden ratio φ = (1+√5)/2 satisfies φ² = φ + 1. Its reciprocal 1/φ satisfies
+          x² + x = 1, which is exactly the fixed-point equation written differently.
+          This is not a coincidence — it is forced by the polynomial's structure.
+          The theorem <code>srrg_fixed_point_eq_inv_phi</code> certifies this at CatAL (zero sorry, zero axioms).
+          <span data-lean="srrg_fixed_point_eq_inv_phi"></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 3: The SRRG ═══ -->
+    <section class="lesson-section" id="srrg">
+      <h2>The Self-Referential Renormalization Group</h2>
+
+      <p>
+        The <strong>Self-Referential Renormalization Group (SRRG)</strong> is the renormalization
+        group equation whose β-function is the GTE polynomial applied to its own coupling:
+      </p>
+
+      <div style="text-align:center;font-size:1.2rem;font-family:'JetBrains Mono',monospace;padding:0.75rem;background:var(--bg-elevated);border-radius:var(--r-md);margin:1rem 0">
+        β(g) = 0 &nbsp;⟺&nbsp; g = p(g, g, g)
+      </div>
+
+      <p>
+        A coupling g* is a fixed point if and only if p(g*, g*, g*) = g*. This is the diagonal
+        fixed-point equation we just solved. The unique non-trivial positive real fixed point is
+        g* = 1/φ.
+      </p>
+
+      <p>
+        <strong>Physical meaning:</strong> The renormalization group governs how a coupling constant
+        changes with energy scale. A fixed point is an energy scale at which the coupling stops
+        running — it maps to itself. The coupling value where the polynomial's self-application
+        is self-consistent is the golden ratio reciprocal 1/φ. The energy scale at which this
+        holds is the electroweak scale: 246 GeV. No parameter is adjusted to achieve this — it
+        is forced by the polynomial's structure.
+      </p>
+    </section>
+
+    <!-- ═══ Section 4: The VEV and Higgs Mass ═══ -->
+    <section class="lesson-section" id="vev">
+      <h2>From the Golden Ratio to the Higgs VEV and Mass</h2>
+
+      <p>
+        The SRRG scaling relation identifies the fixed point g* = 1/φ with the Higgs VEV.
+        No SM parameter enters the derivation — the Fermi constant G<sub>F</sub> is not used.
+      </p>
+
+      <div class="result-card">
+        <div class="rc-label">Higgs VEV (CatAL)</div>
+        <div class="rc-eq">v<sub>PSC</sub> = 246.16 GeV</div>
+        <div class="rc-detail">
+          PDG 2024 (from G<sub>F</sub>): v = 246.22 GeV &nbsp;|&nbsp;
+          Deviation: −0.024% &nbsp;|&nbsp; Zero free parameters.
+          Lean: <code>op9_catal_unconditional</code> (CatAL)
+          <span data-lean="srrg_fixed_point_equals_phimdl_continuum"></span>
+        </div>
+      </div>
+
+      <div class="result-card">
+        <div class="rc-label">Higgs mass (CatAD)</div>
+        <div class="rc-eq">m<sub>H</sub><sup>GTE</sup> = 125.25 GeV</div>
+        <div class="rc-detail">
+          PDG 2024: 125.20 ± 0.11 GeV &nbsp;|&nbsp; Deviation: +0.45σ &nbsp;|&nbsp;
+          Derived from SRRG quartic coupling λ = φ/(4π) × (1 + (IPT−1)/(2c<sub>H</sub>+1))
+          where 2c<sub>H</sub>+1 = 27 = 3³ = N<sub>gen</sub>³ (Lean-certified identity).
+          <span data-lean="two_cH_plus_one_eq_ngen_cubed"></span>
+        </div>
+      </div>
+
+      <div class="callout callout--info">
+        <strong>Why no fine-tuning:</strong> The Higgs VEV 246.16 GeV is not the result of
+        cancelling two large numbers. It is the unique value forced by the self-referential
+        fixed-point equation p(g*,g*,g*) = g*. The 17-order-of-magnitude gap between the
+        electroweak and Planck scales is structural — both scales follow from the same
+        polynomial's arithmetic. Their ratio is a theorem, not a coincidence.
+      </div>
+    </section>
+
+    <!-- ═══ Section 5: Cross-link to L21 ═══ -->
+    <section class="lesson-section" id="crosslink">
+      <h2>The Master Quadratic Connection</h2>
+      <p>
+        The equation x² + x − 1 = 0 is the <em>Master Quadratic</em> — the same equation
+        that determines the GTE orbit structure, the Fibonacci convergence of the particle
+        cascade, and now the Higgs mass. Its root 1/φ is a universal GTE fixed point,
+        appearing at three levels of the theory simultaneously:
+      </p>
+      <ul class="key-points" style="margin-top:0.5rem">
+        <li>Level 0 (arithmetic): The diagonal fixed point of the GTE polynomial over the reals</li>
+        <li>Level 1 (orbit): The convergent of the GTE generation cascade (Riccati map)</li>
+        <li>Level 3 (field): The SRRG coupling at the electroweak fixed point → Higgs VEV</li>
+      </ul>
+      <p>
+        See <a href="../../path_2_selection/index.html" class="xref">Path 2</a> and
+        L21 (The Master Quadratic) for the deeper algebraic context.
+      </p>
+    </section>
+
+    <!-- ═══ Key Points ═══ -->
+    <section class="lesson-section" id="key-points">
+      <h2>Key Points</h2>
+      <ul class="key-points">
+        <li>
+          The hierarchy problem: quantum corrections drag the Higgs mass toward the Planck
+          scale unless cancelled to 32 decimal places. SUSY and extra dimensions provide no
+          experimental support. GTE dissolves the problem rather than solving it by cancellation.
+        </li>
+        <li>
+          The GTE polynomial p(L,C,R) on the diagonal p(x,x,x)=x gives x² + x − 1 = 0,
+          whose unique positive root is x* = 1/φ = (√5−1)/2 = 0.61803.
+          The theorem <code>srrg_fixed_point_eq_inv_phi</code> certifies this at CatAL.
+          <span data-lean="srrg_fixed_point_eq_inv_phi"></span>
+        </li>
+        <li>
+          The SRRG (Self-Referential Renormalization Group) is the RG equation whose
+          β-function is the polynomial applied to itself. Its non-trivial fixed point 1/φ
+          identifies the electroweak scale — no SM input.
+        </li>
+        <li>
+          Higgs VEV: v<sub>PSC</sub> = 246.16 GeV (−0.024% from PDG, CatAL).
+          Higgs mass: 125.25 GeV (+0.45σ, CatAD). Both zero free parameters.
+        </li>
+        <li>
+          The 17-decade hierarchy between the electroweak and Planck scales is structural:
+          both follow from the same polynomial, and their ratio is a theorem.
+        </li>
+      </ul>
+    </section>
+
+    <!-- ═══ See Also ═══ -->
+    <div class="see-also">
+      <h2>See Also</h2>
+      <div class="see-also-group">
+        <div class="see-also-label">Lean 4 proofs (ugp-lean)</div>
+        <ul class="source-list">
+          <li><code>srrg_fixed_point_eq_inv_phi</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Algebra/SRRGCABridge.lean" target="_blank" rel="noopener">SRRGCABridge.lean ↗</a></li>
+          <li><code>srrg_fixed_point_equals_phimdl_continuum</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Framework/PhiMDLBridge.lean" target="_blank" rel="noopener">PhiMDLBridge.lean ↗</a></li>
+          <li><code>two_cH_plus_one_eq_ngen_cubed</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/GUTStructure.lean" target="_blank" rel="noopener">GUTStructure.lean ↗</a></li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Source papers</div>
+        <ul class="source-list">
+          <li><a href="https://doi.org/10.5281/zenodo.20560550" target="_blank" rel="noopener">P48 — The Complete GTE Framework, Ch 6 (Hierarchy Problem) ↗</a></li>
+          <li><a href="https://doi.org/10.5281/zenodo.20669146" target="_blank" rel="noopener">Tutorial: The Hierarchy Problem Dissolved (full PDF) ↗</a></li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Cross-links</div>
+        <ul class="source-list">
+          <li><a href="../../path_2_selection/index.html" class="xref">Path 2: Selection — the master quadratic x² + x − 1 = 0 ↗</a></li>
+          <li><a href="../../path_8_context/L29_falsifiability/index.html" class="xref">L29: Falsifiability — what would refute this Higgs prediction →</a></li>
+        </ul>
+      </div>
+    </div>
+
+  </main>
+
+  <div class="page-wrapper">
+    <footer class="lesson-footer">
+      <a href="../L27_defect_cosmology/index.html" class="nav-btn nav-btn--prev">← L27: Defect Cosmology</a>
+      <a href="../../path_8_context/index.html" class="nav-btn nav-btn--next">Path 8: Context &amp; Predictions →</a>
+    </footer>
+  </div>
+
+  <script src="../../common/interactive.js"></script>
+  <script src="../../common/nav.js"></script>
+  <script>
+    const LEAN_REFS = {
+      "srrg_fixed_point_eq_inv_phi": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Algebra/SRRGCABridge.lean"
+      },
+      "srrg_fixed_point_equals_phimdl_continuum": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Framework/PhiMDLBridge.lean"
+      },
+      "two_cH_plus_one_eq_ngen_cubed": {
+        url: "https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/GUTStructure.lean"
+      }
+    };
+    document.addEventListener('DOMContentLoaded', () => {
+      autoRenderLeanBadges(LEAN_REFS);
+    });
+  </script>
+</body>
+</html>

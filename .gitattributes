@@ -1,0 +1,14 @@
+# Large binary / tabular data — use Git LFS (install: git lfs install)
+*.csv filter=lfs diff=lfs merge=lfs -text
+*.pkl filter=lfs diff=lfs merge=lfs -text
+*.parquet filter=lfs diff=lfs merge=lfs -text
+*.h5 filter=lfs diff=lfs merge=lfs -text
+# Large JSON artifacts (e.g. frozen curve data); GitHub blocks >100MB without LFS
+*.json filter=lfs diff=lfs merge=lfs -text
+# ugp_viz/ packages tiny static catalog JSONs and run-bundle manifests; keep
+# them out of LFS so a fresh clone has them available without `git lfs pull`.
+ugp_viz/**/*.json -filter -diff -merge text
+# visualizations/ is served directly by GitHub Pages, which does not resolve
+# LFS pointers; keep its tiny metadata JSONs out of LFS so Pages serves the
+# real content instead of a pointer file.
+visualizations/**/*.json -filter -diff -merge text

@@ -1,0 +1,33 @@
+experiment:
+  name: holographic_transducer
+  description: "Quantify boundary-to-bulk reconstruction accuracy on real UGP traces."
+  
+  data:
+    runs:
+      - "UGP_discovery_lab_runs/**/LE_*_summary.json"
+      - "UGP_discovery_lab_runs/**/lawful_evolution_*_summary.json"
+      - "UGP_discovery_lab_runs/**/gte_*_summary.json"
+      
+  model:
+    type: "finite_state"
+    max_states: 128
+    context: 5
+    
+  eval:
+    max_steps: 512
+    metrics: ["exact_match_rate", "mean_hamming_distance", "max_prefix_length"]
+    pass_threshold: 0.99  # 99% exact match rate for a PASS
+    
+  boundary_types: ["ridge", "mirror"]
+  seed_range: [42, 100, 200, 500, 1000]
+  window_sizes: [8, 10, 12, 16]
+  transducer_models: ["linear", "quadratic", "neural_1layer"]
+  evolution_steps: 100
+  
+  holographic_threshold: 0.8
+  stability_threshold: 0.1
+  
+  report:
+    export_md: true
+    export_json: true
+    plots: true

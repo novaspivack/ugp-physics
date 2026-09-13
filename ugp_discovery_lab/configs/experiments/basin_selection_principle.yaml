@@ -1,0 +1,45 @@
+experiment:
+  name: basin_selection_principle
+  description: "Tests candidate topological charges for attractor basin selection."
+  inputs:
+    runs:
+      - "canonical_gte_triples.json"  # Uses canonical GTE triples directly
+
+charges:
+  - name: "Q1_mu_omega"
+    formula: "mu(a) * omega(c)"
+    description: "Möbius μ(a) times distinct prime factors of c"
+    
+  - name: "Q2_total_parity"
+    formula: "(a % 2) + (b % 2) + (c % 2)"
+    description: "Sum of parities of a, b, c components"
+    
+  - name: "Q3_omega_diff"
+    formula: "omega(a) + omega(b) - omega(c)"
+    description: "Difference in distinct prime factors"
+    
+  - name: "Q4_log_complexity"
+    formula: "log(abs(a)) + log(abs(b)) + log(abs(c))"
+    description: "Sum of logarithmic complexities"
+    
+  - name: "Q5_mobius_sum"
+    formula: "mu(a) + mu(b) + mu(c)"
+    description: "Sum of Möbius functions"
+
+analysis:
+  conservation_threshold: 0.1  # CV threshold for "excellent" conservation
+  separation_threshold: 0.05   # p-value threshold for significant separation
+  variance_ratio_threshold: 2.0  # Minimum variance ratio for good separation
+
+report:
+  export_md: true
+  export_json: true
+  export_csv: true
+  plots: true
+  
+artifacts:
+  - "basin_selection_principle_results.json"
+  - "charge_conservation_analysis.csv"
+  - "basin_separation_statistics.csv"
+  - "plot_charge_distributions.png"
+  - "plot_conservation_quality.png"

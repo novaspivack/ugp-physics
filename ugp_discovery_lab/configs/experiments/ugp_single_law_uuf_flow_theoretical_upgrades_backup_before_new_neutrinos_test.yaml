@@ -1,0 +1,109 @@
+experiment:
+  name: ugp_single_law_uuf_flow_theoretical_upgrades
+  description: "UGP Single-Law Universal Flow (UUF) - Option A with Theoretical Upgrades"
+  inputs:
+    runs:
+      - "canonical_gte_triples.json"
+
+options:
+  # Neutrino mode selection: "uuf" | "pathb" | "both"
+  neutrino_mode: "both"     # Enable side-by-side UUF vs Path-B comparison
+  
+  # Locked Perfect CKM Configuration (NON-NEGOTIABLE)
+  locked_ckm_configuration:
+    tau0_scale: 1.5
+    epsilon_scale: 0.8
+    epsilon_prime_scale: 4.0
+    normalization_method: "frobenius"
+    down_sector_permutation: [0, 2, 1]
+  
+  # UUF Parameters (All Kernel-Locked)
+  uuf_parameters:
+    chi_dirac: 0.0  # Commutator for Dirac sectors (quarks, charged leptons)
+    chi_majorana: 1.5707963267948966  # π/2 - Anti-commutator for Majorana neutrinos
+    kappa: 0.000001469  # k_L²/φ - A₂ torque coefficient (kernel-locked)
+    d_R_quarks: 3  # Color representation dimension
+    d_R_leptons: 1  # Leptonic representation dimension
+  
+  # PDG Target Values
+  pdg_targets:
+    ckm_angles: [33.44, 8.57, 49.2]  # degrees
+    pmns_angles: [33.44, 8.57, 49.0]  # degrees
+    ckm_elements: [0.2245, 0.041, 0.00365]
+  
+  # UUF Flow Configuration
+  uuf_configuration:
+    formula: "dM/dτ ≈ ε(EM + ME^T) + (Majorana sector via exact congruence)"
+    dirac_sector: "χ=0 → commutator [A,M] (preserves CKM)"
+    majorana_sector: "exact real congruence M ↦ e^{γA} M e^{γA^T} with Strang/Yoshida composition"
+    kernel_locked: "All parameters fixed by UGP kernel (no fitting)"
+    
+  # Right-handed Neutrino Triples (Config-driven)
+  nu_R_triples:
+    - [2, 5, 5]       # nu_e_R
+    - [7, 11, 13]     # nu_mu_R
+    - [17, 19, 23]    # nu_tau_R
+  
+  # Theoretical Upgrades Configuration
+  theoretical_upgrades:
+    # proven settings for your ~32.5% mean run
+    majorana_E_phase_fraction: 1.0
+    
+    # E-orientation selection: "13_torque", "mu_tau_anchor"
+    e_orientation_method: "mu_tau_anchor"
+    
+    # BCH-preconditioning: keep off for benchmark
+    bch_preconditioning: false
+    
+    # unused now (no post-shape step)
+    integrator_method: "strang"
+    
+    # don't project for the legacy benchmark
+    majorana_projection: false
+    
+    # discrete step count
+    shape_steps: 1
+    
+    # IMPORTANT: freeze νR permutation to the canonical that produced the prior best
+    nuR_permutation: [0, 1, 2]
+    
+    # Extended discrete search parameters
+    discrete_search:
+      e_orientations: 2      # 13-torque, mu-tau anchor
+      nuR_permutations: 6    # S3 permutations
+      integrators: 2         # Strang, Yoshida
+      phase_fractions: 3     # 1.0, 0.5, 0.0
+      bch_options: 2         # off, on
+      # Total combinations: 2 × 6 × 2 × 3 × 2 = 144
+    
+  # Hard Gate Validation Criteria
+  validation_criteria:
+    ckm_hard_gate: 0.0001  # |Δθᵢ| < 0.01° (hard gate for CKM preservation)
+    ckm_error_threshold: 0.05  # <5% error for CKM validation
+    pmns_error_threshold: 0.07  # <7% error for PMNS achievement (first pass target)
+    pmns_final_target: 0.05  # <5% error for PMNS (final target)
+    
+  # Numerical Stability
+  numerical_stability:
+    overflow_protection: true
+    nan_inf_detection: true
+    fallback_to_identity: true
+    max_flow_time: 15.0
+    max_flow_strength: 0.8
+
+# Analysis Configuration
+analysis:
+  detailed_output: true
+  save_intermediate_matrices: true
+  generate_validation_report: true
+  breakthrough_analysis: true
+  single_law_validation: true
+  statistics_bracket_analysis: true
+  
+# Output Configuration  
+output:
+  save_results: true
+  save_matrices: true
+  save_validation: true
+  save_uuf_parameters: true
+  format: "json"

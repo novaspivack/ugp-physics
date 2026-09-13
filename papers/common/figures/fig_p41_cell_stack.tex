@@ -1,0 +1,45 @@
+% P41 Figure: per-cell CMCA stack and gating flow
+\begin{figure}[htbp]
+\centering
+\begin{tikzpicture}[scale=0.92, every node/.style={font=\small}]
+  % Main stack at one cell x — increased vertical spacing
+  \node[cmcaLxp,minimum width=9.2cm,minimum height=0.9cm] (Lxp) at (0,3.4)
+    {$L_{x^+}$ \textbf{Rule~110}\quad
+     $[\,0\;1\;1\;0\;\cdots\,]$ \hfill $v_R = +2/3$};
+  \node[cmcaLxm,minimum width=9.2cm,minimum height=0.9cm] (Lxm) at (0,1.85)
+    {$L_{x^-}$ \textbf{Rule~124}\quad
+     $[\,1\;0\;1\;1\;\cdots\,]$ \hfill $v_L = -2/3$};
+  \node[cmcaLt,minimum width=9.2cm,minimum height=0.9cm] (Lt) at (0,0.3)
+    {$L_t$ \textbf{inner Rule~110}\quad
+     $\tau_c[x]$, gate pattern \hfill timelike};
+  \draw[ugparr] (Lt.north) -- (Lxm.south);
+  \draw[ugparr] (Lxm.north) -- (Lxp.south);
+  % Outer-update callout — well clear of box edge
+  \node[font=\scriptsize,align=left] (gateLbl) at (7.35,2.6)
+    {outer update\\[-1pt]only if gate $=1$};
+  \draw[ugparr,dashed] (gateLbl.west) -- (Lxp.east);
+  % Lattice direction — lowered below inner layer
+  \draw[ugparr] (-5.0,-1.15) -- (5.0,-1.15)
+    node[midway,below=4pt,font=\scriptsize] {cell index $x$ on 1D lattice};
+  \draw[ugparr] (-4.5,-0.98) -- (-3.7,-0.98);
+  \node[font=\scriptsize] at (-4.1,-1.55) {same $x$};
+  % Winding readout — label well right of vertical arrow
+  \draw[ugparr] (0,-0.15) -- (0,-0.95);
+  \node[font=\scriptsize,anchor=west] at (1.05,-0.55)
+    {$w[x]=\tau_c[x]\bmod 7$};
+  % ASYNC vs SYNC inset — more clearance below
+  \begin{scope}[shift={(0,-3.55)}]
+    \node[draw,rounded corners,fill=white,inner sep=5pt,font=\scriptsize,align=center] (async) at (-2.8,0)
+      {\textbf{ASYNC (CMCA)}\\[-2pt]$\tau_c(\mathrm{glider})/\tau_c(\mathrm{ether})\approx 1.563$};
+    \node[draw,rounded corners,fill=white,inner sep=5pt,font=\scriptsize,align=center] (sync) at (2.8,0)
+      {\textbf{SYNC (no gate)}\\[-2pt]ratio $= 1.000$ (no dilation)};
+    \node[font=\scriptsize\itshape] at (0,-0.85) {proper-time dilation requires asynchronous gating};
+  \end{scope}
+\end{tikzpicture}
+\caption{The Chiral Minkowski CA at one lattice site: two decoupled chiral outer
+  layers ($L_{x^+}$, $L_{x^-}$) on the \emph{same} index~$x$, gated by a shared
+  inner Rule~110 clock ($L_t$). Outer layers advance only when the inner gate
+  fires; differential gate rates between glider and ether cells implement
+  dynamics-level SR time dilation.}
+\label{fig:cmca_cell_stack}
+\end{figure}

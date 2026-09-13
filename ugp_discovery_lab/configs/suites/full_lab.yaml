@@ -1,0 +1,88 @@
+experiments:
+  # CA Universality Tests
+  - name: ca_universality
+    description: "Comprehensive CA universality verification"
+    tests:
+      - { name: "rule110_small", rule: "rule110", width: 16, steps: 32, wrap: true }
+      - { name: "rule110_medium", rule: "rule110", width: 32, steps: 64, wrap: true }
+      - { name: "rule54_test", rule: "rule54", width: 32, steps: 64, wrap: true }
+      - { name: "rule30_test", rule: "rule30", width: 32, steps: 64, wrap: true }
+
+  # Standard GTE
+  - name: lawful_evolution
+    description: "Standard GTE baseline"
+    le_config:
+      c_policy: mersenne
+      b_policy: fib
+      a_policy: gte
+      mirror: d2
+    run:
+      steps: 200
+      windows: [10, 11, 12]
+      seed: [1, 73, 823]
+    diagnostics:
+      kernel_plane_fit: true
+      index_lock: true
+
+  # Lucas Variant
+  - name: lawful_evolution
+    description: "GTE with Lucas lifts"
+    le_config:
+      c_policy: mersenne
+      b_policy: lucas
+      a_policy: gte
+      mirror: d2
+    run:
+      steps: 200
+      windows: [10, 11, 12]
+      seed: [1, 73, 823]
+    diagnostics:
+      kernel_plane_fit: true
+      index_lock: true
+
+  # Repunit Variant
+  - name: lawful_evolution
+    description: "GTE with base-3 repunits"
+    le_config:
+      c_policy: repunit
+      repunit_base: 3
+      b_policy: fib
+      a_policy: gte
+      mirror: d2
+    run:
+      steps: 200
+      windows: [10, 11, 12]
+      seed: [1, 73, 823]
+    diagnostics:
+      kernel_plane_fit: true
+
+  # Dihedral Tests
+  - name: lawful_evolution
+    description: "D5 dihedral symmetry test"
+    le_config:
+      c_policy: mersenne
+      b_policy: fib
+      a_policy: gte
+      mirror: d5
+    run:
+      steps: 200
+      windows: [10, 11, 12]
+      seed: [1, 73, 823]
+    diagnostics:
+      kernel_plane_fit: true
+      dihedral_lock_search: true
+
+  - name: lawful_evolution
+    description: "D6 dihedral symmetry test"
+    le_config:
+      c_policy: mersenne
+      b_policy: fib
+      a_policy: gte
+      mirror: d6
+    run:
+      steps: 200
+      windows: [10, 11, 12]
+      seed: [1, 73, 823]
+    diagnostics:
+      kernel_plane_fit: true
+      dihedral_lock_search: true

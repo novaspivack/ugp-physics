@@ -1,0 +1,121 @@
+# Configuration for Flow Parameter Optimization - PMNS-FOCUSED
+# Systematic optimization within UGP theoretical constraints with PMNS angle focus
+
+experiment:
+  name: ugp_yukawa_ckm_pmns_flow_optimization
+  description: "PMNS-focused optimization - pin excellent CKM parameters and optimize PMNS angles to achieve near-perfect accuracy"
+  inputs:
+    runs:
+      - "canonical_gte_triples.json"
+
+# Optimization Framework
+optimization_framework:
+  systematic_parameter_search: true
+  ugp_theoretical_constraints: true
+  kernel_locked_variations: true
+  discrete_permutation_optimization: true
+
+# Parameter Ranges (All Kernel-Locked Variations)
+parameter_ranges:
+  # Tau0 scaling factors (PMNS-FOCUSED: pin excellent CKM parameters around tau0=1.5)
+  tau0_scaling_factors: [1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 2.0, 2.5, 3.0, 4.0, 5.0, 8.0, 10.0, 15.0, 20.0, 30.0, 50.0, 100.0]
+  
+  # Epsilon scaling factors (PMNS-FOCUSED: pin excellent CKM parameters around epsilon=0.8)
+  epsilon_scaling_factors: [0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1, 1.2, 1.5, 2.0, 3.0, 4.0, 5.0, 8.0, 10.0, 15.0, 20.0, 30.0, 50.0]
+  
+  # Epsilon_prime scaling factors (PMNS-FOCUSED: pin excellent CKM parameters around epsilon_prime=4.0)
+  epsilon_prime_scaling_factors: [2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 6.0, 8.0, 10.0, 12.0, 15.0, 20.0, 25.0, 30.0, 40.0, 50.0, 75.0, 100.0]
+  
+  # Normalization methods (test ALL methods for maximum effect)
+  normalization_methods: ["max_element", "spectral_radius", "nuclear_norm", "trace_norm", "frobenius"]
+
+# Optimization Targets
+optimization_targets:
+  primary_objective: "minimize_overall_rms_error"
+  secondary_objectives:
+    - "minimize_ckm_score"
+    - "balance_mixing_angles"
+    - "realistic_hierarchy_scaling"
+  
+  target_performance:
+    overall_rms_error: "< 10%"
+    individual_angle_errors: "< 20%"
+    ckm_elements_errors: "< 50%"
+
+# Theoretical Constraints
+theoretical_constraints:
+  kernel_locking: true
+  no_arbitrary_fits: true
+  ugp_consistency: true
+  discrete_choices_only: true
+  
+  parameter_justification:
+    tau0_scaling: "Theory-consistent variations of residual Kraft length"
+    epsilon_scaling: "Kernel-locked variations of flow strength"
+    epsilon_prime_scaling: "Kernel-locked variations of antisymmetric strength"
+    normalization_methods: "Different mathematically valid matrix norms"
+
+# Base Parameters (Unchanged)
+base_parameters:
+  residual_kraft_length: 9.382
+  k_L: "3 * k_L2 * ln(φ) ≈ 0.019744"
+  k_L2: 0.013671875
+  phi: 1.618033988749895
+
+# Expected Optimization Results
+expected_results:
+  best_configuration: "Lowest overall RMS error configuration"
+  parameter_sensitivity: "Analysis of parameter impact on results"
+  optimization_landscape: "Mapping of parameter space to performance"
+  
+  success_criteria:
+    overall_rms_error: "< 20% (significant improvement)"
+    mixing_angle_accuracy: "θ₁₂, θ₁₃, θ₂₃ within reasonable ranges"
+    hierarchy_scaling: "Natural λ, Aλ², Aλ³ pattern"
+
+# Options
+options:
+  neutrino_model: "majorana"
+  pdg_targets_ckm: [0.2245, 0.041, 0.00365]
+
+# PDG Experimental Targets
+pdg_targets:
+  Vus: 0.2245
+  Vcb: 0.041
+  Vub: 0.00365
+  theta12: 33.44
+  theta13: 8.57
+  theta23: 49.2
+
+# Analysis Parameters
+analysis:
+  optimization_method: "systematic_grid_search"
+  evaluation_metric: "overall_rms_error"
+  parameter_sensitivity_analysis: true
+  optimization_landscape_mapping: true
+  best_configuration_analysis: true
+
+# Output Configuration
+output:
+  save_optimization_results: true
+  save_parameter_sensitivity: true
+  save_best_configuration: true
+  save_optimization_landscape: true
+  save_performance_analysis: true
+  format: "json"
+
+# Validation
+validation:
+  ugp_theoretical_consistency: true
+  kernel_locking_validation: true
+  parameter_range_validation: true
+  optimization_convergence_check: true
+  best_configuration_validation: true
+
+# Performance Monitoring
+performance:
+  track_optimization_progress: true
+  monitor_parameter_sensitivity: true
+  enable_detailed_logging: true
+  optimization_analysis: true
+  performance_landscape_analysis: true

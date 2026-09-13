@@ -1,0 +1,29 @@
+experiment:
+  name: lambda_normalization_proof
+  description: "Proves the Λ-rigidity lemma and de Sitter normalization lemma, demonstrating the unique boundary scalar mapping Λ = (4 ln 2 · L)/A_H (Phase 10.2.1)."
+  inputs:
+    runs:
+      - "foundational_validation_results.json"  # For consistency with framework
+  analysis:
+    proof_components:
+      - "lambda_rigidity_lemma"      # ML-3/ML-5: Unique residual Kraft codeword length
+      - "de_sitter_normalization"    # Unique boundary scalar mapping
+      - "ml6_calibration_validation" # S=ηA, G=1/(4η) validation
+      - "boundary_scalar_uniqueness" # Proof of uniqueness
+    validation_parameters:
+      tolerance: 1e-10              # Machine precision tolerance
+      R_range: [1e26, 1e27, 1e28]  # Horizon radius range in meters
+      L_test_values: [9.380821783940931, 13.59708042548158]  # Current and dS limit
+    physical_constants:
+      G_value: 6.67430e-11         # Newton constant in SI
+      c_value: 299792458.0         # Speed of light in SI
+  report:
+    export_md: true
+    export_json: true
+    plots: true                     # Generate normalization comparison plots
+    csv_export: true               # Export detailed comparison tables
+  integrity:
+    fail_on_warning: true
+    require_real_data: false       # This is a theoretical proof
+    validate_physical_bounds: true
+    check_mathematical_precision: true

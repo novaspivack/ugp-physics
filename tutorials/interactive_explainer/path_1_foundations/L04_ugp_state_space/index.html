@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>L04: The UGP State Space — UGP Physics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <link rel="stylesheet" href="../../common/style.css">
+  <style>
+    .ring-row {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 1.5rem 0;
+    }
+
+    .ring-label {
+      font-size: 0.78rem;
+      color: var(--text-tertiary);
+      text-align: center;
+      margin-top: 0.4rem;
+    }
+
+    .times-sign {
+      font-size: 1.8rem;
+      color: var(--text-tertiary);
+      font-weight: 300;
+      align-self: center;
+    }
+
+    /* Three-roles table highlight */
+    .role-N   { color: #F59E0B; font-weight: 600; }
+    .role-pi  { color: var(--accent); font-weight: 600; }
+    .role-b1  { color: #10B981; font-weight: 600; }
+
+    /* Tile diagram */
+    .tile-diagram {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 1.5rem 0;
+    }
+
+    .tile-cells {
+      display: flex;
+      gap: 4px;
+    }
+
+    .tile-cell {
+      width: 56px;
+      height: 56px;
+      border-radius: 8px;
+      border: 1.5px solid var(--stroke-primary);
+      background: var(--bg-elevated);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.2rem;
+      font-weight: 700;
+      position: relative;
+    }
+
+    .tile-cell .tc-label {
+      position: absolute;
+      top: -20px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--text-tertiary);
+    }
+
+    .tile-cell.tc-hi {
+      background: rgba(59,130,246,0.15);
+      border-color: var(--accent);
+    }
+
+    .tile-arrow {
+      font-size: 1.5rem;
+      color: var(--text-tertiary);
+    }
+
+    .tile-output {
+      width: 56px;
+      height: 56px;
+      border-radius: 8px;
+      background: rgba(59,130,246,0.2);
+      border: 2px solid var(--accent);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.2rem;
+      font-weight: 700;
+      position: relative;
+    }
+
+    .tile-output .tc-label {
+      position: absolute;
+      bottom: -20px;
+      font-size: 0.68rem;
+      color: var(--text-secondary);
+    }
+  </style>
+</head>
+<body style="--path-current: var(--path-1)">
+
+  <header class="site-header">
+    <a href="../../index.html" class="site-logo">UGP Physics</a>
+    <nav class="breadcrumb">
+      <a href="../../index.html">Tutorial Series</a>
+      <span class="bc-sep">›</span>
+      <a href="../index.html">Path 1: Foundations</a>
+      <span class="bc-sep">›</span>
+      <span class="bc-current">L04: The State Space</span>
+    </nav>
+  </header>
+
+  <main class="page-wrapper">
+
+    <!-- ═══ Lesson Header ═══ -->
+    <div class="lesson-header">
+      <div class="path-label">Path 1 — Foundations · Lesson 4 of 7</div>
+      <h1>The UGP State Space and Survivor Space</h1>
+      <p class="lesson-subtitle">
+        What a cell state actually is, what gets filtered out, and why the update rule 
+        is native to the state space — not imposed on top of it.
+      </p>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width:57%"></div>
+      </div>
+    </div>
+
+    <!-- ═══ Section 1: The Question ═══ -->
+    <section class="lesson-section" id="the-question">
+      <h2>The Question</h2>
+      <p>
+        In the previous lesson, cells held values from {0, 1, 2, 3, 4, 5, 6}. 
+        But where do those values come from? What is the state space of UGP? 
+        Is it all integers? All primes? Something else entirely?
+      </p>
+      <p>
+        And once we have a state space, a harder question appears: 
+        the UWCA update rule seems to be placed <em>on top of</em> the state space — 
+        as if we invented it separately and then chose to run it there. 
+        Is that what's happening? Or is the update rule somehow intrinsic to the state space itself?
+      </p>
+    </section>
+
+    <!-- ═══ Section 2: Cell States as Residues ═══ -->
+    <section class="lesson-section" id="residues">
+      <h2>Step 1 — What Is a Cell State?</h2>
+      <p>
+        In UGP, each cell position <code>i</code> is assigned its own unique 
+        <strong>prime number</strong> <code>p_i</code>. The state of cell <code>i</code> 
+        is a <strong>residue</strong> — a remainder when dividing by <code>p_i</code>.
+      </p>
+
+      <div class="callout callout--neutral">
+        <p>
+          <strong>What is a residue?</strong> It is exactly the same as a remainder in long division. 
+          When you divide 47 by 7, the answer is 6 remainder 5. That remainder — 5 — is the 
+          residue of 47 modulo 7, written 47 mod 7 = 5.
+        </p>
+        <p>
+          For a prime <code>p = 7</code>, the possible residues are {0, 1, 2, 3, 4, 5, 6} — 
+          all the possible remainders when dividing by 7. These are the 7 cell states.
+        </p>
+      </div>
+
+      <p>
+        Crucially, the symbols 0 and 1 are <strong>already inside</strong> the prime field GF(7) — 
+        they are native elements, not added from outside. The binary alphabet {0, 1} is a subset 
+        of {0, 1, 2, 3, 4, 5, 6}, intrinsically.
+      </p>
+
+      <!-- Prime ring diagram -->
+      <div class="diagram-wrap">
+        <div style="text-align:center;font-size:0.85rem;color:var(--text-secondary);margin-bottom:0.5rem">
+          Cell with prime p = 7 — all 7 states arranged on a ring
+        </div>
+        <svg class="prime-ring" data-prime="7" data-highlight="0,1"
+             style="width:160px;height:160px"></svg>
+        <div class="diagram-legend">
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--accent)"></div>
+            <span>Binary alphabet {0, 1}</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--bg-elevated);border:1px solid var(--stroke-primary)"></div>
+            <span>Residues 2–6</span>
+          </div>
+        </div>
+        <p class="diagram-caption">
+          0 and 1 are native to the prime field — not imported from outside. 
+          The binary alphabet sits inside GF(7) naturally.
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══ Section 3: Why Primes ═══ -->
+    <section class="lesson-section" id="why-primes">
+      <h2>Step 2 — Why Primes? Non-interference by CRT</h2>
+
+      <p>
+        Each cell gets its own prime. But why primes specifically — what is wrong with, say, 
+        using 4, 6, 9 as the cell moduli?
+      </p>
+
+      <p>
+        The answer is <strong>non-interference</strong>. When two moduli share a common factor, 
+        operations in one can affect residues in the other. Primes share no common factors 
+        (other than 1), so they are completely independent.
+      </p>
+
+      <div class="callout callout--info">
+        <p>
+          <strong>Chinese Remainder Theorem (CRT):</strong> Given distinct primes 
+          p₀, p₁, p₂,… any combination of residues (r₀, r₁, r₂, …) 
+          corresponds to exactly one integer N in the range [0, p₀ × p₁ × p₂ × …). 
+          Reading cell i's state = computing N mod p_i. The primes don't interfere: 
+          changing cell i's residue does not affect any other cell's residue.
+        </p>
+      </div>
+
+      <!-- CRT worked example -->
+      <h3>Concrete example</h3>
+      <p>
+        Three cells with primes p₀ = 3, p₁ = 5, p₂ = 7. Tape state: [1, 2, 4].
+      </p>
+      <div class="example-box">
+        <div class="example-header">CRT encoding: one number for the whole tape</div>
+        <p style="font-family:'JetBrains Mono',monospace;font-size:0.85rem;margin:0">
+          Find N such that:<br>
+          &nbsp;&nbsp;N mod 3 = 1 &nbsp; (cell 0's state)<br>
+          &nbsp;&nbsp;N mod 5 = 2 &nbsp; (cell 1's state)<br>
+          &nbsp;&nbsp;N mod 7 = 4 &nbsp; (cell 2's state)<br><br>
+          Answer: N = 67<br><br>
+          Verify:<br>
+          &nbsp;&nbsp;67 mod 3 = 1 &nbsp; (67 = 22×3 + 1) ✓<br>
+          &nbsp;&nbsp;67 mod 5 = 2 &nbsp; (67 = 13×5 + 2) ✓<br>
+          &nbsp;&nbsp;67 mod 7 = 4 &nbsp; (67 = 9×7 + 4)  ✓
+        </p>
+      </div>
+      <p>
+        The single number N = 67 completely encodes the three-cell tape [1, 2, 4]. 
+        Reading any cell is just one division. The cells are completely independent.
+      </p>
+    </section>
+
+    <!-- ═══ Section 4: The Product State Space ═══ -->
+    <section class="lesson-section" id="product-space">
+      <h2>Step 3 — The Full State Space</h2>
+      <p>
+        Put n cells together. Each cell has its own prime and its own set of residues. 
+        The <strong>full state space</strong> is the Cartesian product of all those residue sets.
+      </p>
+
+      <!-- Three rings -->
+      <div class="ring-row">
+        <div>
+          <svg class="prime-ring" data-prime="3" data-highlight="0,1"
+               style="width:130px;height:130px"></svg>
+          <p class="ring-label">Cell L (p = 3)</p>
+        </div>
+        <div class="times-sign">×</div>
+        <div>
+          <svg class="prime-ring" data-prime="5" data-highlight="0,1"
+               style="width:130px;height:130px"></svg>
+          <p class="ring-label">Cell C (p = 5)</p>
+        </div>
+        <div class="times-sign">×</div>
+        <div>
+          <svg class="prime-ring" data-prime="7" data-highlight="0,1"
+               style="width:130px;height:130px"></svg>
+          <p class="ring-label">Cell R (p = 7)</p>
+        </div>
+      </div>
+
+      <div class="split-3" style="margin:1rem 0">
+        <div class="card">
+          <div class="card-header">Total states</div>
+          <div class="card-body">
+            <p style="font-size:1.3rem;font-weight:700;font-family:'JetBrains Mono',monospace">3 × 5 × 7 = 105</p>
+            <p class="small">By CRT, each combo of residues maps to exactly one N in [0, 105).</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">Non-interference</div>
+          <div class="card-body">
+            <p class="small">Because p_L, p_C, p_R are distinct primes, changing any one cell's state leaves the other cells' states exactly unchanged.</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">Binary sub-sector</div>
+          <div class="card-body">
+            <p style="font-size:1.3rem;font-weight:700;font-family:'JetBrains Mono',monospace">{0,1}³ = 8</p>
+            <p class="small">When all cells hold only 0 or 1, there are 8 configurations — the binary sub-sector.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Section 5: The Survivor Filter ═══ -->
+    <section class="lesson-section" id="survivor-space">
+      <h2>Step 4 — The Survivor Space</h2>
+      <p>
+        Not every point in the full product space (all 105 configurations for 3 cells) is 
+        physically valid under UGP. The framework defines a set of 
+        <strong>algebraic invariants</strong> — conditions that every valid state must satisfy. 
+        States that pass all the tests are called <strong>survivors</strong>. 
+        The set of all survivors is the <strong>survivor space</strong>.
+      </p>
+
+      <p>
+        <strong>This is what "the UGP state space" means.</strong> Not the full product space. 
+        The survivor space — the structured subset that satisfies all four invariants.
+      </p>
+
+      <!-- Survivor dot grid -->
+      <div class="diagram-wrap">
+        <svg id="survivor-grid" style="max-width:340px;width:100%;height:auto"></svg>
+        <div class="diagram-legend">
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--accent)"></div>
+            <span>Survivor (valid state)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background:var(--bg-elevated);border:1px solid var(--stroke-secondary);opacity:0.5"></div>
+            <span>Eliminated (~75%)</span>
+          </div>
+        </div>
+        <p class="diagram-caption">
+          Schematic — each dot is a potential configuration. Most are ruled out by the UGP invariants. 
+          Survivors form a sparse, structured subset.
+        </p>
+      </div>
+
+      <!-- The four invariants -->
+      <h3>The four UGP invariants</h3>
+      <table class="data-table">
+        <thead>
+          <tr><th>Invariant</th><th>What it says</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Ridge lock</strong></td><td>The value c at the ridge step equals 2<sup>N</sup> − 1, fixed by the operational level N</td></tr>
+          <tr><td><strong>Fibonacci rigidity</strong></td><td>The quotient gap |q₂ − q₁| = 13 — the 13th Fibonacci number; forced by the Fibonacci lift theorem</td></tr>
+          <tr><td><strong>Kernel symmetry</strong></td><td>Quarter-Lock: k_M = k_G + ¼ k_L — a codimension-1 constraint on all lawful dynamics</td></tr>
+          <tr><td><strong>Mirror invariance</strong></td><td>b₁ is prime-locked and mirror-dual — both branch seeds are prime-locked simultaneously</td></tr>
+        </tbody>
+      </table>
+
+      <p>
+        Each invariant eliminates most configurations. What remains — the intersection of all four — 
+        is the survivor space. It is not arbitrary; it inherits algebraic structure from the invariants.
+      </p>
+    </section>
+
+    <!-- ═══ Section 6: Three Roles of Numbers ═══ -->
+    <section class="lesson-section" id="three-roles">
+      <h2>Step 5 — N = 10 Is Not a Prime. What Is It?</h2>
+      <p>
+        The canonical operational level is N = 10. But 10 = 2 × 5 — it is not prime. 
+        If UGP is all about primes, how does 10 enter?
+      </p>
+      <p>
+        The answer is that different numbers in UGP play completely different roles. 
+        There are three roles, and they must not be confused:
+      </p>
+
+      <table class="data-table">
+        <thead>
+          <tr><th>Number</th><th>Role</th><th>Must be prime?</th><th>Example</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="role-N">N</td>
+            <td>Ridge level — the operational parameter that sets c = 2<sup>N</sup> − 1</td>
+            <td>No</td>
+            <td class="role-N">N = 10 (= 2×5, not prime)</td>
+          </tr>
+          <tr>
+            <td class="role-pi">p_i</td>
+            <td>CRT coordinate primes — one per cell position, used for the residue encoding</td>
+            <td>Yes — this is why primes are needed</td>
+            <td class="role-pi">p = 3, 5, 7, 11, 13, …</td>
+          </tr>
+          <tr>
+            <td class="role-b1">b₁</td>
+            <td>The orbit seed value — required by the mirror invariant to be prime</td>
+            <td>Yes — algebraic constraint</td>
+            <td class="role-b1">b₁ = 73 (prime)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout--info">
+        <p>
+          <strong>UGP operates over all positive integers</strong> — not just primes. 
+          The GTE orbit values (1, 73, 823, 9, 42, 1023, …) are integers; some are prime, 
+          some are not. Primes appear in specific, localized roles — as CRT coordinate 
+          labels and as an algebraic constraint on certain orbit values. 
+          The ambient space is integers throughout.
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══ Section 7: Clopen Cylinders ═══ -->
+    <section class="lesson-section" id="clopen">
+      <h2>Step 6 — The Natural Topology: Clopen Cylinders</h2>
+      <p>
+        The survivor space has a natural topology — its basic open sets are called 
+        <strong>clopen cylinders</strong>. A cylinder is a set defined by specifying 
+        finitely many coordinates and leaving all others free.
+      </p>
+
+      <div class="card">
+        <div class="card-header">Example: a clopen cylinder</div>
+        <div class="card-body">
+          <p>
+            "All configurations where cell 3 = 1 AND cell 4 = 0"
+          </p>
+          <p class="small">
+            This constrains only 2 coordinates out of n. All other cells are completely free. 
+            In the product topology of the prime fields, this set is simultaneously open AND closed — 
+            hence "clopen." These are the building blocks of the state space's topology.
+          </p>
+        </div>
+      </div>
+
+      <h3>Why does this matter for the UWCA?</h3>
+      <p>
+        A UWCA tile specifies exactly what a neighborhood (L, C, R) must be, and what the output must be. 
+        That is precisely a clopen cylinder — finitely many coordinate values, all others free. 
+        UWCA tiles are not external machinery placed on top of the state space. 
+        They are the natural basic sets of its topology.
+      </p>
+    </section>
+
+    <!-- ═══ Section 8: UWCA Is Native ═══ -->
+    <section class="lesson-section" id="uwca-native">
+      <h2>Step 7 — The UWCA Is Intrinsic, Not Imposed</h2>
+
+      <div class="split">
+        <div>
+          <p>
+            Here is a single UWCA tile for Rule 110 in the binary sub-sector. 
+            It says: "if the neighborhood is (L=0, C=1, R=1), then the penalty 
+            is zero when the next state is 1."
+          </p>
+          <p>
+            This tile is not a foreign object placed onto the survivor space. 
+            It is a clopen cylinder of the survivor space's own topology. 
+            Rule 110 requires 8 such tiles — all of them are natural topological 
+            objects in the survivor space.
+          </p>
+
+          <div class="callout callout--success">
+            <div class="callout-title">Internal Church–Turing Theorem (P08)</div>
+            <p>
+              For any clopen, finite-local map on the survivor windows, there exists 
+              a finite UWCA tile set that realizes it. The GTE update map T is such a map.
+              Therefore, its tile set is constructed from T itself — not added on top.
+              The UWCA is the generic name for "finite-local law on this substrate."
+            </p>
+          </div>
+
+          <p>
+            The sweep (deterministic left-to-right penalty enforcement) is the 
+            zero-temperature limit of the natural dynamics on the dissonance functional — 
+            itself a natural object on the survivor space. 
+            Nothing external is required once the survivor space is fixed.
+          </p>
+        </div>
+
+        <!-- Tile diagram -->
+        <div>
+          <p style="text-align:center;font-size:0.85rem;color:var(--text-secondary);margin-bottom:0.5rem">
+            Tile: (L=0, C=1, R=1) → next C = 1
+          </p>
+          <div class="tile-diagram">
+            <div class="tile-cells">
+              <div class="tile-cell">
+                <span class="tc-label">L</span>0
+              </div>
+              <div class="tile-cell tc-hi">
+                <span class="tc-label">C</span>1
+              </div>
+              <div class="tile-cell tc-hi">
+                <span class="tc-label">R</span>1
+              </div>
+            </div>
+            <div class="tile-arrow">↓</div>
+            <div>
+              <p style="font-size:0.75rem;color:var(--text-tertiary);text-align:center;margin-bottom:0.4rem">
+                penalty e_C = 0 iff output = R(0,1,1) = 1
+              </p>
+            </div>
+            <div class="tile-output">
+              <span class="tc-label">next C</span>1
+            </div>
+          </div>
+          <p style="font-size:0.78rem;color:var(--text-tertiary);text-align:center;max-width:280px;margin:1.5rem auto 0">
+            One of 8 tiles for Rule 110. All 8 are finite clopen cylinders 
+            in the survivor space's topology — natural objects, not foreign additions.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ Key Takeaways ═══ -->
+    <section class="lesson-section" id="takeaways">
+      <h2>Key Takeaways</h2>
+      <ul class="takeaway-list">
+        <li>
+          Each cell position i has its own prime p_i. The cell's state is a 
+          <strong>residue mod p_i</strong> — an element of {0, 1, …, p_i − 1}. 
+          The binary symbols 0 and 1 are native elements of GF(p) — not imported from outside.
+        </li>
+        <li>
+          The full state space is the Cartesian product of all prime residue rings. 
+          The Chinese Remainder Theorem guarantees that distinct primes do not interfere: 
+          one large number N encodes the entire tape, and reading any cell is one modular division.
+        </li>
+        <li>
+          The <strong>survivor space</strong> is the subset satisfying four UGP invariants: 
+          ridge lock, Fibonacci rigidity, kernel symmetry, and mirror invariance. 
+          This — not the full product space — is what "the UGP state space" means in the theory.
+        </li>
+        <li>
+          N = 10 (the operational level) is NOT one of the CRT primes. It is a separate parameter 
+          that sets the ridge value c = 2<sup>10</sup> − 1 = 1023. Primes serve three distinct roles: 
+          CRT coordinate labels (p_i), the polynomial field GF(7), and algebraic constraints 
+          on certain orbit values (b₁ = 73 must be prime).
+        </li>
+        <li>
+          UWCA tiles are clopen cylinders — the natural basic sets of the survivor space's topology. 
+          The Internal Church–Turing Theorem (P08) shows every finite-local map on survivors 
+          is expressible as a finite tile set. The GTE map T is such a map, so the UWCA is 
+          intrinsic to the survivor space — not imposed on it from outside.
+        </li>
+        <li>
+          The next step: what does the UWCA actually do, pass by pass, when it runs? L05 traces one 
+          complete sweep in detail, with register values and a full worked example.
+        </li>
+      </ul>
+    </section>
+
+    <!-- ═══ See Also ═══ -->
+    <div class="see-also">
+      <h2>See Also</h2>
+      <div class="see-also-group">
+        <div class="see-also-label">Lean 4 proofs (ugp-lean)</div>
+        <ul class="source-list">
+          <li><code>uwca_sweep_implements_rule110</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/UWCASimulation.lean" target="_blank" rel="noopener">view on GitHub ↗</a> (preview — covered fully in L05)</li>
+          <li><code>ugp_is_turing_universal</code> — <a href="https://github.com/novaspivack/ugp-lean/blob/main/UgpLean/Universality/TuringUniversal.lean" target="_blank" rel="noopener">view on GitHub ↗</a> (preview — covered fully in L05)</li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Source papers</div>
+        <ul class="source-list">
+          <li><a href="https://novaspivack.com/research" target="_blank" rel="noopener">P08 — The Universal Generative Principle ↗</a></li>
+          <li><a href="https://doi.org/10.5281/zenodo.20560550" target="_blank" rel="noopener">P48 — The Complete GTE Framework, Ch 3 ↗</a></li>
+        </ul>
+      </div>
+      <div class="see-also-group">
+        <div class="see-also-label">Full tutorial (PDF)</div>
+        <ul class="source-list">
+          <li><a href="https://novaspivack.com/research" target="_blank" rel="noopener">How the UWCA Works — UGP Physics Tutorial Series ↗</a></li>
+        </ul>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ═══ Lesson Footer ═══ -->
+  <div class="page-wrapper">
+    <footer class="lesson-footer">
+      <a href="../L03_polynomial/index.html" class="nav-btn nav-btn--prev">← L03: The Polynomial</a>
+      <a href="../L05_uwca/index.html"        class="nav-btn nav-btn--next">L05: The UWCA →</a>
+    </footer>
+  </div>
+
+  <!-- Math -->
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})">
+  </script>
+
+  <script src="../../common/interactive.js"></script>
+  <script src="../../common/nav.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // All prime rings, survivor grid, and triangle rendered by auto-init in interactive.js
+    });
+  </script>
+</body>
+</html>

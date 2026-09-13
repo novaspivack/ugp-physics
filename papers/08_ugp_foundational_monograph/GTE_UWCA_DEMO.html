@@ -1,0 +1,598 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>GTE→UWCA (N=10) — Global • Spatialised • Lattice • Local</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  :root { --pad: 12px; --gap: 10px; --bg:#0b0c10; --fg:#e6edf3; --mut:#98a1aa; }
+  html, body { height: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.35 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif; }
+  header { position: sticky; top: 0; z-index: 10; background: #0f1116cc; backdrop-filter: blur(6px); border-bottom: 1px solid #1f2630; }
+  .bar { display: grid; grid-template-columns: 1fr auto; gap: var(--gap); align-items: center; padding: var(--pad); }
+  h1 { font-size: 16px; margin: 0; font-weight: 600; letter-spacing: .2px; }
+  .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--gap); }
+  .ctl { display: flex; gap: 8px; align-items: center; }
+  .ctl label { min-width: 110px; color: var(--mut); }
+  input[type="number"], input[type="text"], select { width: 100%; background:#0b0d12; color:var(--fg); border:1px solid #263041; border-radius:8px; padding:6px 8px; }
+  input[type="range"] { width: 100%; accent-color: #58a6ff; }
+  input[type="checkbox"] { transform: translateY(1px); }
+  button { background:#1f6feb; color:white; border:none; border-radius:8px; padding:8px 12px; font-weight:600; cursor:pointer; }
+  button.secondary { background:#2d333b; color:#c9d1d9; }
+  button:disabled { opacity:.55; cursor:not-allowed; }
+  main { padding: var(--pad); display:grid; grid-template-columns: 1fr 360px; gap: var(--gap); }
+  #canvasWrap { border:1px solid #1f2630; border-radius:10px; overflow:auto; background:#000; }
+  canvas { display:block; image-rendering: pixelated; }
+  .legend { display:flex; flex-wrap:wrap; gap:8px; margin-top:6px; color:#c5d0db; font-size:12px; }
+  .swatch { display:inline-flex; align-items:center; gap:6px; padding:2px 6px; border-radius:999px; border:1px solid #2a3444; background:#0e1117; }
+  .dot { width:12px; height:12px; border-radius:3px; display:inline-block; }
+  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  aside { border:1px solid #1f2630; border-radius:10px; overflow:hidden; background:#0b0d12; display:flex; flex-direction:column; }
+  .paneHead { padding:10px 12px; border-bottom:1px solid #1f2630; font-weight:600; }
+  .paneBody { padding:10px 12px; display:flex; flex-direction:column; gap:10px; }
+  #traceBox { background:#000; color:#c9d1d9; font:12px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; border:1px solid #2a3444; border-radius:8px; padding:8px; height:300px; overflow:auto; white-space:pre; }
+  .row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  footer { color:#9aa7b4; padding: 8px var(--pad) 16px; font-size:12px; grid-column: 1 / -1; }
+  .muted { color:#98a1aa; }
+  .pill { padding:2px 8px; border-radius:999px; border:1px solid #2a3444; background:#0e1117; font-size:12px; color:#b8c4cf; }
+  .indent { margin-left: 8px; opacity:.9; }
+</style>
+</head>
+<body>
+  <header>
+    <div class="bar">
+      <h1>GTE→UWCA (N=10) — Global • Spatialised • Lattice • Local</h1>
+      <div class="controls">
+        <div class="ctl"><label>Width</label><input id="width" type="number" min="64" max="8192" step="1" value="1024"></div>
+        <div class="ctl"><label>Cell px</label><input id="cellSize" type="number" min="1" max="16" step="1" value="2"></div>
+        <div class="ctl"><label>Rows</label><input id="rows" type="number" min="1" max="200000" step="1" value="2000"></div>
+        <div class="ctl"><label>Speed</label><input id="speed" type="range" min="1" max="120" value="60"></div>
+
+        <div class="ctl"><label>Dynamics</label>
+          <select id="dyn">
+            <option value="global" selected>Global (single state)</option>
+            <option value="spatial">Spatialised UWCA (independent columns)</option>
+            <option value="lattice">Constraint‑Lattice (neighbour coupling)</option>
+            <option value="localCells">Local per‑cell (aggregated color)</option>
+          </select>
+        </div>
+        <div class="ctl"><label>Render</label>
+          <select id="render">
+            <option value="packed" selected>Space: packed CRT tiles</option>
+            <option value="bands">Space: 4 stacked bands</option>
+            <option value="time">Time: scrolling residues</option>
+            <option value="localpix">Space: local per‑cell color</option>
+          </select>
+        </div>
+
+        <div class="ctl"><label>Seed (a,b,c)</label><input id="seed" type="text" value="1,73,823"></div>
+        <div class="ctl"><label>Init phase</label><input id="phase" type="text" value="odd"></div>
+
+        <div class="ctl" id="colsCtl" style="display:none"><label>Columns</label><input id="cols" type="number" min="2" max="4096" step="1" value="64"></div>
+
+        <div class="ctl" id="latticeCtl" style="display:none; flex-direction:column; align-items:flex-start;">
+          <div class="row">
+            <label>Coupling</label>
+            <span class="indent"><input id="oddBNeighbor" type="checkbox" checked> Odd: b from neighbour</span>
+            <span class="indent"><input id="evenQNeighbor" type="checkbox" checked> Even: q relay</span>
+          </div>
+          <div class="row">
+            <label>Direction</label>
+            <select id="dir"><option value="left">Left (j←j−1)</option><option value="right">Right (j←j+1)</option></select>
+            <span class="indent"><input id="wrap" type="checkbox" checked> Wrap</span>
+          </div>
+        </div>
+
+        <div class="ctl" id="timeCtl" style="display:none"><label>Time column</label><input id="timeCol" type="number" min="0" max="4095" step="1" value="0"></div>
+        <div class="ctl" id="timePickCtl" style="display:none"><label>Residue pick</label>
+          <select id="timePick">
+            <option value="all" selected>All (A,B,C,Q × primes)</option>
+            <option value="A">A only</option>
+            <option value="B">B only</option>
+            <option value="C">C only</option>
+            <option value="Q">Q only</option>
+          </select>
+        </div>
+
+        <div class="ctl"><label>Repeat</label><input id="repeat" type="number" min="0" max="9999" step="1" value="0"><span class="muted">0=auto</span></div>
+        <div class="ctl"><label>Δ overlay</label><input id="delta" type="checkbox"></div>
+
+        <div class="ctl">
+          <button id="startBtn">Start</button>
+          <button id="stepBtn" class="secondary">Step</button>
+          <button id="stopBtn" class="secondary" disabled>Stop</button>
+          <button id="resetBtn" class="secondary">Reset</button>
+        </div>
+        <div class="ctl">
+          <button id="randBtn" title="Generate a valid random global seed">🎲 Random Seed</button>
+          <button id="randColsBtn" class="secondary" title="Randomise all columns">🎲 Columns</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div>
+      <div id="canvasWrap"><canvas id="cv" width="1024" height="1000"></canvas></div>
+      <div class="legend" id="legend"></div>
+    </div>
+
+    <aside>
+      <div class="paneHead">Live Trace</div>
+      <div class="paneBody">
+        <div class="row muted">
+          <span class="pill">k=<span id="kLab">0</span></span>
+          <span class="pill">phase=<span id="phaseLab">odd</span></span>
+          <span class="pill">dyn=<span id="dynLab">global</span></span>
+          <span class="pill">render=<span id="renderLab">packed</span></span>
+        </div>
+        <div id="traceBox"></div>
+        <div class="row">
+          <button id="copyBtn" class="secondary">Copy</button>
+          <button id="csvBtn" class="secondary">Download CSV</button>
+          <button id="clearBtn" class="secondary">Clear</button>
+        </div>
+        <div class="muted" style="font-size:12px">CSV for spatial/lattice/time/local is summarised (first 8 columns). For full dumps, instrument where marked.</div>
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    Space views paint per‑generation CRT residues (A,B,C,Q) for primes P={3,5,17,19,257}. Time view paints a 20‑pixel vertical stripe per step (A|B|C|Q × 5 primes).
+    <b>Global</b> = one (a,b,c,q); <b>Spatialised</b> = independent sites; <b>Constraint‑Lattice</b> = neighbour‑coupled via derived constraints (see checkboxes); <b>Local per‑cell</b> = one site per pixel (aggregated color). No ad‑hoc rule numbers.
+  </footer>
+
+<script>
+/* ---------- Constants & helpers ---------- */
+const PRIMES = [3,5,17,19,257];
+const F13 = 233;                          // even-phase kick for N=10
+const M = PRIMES.reduce((a,b)=>a*b,1);
+const TILE_LEN = PRIMES.length * 4;       // A,B,C,Q across 5 primes = 20 cells
+
+const el = (id)=>document.getElementById(id);
+function clamp(x, lo, hi){ x = Number.isFinite(+x)? +x : lo; return Math.max(lo, Math.min(hi, x)); }
+function modM(x){ return ((x % M)+M)%M; }
+
+// integer division with remainder
+function divrem(c,b){ const q = Math.floor(c / b); const m = c - q*b; return [q,m]; }
+
+// === N=10 arithmetic step (unchanged semantics) ===
+// state = [a,b,c,q_prev]
+function stepN10(state, phase){
+  let [a,b,c,q_prev] = state;
+  if (phase === "odd"){
+    const [q,m] = divrem(c,b);     // c / b
+    const a2 = m - 11;
+    const b2 = b - (m + q);
+    const c2 = b2 * q + 15;        // uses updated b2
+    const q2 = q;                  // store q for even phase
+    return [[a2,b2,c2,q2], "even"];
+  } else {
+    const b2 = b + F13;            // Fibonacci kick
+    const q2 = q_prev + 13;        // ridge schedule
+    const a2 = 5;                  // m2 - 10 with m2=15
+    const c2 = 65535;              // ridge closure
+    return [[a2,b2,c2,q2], "odd"];
+  }
+}
+
+// residues of x across the CRT primes
+function residues(x){ const xx = modM(x); return PRIMES.map(p => xx % p); }
+function residuesOfState(state){ const [a,b,c,q_prev] = state; return { A: residues(a), B: residues(b), C: residues(c), Q: residues(q_prev) }; }
+
+// color for (register idx, prime idx, residue)
+function colorFor(regIndex, pIndex, r){
+  const regHue = [210, 130, 20, 280][regIndex]; // A,B,C,Q
+  const primeHueOffset = [0, 8, 16, 24, 32][pIndex];
+  const h = (regHue + primeHueOffset) % 360;
+  const s = 65;
+  const p = PRIMES[pIndex];
+  const L0 = 25, L1 = 80;
+  const l = L0 + (L1-L0) * (r / (p-1 || 1));
+  return `hsl(${h} ${s}% ${l}%)`;
+}
+
+function buildTileColors(res){
+  const tile = [];
+  [[res.A,0],[res.B,1],[res.C,2],[res.Q,3]].forEach(([vec, regIndex])=>{
+    vec.forEach((r, pi)=> tile.push(colorFor(regIndex, pi, r)));
+  });
+  return tile; // length = TILE_LEN
+}
+function buildTileResidues(res){
+  const tileR = [];
+  [[res.A,0],[res.B,1],[res.C,2],[res.Q,3]].forEach(([vec])=>{ vec.forEach((r)=> tileR.push(r)); });
+  return tileR;
+}
+
+/* ---------- Random seeds ---------- */
+function randomSeedN10(){
+  const ri = (lo,hi)=> lo + Math.floor(Math.random()*(hi-lo+1));
+  const b = ri(10, 2000);
+  const q = ri(1, 40);
+  const m = ri(11, Math.max(11, Math.min(b-1, 60)));
+  const c = b*q + m;
+  const a = ri(1, 20);
+  return [a,b,c];
+}
+
+/* ---------- Canvas ---------- */
+const cv = el('cv'); const ctx = cv.getContext('2d', {alpha:false}); const traceBox = el('traceBox');
+
+function setupCanvas(){
+  const W = clamp(parseInt(el('width').value,10), 64, 8192);
+  const rows = clamp(parseInt(el('rows').value,10), 1, 200000);
+  const cellPx = clamp(parseInt(el('cellSize').value,10), 1, 16);
+  const render = el('render').value;
+  if (render === 'time'){ cv.width = W * cellPx; cv.height = (4*PRIMES.length) * cellPx; }
+  else { cv.width = W * cellPx; cv.height = rows * cellPx; }
+  ctx.fillStyle = '#000'; ctx.fillRect(0,0,cv.width, cv.height);
+}
+
+/* ---------- Painting ---------- */
+function paintRowPacked(yRow, W, cellPx, resNow, repeatCount, deltaOverlay, prevRes){
+  const tileColors = buildTileColors(resNow);
+  const tileR = buildTileResidues(resNow);
+  const drawCells = (repeatCount > 0) ? Math.min(repeatCount * TILE_LEN, W) : W;
+  for (let x=0; x<drawCells; x++){
+    ctx.fillStyle = tileColors[x % tileColors.length];
+    ctx.fillRect(x*cellPx, yRow*cellPx, cellPx, cellPx);
+  }
+  if (drawCells < W){ ctx.fillStyle = '#000'; ctx.fillRect(drawCells*cellPx, yRow*cellPx, (W-drawCells)*cellPx, cellPx); }
+  if (deltaOverlay && prevRes){
+    const prevTileR = buildTileResidues(prevRes);
+    const hi = 'rgba(255,255,255,0.6)';
+    for (let x=0; x<drawCells; x++){
+      if (tileR[x % TILE_LEN] !== prevTileR[x % TILE_LEN]){ ctx.fillStyle = hi; ctx.fillRect(x*cellPx, yRow*cellPx, cellPx, cellPx); }
+    }
+  }
+}
+function paintRowBands(yRow, W, cellPx, resNow, deltaOverlay, prevRes){
+  const bands = [[resNow.A,0],[resNow.B,1],[resNow.C,2],[resNow.Q,3]];
+  const block = Math.max(1, Math.floor(W / PRIMES.length));
+  bands.forEach(([vec, regIndex], bandIdx)=>{
+    const y = (yRow*cellPx) + (bandIdx % Math.max(1,cellPx));
+    for (let pi=0; pi<PRIMES.length; pi++){
+      ctx.fillStyle = colorFor(regIndex, pi, vec[pi]);
+      const x0 = pi * block; const x1 = (pi === PRIMES.length-1) ? W : (pi+1) * block;
+      ctx.fillRect(x0*cellPx, y, (x1-x0)*cellPx, 1);
+    }
+  });
+  if (deltaOverlay && prevRes){
+    const bandsPrev = [[prevRes.A,0],[prevRes.B,1],[prevRes.C,2],[prevRes.Q,3]];
+    const block = Math.max(1, Math.floor(W / PRIMES.length));
+    const hi = 'rgba(255,255,255,0.8)';
+    bands.forEach(([vec], bandIdx)=>{
+      const y = (yRow*cellPx) + (bandIdx % Math.max(1,cellPx));
+      for (let pi=0; pi<PRIMES.length; pi++){
+        if (vec[pi] !== bandsPrev[bandIdx][0][pi]){ const x0 = pi * block; const x1 = (pi === PRIMES.length-1) ? W : (pi+1) * block; ctx.fillStyle = hi; ctx.fillRect(x0*cellPx, y, (x1-x0)*cellPx, 1); }
+      }
+    });
+  }
+}
+function paintRowSpatialPacked(yRow, W, cellPx, resList){
+  const cols = resList.length; const blockW = Math.max(1, Math.floor(W / cols));
+  for (let j=0; j<cols; j++){
+    const tileColors = buildTileColors(resList[j]);
+    for (let x=0; x<blockW; x++){
+      ctx.fillStyle = tileColors[x % tileColors.length];
+      ctx.fillRect((j*blockW + x)*cellPx, yRow*cellPx, cellPx, cellPx);
+    }
+  }
+  const used = Math.min(W, cols * Math.max(1, Math.floor(W/cols)));
+  if (used < W){ ctx.fillStyle = '#000'; ctx.fillRect(used*cellPx, yRow*cellPx, (W-used)*cellPx, cellPx); }
+}
+function aggColorFromState(state){
+  const [a,b,c,q] = state;
+  const hue = (c % 257) / 257 * 360;
+  const sat = 40 + (q % 19) / 18 * 50;
+  const lig = 25 + (a % 17) / 16 * 55;
+  return `hsl(${hue.toFixed(1)} ${sat.toFixed(1)}% ${lig.toFixed(1)}%)`;
+}
+function paintRowLocalPixels(yRow, W, cellPx, states){
+  const cols = states.length; const blockW = Math.max(1, Math.floor(W / cols));
+  for (let j=0; j<cols; j++){
+    ctx.fillStyle = aggColorFromState(states[j]);
+    ctx.fillRect(j*blockW*cellPx, yRow*cellPx, blockW*cellPx, cellPx);
+  }
+  const used = Math.min(W, cols * Math.max(1, Math.floor(W/cols)));
+  if (used < W){ ctx.fillStyle = '#000'; ctx.fillRect(used*cellPx, yRow*cellPx, (W-used)*cellPx, cellPx); }
+}
+function paintTimeStripe(xCol, cellPx, resNow, pick){
+  const regs = ['A','B','C','Q']; let yStripe = 0;
+  for (let ri=0; ri<4; ri++){
+    if (pick !== 'all' && pick !== regs[ri]){ yStripe += PRIMES.length; continue; }
+    const vec = resNow[regs[ri]];
+    for (let pi=0; pi<PRIMES.length; pi++){
+      ctx.fillStyle = colorFor(ri, pi, vec[pi]);
+      ctx.fillRect(xCol*cellPx, (yStripe+pi)*cellPx, cellPx, cellPx);
+    }
+    yStripe += PRIMES.length;
+  }
+}
+
+/* ---------- State ---------- */
+let running = false, rafId = 0;
+let kStep = 0, yRow = 0, xCol = 0;
+let prevRes = null, traceRows = [];
+
+let curState = [1,73,823, 0];
+let curPhase = 'odd';
+
+let states = [];    // per-column [a,b,c,q]
+let phases = [];    // per-column phase
+
+/* ---------- Reset ---------- */
+function reset(){
+  setupCanvas();
+  const dyn = el('dyn').value, render = el('render').value;
+  el('colsCtl').style.display = (dyn !== 'global') ? '' : 'none';
+  el('latticeCtl').style.display = (dyn === 'lattice') ? '' : 'none';
+  el('timeCtl').style.display = (render === 'time') ? '' : 'none';
+  el('timePickCtl').style.display = (render === 'time') ? '' : 'none';
+
+  kStep=0; yRow=0; xCol=0; prevRes=null; traceRows=[]; traceBox.textContent="";
+  el('kLab').textContent='0'; el('dynLab').textContent=dyn; el('renderLab').textContent=render;
+
+  const [a,b,c] = parseSeed(el('seed').value);
+  curState = [a,b,c,0];
+  curPhase = (el('phase').value||'odd').toLowerCase()==='even' ? 'even' : 'odd';
+
+  const W = clamp(+el('width').value, 64, 8192);
+  const cellPx = clamp(+el('cellSize').value, 1, 16);
+  const repeatCount = clamp(+el('repeat').value || 0, 0, 9999);
+
+  if (dyn === 'global'){
+    if (render !== 'time'){
+      const res0 = residuesOfState(curState);
+      if (render === 'packed') paintRowPacked(0, W, cellPx, res0, repeatCount, false, null);
+      else if (render === 'bands') paintRowBands(0, W, cellPx, res0, false, null);
+      else if (render === 'localpix') paintRowLocalPixels(0, W, cellPx, [curState]);
+      prevRes = res0;
+    }
+  } else {
+    const cols = clamp(+el('cols').value, 2, 4096);
+    states = new Array(cols); phases = new Array(cols);
+    for (let j=0;j<cols;j++){ const [aa,bb,cc] = randomSeedN10(); states[j]=[aa,bb,cc,0]; phases[j]=curPhase; }
+    if (render !== 'time'){
+      if (dyn === 'spatial' || dyn === 'lattice'){
+        const resList = states.map(s => residuesOfState(s));
+        paintRowSpatialPacked(0, W, cellPx, resList);
+      } else if (dyn === 'localCells'){
+        paintRowLocalPixels(0, W, cellPx, states);
+      }
+    }
+  }
+}
+function parseSeed(str){
+  const parts = str.split(',').map(s=>parseInt(s.trim(),10));
+  if (parts.length !== 3 || parts.some(x => !Number.isFinite(x))) return [1,73,823];
+  return parts;
+}
+
+/* ---------- Neighbour helpers for lattice ---------- */
+function nbrIndex(j, dir, n, wrap){
+  const k = dir==='left' ? j-1 : j+1;
+  if (wrap) return (k+n)%n;
+  return Math.max(0, Math.min(n-1, k));
+}
+
+/* ---------- One step (space renders) ---------- */
+function stepSpaceOnce(){
+  const W = clamp(+el('width').value, 64, 8192);
+  const rows = clamp(+el('rows').value, 1, 200000);
+  const cellPx = clamp(+el('cellSize').value, 1, 16);
+  const repeatCount = clamp(+el('repeat').value || 0, 0, 9999);
+  const deltaOverlay = !!el('delta').checked;
+  const dyn = el('dyn').value, render = el('render').value;
+
+  if (dyn === 'global'){
+    const resNow = residuesOfState(curState);
+    if (render === 'packed') paintRowPacked(yRow, W, cellPx, resNow, repeatCount, deltaOverlay, prevRes);
+    else if (render === 'bands') paintRowBands(yRow, W, cellPx, resNow, deltaOverlay, prevRes);
+    else if (render === 'localpix') paintRowLocalPixels(yRow, W, cellPx, [curState]);
+    prevRes = resNow;
+
+  } else if (dyn === 'spatial' || dyn === 'lattice'){
+    const resList = states.map(s => residuesOfState(s));
+    if (render === 'packed' || render === 'bands') paintRowSpatialPacked(yRow, W, cellPx, resList);
+    else if (render === 'localpix') paintRowLocalPixels(yRow, W, cellPx, states);
+
+  } else if (dyn === 'localCells'){
+    paintRowLocalPixels(yRow, W, cellPx, states);
+  }
+
+  // trace (summarised for multi-column modes)
+  if (dyn === 'global'){
+    const [a,b,c,q_prev] = curState;
+    kStep++; el('kLab').textContent=kStep; el('phaseLab').textContent=curPhase;
+    const line = `${kStep.toString().padStart(6)}  ${curPhase.padEnd(5)}  a=${a.toString().padStart(8)}  b=${b.toString().padStart(8)}  c=${c.toString().padStart(8)}  q=${q_prev.toString().padStart(6)}`;
+    traceBox.textContent += (traceBox.textContent ? "\n" : "") + line;
+    traceRows.push({k:kStep, phase:curPhase, a, b, c, q:q_prev});
+  } else {
+    kStep++; el('kLab').textContent=kStep; el('phaseLab').textContent=(phases[0]||'odd');
+    const show = Math.min(states.length, 8);
+    let line = `${kStep.toString().padStart(6)}  ${(phases[0]||'odd').padEnd(5)}  cols=${states.length}  `;
+    for (let j=0;j<show;j++){ const [a,b,c,q] = states[j]; line += `| j=${j} a=${a} b=${b} c=${c} q=${q} `; }
+    traceBox.textContent += (traceBox.textContent ? "\n" : "") + line;
+  }
+  traceBox.scrollTop = traceBox.scrollHeight;
+
+  // advance state
+  if (dyn === 'global'){
+    const [nxt, nxtP] = stepN10(curState, curPhase);
+    curState = nxt; curPhase = nxtP;
+
+  } else if (dyn === 'spatial'){
+    for (let j=0;j<states.length;j++){ const [nxt, nxtP] = stepN10(states[j], phases[j]); states[j]=nxt; phases[j]=nxtP; }
+
+  } else if (dyn === 'lattice'){
+    const dir = el('dir').value, wrap = !!el('wrap').checked;
+    const useOddBFromNbr = !!el('oddBNeighbor').checked;
+    const useEvenQFromNbr = !!el('evenQNeighbor').checked;
+    const n = states.length;
+    const nextStates = new Array(n);
+    const nextPhases = new Array(n);
+
+    // compute all at once from previous snapshot (no half-updates)
+    for (let j=0;j<n;j++){
+      const phase = phases[j];
+      const [a,b,c,qprev] = states[j];
+      if (phase === 'odd'){
+        // local divrem from own (c,b)
+        const [q,m] = divrem(c,b);
+        const a2 = m - 11;
+        const b_base = useOddBFromNbr ? states[nbrIndex(j,dir,n,wrap)][1] : b; // neighbor's b or own b
+        const b2 = b_base - (m + q);
+        const c2 = b2 * q + 15;
+        const q2 = q;
+        nextStates[j] = [a2, b2, c2, q2];
+        nextPhases[j] = 'even';
+
+      } else { // even
+        const b2 = b + F13;
+        // q relay from neighbour's previous qprev if enabled; else own qprev
+        const qsrc = useEvenQFromNbr ? states[nbrIndex(j,dir,n,wrap)][3] : qprev;
+        const q2 = qsrc + 13;
+        const a2 = 5;
+        const c2 = 65535;
+        nextStates[j] = [a2, b2, c2, q2];
+        nextPhases[j] = 'odd';
+      }
+    }
+    // commit
+    for (let j=0;j<n;j++){ states[j]=nextStates[j]; phases[j]=nextPhases[j]; }
+
+  } else if (dyn === 'localCells'){
+    for (let j=0;j<states.length;j++){ const [nxt, nxtP] = stepN10(states[j], phases[j]); states[j]=nxt; phases[j]=nxtP; }
+  }
+
+  yRow++; if (yRow >= rows) yRow = 0;
+}
+
+/* ---------- One step (time view) ---------- */
+function stepTimeOnce(){
+  const W = clamp(+el('width').value, 64, 8192);
+  const cellPx = clamp(+el('cellSize').value, 1, 16);
+  const dyn = el('dyn').value, pick = el('timePick').value;
+  const colSel = clamp(+el('timeCol').value || 0, 0, Math.max(0,(states.length||1)-1));
+
+  let resNow;
+  if (dyn === 'global') resNow = residuesOfState(curState);
+  else resNow = residuesOfState(states[colSel]);
+  paintTimeStripe(xCol, cellPx, resNow, pick);
+
+  // trace
+  if (dyn === 'global'){
+    const [a,b,c,q_prev] = curState;
+    kStep++; el('kLab').textContent=kStep; el('phaseLab').textContent=curPhase;
+    const line = `${kStep.toString().padStart(6)}  ${curPhase.padEnd(5)}  a=${a.toString().padStart(8)}  b=${b.toString().padStart(8)}  c=${c.toString().padStart(8)}  q=${q_prev.toString().padStart(6)}`;
+    traceBox.textContent += (traceBox.textContent ? "\n" : "") + line;
+    traceRows.push({k:kStep, phase:curPhase, a, b, c, q:q_prev});
+  } else {
+    kStep++; el('kLab').textContent=kStep; el('phaseLab').textContent=(phases[colSel]||'odd');
+    const [a,b,c,q] = states[colSel];
+    traceBox.textContent += (traceBox.textContent ? "\n" : "") + `${kStep.toString().padStart(6)}  ${(phases[colSel]||'odd').padEnd(5)}  col=${colSel}  a=${a} b=${b} c=${c} q=${q}`;
+  }
+  traceBox.scrollTop = traceBox.scrollHeight;
+
+  // advance (same logic as space step)
+  if (dyn === 'global'){
+    const [nxt, nxtP] = stepN10(curState, curPhase);
+    curState = nxt; curPhase = nxtP;
+  } else if (dyn === 'spatial'){
+    for (let j=0;j<states.length;j++){ const [nxt, nxtP] = stepN10(states[j], phases[j]); states[j]=nxt; phases[j]=nxtP; }
+  } else if (dyn === 'lattice'){
+    const dir = el('dir').value, wrap = !!el('wrap').checked;
+    const useOddBFromNbr = !!el('oddBNeighbor').checked;
+    const useEvenQFromNbr = !!el('evenQNeighbor').checked;
+    const n = states.length, nextStates = new Array(n), nextPhases = new Array(n);
+    for (let j=0;j<n;j++){
+      const phase = phases[j]; const [a,b,c,qprev] = states[j];
+      if (phase === 'odd'){
+        const [q,m] = divrem(c,b);
+        const a2 = m - 11;
+        const b_base = useOddBFromNbr ? states[nbrIndex(j,dir,n,wrap)][1] : b;
+        const b2 = b_base - (m + q);
+        const c2 = b2 * q + 15;
+        const q2 = q;
+        nextStates[j] = [a2,b2,c2,q2]; nextPhases[j] = 'even';
+      } else {
+        const b2 = b + F13;
+        const qsrc = useEvenQFromNbr ? states[nbrIndex(j,dir,n,wrap)][3] : qprev;
+        const q2 = qsrc + 13;
+        nextStates[j] = [5,b2,65535,q2]; nextPhases[j] = 'odd';
+      }
+    }
+    for (let j=0;j<n;j++){ states[j]=nextStates[j]; phases[j]=nextPhases[j]; }
+  } else if (dyn === 'localCells'){
+    for (let j=0;j<states.length;j++){ const [nxt, nxtP] = stepN10(states[j], phases[j]); states[j]=nxt; phases[j]=nxtP; }
+  }
+
+  xCol++; if (xCol >= W) xCol = 0;
+}
+
+/* ---------- Loop & controls ---------- */
+function loop(){
+  if (!running) return;
+  const speed = clamp(+el('speed').value, 1, 120);
+  const stepsPerFrame = Math.ceil(speed / 60);
+  const render = el('render').value;
+  for (let i=0;i<stepsPerFrame;i++) (render==='time' ? stepTimeOnce() : stepSpaceOnce());
+  rafId = requestAnimationFrame(loop);
+}
+const start = ()=>{ if (running) return; running=true; el('startBtn').disabled=true; el('stopBtn').disabled=false; loop(); };
+const stop  = ()=>{ running=false; el('startBtn').disabled=false; el('stopBtn').disabled=true; cancelAnimationFrame(rafId); };
+
+el('startBtn').onclick = start;
+el('stopBtn').onclick  = stop;
+el('stepBtn').onclick  = ()=>{ if (!running){ const r=el('render').value; (r==='time'? stepTimeOnce() : stepSpaceOnce()); }};
+el('resetBtn').onclick = ()=>{ stop(); reset(); };
+
+['width','rows','cellSize','dyn','render','repeat','delta','cols','dir','wrap','timeCol','timePick','oddBNeighbor','evenQNeighbor']
+.forEach(id=> el(id).addEventListener('change', ()=>{ if (!running) reset(); }));
+
+el('randBtn').onclick = ()=>{ const [a,b,c] = randomSeedN10(); el('seed').value = `${a},${b},${c}`; stop(); reset(); };
+el('randColsBtn').onclick = ()=>{
+  const dyn = el('dyn').value; if (dyn==='global') return;
+  stop();
+  const cols = clamp(+el('cols').value, 2, 4096);
+  states = new Array(cols); phases = new Array(cols);
+  const ph = (el('phase').value||'odd');
+  for (let j=0;j<cols;j++){ const [a,b,c] = randomSeedN10(); states[j]=[a,b,c,0]; phases[j]=ph; }
+  reset();
+};
+
+el('copyBtn').onclick = async ()=>{
+  const header='k,phase,a,b,c,q\n';
+  const csv = header + traceRows.map(r=>`${r.k},${r.phase},${r.a},${r.b},${r.c},${r.q}`).join('\n');
+  try{ await navigator.clipboard.writeText(csv); }catch(e){}
+};
+el('csvBtn').onclick = ()=>{
+  const header='k,phase,a,b,c,q\n';
+  const csv = header + traceRows.map(r=>`${r.k},${r.phase},${r.a},${r.b},${r.c},${r.q}`).join('\n');
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='gte_uwca_trace.csv';
+  document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 0);
+};
+el('clearBtn').onclick = ()=>{ traceRows=[]; traceBox.textContent=''; el('kLab').textContent='0'; };
+
+/* ---------- Legend ---------- */
+(function buildLegend(){
+  const legend = document.getElementById('legend'); legend.textContent='';
+  const regs = ['A','B','C','Q'];
+  PRIMES.forEach((p, pi)=>{ regs.forEach((rg, ri)=>{
+    const sw = document.createElement('span'); sw.className='swatch';
+    const dot = document.createElement('span'); dot.className='dot';
+    dot.style.background = colorFor(ri, pi, Math.floor((p-1)/2));
+    const label = document.createElement('span'); label.innerHTML = `${rg}<span class="mono"> mod ${p}</span>`;
+    sw.appendChild(dot); sw.appendChild(label); legend.appendChild(sw);
+  });});
+})();
+
+/* ---------- Boot ---------- */
+(function initial(){ setupCanvas(); reset(); })();
+</script>
+</body>
+</html>

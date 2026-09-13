@@ -1,0 +1,1787 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  The Octonionic Shadow of GF(7):
+%  Color, Chirality, and Three Generations from a Quadratic-Residue Difference Set
+%
+%  Nova Spivack --- July 2026
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[11pt]{article}
+
+% ===================== PREAMBLE =====================
+\usepackage[margin=1in]{geometry}
+\usepackage{authblk}
+\usepackage{amsmath,amssymb,amsfonts,amsthm,mathtools}
+\allowdisplaybreaks
+\setlength{\abovedisplayskip}{6pt}
+\setlength{\belowdisplayskip}{6pt}
+\setlength{\abovedisplayshortskip}{4pt}
+\setlength{\belowdisplayshortskip}{4pt}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,matrix,decorations.pathmorphing}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+\usepackage{cite}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage[most]{tcolorbox}
+\tcbuselibrary{breakable}
+\usepackage{tabularx,ragged2e,array}
+\usepackage{hyperref}
+\usepackage[capitalize,nameinlink]{cleveref}
+\usepackage[toc]{appendix}
+\usepackage{float}
+\usepackage{placeins}
+
+\setlength{\emergencystretch}{3em}
+\raggedbottom
+
+\newcolumntype{P}[1]{>{\RaggedRight\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\RaggedRight\arraybackslash}X}
+\graphicspath{{figures/}{./}}
+
+\hypersetup{colorlinks=true,linkcolor=blue!60!black,citecolor=blue!60!black,urlcolor=blue!60!black}
+\input{nova_zenodo_doi_placeholder}
+
+% -- Theorem environments -----------------------------------------------------
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{openprob}{Open Problem}
+
+% -- Convenience macros -------------------------------------------------------
+\newcommand{\UGP}{\text{UGP}}
+\newcommand{\GTE}{\text{GTE}}
+\newcommand{\MDL}{\text{MDL}}
+\newcommand{\PSC}{\text{PSC}}
+\newcommand{\PHIMDL}{\Phi_{\mathrm{MDL}}}
+\newcommand{\ZS}{\mathbb{Z}_7}
+\newcommand{\ZT}{\mathbb{Z}_2}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\lean}[1]{%
+  \penalty-100
+  \begingroup\def\_{\textunderscore\allowbreak}\texttt{#1}\endgroup}
+
+\newcommand{\OO}{\mathbb{O}}   % octonions
+\newcommand{\HH}{\mathbb{H}}   % quaternions
+\newcommand{\CC}{\mathbb{C}}   % complex
+\newcommand{\FF}{\mathbb{F}}   % finite field
+\newcommand{\QQ}{\mathbb{Q}}   % rationals
+\newcommand{\suAlg}{\mathfrak{su}}
+\newcommand{\ggoAlg}{\mathfrak{g}_2}
+\newcommand{\suThree}{\mathfrak{su}(3)}
+\newcommand{\suTwo}{\mathfrak{su}(2)}
+
+% -- Status badge macros — math-mode safe -------------------------------------
+\newcommand{\CatA}{\textbf{A}}
+\newcommand{\CatAL}{\ensuremath{\textbf{A}_{\rm Lean}}}
+\newcommand{\CatAMDL}{\ensuremath{\textbf{A}_{\rm MDL}}}
+\newcommand{\CatAD}{\textbf{A/D}}
+\newcommand{\CatB}{\textbf{B}}
+\newcommand{\CatD}{\textbf{D}}
+
+\begin{document}
+
+\title{\textbf{The Octonionic Shadow of GF(7):}\\
+  \large Color, Chirality, and Three Generations\\
+  from a Quadratic-Residue Difference Set}
+
+\author{Nova Spivack}
+\affil{Independent Researcher}
+\date{July 2026}
+\maketitle
+
+\NovaZenodoAfterTitle
+
+\noindent\textbf{Classification:} Theoretical Physics; Algebraic Geometry;
+Group Theory; Division Algebras; Standard Model.
+
+%-----------------------------------------------------------------------------
+\begin{abstract}
+
+The UGP/GTE arithmetic programme derives Standard Model structure from
+GF(7) and the group $F_{21} = \mathbb{Z}_7\!\rtimes\!\mathbb{Z}_3$, with
+major claims machine-certified in Lean~4.
+The division-algebra programme (Dixon; Furey; Baez--Huerta) independently
+derives one-generation Standard Model structure from the octonions.
+This paper proves the two programmes are facets of a single finite structure:
+the quadratic-residue set $\mathrm{QR}(7) = \{1,2,4\} \subset \mathbb{F}_7^*$
+is simultaneously the arithmetic anchor of GTE and the Fano-plane orientation
+that defines the octonion algebra.
+
+Starting from $D = \{1,2,4\}$ as the sole input, we establish a six-link
+machine-verified derivation chain: \emph{(i)}~the oriented translates of $D$
+are the octonion multiplication table, uniquely up to relabeling, with the
+sign encoding $\mathrm{sign}(e_x e_y) = [y-x\in D]$ read directly from the
+difference set; \emph{(ii)}~$N_c = 3$ from the pencil count of the $(7,3,1)$
+design via $F_{21}\hookrightarrow G_2$ and $\mathrm{Stab}_{G_2}(\mathrm{apex})
+= \mathrm{SU}(3)$; \emph{(iii)}~the exceptional isomorphism
+$\mathrm{PSL}(2,7)\cong\mathrm{GL}(3,2)$, order~168, certified by
+Todd--Coxeter coset enumeration; \emph{(iv)}~the derivation algebra
+$\mathrm{der}(\mathbb{O}) = \mathfrak{g}_2$ (dimension~14 exact) and
+$\mathrm{Stab}_{G_2}(\mathrm{apex}) = \mathfrak{su}(3)$ (dimension~8 exact),
+with bracket closure and Killing-form certificate computed from first
+principles~(\CatAL, 39 Lean theorems); \emph{(v)}~UGP's flavor package
+$(\mu_3, U, V_4, A_4)$ is equivariantly isomorphic to the Spin(8) triality
+package $(\rho, \sigma, Z(\mathrm{Spin}(8)), Z\!\rtimes\!\rho)$, pinning
+$\mathrm{gen}_1\leftrightarrow V$ via Eisenstein norm uniqueness
+$b_{\mathrm{gen}_1} = 73 = \mathcal{N}(9+\omega)$~(\CatAL); and
+\emph{(vi)}~the charged-lepton Koide mass ladder is a function on the
+triality orbit with torsor-invariant angle $|\delta\bmod 2\pi/3|
+= 0.222229631 = 2/9 + 7.4\times10^{-6}$ (7~ppm from PDG).
+
+Two structurally independent derivation paths --- finite arithmetic (GTE) and
+continuous division algebra --- converge on identical outputs $(N_c, \text{charge
+spectrum}, N_{\mathrm{gen}}=3)$; this convergence constitutes non-trivial
+structural evidence that these quantities are genuine consequences of
+the GF(7) arithmetic rather than numerical accidents.
+The neutrino sector is completed by the GTE seesaw: the right-handed seed ordering
+$b_{R,1}=5<b_{R,2}=11<b_{R,3}=19$ pins the mass eigenstates $\nu_k$ via
+$m_{\nu,k}\propto b_{R,k}^{29/9}$ and predicts normal ordering,
+with $\Delta m^2_{21}$ and $\Delta m^2_{31}$ within $1\%$ of NuFIT~6.0~IC24~NH.
+All major claims are certified at level \CatAL{} (zero \texttt{sorry} in Lean~4)
+or \CatA{} (computation-verified by assertion-checked Python scripts).
+\S\ref{sec:honest} lists what is not established.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+%-----------------------------------------------------------------------------
+\begin{tcolorbox}[colback=gray!7,colframe=gray!55!black,
+  title={\textbf{Claim-strength taxonomy}},
+  fonttitle=\bfseries,left=6pt,right=6pt,top=5pt,bottom=5pt,breakable]
+\small
+Every result in this paper is tagged with its confidence level:
+\begin{itemize}[noitemsep,topsep=2pt]
+  \item \textbf{\CatAL} --- machine-certified in Lean~4 with zero \texttt{sorry}.
+        All cited Lean theorems reside in the \texttt{ugp-lean} library.
+  \item \textbf{\CatAD} --- full analytic derivation; computationally confirmed.
+  \item \textbf{\CatA} --- computationally verified (assertion-checked Python script);
+        analytic derivation or Lean certificate remains open.
+  \item \textbf{\CatB} --- plausible and partially supported.
+  \item \textbf{\CatD} --- exploratory or conjectural.
+\end{itemize}
+Ordering: $\CatAL > \CatAD > \CatA > \CatB > \CatD$.
+Lean theorem names appear in \lean{monospace}; all Lean modules cited here are
+zero-sorry and reside in \texttt{ugp-lean}.
+Level framing: Theorems A--H are Level~0--1 algebraic certificate claims
+(GF(7) arithmetic and F$_{21}$/G$_2$ group theory). The C$3''$ Lagrangian
+frontier is Level~3; open items in \S\ref{sec:honest} are labeled accordingly.
+\end{tcolorbox}
+
+%-----------------------------------------------------------------------------
+\begin{tcolorbox}[colback=orange!8,colframe=orange!60!black,
+  title={\textbf{What this paper claims}},
+  fonttitle=\bfseries,left=6pt,right=6pt,top=5pt,bottom=5pt,breakable]
+\small
+\textbf{Algebraic certificates (\CatAL/\CatA):}
+\begin{itemize}[noitemsep,topsep=2pt]
+  \item \textbf{[Octonion from QR(7)]} $D = \{1,2,4\}$ orients the Fano plane,
+        giving the octonion multiplication table uniquely; 480 of 3840 oriented tables
+        are composition algebras (\CatA, \lean{octonion\_from\_qr7.py}).
+  \item \textbf{[Group certificate]} $|\mathrm{PSL}(2,7)| = 168$, certified by
+        168-coset Todd--Coxeter table (\CatAL,
+        \lean{hurwitz\_presentation\_order\_168}).
+  \item \textbf{[$F_{21}\hookrightarrow G_2$]} UGP's gauge skeleton embeds in $G_2 = \mathrm{Aut}(\mathbb{O})$
+        as octonion automorphisms; $N_c = 3$ from pencil count
+        (\CatAL, \lean{Nc\_factorization}, \lean{weights\_card\_from\_pencil}).
+  \item \textbf{[$G_2$ and SU(3) derived]} $\mathrm{der}(\mathbb{O}) = \mathfrak{g}_2$
+        (dim~14) and $\mathrm{Stab}_{G_2} = \mathfrak{su}(3)$ (dim~8) from exact
+        linear algebra (\CatAL, \lean{derivation\_algebra\_is\_g2\_certificate},
+        \lean{apex\_stabilizer\_is\_su3\_certificate}).
+  \item \textbf{[Triality = flavor]} UGP's $(\mu_3, U, V_4, A_4)$ is equivariantly
+        isomorphic to $\mathrm{Spin}(8)$ triality $(\rho,\sigma,Z,Z\!\rtimes\!\rho)$;
+        $\mathrm{gen}_1\leftrightarrow V$ from Eisenstein norm uniqueness
+        (\CatAL, \lean{G6\_rigidity\_conditional}).
+  \item \textbf{[Koide]} Torsor-invariant angle $2/9 + 7.4\times10^{-6}$ rad (\CatA).
+  \item \textbf{[Neutrino pinning]} RH seed ordering $b_{R,1}<b_{R,2}<b_{R,3}$ via the
+        seesaw $m_{\nu,k}\propto b_{R,k}^{29/9}$ pins $\nu_k$ to $\mathrm{gen}_k$
+        and predicts normal mass ordering (\CatAL;
+        \lean{seesaw\_triality\_pinning\_bundle}).
+\end{itemize}
+\textbf{What this paper does NOT claim:}
+\begin{itemize}[noitemsep,topsep=2pt]
+  \item It does not derive the charge spectrum or $N_c$ for the first time ---
+        P48~\cite{SpivackGTECompleteFramework} already derives these from GF(7)
+        arithmetic with Lean certificates. This paper provides a \emph{second,
+        independent} octonionic derivation.
+  \item It does not establish the Lagrangian-level assignment of $\PHIMDL$ fermion
+        fields to triality slots (C$3''$, Level~3; open, \S\ref{sec:honest}).
+  \item It does not derive the SU(2)$_L$ sector beyond the charge spectrum, nor
+        U(1)$_Y$ as a gauge group.
+\end{itemize}
+\end{tcolorbox}
+
+%=============================================================================
+\section{Introduction}
+\label{sec:intro}
+%=============================================================================
+
+Two research programmes derive Standard Model structure from economical
+inputs, and have until now developed without systematic contact.
+
+\paragraph{The GTE/UGP arithmetic programme.}
+Starting from the finite field $\mathbb{F}_7$ and its quadratic-residue set
+$\mathrm{QR}(7) = \{1,2,4\}$, the GTE framework \cite{SpivackGTECompleteFramework}
+constructs the gauge skeleton $F_{21} = \mathbb{Z}_7\!\rtimes\!\mathbb{Z}_3$,
+derives $N_c=3$, the SM charge spectrum, and $N_{\mathrm{gen}}=3$ from
+consistency constraints, and certifies the algebraic layer in Lean~4
+\cite{SpivackUGPFormalization,ugp-lean}.
+The programme derives \emph{what} the numbers are from first principles
+\cite{Spivack2025UGP}, but the connection from finite arithmetic to the continuous
+symmetry groups of particle physics has required individual geometric
+justifications at each step.
+
+\paragraph{The division-algebra programme.}
+Starting from the four normed division algebras $\mathbb{R}, \mathbb{C},
+\mathbb{H}, \mathbb{O}$ \cite{Hurwitz1898}, Dixon \cite{Dixon1994}, Furey
+\cite{Furey2015,Furey2016thesis,Furey2018}, Baez and Huerta
+\cite{BaezHuerta2010,Baez2002}, Manogue and Dray \cite{ManogueDray1999},
+and Furey and Hughes \cite{FureyHughes2025} derive one-generation Standard
+Model structure: $\mathrm{SU}(3) = \mathrm{Stab}_{G_2}(e_7)$,
+charges from Clifford-algebra number operators, and the weak sector from
+the quaternionic factor.
+The programme reveals \emph{how} the symmetry groups fit geometrically, but
+does not explain \emph{why} the octonions: Hurwitz's theorem establishes
+that $\mathbb{O}$ is unique among normed division algebras of its dimension,
+but does not supply a discrete origin for the octonion structure
+\cite{Baez2002,Hurwitz1898}.
+
+\paragraph{The bridge.}
+This paper proves the two programmes share a common finite root: the
+difference set $D = \mathrm{QR}(7) = \{1,2,4\}\subset\mathbb{F}_7^*$
+is simultaneously (a) the arithmetic anchor of the GTE framework, and
+(b) the Fano-plane orientation that uniquely determines the octonion
+multiplication table.
+The GTE gauge skeleton $F_{21}\hookrightarrow G_2 = \mathrm{Aut}(\mathbb{O})$
+embeds as a subgroup of octonion automorphisms (Theorems D, E); the division-algebra
+structure appears \emph{as a consequence of the GF(7) arithmetic}, not as an
+independent starting point.
+
+\paragraph{Why this matters: six points.}
+\begin{enumerate}[noitemsep]
+  \item \textit{The division-algebra programme's foundational gap.}
+    Hurwitz's theorem establishes $\mathbb{O}$ as the unique
+    8-dimensional normed division algebra, but does not explain why nature
+    chose it. The programme finds the SM inside the octonions but lacks a discrete
+    foundation for why these algebras exist.
+  \item \textit{GTE's gap (before this paper).}
+    GTE derives the SM numerics from $\mathbb{F}_7$, but the connection from
+    finite arithmetic to continuous Lie groups (SU(3), SU(2), $G_2$)
+    has required individual justifications at each stage.
+  \item \textit{Mutual resolution.}
+    The present work shows: \emph{why octonions?} --- Because
+    $\mathrm{QR}(7)\subset\mathbb{F}_7^*$ forces the Fano geometry, and
+    only the 7-dimensional case yields a normed division algebra when oriented
+    combinatorially. \emph{Why $\mathbb{F}_7$?} --- Because only $\mathbb{F}_7$'s
+    quadratic residues form a $(7,3,1)$-design whose oriented translates give
+    a normed division algebra. The two structures are two projections of one object.
+  \item \textit{Independent convergence as structural evidence.}
+    When two completely independent paths --- finite arithmetic (GTE) and
+    continuous algebra (division algebras) --- converge on identical outputs
+    ($N_c=3$, the SM charge spectrum, three generation slots from triality),
+    that convergence is hard to dismiss as coincidence. This constitutes
+    the strongest kind of structural evidence that these quantities are necessary
+    rather than contingent.
+  \item \textit{Tower termination unified --- an external anchor for ``why~7?''}
+    The GTE programme's internal justifications for $\mathbb{F}_7$
+    (PSC constraints, FGCI identity, orbit structure) are self-consistency
+    conditions: they establish that $7$ satisfies GTE's own architectural
+    requirements from within the framework.
+    The octonionic bridge supplies a justification external to that architecture.
+    Hurwitz's theorem (Theorem~\ref{thm:F4}) says the normed division algebra
+    tower $\mathbb{R},\mathbb{C},\mathbb{H},\mathbb{O}$ terminates at
+    dimension~8: sedenion zero-divisors destroy composition and no
+    $\mathbb{O}$-successor exists.
+    The bridge translates this into the GTE language: $\mathrm{GF}(7)$ is the
+    last rung because the tower itself ends there.
+    An answer to ``why~7?'' that makes no reference to GTE's internal structure:
+    7 is the unique prime $p$ whose quadratic residues orient a normed division
+    algebra, and the octonions are the terminal object of the only such tower
+    mathematics permits.
+    The base-rate analysis (\S\ref{sec:honest}) sharpens this: of the 13 named
+    joints in the derivation chain
+    $\mathrm{QR}(7)\!\to\!\mathrm{Fano}\!\to\!\mathbb{O}\!\to\!G_2\!\to\!\mathrm{SU}(3)$,
+    eleven are mathematical theorems with no free parameter.
+    The framework's foundation transforms from a self-consistent construction
+    to a forced structure.
+  \item \textit{Symmetry groups as automorphisms of an arithmetic object.}
+    The standard SM formulation declares $\mathrm{SU}(3)\times\mathrm{SU}(2)\times
+    \mathrm{U}(1)$ as a choice. Here, $\mathrm{SU}(3) = \mathrm{Stab}_{G_2}(\mathrm{apex})$
+    where $G_2 = \mathrm{Aut}(\mathrm{QR}(7)\text{-Fano-octonions})$, and
+    $\mathrm{SU}(2)\times\mathrm{U}(1)$ falls out of the quaternionic subalgebra
+    (Theorems F1--F5). The gauge symmetry group is the automorphism group of an
+    arithmetic object that had to exist.
+\end{enumerate}
+
+\paragraph{Correct framing: second independent route, not first derivation.}
+The GTE arithmetic programme already derives $N_c=3$
+(\lean{weights\_card}, \lean{anomaly\_cancellation\_forces\_Nc\_3}),
+the SM charge spectrum, and $N_{\mathrm{gen}}=3$
+(\lean{ngen\_3\_unique\_satisfies\_all\_eight}) in P48
+\cite{SpivackGTECompleteFramework}.
+This paper provides a second, structurally independent derivation of these
+same quantities via the octonionic route.
+Two independent derivation paths converging on identical numerical outputs
+constitutes stronger evidence than either path alone.
+
+\paragraph{Structure of this paper.}
+\S\ref{sec:fano} derives the Fano plane from QR(7) (Theorem A).
+\S\ref{sec:octonion} constructs the octonions from the oriented design (Theorem B).
+\S\ref{sec:group} certifies the group layer (Theorem C).
+\S\ref{sec:color} establishes the color sector and UGP interface (Theorems D, D', E).
+\S\ref{sec:ew} derives the electroweak shadow (Theorems F1--F5, Proposition O1$'$).
+\S\ref{sec:gen} establishes three generations from triality (Theorems G0--G6, H1--H3).
+\S\ref{sec:prior} situates the results relative to prior art and the division-algebra
+programme; \S\ref{sec:lean} describes the formalization programme;
+\S\ref{sec:honest} lists open problems and negative results.
+Appendix~\ref{app:matrix} is the claim-to-evidence matrix;
+Appendix~\ref{app:lean} is the Lean module inventory.
+
+%=============================================================================
+\section{GF(7) and the Fano Plane}
+\label{sec:fano}
+%=============================================================================
+
+\begin{theorem}[Design; \CatAL]
+\label{thm:A}
+Let $D = \{1,2,4\}\subset\mathbb{Z}/7$.
+\begin{enumerate}[label=(\alph*),noitemsep]
+  \item $D$ is the set of nonzero quadratic residues modulo~7
+        (\emph{i.e.}\ the squares in $(\mathbb{Z}/7)^*$).
+  \item $D$ is a perfect $(7,3,1)$ planar difference set: every nonzero
+        residue occurs as a difference of elements of $D$ in exactly one way.
+  \item The seven translates $\{D+t : t\in\mathbb{Z}/7\}$ are the seven
+        lines of a Fano plane on $\mathbb{Z}/7$.
+  \item Exactly $|D| = 3$ lines pass through every point (the \emph{pencil}).
+  \item The multiplier group of $D$ is $D$ itself: multiplication by $2$
+        (order~3) preserves the design (Hall's multiplier theorem).
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}[Verification]
+\lean{octonion\_from\_qr7.py} (claims A1--A3); Lean:
+\lean{OctonionShadowInterface.lean} theorems OSI-2 through OSI-6
+(\lean{D\_difference\_set}, \lean{z3\_is\_multiplier},
+\lean{fanoLines\_are\_D\_translates}, \lean{pencil\_card}), all \texttt{decide}-class
+(\CatAL).
+The UGP corpus labels its lines as translates of $\{0,1,3\} = D-1$; the two
+labelings coincide at the level of OSI theorems.
+\end{proof}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.45\textwidth]{fano_plane_qr7.pdf}
+  \caption{\textbf{F1: The Fano plane with QR(7) pencil.}
+    The seven points $\{0,1,\ldots,6\}$ of $\mathbb{Z}/7$ and seven lines
+    (translates of $D = \{1,2,4\}$). The three lines through the apex (point 0)
+    form the \emph{pencil}: $\{0,1,3\}$, $\{0,2,6\}$, $\{0,4,5\}$ (shaded in
+    blue, orange, green). The multiplier $2\cdot: i\mapsto 2i\pmod{7}$ (UGP's
+    \lean{z3Mul}) 3-cycles the pencil lines.}
+  \label{fig:fano}
+\end{figure}
+
+The pencil count $|D| = 3 = (7-1)/2$ is the first occurrence of $N_c = 3$:
+three lines through every point, three colors per quark generation.
+This is not coincidental --- it is the same count that appears in Theorem D'
+via the octonion derivation chain.
+
+%=============================================================================
+\section{The Octonion Construction}
+\label{sec:octonion}
+%=============================================================================
+
+\begin{theorem}[Octonions from QR(7); \CatA]
+\label{thm:B}
+Orienting each line $(t{+}1, t{+}2, t{+}4)$ cyclically and extending by
+anticommutativity, $e_i^2 = -1$, defines an 8-dimensional real algebra that
+is alternative, Moufang, and norm-composing --- the octonions.
+Among the $30 \cdot 2^7 = 3840$ oriented Fano tables, exactly $480$ are
+composition algebras; the signed-permutation group (order $7!\cdot 2^7$)
+acts transitively on them; the stabilizer (frame group) has order
+$1344 = 2^3\cdot 168$ with sign-only kernel $2^3$ and quotient
+$\mathrm{Aut}(\mathrm{Fano})$.
+The octonion structure attached to $\mathrm{GF}(7)$ is therefore unique up
+to relabeling.
+\end{theorem}
+
+\begin{theorem}[Orientation $=$ QR; \CatAL]
+\label{thm:Bprime}
+In the closed-form index-level product,
+$\mathrm{sign}(e_x e_y) = +1$ if and only if $y - x \in \mathrm{QR}(7)$.
+The difference set is not merely the seed for the plane; it is the orientation
+of the algebra.
+\end{theorem}
+
+\begin{proof}[Verification]
+\lean{octonion\_from\_qr7.py} (A4--A7; 3840-table census, exact over $\mathbb{Q}$).
+Lean: \lean{OctonionShadowInterface.lean} theorem
+\lean{octProd\_sign\_eq\_QR} (OSI-7, \texttt{decide}; \CatAL).
+The branch table is: $d \mapsto (\text{offset}, \text{sign})$:
+$1\mapsto(3,+)$, $2\mapsto(6,+)$, $3\mapsto(1,-)$, $4\mapsto(5,+)$,
+$5\mapsto(4,-)$, $6\mapsto(2,-)$.
+\end{proof}
+
+\begin{remark}[Winding scope]
+The kink quantum number $Q_\varphi = 4$ in
+\lean{PhiMDLKinkQuantumNumbers.lean}
+labels the full-generation kink winding in the $\PHIMDL$ potential;
+the winding $w = 4$ in \lean{KoideGenerationCyclicSymmetry} refers to the
+charged-lepton electroweak sector only (equal for all three generations by
+SM universality). These are distinct sectors and not inconsistent.
+\end{remark}
+
+%=============================================================================
+\section{The Group Layer}
+\label{sec:group}
+%=============================================================================
+
+\begin{theorem}[Group certificate; \CatAL]
+\label{thm:C}
+\begin{enumerate}[label=(\alph*),noitemsep]
+  \item $\mathrm{PSL}(2,7)$ (168 elements) and $\mathrm{GL}(3,2) = \mathrm{Aut}(\mathrm{Fano})$ (168 elements)
+        each contain a generating pair with $a^2 = b^3 = (ab)^7 = [a,b]^4 = 1$.
+  \item The presented group $H = \langle a,b \mid a^2, b^3, (ab)^7, [a,b]^4\rangle$
+        has order \emph{exactly} 168, certified by coset enumeration over the
+        trivial subgroup: the 168-coset table is complete, all four relators
+        fix all cosets, and the table permutations generate a regular permutation
+        group of order 168 (certificate: \lean{hurwitz\_coset\_certificate.json}).
+  \item $\mathrm{PSL}(2,7)\cong H\cong\mathrm{GL}(3,2)$: the exceptional
+        isomorphism, with no citation-level gaps.
+  \item The $(2,3,7)$ generation certifies the Hurwitz property:
+        $H = \mathrm{Aut}(\text{Klein quartic})$, attaining $84(g-1)$ at
+        genus~3 --- the level-7 modular curve.
+  \item The 7-point and 7-line actions are inequivalent, realizing
+        $\mathrm{Out}(H) = \mathbb{Z}/2$ as Fano duality.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}[Verification]
+\lean{psl27\_group\_layer.py} (B1--B4); \lean{hurwitz\_coset\_enumeration.py}
+(CE-1..8 with certificate export). Lean: \lean{HurwitzCosetCertificate.lean}
+(\lean{hurwitz\_presentation\_order\_168}; \CatAL, zero sorry, all via
+\texttt{native\_decide}).
+\end{proof}
+
+\paragraph{The $\mathbb{Z}_3$ disambiguation.}
+The group $F_{21} = \mathbb{Z}_7\!\rtimes\!\mathbb{Z}_3$ has a single
+$\mathbb{Z}_3$ subgroup in abstract, but two physically distinct representations.
+In the $\mathrm{QR}(7)$-pencil representation, $\mathbb{Z}_3$ acts as
+\emph{color rotation}: the doubling map $z \mapsto 2z$ is an inner automorphism
+of $G_2 = \mathrm{Aut}(\mathbb{O})$ fixing the apex, cycling the ladder pairs
+$(1,3)\to(2,6)\to(4,5)$.
+In the $\mathrm{Spin}(8)$ triality representation, $\mathbb{Z}_3$ acts as
+\emph{flavor cycling}: the Koide cone phase-shift, an outer automorphism of
+$\mathrm{Spin}(8)$.
+These are the same abstract generator in two different representations; they
+are not conflated.
+Lean: \lean{OctonionColorFlavorDisambiguation.lean}
+(\lean{z3\_color\_flavor\_disambiguation},
+\lean{z3\_color\_fixed\_point\_at\_zero},
+\lean{z3\_flavor\_no\_phase\_fixed\_point}; \CatAL, zero sorry).
+
+%=============================================================================
+\section{Color Sector and the UGP Interface}
+\label{sec:color}
+%=============================================================================
+
+\begin{theorem}[Pencil $\to$ CAR $\to$ SU(3); \CatAL]
+\label{thm:D}
+Fix the apex (point~0).
+The three pencil lines yield ordered pairs $(1,3)$, $(2,6)$, $(4,5)$ with
+$e_a e_b = e_{\mathrm{apex}}$; the operators
+$\alpha_k = \tfrac{1}{2}(-L_a + iL_b)$ satisfy the exact CAR algebra;
+$N = \sum\alpha^\dagger\alpha$ has spectrum $\{0,1,2,3\}\times\{1,3,3,1\}$;
+$Q = N/3\in\{0,\tfrac{1}{3},\tfrac{2}{3},1\}$ --- the $(\nu_R, \bar{d},
+u, e^+)$ pattern; the bilinears $T_A = \alpha^\dagger\lambda_A\alpha$ close
+on $\mathfrak{su}(3)$ with standard Gell-Mann structure constants
+(deviation $4\times10^{-16}$), commute with $N$, and split $\mathbb{C}^8$ as
+$1\oplus 3\oplus\bar{3}\oplus 1$ (Casimir~$0$, $\tfrac{16}{3}$).
+\end{theorem}
+
+\begin{theorem}[$N_c = 3$ from pencil count; \CatAL]
+\label{thm:Dprime}
+$N_c = 3 = |\mathrm{QR}(7)| = (7-1)/2 = $ pencil count. The pencil number
+operator in the $(7,3,1)$ design and the octonionic $N_c$ are one and the
+same design parameter. The independent $N_c$ input of the GTE arithmetic
+programme (\lean{weights\_card}) is discharged by the octonionic identity
+\lean{Nc\_factorization} (\lean{weights\_card = ladderPairs.card}).
+\end{theorem}
+
+\begin{proof}[Verification]
+\lean{f21\_octonion\_interface\_verify.py} (I1--I8). Lean:
+\lean{OctonionShadowInterface.lean} OSI-1 through OSI-13
+(14 theorems, \texttt{decide}/\texttt{native\_decide}; \CatAL, zero sorry).
+Key theorem for D$'$: \lean{weights\_card\_from\_pencil}
+(\lean{weights.card = 3}, \texttt{decide}; \CatAL).
+\end{proof}
+
+\begin{theorem}[$G_2$ and SU(3) derived; \CatAL]
+\label{thm:E}
+The linear system $D(xy) = D(x)y + xD(y)$ on the 64 entries of the octonion
+product (512 equations) has nullity exactly~14; the solution space closes under
+bracket (residual $< 10^{-15}$), has Killing form $-4I$ (compact), and rank~2
+--- hence $\mathrm{der}(\mathbb{O}) = \mathfrak{g}_2$ by the classification
+of compact rank-2 semisimple Lie algebras \cite{Cartan1925}.
+Adding $D(e_{\mathrm{apex}}) = 0$ gives nullity exactly~8, closed, Killing
+$-3I$, rank~2 --- hence $\mathrm{Stab}_{G_2}(\mathrm{apex}) = \mathfrak{su}(3)$.
+The capstone theorems are
+\lean{derivation\_algebra\_is\_g2\_certificate} and
+\lean{apex\_stabilizer\_is\_su3\_certificate} (modulo the cited
+Cartan--Killing classification, which is standard mathematics).
+\end{theorem}
+
+\begin{proof}[Verification]
+\lean{g2\_stabilizer\_derivation.py} (D1--D4);
+\lean{g2\_stabilizer\_certificate\_export.py}.
+Lean: \lean{G2StabilizerCertificate.lean} (39 theorems, zero sorry; \CatAL).
+Certificates include: exact dimension count (nullity 14 / 8 via rational arithmetic),
+bracket closure, Killing form negative-definiteness, and rank-2 certificate.
+\end{proof}
+
+\begin{figure}[ht]
+  \centering
+  \begin{tikzpicture}[>=Stealth,node distance=1.7cm,every node/.style={align=center},font=\small]
+    \node (QR)  [draw,rounded corners,fill=blue!8,text width=1.6cm]
+                                                      {$\mathrm{QR}(7)$\\$\subset \mathbb{F}_7^*$};
+    \node (Fano)[draw,rounded corners,fill=blue!8,right=of QR,text width=1.5cm]
+                                                      {Fano\\$(7,3,1)$};
+    \node (Oct) [draw,rounded corners,fill=green!8,right=of Fano,text width=1.4cm]
+                                                      {$\mathbb{O}$\\oct.};
+    \node (G2)  [draw,rounded corners,fill=orange!8,right=of Oct,text width=1.5cm]
+                                                      {$G_2$\\$=\!\mathrm{Aut}(\mathbb{O})$};
+    \node (SU3) [draw,rounded corners,fill=red!8,right=of G2,text width=1.5cm]
+                                                      {$\mathrm{SU}(3)$\\$=\!\mathrm{Stab}$};
+    \node (F21) [draw,rounded corners,fill=purple!8,below=1.0cm of Oct,text width=1.8cm]
+                                                      {$F_{21}$ (GTE)};
+    \draw[->] (QR)  -- node[above,font=\scriptsize]{A} (Fano);
+    \draw[->] (Fano)-- node[above,font=\scriptsize]{B} (Oct);
+    \draw[->] (Oct) -- node[above,font=\scriptsize]{E} (G2);
+    \draw[->] (G2)  -- node[above,font=\scriptsize]{E} (SU3);
+    \draw[->] (QR)  -- node[left,font=\scriptsize]{GTE} (F21);
+    \draw[->] (F21) -- node[below,font=\scriptsize]{D} (G2);
+  \end{tikzpicture}
+  \caption{\textbf{F2: Derivation chain from QR(7) to SU(3).}
+    Left: the arithmetic source $\mathrm{QR}(7)=\{1,2,4\}\subset\mathbb{F}_7^*$.
+    Top path: Theorems A--E (this paper).
+    Bottom path: GTE arithmetic programme (P48, \cite{SpivackGTECompleteFramework}).
+    Both paths terminate at $G_2$ and its stabilizer $\mathrm{SU}(3)$; they are two
+    projections of the same arithmetic anchor.}
+  \label{fig:chain}
+\end{figure}
+
+\paragraph{The UGP interface (repo-verified).}
+All statements are verified against the head of \texttt{ugp-lean} and
+formalized in \lean{OctonionShadowInterface.lean} (14 theorems, all
+\texttt{decide}/\texttt{native\_decide}; \CatAL):
+(1)~\lean{weights = \{1,2,4\} = QR(7) = D} (OSI-1);
+(2)~$F_{21}\hookrightarrow G_2$: the Singer translation ($x\mapsto x+1$) and
+$\mathbb{Z}_3$ generator \lean{z3Mul} ($x\mapsto 2x$) are octonion
+automorphisms generating a 21-element subgroup of the frame group (OSI-8);
+(3)~UGP's faithful 3-irrep equals the QR-weight subspace of
+$\mathrm{Im}\,\mathbb{O}\otimes\mathbb{C}$ (OSI-9);
+(4)~the six gluon weight vectors equal the six non-zero $\mathbb{Z}/7$
+differences, split by the multiplier-$\mathbb{Z}_3$ into QR (positive roots)
+and NQR (negative roots), swapped by negation because $7\equiv 3\pmod{4}$
+(OSI-12, OSI-13);
+(5)~baryon neutrality ($1+2+4\equiv 0$, \lean{baryon\_color\_z3\_orbit\_neutral})
+is the frame-invariant statement $[T_A, \omega] = 0$ for the SU(3) determinant
+singlet $\omega = \alpha_1\alpha_2\alpha_3$.
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.42\textwidth]{weight_ladder.pdf}
+  \caption{\textbf{F3: Weight ladder $1\oplus 3\oplus\bar{3}\oplus 1$.}
+    The four charge sectors of the color rung: $Q=0$ (singlet, $\nu_R$),
+    $Q=\tfrac{1}{3}$ (anti-triplet, $\bar{d}$), $Q=\tfrac{2}{3}$ (triplet, $u$),
+    $Q=1$ (singlet, $e^+$), with multiplicities $1,3,3,1$ as derived from the
+    CAR number operator $N = Q_1 + Q_2 + Q_3$ on the octonionic pencil lines.}
+  \label{fig:weight}
+\end{figure}
+
+%=============================================================================
+\section{The Electroweak Shadow}
+\label{sec:ew}
+%=============================================================================
+
+\begin{theorem}[Quaternionic rung; \CatA]
+\label{thm:F1}
+The identical recipe applied to $\mathbb{Z}/3$ (single line, oriented cyclically)
+yields the quaternions: associative, norm-composing, unique up to relabeling
+(2 valid oriented tables; frame group 24).
+The pencil through a fixed unit has one line, hence one ladder operator,
+$N\in\{0,1\}$, charge unit~1 --- the leptonic/isospin-doublet pattern.
+\emph{Charge quantization unit $= 1/(\text{pencil count})$ at every rung}:
+integer lepton charges at $p=3$ and third-integral quark charges at $p=7$
+are one theorem evaluated at two rungs.
+\end{theorem}
+
+\begin{theorem}[Chirality $=$ sidedness; \CatA]
+\label{thm:F2}
+Left multiplications close on $\mathfrak{su}(2)_L$, right multiplications
+on $\mathfrak{su}(2)_R$, $[L,R] = 0$ (from associativity of $\mathbb{H}$):
+$\mathfrak{so}(4) = \mathfrak{su}(2)_L\oplus\mathfrak{su}(2)_R$ with the
+chiral split given by the side of multiplication.
+Color $\mathfrak{su}(3)$ and weak $\mathfrak{su}(2)_L$ commute on
+$\mathbb{H}\otimes\mathbb{O}$.
+\end{theorem}
+
+\begin{theorem}[$B-L$ formula; \CatA]
+\label{thm:F3}
+On the octonionic factor, $B-L = (2N-3)/3$: spectrum
+$\{-1, -\tfrac{1}{3}, +\tfrac{1}{3}, +1\}\times\{1,3,3,1\}$.
+$B-L$ is an affine function of the pencil number operator.
+\end{theorem}
+
+\begin{theorem}[Tower termination; \CatA]
+\label{thm:F4}
+The Cayley--Dickson double retains the combinatorial structure --- sedenion
+basis triples form $\mathrm{STS}(15) = \mathrm{PG}(3,2)$ lines --- but
+norm composition fails (explicit witness) and zero divisors exist:
+$(e_0 + e_9)(e_2 + e_{13}) = 0$.
+The composition tower $\mathbb{R}, \mathbb{C}, \mathbb{H}, \mathbb{O}$ ends at
+dimension~8. \emph{GF(7) is the last rung}: the observation ``why 7'' becomes
+a termination theorem.
+\end{theorem}
+
+\begin{theorem}[Electroweak charge spectrum; \CatA]
+\label{thm:F5}
+On a chiral ideal of $\mathbb{C}\otimes\mathbb{H}$ tensored with $\mathbb{C}^8$,
+\[
+  Q = I_3 + \frac{B-L}{2} = I_3 + \frac{2N-3}{6}
+\]
+has spectrum exactly $\{0^{\times 2}, -1^{\times 1}, +1^{\times 1},
+\tfrac{2}{3}^{\times 3}, -\tfrac{1}{3}^{\times 3}, \tfrac{1}{3}^{\times 3},
+-\tfrac{2}{3}^{\times 3}\}$: the one-generation left-chiral Standard Model
+multiset $(\nu, e, u^3, d^3)$ plus conjugates.
+\end{theorem}
+
+\begin{proof}[Verification, F1--F5]
+\lean{quaternion\_electroweak\_shadow.py} (Q1--Q5);
+\lean{electroweak\_housing\_closure.py} (O1a--O1b).
+\end{proof}
+
+\begin{proposition}[Hypercharge generator $Y=N/3$; \CatA]
+\label{prop:O1prime}
+The hypercharge generator $Y = N/3$, where
+$N = \sum_k \alpha_k^\dagger\alpha_k$ is the number operator of the pencil-line
+CAR algebra, is derivable from the QR(7) pencil structure at Level~1
+(algebraic certificate).
+The group $U(1)_Y = \{e^{i\theta N/3} : \theta\in\mathbb{R}\}$ is a genuine
+continuous Lie group (period $6\pi$, isomorphic to $U(1)$), with $[Y, T_A] = 0$
+(exact) for all $\mathrm{SU}(3)_{\mathrm{color}}$ generators.
+Anomaly traces on the right-chiral sector:
+$\mathrm{tr}\,Y = 4$, $\mathrm{tr}\,Y^3 = 2$,
+$\mathrm{tr}(Y\cdot C_{\mathrm{SU}(3)}) = 16$ (machine-verified).
+\end{proposition}
+
+\begin{proof}[Verification]
+\lean{hypercharge\_group\_derivation.py};
+artifact: \lean{hypercharge\_group\_derivation\_results.json}~(\CatA).
+\end{proof}
+
+\begin{remark}[Level framing for Proposition O1$'$]
+The generator $Y = N/3$ and its anomaly traces are Level~1 algebraic
+certificate results. The gauging of $U(1)_Y$ (covariant derivative
+$D_\mu = \partial_\mu + iA_\mu$) and the $\mathrm{SU}(2)_L$ sector (left-handed
+doublets from the $\mathbb{H}$ factor) are Level~3 inputs not captured by the
+algebraic certificate chain. See the $U(1)_Y$ gauging entry in \S\ref{sec:honest}.
+\end{remark}
+
+%=============================================================================
+\section{Three Generations from Triality}
+\label{sec:gen}
+%=============================================================================
+
+\begin{theorem}[Generation no-gos; \CatA]
+\label{thm:G0}
+Within a single octonion algebra, generations cannot live in any discrete
+choice: (i) the frame group is transitive on the 7 imaginary directions ---
+the fixed-unit choice is gauge; (ii) the apex stabilizer (order~192) induces
+the full $S_3$ on the pencil triple, which is the color multiplet
+(Theorem D) and cannot double as a generation label; (iii) the 480 valid tables
+are one orbit --- orientation is gauge.
+\end{theorem}
+
+\begin{proof}[Verification]
+\lean{generations\_triality\_nogo.py} (N1--N3); exhaustive over
+$\mathrm{GL}(7,\mathbb{F}_2)$.
+\end{proof}
+
+\paragraph{Spin(8) from the table.}
+A \emph{related triple} is $(A,B,C)\in O(8)^3$ with $A(xy) = B(x)C(y)$ for all
+$x,y\in\mathbb{O}$.
+Moufang identities supply generators $(B_u, L_u, R_u)$; componentwise products
+remain related: this is Cartan's triality model of $\mathrm{Spin}(8)$
+\cite{Cartan1925}, rebuilt from the QR(7) table alone.
+
+\begin{theorem}[Klein center; \CatAL]
+\label{thm:G1}
+The scalar related triples are exactly the Klein group
+\[
+  V_4 = \{(1,1,1),\,(1,-1,-1),\,(-1,1,-1),\,(-1,-1,1)\} = Z(\mathrm{Spin}(8)),
+\]
+with a canonical bijection between nontrivial central elements and representation
+slots: each is $+1$ in exactly the slot that fixes it,
+\emph{i.e.}\ between $Z\setminus\{1\}$ and $\{V, S^+, S^-\}$.
+\end{theorem}
+
+\begin{theorem}[Triality; \CatAL]
+\label{thm:G2}
+Among the 48 candidate transformations (slot permutation $\times$ per-slot
+conjugation dressing), exactly an $S_3$'s worth preserve relatedness; the
+surviving slot permutations exhaust $S_3$; a 3-cycle representative $\rho$
+(dressing $(\kappa,\cdot,\kappa)$) satisfies $\rho^3 = 1$ and a swap $\sigma$
+(dressing $(\kappa,\kappa,\kappa)$) satisfies $\sigma^2 = 1$.
+The $S_3$ is \emph{outer}: the three slot projections of one Moufang triple
+have traces $(4,0,0)$, so no inner symmetry permutes the slots.
+\end{theorem}
+
+\begin{theorem}[Inner/outer $=$ color/flavor; \CatAL]
+\label{thm:G3}
+Conjugating all three slots by UGP's color $\mathbb{Z}_3$ (the doubling
+automorphism; in $G_2$ by Theorem~D) preserves relatedness with no slot
+permutation: color is inner.
+Triality permutes slots: flavor is outer.
+\emph{The UGP corpus's two $\mathbb{Z}_3$'s --- color \lean{z3Mul} and
+flavor $\mu_3$ --- are the inner and outer automorphisms of one
+$\mathrm{Spin}(8)$.}
+\end{theorem}
+
+\begin{theorem}[Eisenstein dictionary; \CatAL]
+\label{thm:G4}
+$\mathbb{Z}[\omega]/(2)\cong\mathbb{F}_4$ with multiplication by $\omega$
+(UGP's $\mu_3$) and Galois Frobenius $x\mapsto x^2$ --- which fixes~1 and
+swaps $\omega, \omega^2$, \emph{i.e.}\ \emph{UGP's $\mu$--$\tau$ exchange $U$
+is $\mathrm{Gal}(\mathbb{F}_4/\mathbb{F}_2)$} --- is equivariantly isomorphic
+to $Z(\mathrm{Spin}(8))$ with $(\rho, \sigma)$:
+$\mathbb{F}_4^\times \leftrightarrow Z\setminus\{1\} \leftrightarrow \{V, S^+, S^-\}$
+as $S_3$-sets, generator by generator.
+\end{theorem}
+
+\begin{theorem}[$A_4$ both sides; \CatAL]
+\label{thm:G5}
+UGP's $V_4\!\rtimes\!\mu_3$ (the Eisenstein $A_4$ of the TBM/PMNS bridge)
+and $Z(\mathrm{Spin}(8))\!\rtimes\!\rho$ are both isomorphic to $A_4$
+(verified by permutation-group isomorphism, \lean{G5\_f4\_semidirect\_order}).
+The corpus's flavor $A_4$ is the central-triality $A_4$.
+\end{theorem}
+
+\begin{theorem}[Rigidity --- conditional; \CatAL]
+\label{thm:G6}
+Any isomorphism of the flavor $S_3$ with the triality $S_3$ carrying $U$
+to $\sigma$ must carry the $U$-fixed generation ($\mathrm{gen}_1$) to the
+$\sigma$-fixed slot ($V$); $\mathbb{Z}_3$-equivariance then determines the rest.
+Exactly two identifications survive: \emph{$\mathrm{gen}_1 \leftrightarrow V$,
+$\{\mathrm{gen}_2, \mathrm{gen}_3\}\leftrightarrow\{S^+, S^-\}$}, differing only
+by the $\omega\leftrightarrow\bar\omega$ orientation.
+\end{theorem}
+
+\begin{proof}[Verification, G1--G6]
+\lean{positive\_triality\_theorems.py} (P1--P7); exact-integer arithmetic on
+basis-unit triples. Lean: \lean{TrialityInterface.lean}
+(G1: \lean{G1\_klein\_center\_card}, \lean{G1\_central\_slot\_bijection};
+G2: \lean{G2\_rho\_order\_three}, \lean{G2\_sigma\_order\_two},
+\lean{G2\_s3\_perms\_realized};
+G3: \lean{G3\_color\_inner\_no\_slot\_permutation};
+G4: \lean{G4\_equivariant\_dictionary}, \lean{G4\_frobenius\_is\_mu\_tau\_exchange};
+G5: \lean{G5\_central\_triality\_order};
+G6: \lean{G6\_rigidity\_conditional},
+\lean{G6\_gen1\_pinned\_to\_vector\_slot},
+\lean{G6\_exactly\_two\_rigid\_identifications};
+all zero sorry; \CatAL).
+\end{proof}
+
+\paragraph{The generation pinning.}
+The isomorphism of the GTE flavor $S_3$ with the triality $S_3$ carrying $U$
+to the spinor swap $\sigma$ pins $\mathrm{gen}_1$ to the vector slot $V$:
+since $U$ acts as the Frobenius automorphism of
+$\mathbb{Z}[\omega]/(2)\cong\mathbb{F}_4$ (the unique non-trivial field
+automorphism of $\mathbb{F}_4/\mathbb{F}_2$, which fixes the real unit
+$1\leftrightarrow\mathrm{gen}_1 = \mathrm{electron}$ via the Eisenstein norm chain
+$b_{\mathrm{gen}_1} = 73 = \mathcal{N}(9+\omega)$), and $\sigma$ is the unique
+involution fixing $V$, the equivariance condition forces
+$\mathrm{gen}_1\leftrightarrow V$.
+Exactly two global identifications survive, differing only in the orientation
+$\omega\leftrightarrow\bar\omega$ of the spinor slots
+(\CatAL, \lean{G6\_rigidity\_conditional}).
+
+This identification is uniquely consistent with the Eisenstein norm structure:
+$b_{\mathrm{gen}_1} = 73 = \mathcal{N}(9+\omega)$ is the only GTE lepton
+$b$-value that is an Eisenstein norm.
+Neither $b_{\mathrm{gen}_2} = 42$ nor $b_{\mathrm{gen}_3} = 275$ is an
+Eisenstein norm; no alternative generation labeling consistent with the
+Eisenstein chain places $\mathrm{gen}_3$ at the Frobenius-fixed position
+(\CatA, \lean{triality\_identification\_discriminator.py};
+artifact: \lean{triality\_identification\_discriminator\_results.json}).
+
+\begin{remark}[$\mathbb{Z}_2$ parity characterization: Level~0--1 $\to$ Level~3 bridge]
+\label{rem:z2parity}
+At the level of $\PHIMDL$ kink quantum numbers (Level~3), the outer
+$\mathrm{Spin}(8)$ triality automorphism $\sigma$ acts on the spinor pair
+$\{S^+, S^-\} = \{\mathrm{gen}_2, \mathrm{gen}_3\}$ assigned by
+$\mathrm{gen}_1\leftrightarrow V$ as the target-space $\mathbb{Z}_2$ parity
+$\varphi\mapsto -\varphi$: the topological windings transform as
+$Q_\varphi = 4\leftrightarrow 3\equiv -4\pmod{7}$.
+This is a valid symmetry of the $\PHIMDL$ potential
+$V(\varphi) = (m^2/49)(1-\cos 7\varphi)$, which is $\mathbb{Z}_2$-symmetric
+under $\varphi\mapsto -\varphi$.
+The \emph{2+1 split structure} --- one generation distinguished from a paired
+two --- is invariant at all levels; the Level~3 $\mathbb{Z}_2$ parity is the
+cross-level signature of this split under $\mathrm{gen}_1\leftrightarrow V$
+(\CatA; \lean{kink\_sigma\_parity\_action\_results.json}).
+Lean: \lean{KinkSigmaParityAction.lean}
+(\lean{winding\_parity\_on\_kink\_qphi},
+\lean{winding\_parity\_exchanges\_spinor\_windings},
+\lean{gen1V\_spinor\_pair\_qphi\_parity}; zero sorry; \CatAL).
+\end{remark}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.50\textwidth]{triality_diagram.pdf}
+  \caption{\textbf{F4: Triality diagram.}
+    The three representation slots $\{V, S^+, S^-\}$ of $\mathrm{Spin}(8)$
+    identified with $\{\mathrm{gen}_1, \mathrm{gen}_2, \mathrm{gen}_3\}$.
+    The $\rho$ arrow (blue, cyclic order~3) permutes all three slots;
+    the $\sigma$ arrow (red, transposition order~2) fixes $V$ and swaps $S^\pm$.
+    The identification $\mathrm{gen}_1\leftrightarrow V$ is the Eisenstein
+    norm selection principle (Theorem G6).
+    The inner Klein group $V_4 = Z(\mathrm{Spin}(8))$ is shown at center.}
+  \label{fig:triality}
+\end{figure}
+
+\paragraph{Triality sector action (Level~0--1 housing theorem).}
+
+\begin{theorem}[Triality sector action; \CatA]
+\label{thm:sector}
+The $S_3 = \langle\rho,\sigma\rangle$ triality group acts faithfully on the
+set of $\PHIMDL$ kink species $K = \{\mathrm{gen}_1, \mathrm{gen}_2, \mathrm{gen}_3\}$:
+\begin{align*}
+  \rho &: \mathrm{gen}_1\to\mathrm{gen}_2\to\mathrm{gen}_3\to\mathrm{gen}_1
+        \quad\text{(cyclic, order 3)},\\
+  \sigma &: \mathrm{gen}_1\mapsto\mathrm{gen}_1\text{ (fixed)},\quad
+            \mathrm{gen}_2\leftrightarrow\mathrm{gen}_3\text{ (transposition)}.
+\end{align*}
+All $S_3$ relations $\rho^3 = \sigma^2 = e$, $\sigma\rho\sigma = \rho^{-1}$ hold
+and all six permutations are distinct.
+Under $\mathrm{gen}_1\leftrightarrow V$, this is the standard $\mathrm{Spin}(8)$
+triality action on $\{V, S^+, S^-\}$ (Theorems G4/G6).
+The $\sigma$ action on quantum numbers coincides with the $\mathbb{Z}_2$
+target-space parity: $Q_\varphi: 4\leftrightarrow 3$ and $Q_\chi: 2\leftrightarrow 1$.
+\end{theorem}
+
+\begin{proof}[Verification]
+\lean{kink\_dirac\_index\_nogo.py};
+artifact: \lean{kink\_dirac\_index\_nogo\_results.json}~(\CatA).
+Lean: \lean{KinkSectorTrialityAction.lean}
+(\lean{rho\_sector\_action}, \lean{sigma\_sector\_action},
+\lean{rho\_sector\_order\_three}, \lean{sigma\_sector\_order\_two},
+\lean{sigma\_conjugates\_rho},
+\lean{s3\_sector\_six\_distinct\_permutations},
+\lean{rho\_matches\_triality\_slot\_cycle}; all zero sorry; \CatAL).
+\end{proof}
+
+\begin{remark}[Level~3 obstruction]
+A Yukawa/zero-mode realization of this action on fermion field representations
+is obstructed at Level~3.
+For any $\mathbb{Z}_7$-invariant coupling $g\cdot f(\varphi)\bar\psi\psi$
+(with $f$ periodic of period $2\pi/7$), the Callias index of the resulting
+$1{+}1D$ Dirac operator in any GTE kink background is zero:
+either $f(\varphi_{\mathrm{vac}}) = c\neq 0$ for all vacua
+(e.g.\ $f = \cos 7\varphi$), giving $M(\pm\infty) = c$ and index
+$= \tfrac{1}{2}[\mathrm{sign}(c) - \mathrm{sign}(c)] = 0$;
+or $f(\varphi_{\mathrm{vac}}) = 0$ (e.g.\ $f = \sin 7\varphi$),
+giving an asymptotically massless Dirac operator with no normalizable zero mode.
+Numerical confirmation: eigenvalue gap $\min|E|\approx 0.206$ for
+$Q_\varphi = 1,3,4$ kinks with the $\cos 7\varphi$ coupling (\CatA,
+\lean{kink\_dirac\_index\_nogo.py}).
+The Jackiw--Rebbi mechanism is inapplicable to $\mathbb{Z}_7$-periodic kinks.
+The sector-level triality action above (Level~0--1) is the established housing theorem.
+Lean: \lean{PhiMDLZeroModeIndex.lean}
+(\lean{callias\_index\_zero\_equal\_masses},
+\lean{yukawa\_cos7\_boundary\_values\_equal}; zero sorry; \CatAL).
+\end{remark}
+
+\begin{theorem}[$G_2 = \mathrm{Fix}(\text{triality})$; gauge universality; \CatA]
+\label{thm:H1}
+Diagonal triples $(P,P,P)$ are related if and only if $P$ is an octonion
+automorphism.
+Hence the diagonal $G_2$ --- and its color $\mathrm{SU}(3) = \mathrm{Stab}$ ---
+acts by the same matrices in all three slots, so each slot carries the
+identical color decomposition $1\oplus 3\oplus\bar{3}\oplus 1$
+(Theorem D transported verbatim).
+\emph{The three triality slots are three identical color-generations, and the
+generation-independence of gauge couplings is the statement that the gauge
+sector is triality-invariant.}
+\end{theorem}
+
+\begin{theorem}[Koide ladder on triality orbit; \CatA]
+\label{thm:H2}
+The parametrization
+$\sqrt{m_k} = A(1 + \sqrt{2}|z|\cos(\delta - 2\pi k/3))$,
+i.e.\ $\sqrt{m}$ as a real function of $\omega^k$ with $z = |z|e^{i\delta}$,
+is manifestly a function on the $\mathbb{Z}_3$-torsor $\{1,\omega,\omega^2\}$
+identified with $\{V, S^+, S^-\}$ by Theorem~G6.
+The flavor group acts as: $\mu_3$ shifts the basepoint; $U$ acts as
+$z\mapsto\bar{z}$, fixing $\mathrm{gen}_1$ (= $V$) and swapping $\mathrm{gen}_2/\mathrm{gen}_3$
+(= $S^\pm$).
+On PDG charged-lepton masses:
+$Q_{\mathrm{Koide}} = 0.6666605$ ($2/3 - 6\times10^{-6}$);
+$|z| = 1 - 9\times 10^{-6}$; and the torsor-invariant angle satisfies
+\[
+  |\delta\bmod 2\pi/3| = 0.222229631 = \tfrac{2}{9} + 7.41\times10^{-6}
+  = \text{\lean{koideThetaUGP}}.
+\]
+UGP's $\theta = 2/9$ is a coordinate on the triality orbit; $\delta\neq 0$
+measures the dynamical breaking of the spinor swap $\sigma$.
+\end{theorem}
+
+\begin{remark}[PMNS slot-to-eigenstate correspondence]
+\label{rem:pmns}
+Under the dictionary of Theorem~G5 ($A_4\cong Z(\mathrm{Spin}(8))\rtimes\rho$,
+\CatAL) and the generation pinning of Theorem~G6 ($\mathrm{gen}_1\leftrightarrow V$,
+\CatAL), every $A_4$ TBM generator receives an explicit triality image:
+$T\mapsto\rho$ (the cyclic $\mathbb{Z}_3$, order~3), $S\mapsto\sigma$
+(the spinor swap $S^+\leftrightarrow S^-$, order~2), and
+$V_4\mapsto Z(\mathrm{Spin}(8))$ (Klein center sign-pattern action).
+The triality slots label the \emph{charged lepton mass eigenstates}:
+$V\leftrightarrow e$, $S^+\leftrightarrow\mu$, $S^-\leftrightarrow\tau$
+(from Theorem~H2; the Koide parametrization uses mass eigenstate masses directly,
+\CatAD).
+At leading order in the $A_4$ TBM limit, $\sigma$ generates the $\mu$-$\tau$
+symmetry forcing $\theta_{23}\approx\pi/4$, while $\rho$ distributes the solar
+mixing cyclically, giving
+$\theta_{12} = \arcsin(1/\sqrt{3})\approx 35.26^\circ$
+(\CatA, Theorem~G5 and \lean{NeutrinoSector.lean}).
+The GTE orbit-ratio formulas ($\sin^2\theta_{12} = 4/13$,
+$\sin^2\theta_{23} = 19/42$, $\sin\theta_{13} = 11/73$; \CatAD) represent
+sub-leading corrections from the right-handed neutrino spectrum
+($b_{R2}=11$, $b_{R3}=19$) that explicitly break $A_4$ and reduce
+$\theta_{12}$ to the observed $33.68^\circ$ and $\theta_{23}$ to $42.3^\circ$
+(within $1\sigma$ of NuFIT~6.0~IC24~NH for $\theta_{12}$;
+see \cite{SpivackGTECompleteFramework}).
+\emph{What the translation does not achieve (Level~3, open):} the three
+left-handed neutrino mass eigenstates $\nu_1, \nu_2, \nu_3$ carry identical
+ladder index $b_L = 1$ for all three generations
+(\lean{lh\_neutrino\_b\_value\_minimal}, \CatAL), so triality cannot
+independently label them.
+The normal-vs-inverted mass ordering has no triality certificate
+from the left-handed sector alone.
+\end{remark}
+
+\paragraph*{Neutrino column correspondence.}
+The labeling of the neutrino mass eigenstates $\nu_1,\nu_2,\nu_3$ follows from the
+GTE seesaw (\CatA; \cite{SpivackNeutrino}): individual masses are
+$m_{\nu,k} = C\cdot b_{R,k}^{29/9}$, where $b_{R,1}=5$, $b_{R,2}=11$, $b_{R,3}=19$
+are the right-handed neutrino GTE ladder indices
+(\lean{braidB1}, \lean{braidB2}, \lean{braidB3}, \CatAL;
+\lean{SeesawNumericalCerts.lean}) and $C = \Sigma m_\nu/\Sigma_j b_{R,j}^{29/9}$.
+Since $x\mapsto x^{29/9}$ is strictly increasing
+(\lean{seesaw\_power\_strict\_mono}, \CatAL), $b_{R,1}<b_{R,2}<b_{R,3}$ implies
+$m_{\nu,1}<m_{\nu,2}<m_{\nu,3}$ (\emph{normal ordering};
+\lean{seesaw\_normal\_ordering\_from\_seed\_ordering}, \CatAL).
+Numerically: $m_{\nu,1}\approx 0.68$~meV, $m_{\nu,2}\approx 8.6$~meV,
+$m_{\nu,3}\approx 50.1$~meV, with $\Delta m^2_{21}\approx 7.37\times10^{-5}$~eV$^2$
+and $\Delta m^2_{31}\approx 2.51\times10^{-3}$~eV$^2$ (within $1\%$ of
+NuFIT~6.0~IC24~NH \cite{NuFIT60}).
+The GTE orbit-ratio formulas
+$\sin\theta_{13}=b_{R,2}/b_{\mathrm{gen}_1}=11/73$ (\lean{pmns\_reactor\_sin\_val},
+\CatAL) and
+$\sin^2\theta_{23}=b_{R,3}/b_{\mathrm{gen}_2}=19/42$ (\lean{pmns\_atm\_sin\_sq},
+\CatAL) confirm that both $b_{R,2}$ and $b_{R,3}$ label the $\nu_3$ column of
+$U_{\mathrm{PMNS}}$.
+The Eisenstein norm $b_{R,3}=19=\mathcal{N}(-5-3\omega)$ is the structural certificate
+for $\nu_3$ as the distinguished (heaviest) mass eigenstate
+(\lean{rh\_seed\_unique\_eisenstein\_norm}, \CatAL), paralleling
+$b_{\mathrm{gen}_1}=73=\mathcal{N}(-9-8\omega)$ in the charged-lepton sector
+(Theorem~H3; Level~0--1); the base rate of this property is ${\approx}44\%$ for a
+random triple, so its significance is structural (parallelism with the charged sector
+and the corpus \CatAD\ formulas), not a numerical coincidence.
+Normal ordering is thus a falsifiable structural prediction: it is required by
+$b_{R,1}<b_{R,3}$ (\CatAL) and would be falsified by JUNO confirming inverted ordering.
+NuFIT~6.0 IC24 already disfavors inverted ordering by $\Delta\chi^2=6.1$
+(${\approx}2.5\sigma$) \cite{NuFIT60}.\footnote{This prediction is pre-registered in
+the UGP corpus falsifiable-predictions registry
+(\texttt{papers/common/predictions/ugp\_falsifiable\_predictions\_v1.md},
+registry~date~2026-07-04, entry~\#1).
+The SHA-256 commitment hash is recorded in the companion
+\texttt{.sha256} file in the same directory; the Zenodo deposit carries concept
+DOI~\href{https://doi.org/10.5281/zenodo.21200551}{\texttt{doi:10.5281/zenodo.21200551}}.}
+
+\begin{theorem}[Eisenstein norm chain; \CatA]
+\label{thm:H3}
+The FrobeniusChain tower is the Eisenstein norm ladder:
+$7 = \mathcal{N}(3+\omega)$, $73 = \mathcal{N}(9+\omega) = b_{\mathrm{gen}_1}$,
+$703 = \mathcal{N}(27+\omega) = 19\times37$ (composite; termination),
+where $\mathcal{N}(a+b\omega) = a^2 - ab + b^2$ is the $\mathbb{Z}[\omega]$ norm.
+The ring whose norms generate the seed tower is the ring whose unit group $\mu_3$
+is the generation cycling of Theorem~G4.
+\emph{Negative result:} $b_{\mathrm{gen}_2} = 42 = 2\cdot 3\cdot 7$ and
+$b_{\mathrm{gen}_3} = 275 = 5^2\cdot 11$ are not Eisenstein norms.
+The Eisenstein structure certifies the chain and the flavor group, not the
+individual higher seeds.
+\end{theorem}
+
+\begin{proof}[Verification, H1--H3]
+\lean{electroweak\_housing\_closure.py};
+\lean{triality\_pairing\_alternative\_test.py};
+\lean{higher\_seeds\_cyclotomic\_norms.py}.
+All runs clean (exit~0).
+\end{proof}
+
+\begin{remark}[{$\mathbb{Z}[\zeta_5]$ observation (H3 extension)}]
+The generation-3 seed $b_{\mathrm{gen}_3} = 275 = 5^2\times 11$ admits a
+norm factorization in $\mathbb{Z}[\zeta_5]$.
+A null test (density of $\mathbb{Z}[\zeta_5]$ norms in $[200,350]$: $8\%$;
+12 of 151 integers) indicates this is likely arithmetic coincidence rather
+than mechanism: the corpus independently labels $N_{\mathrm{fam}} = 5 = |\mathbb{Z}_5|$
+a ``structural coincidence'' (from the MDL D-constraint count), and no GTE formula
+derives $b_{\mathrm{gen}_3}$ from $N_{\mathrm{fam}}$.
+The GTE cascade derivation $b_{\mathrm{gen}_3} = 42 + F_{13}$ remains the primary
+mechanistically grounded derivation; the $\mathbb{Z}[\zeta_5]$ factorization is
+a corroborating algebraic observation of uncertain significance
+(\lean{cyclotomic\_norm\_null\_test.py}).
+\end{remark}
+
+\begin{figure}[ht]
+  \centering
+  \includegraphics[width=0.48\textwidth]{koide_circle.pdf}
+  \caption{\textbf{F5: Koide phase torsor.}
+    The unit circle of phases of the $\mathbb{Z}_3$-torsor $\{1,\omega,\omega^2\}$:
+    generation $k$ occupies phase $\phi_k = \delta - 2\pi k/3$, and the Koide
+    parametrization $\sqrt{m_k} = A(1+\sqrt{2}\,|z|\cos\phi_k)$ assigns the mass
+    to that phase (the $\sqrt{m_k}$ values, which span a factor of
+    ${\sim}59$, are annotated at each point; radii are all unit --- the figure
+    displays phases, not magnitudes).
+    The torsor-invariant angle $\delta = 2/9 + 7.4\times10^{-6}$\,rad is marked
+    against the $\sigma$-symmetric reference $\delta = 0$.
+    On PDG masses, $Q_{\mathrm{Koide}} = (\sum m)/(\sum\sqrt{m})^2 = 0.6666605$,
+    within $6\times10^{-6}$ of $2/3$.}
+  \label{fig:koide}
+\end{figure}
+
+%=============================================================================
+\section{Relation to the Division-Algebra Programme}
+\label{sec:prior}
+%=============================================================================
+
+\subsection{Programme hierarchy}
+
+Table~\ref{tab:hierarchy} places the present paper in the context of the two
+parent programmes.
+
+\begin{table}[ht]
+  \centering
+  \caption{Three-programme hierarchy.}
+  \label{tab:hierarchy}
+  \small
+  \begin{tabularx}{\textwidth}{lYYY}
+    \toprule
+    Level & Programme & What it derives & What it leaves open \\
+    \midrule
+    1 & Division algebra (Furey/Dixon/Baez) & SM fits inside $\mathbb{C}\otimes\mathbb{H}\otimes\mathbb{O}$ --- structural/geometric & Why these algebras; all masses and couplings \\
+    2 & GTE/UGP (P48) & SM derived from GF(7) arithmetic --- quantitative & Why GF(7); explicit continuous-algebra connection \\
+    3 & This paper & Both share root QR(7); GTE explains why the algebra; division algebra explains why GF(7) & C$3''$ field-level housing; U(1)$_Y$ group embedding \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+The division-algebra programme is \emph{geometry without dynamics}: given the right
+algebra, the right group structure appears; particle masses, mixing angles, and
+coupling constants are left entirely open.
+GTE is \emph{arithmetic with dynamics}: quantitative predictions from GF(7)
+arithmetic, but the explicit connection to continuous algebra was previously implicit.
+The claim of the present paper is not ``we derive more than prior programmes'' but
+``we identify the common foundation of two previously separate programmes.''
+Both are facets of the same anchor:
+$\mathrm{QR}(7) = \{1,2,4\}\subset\mathbb{F}_7^*$.
+
+\subsection{Comparison with Furey--Hughes (2025)}
+
+Furey and Hughes \cite{FureyHughes2025} independently derive three generation
+slots from $\mathrm{Spin}(8)$ triality.
+Starting from the combined triality algebra
+$\mathrm{tri}(\mathbb{C})\oplus\mathrm{tri}(\mathbb{H})\oplus\mathrm{tri}(\mathbb{O})$,
+they identify the SM gauge symmetries within the triality symmetries and apply the
+SM group action to the triality triple $(\Psi_+, \Psi_-, V)\in\mathbb{O}^3$:
+the spinor copies $\Psi_+$ and $\Psi_-$ furnish two generations, while $V$
+provides the third generation via a Cartan factorization.
+This constitutes essential prior art for the three-generation derivation via triality
+and predates the relevant results of the present paper in the public literature.
+
+The two approaches share the framework of $\mathrm{Spin}(8)$ triality and outer
+automorphisms permuting representation slots, but differ in starting point and
+pairing shape.
+Furey and Hughes begin from
+$\mathrm{tri}(\mathbb{C})\oplus\mathrm{tri}(\mathbb{H})\oplus\mathrm{tri}(\mathbb{O})$
+by algebraic ansatz; the present paper derives the $\mathrm{Spin}(8)$ triality
+structure as a consequence of the QR(7) arithmetic framework
+(beginning from $D = \{1,2,4\}\subset\mathrm{GF}(7)^*$).
+The pairing shapes differ: in \cite{FureyHughes2025}, the paired slots are
+$(\Psi_+, \Psi_-)$ with $V$ distinguished as the \emph{third} generation;
+Theorem~G6 of the present paper pins the \emph{lightest} generation
+($\mathrm{gen}_1 =$ electron) to the vector slot $V$ via the rigidity argument
+($U$-fixed generation maps to $\sigma$-fixed slot), with
+$\{\mathrm{gen}_2, \mathrm{gen}_3\}$ as the paired spinor slots.
+These two orderings are physically distinct; the Koide mass computation
+(Theorem~H2) does not discriminate between them at the numerical level: the
+torsor-invariant angle $|\delta\bmod 2\pi/3| = 2/9$ is cyclic-invariant under
+all relabelings of $(e,\mu,\tau)$ (see \lean{triality\_pairing\_alternative\_test.py}).
+The Level~0--1 Eisenstein norm argument selects $\mathrm{gen}_1\leftrightarrow V$
+as the definitive identification within the GTE framework:
+$b_{\mathrm{gen}_1} = 73 = \mathcal{N}(9+\omega)$ is the unique GTE lepton
+$b$-value that is an Eisenstein norm (\CatA, Theorem~H3).
+At Level~3, the outer $\mathrm{Spin}(8)$ automorphism $\sigma$ acts under this
+identification as the target-space $\mathbb{Z}_2$ parity $\varphi\mapsto -\varphi$,
+a valid symmetry of $V(\varphi)$ (\CatA, Remark~\ref{rem:z2parity}).
+The convention difference (Furey--Hughes: $V = $ third generation; this paper:
+$V = $ first generation) reflects a different algebraic starting point and selection
+principle, not a scientific conflict.
+
+\subsection{Original contributions}
+
+What the present paper adds that is not in Furey--Hughes \cite{FureyHughes2025},
+Furey \cite{Furey2015,Furey2016thesis,Furey2018},
+Dixon \cite{Dixon1994}, or Baez \cite{Baez2002}:
+
+\begin{enumerate}[noitemsep]
+  \item \textbf{The QR(7) common-root identification and three-level hierarchy}
+        (Theorems A--E, \CatAL).
+        The derivation chain QR(7) $\to$ Fano plane $\to$ octonions $\to$
+        $G_2\to\mathrm{SU}(3)$ is original, establishing a common finite root
+        for both programmes.
+  \item \textbf{The $F_{21}\hookrightarrow G_2$ interface} (Theorems D, D', E, \CatAL).
+        The identification $F_{21}\subset G_2$ as octonion automorphisms --- with
+        $F_{21}$'s $\mathbb{Z}_7$ as Singer translations and $\mathbb{Z}_3$ as
+        $z3\mathrm{Mul}$ --- is original and makes the bridge explicit.
+  \item \textbf{The machine-verified derivation chain.}
+        A six-step machine-verified chain from QR(7) to the gauge-group hierarchy,
+        culminating in $|\mathrm{PSL}(2,7)| = 168$ via Todd--Coxeter coset
+        enumeration (\lean{hurwitz\_presentation\_order\_168}, \CatAL).
+  \item \textbf{The Eisenstein/Koide rigidity argument}
+        (Theorems G4--G6, H2, H3; \CatAL/\CatA).
+        The mass-ladder torsor-invariant angle $\theta = 2/9$ (7~ppm from PDG)
+        and the Eisenstein norm chain $b_{\mathrm{gen}_1} = 73 = \mathcal{N}(9+\omega)$
+        provide an independent dynamical corroboration.
+        Furey--Hughes do not address particle masses or mixing angles.
+  \item \textbf{Level framing and GTE-prior relationship.}
+        The present paper explicitly places the octonionic derivation as a second,
+        independent route alongside P48/GTE. The convergence of two independent
+        paths constitutes structural evidence.
+  \item \textbf{Machine certification in Lean}
+        (ten new modules, zero sorry; \CatAL).
+\end{enumerate}
+
+Not original: triality giving three slots as such \cite{FureyHughes2025};
+SU(3)$\oplus$SU(2)$\oplus$U(1) inside $\mathbb{C}\otimes\mathbb{H}\otimes\mathbb{O}$
+\cite{Furey2015,Furey2018,Dixon1994}; the Koide formula \cite{Koide1983};
+$G_2 = \mathrm{Aut}(\mathbb{O})$ and $\mathrm{SU}(3) = \mathrm{Stab}_{G_2}(\mathrm{apex})$
+\cite{GunaydinGursey1973}.
+
+\subsection{Interpretive significance}
+
+The bridge between the two programmes is not merely a repackaging of existing
+results: it is generative, making questions natural in the geometric presentation
+that are unnatural in the arithmetic presentation alone.
+
+\paragraph{New predictions from the geometric framing.}
+The clearest instance is the neutrino sector.
+In the GTE arithmetic presentation, all three left-handed neutrinos carry the
+same ladder index $b_L = 1$ (\lean{lh\_neutrino\_b\_value\_minimal}, \CatAL);
+the arithmetic labels do not distinguish mass eigenstates.
+In the geometric presentation, the triality-slot assignment of generation labels
+(pinned by Theorem~\ref{thm:G6}, \CatAL) makes the ordering question precise:
+once the right-handed seed ordering $b_{R,1} < b_{R,2} < b_{R,3}$ is combined
+with the seesaw power law $m_{\nu,k} \propto b_{R,k}^{29/9}$ and the strict
+monotonicity of $x\mapsto x^{29/9}$
+(\lean{seesaw\_power\_strict\_mono}, \CatAL),
+normal mass ordering $m_{\nu,1} < m_{\nu,2} < m_{\nu,3}$ follows as a theorem
+(\lean{seesaw\_normal\_ordering\_from\_seed\_ordering}, \CatAL).
+The JUNO-falsifiable prediction of normal neutrino mass ordering (\S\ref{sec:gen})
+is a consequence of the QR(7) bridge: it arises from the geometric framing
+and exists nowhere in the parent arithmetic corpus as a result independent
+of that framing.
+The neutrino eigenstate pinning
+(\lean{seesaw\_triality\_pinning\_bundle}, \CatAL) is similarly a product
+of the triality language: it assigns generation labels to mass eigenstates
+through a structural certificate
+($b_{R,3} = 19 = \mathcal{N}(-5-3\omega)$, \lean{rh\_seed\_unique\_eisenstein\_norm})
+that the arithmetic presentation does not naturally produce.
+
+\paragraph{Symmetry as automorphism, not as input.}
+In the Standard Model, and also in the GTE programme in its arithmetic
+presentation, the gauge group
+$\mathrm{SU}(3)\times\mathrm{SU}(2)\times\mathrm{U}(1)$ is a structural
+ingredient: the framework is built to accommodate it.
+The geometric presentation inverts this ordering.
+The derivation algebra of the octonions is $\mathfrak{g}_2$ (Theorem~\ref{thm:E},
+\lean{derivation\_algebra\_is\_g2\_certificate}, \CatAL);
+the stabilizer of the arithmetic apex is $\mathfrak{su}(3)$
+(Theorem~\ref{thm:E}, \lean{apex\_stabilizer\_is\_su3\_certificate}, \CatAL);
+the electroweak shadow falls out of the quaternionic subalgebra
+(Theorems~\ref{thm:F1}--\ref{thm:F5}).
+None of these groups is declared or chosen: each is the self-symmetry of the
+arithmetic structure forced by $\mathrm{QR}(7)$.
+Gauge symmetry is not an input at any level; it is the automorphism group of
+the unique arithmetic object whose existence Hurwitz's theorem guarantees.
+The symmetries of physics are the automorphisms of the only consistent arithmetic
+at this scale, not free choices among alternatives.
+
+\paragraph{Outlook: tower termination and why physics stops where it stops
+  (conjectural).}
+The following is a conjecture, stated at that strength, grounded in but going
+beyond the proved theorems.
+
+The Hurwitz tower $\mathbb{R},\mathbb{C},\mathbb{H},\mathbb{O}$ terminates at
+the octonions (Theorem~\ref{thm:F4}): sedenion zero-divisors destroy
+composition, and no extension preserves the norm.
+The physics structure associated with this tower also appears to terminate at
+the same point: three colors (not four) from the three pencil lines of the
+Fano plane, three generation slots (not four) from the three representation
+corners of $\mathrm{Spin}(8)$ triality, where the unique $D_4$ Dynkin diagram
+is the only rank-4 simply-laced diagram carrying an outer $S_3$ triality
+symmetry.
+If this correspondence is systematic --- if the bound on the tower propagates
+to a bound on the observable physics stack --- then ``why does physics stop
+where it stops?'' (no fourth color charge, no fourth generation) would become
+a corollary of the tower's termination rather than an empirical fact awaiting
+explanation.
+
+This is a conjecture; none of the proved results (Theorems~A--H) establish it.
+The proved claims certify the Level~0--1 links in the chain; the conjectural
+step is that those links propagate to constrain observable physics at Level~3.
+Making that propagation precise requires a field-level housing (C$3''$,
+Open Problem~\ref{op:c3pp}) that remains open.
+The conjecture is falsifiable: any confirmed fourth-generation fermion or
+fourth-color state would refute it without affecting any proved theorem.
+
+%=============================================================================
+\section{Formalization Programme}
+\label{sec:lean}
+%=============================================================================
+
+The algebraic layer of this paper is formalized in Lean~4 in ten new modules
+in the \texttt{ugp-lean} library, all zero sorry.
+The strategy throughout is: route R1 --- structure constants over $\mathbb{Q}$,
+with \texttt{decide}/\texttt{native\_decide} over finite types.
+
+\paragraph{Certificate methodology.}
+The Todd--Coxeter coset certificate (\lean{HurwitzCosetCertificate.lean}) is
+a 168-coset table whose completeness and relator-fixing are verified by
+\texttt{native\_decide} --- the Lean kernel replays the certificate rather than
+repeating the enumeration.
+The $G_2$ stabilizer certificate (\lean{G2StabilizerCertificate.lean})
+works from the rational nullspace of the 512-equation linear system: exact
+dimensions are counted, bracket closure is verified to $<10^{-15}$ (represented
+as rational), and the Killing form is certified negative-definite.
+Lean modules:
+
+\begin{itemize}[noitemsep]
+  \item \lean{OctonionShadowInterface.lean}: 20 theorems (OSI-1..13 plus
+        OSI-7a, Nc\_factorization, weights\_card\_from\_pencil,
+        singer\_preserves\_octProd, doubling\_preserves\_octProd,
+        ladderPairs\_card, z3\_cycles\_ladders,
+        weight\_differences\_exhaust, roots\_QR\_split);
+        zero sorry; \CatAL.
+  \item \lean{HurwitzCosetCertificate.lean}: 7 theorems
+        (relator checks, table completeness,
+        \lean{hurwitz\_group\_order}, \lean{hurwitz\_presentation\_order\_168});
+        zero sorry; \CatAL.
+  \item \lean{G2StabilizerCertificate.lean}: 39 theorems including
+        \lean{derivation\_algebra\_is\_g2\_certificate} and
+        \lean{apex\_stabilizer\_is\_su3\_certificate} as capstones;
+        zero sorry; \CatAL.
+  \item \lean{TrialityInterface.lean}: 20 theorems (G1--G6 plus interface
+        summaries \lean{triality\_interface\_G1\_G3},
+        \lean{triality\_interface\_G4\_G6});
+        zero sorry; \CatAL.
+  \item \lean{OctonionColorFlavorDisambiguation.lean}: 10 theorems
+        (capstones: \lean{z3\_color\_flavor\_disambiguation},
+        \lean{z3\_color\_fixed\_point\_at\_zero},
+        \lean{z3\_flavor\_no\_phase\_fixed\_point},
+        \lean{z3\_color\_cubed\_is\_identity},
+        \lean{z3\_flavor\_generation\_cubed},
+        and supporting lemmas);
+        zero sorry; \CatAL.
+  \item \lean{KinkSigmaParityAction.lean}: 11 theorems
+        (\lean{aut\_f21\_order\_forty\_two},
+        \lean{kink\_labels\_rigid\_under\_aut\_f21},
+        \lean{winding\_parity\_on\_kink\_qphi},
+        \lean{winding\_parity\_exchanges\_spinor\_windings},
+        \lean{gen1V\_spinor\_pair\_qphi\_parity}, and others);
+        zero sorry; \CatAL.
+  \item \lean{KinkSectorTrialityAction.lean}: 12 theorems
+        (\lean{rho\_sector\_action}, \lean{sigma\_sector\_action},
+        \lean{rho\_sector\_order\_three}, \lean{sigma\_sector\_order\_two},
+        \lean{sigma\_conjugates\_rho},
+        \lean{s3\_sector\_six\_distinct\_permutations},
+        \lean{rho\_matches\_triality\_slot\_cycle}, and others);
+        zero sorry; \CatAL.
+  \item \lean{PhiMDLZeroModeIndex.lean} (in \texttt{Spacetime/}):
+        9 theorems
+        (\lean{seven\_times\_vacuum\_angle},
+        \lean{cosine\_yukawa\_at\_vacuum},
+        \lean{dirac\_mass\_at\_vacuum\_eq\_g},
+        \lean{yukawa\_cos7\_boundary\_values\_equal},
+        \lean{callias\_index\_zero\_equal\_masses},
+        and supporting lemmas);
+        zero sorry; \CatAL.
+  \item \lean{BraidAtlasPhaseEquivariance.lean} (in \texttt{Algebra/}):
+        20 theorems
+        (\lean{sigma\_not\_equivariant\_with\_braid\_phase},
+        \lean{equivariant\_z2\_subgroup},
+        \lean{braid\_phase\_equivariance\_certificate},
+        and supporting lemmas);
+        zero sorry; \CatAL.
+  \item \lean{SeesawTrialityPinning.lean} (in \texttt{MassRelations/}):
+        16 theorems
+        (\lean{rh\_seed\_unique\_eisenstein\_norm},
+        \lean{seesaw\_power\_strict\_mono},
+        \lean{seesaw\_normal\_ordering\_from\_seed\_ordering},
+        \lean{neutrino\_slot\_pinning\_certificate},
+        \lean{seesaw\_triality\_pinning\_bundle},
+        and supporting lemmas);
+        zero sorry; \CatAL.
+\end{itemize}
+
+\begin{remark}[Q$_\chi$ notation]
+$Q_\chi$ in \lean{PhiMDLKinkQuantumNumbers.lean} is a kink-state role label
+(a $\mathbb{Z}_3$ index distinguishing $\mathrm{gen}_1$ from $\mathrm{gen}_2$
+within the same $Q_\varphi = 4$ sector).
+It is \emph{not} the QCD $\mathrm{SU}(3)$ color charge of quarks.
+\end{remark}
+
+The formalization paper \cite{SpivackUGPFormalization} and the \texttt{ugp-lean}
+repository \cite{ugp-lean} document the library structure.
+All modules listed above reside in the \texttt{ugp-lean} library.
+
+%=============================================================================
+\section{Open Problems and Negative Results}
+\label{sec:honest}
+%=============================================================================
+
+We list the problems that remain open, together with what is precisely
+established about each.
+
+\begin{openprob}[Eisenstein chain termination]
+$7 = \mathcal{N}(3+\omega)$, $73 = \mathcal{N}(9+\omega)$; but
+$703 = \mathcal{N}(27+\omega) = 19\times37$ is composite; $27+\omega$ is not an
+Eisenstein prime, terminating the pattern $\mathcal{N}(3^k+\omega)=\text{rational prime}$
+at $k=2$.
+$b_{\mathrm{gen}_2} = 42 = 2\cdot3\cdot7$ is not an Eisenstein norm (contains
+$2$ and $3$, primes $\equiv 2\pmod 3$, to odd power).
+$b_{\mathrm{gen}_3} = 275 = 5^2\times11$ is not an Eisenstein norm (contains
+$11\equiv 2\pmod 3$ to odd power); it IS a $\mathbb{Z}[\zeta_5]$ norm
+(likely coincidence; null test density $8\%$).
+The Eisenstein chain certifies the chain and the flavor group, not individual
+higher seeds (\CatA, Theorem~H3).
+\end{openprob}
+
+\begin{openprob}[C$3''$ housing --- Level~3]
+\label{op:c3pp}
+At Level~0--1, the triality $S_3$ acts faithfully on $\{\mathrm{gen}_1,
+\mathrm{gen}_2, \mathrm{gen}_3\}$ (Theorem~\ref{thm:sector}; \CatA).
+At Level~3, a Yukawa/zero-mode realization is obstructed: the Callias index
+of any $\mathbb{Z}_7$-invariant Dirac operator on a GTE kink background is zero
+(analytically proved, numerically confirmed; eigenvalue gap ${\approx}0.206$).
+The Jackiw--Rebbi mechanism is inapplicable to $\mathbb{Z}_7$-periodic kinks.
+The appropriate carrier for the Level~3 triality action is not a Hilbert space
+of zero modes; what it is remains open.
+The fermionic statistics of GTE kinks arise from triple-exchange
+\cite{SpivackGTECompleteFramework} (\lean{gte\_triple\_kink\_exchange\_statistics}, \CatAL),
+not from Jackiw--Rebbi.
+The triple-exchange configuration space also does not serve as the Level~3 carrier.
+The certified exchange phase (Braid Atlas, Level~0--1 certificate,
+\lean{gte\_triple\_kink\_exchange\_statistics}) is not equivariant under the
+$S_3$ action on generation labels: $\sigma$ maps $\mathrm{gen}_2$
+(winding $Q_\varphi = 4$, fermionic, phase $-1$) to $\mathrm{gen}_3$
+(winding $Q_\varphi = 3$, bosonic, phase $+1$), because
+$3 \equiv -4\pmod{7}$ in $\mathbb{Z}_7$.
+The equivariant subgroup of $S_3$ is $\mathbb{Z}_2 = \{e,\sigma\rho^2\}$,
+which exchanges $\mathrm{gen}_1\leftrightarrow\mathrm{gen}_2$
+(both $Q_\varphi = 4$) while fixing $\mathrm{gen}_3$
+(\CatAL, \lean{braid\_phase\_equivariance\_certificate};
+\CatA, \lean{triple\_exchange\_s3\_equivariance\_results.json}).
+Both Level~3 routes (Yukawa/zero-mode and triple-exchange) are provably blocked.
+The appropriate Level~3 carrier requires a phase function incorporating $Q_\chi$
+(the $\mathbb{Z}_3$ color charge) to compensate the $Q_\varphi$ asymmetry.
+\end{openprob}
+
+\begin{openprob}[U(1)$_Y$ gauging --- Level~3]
+The generator $Y = N/3$ is derived at Level~1 (Proposition~O1$'$; \CatA).
+The gauging of U(1)$_Y$ (covariant derivative $D_\mu = \partial_\mu + iA_\mu$) and
+the $\mathrm{SU}(2)_L$ sector (left-handed doublets from the $\mathbb{H}$ factor)
+are Level~3 inputs not captured by the algebraic certificate chain.
+\end{openprob}
+
+\begin{openprob}[Numerical parameters]
+Except for the reinterpretation of $\theta = 2/9$ (Theorem~H2), nothing
+here derives a numerical constant.
+Masses and mixing angles enter only through UGP's own derivations
+\cite{SpivackGTECompleteFramework,Spivack2026_Koide,Spivack2026_CyclotomicMass},
+whose bridge principles this paper does not audit.
+\end{openprob}
+
+\begin{openprob}[Higher seeds]
+$b_{\mathrm{gen}_2} = 42 = 2\cdot 3\cdot 7$ and
+$b_{\mathrm{gen}_3} = 275 = 5^2\cdot 11$ lack the Eisenstein-norm structure
+of the chain.
+A systematic scan over all bounded-grammar triality-orbit expressions
+(products and sums of at most three factors from the structure constants of
+$G_2$, $A_4$, $Z(\mathrm{Spin}(8))$, and the Fano geometry) finds no
+expression with a mechanistically grounded GTE derivation for either seed.
+For $b_{\mathrm{gen}_3} = 275$: no pure triality-orbit expression exists
+(the nearest hit, $N_{\mathrm{fam}}^2\cdot b_{R2} = 5^2\cdot 11$, requires
+the right-handed neutrino value $b_{R2}=11$ and invokes $N_{\mathrm{fam}}=5$,
+labelled a structural coincidence in the corpus
+\cite{SpivackGTECompleteFramework}).
+For $b_{\mathrm{gen}_2} = 42$: the nearest hit,
+$3\times\dim(\mathfrak{g}_2) = 3\times 14$, is arithmetic (no GTE formula
+derives $b_{\mathrm{gen}_2}$ as a $G_2$-dimension count; null tests on
+primes~41 and~43 yield comparable arithmetic-coincidence rates).
+The GTE cascade derivation ($b_{\mathrm{gen}_2} = b_{\mathrm{gen}_1}-(m+q) = 73-31 = 42$
+and $b_{\mathrm{gen}_3} = b_{\mathrm{gen}_2}+F_{13} = 42+233 = 275$,
+Theorem~H3, Lean-certified) remains the only mechanistically grounded derivation
+(\CatA, \lean{triality\_orbit\_seed\_scan\_results.json}).
+\end{openprob}
+
+\begin{openprob}[Furey--Hughes prior art]
+Furey and Hughes \cite{FureyHughes2025} derive three generation slots from
+$\mathrm{Spin}(8)$ triality approximately ten months prior to Theorems~G0--G6
+in the public literature. Their convention places $V$ at the third generation;
+this paper's Eisenstein selection principle places $V$ at the first generation.
+These are distinct physical claims arising from different starting points
+and selection principles. The relation between the two frameworks at the level
+of complete generation-to-slot assignments (not just the 2+1 split) awaits
+a unified treatment.
+\end{openprob}
+
+\begin{openprob}[Base-rate caution]
+168, $A_4$, and $G_2$ are ubiquitous in mathematics.
+The force of this paper is not any single coincidence but a single-input chain
+($\mathrm{QR}(7)$) with proved uniqueness at every joint, verified against the
+parent corpus's source files, with the residual ambiguities landing exactly where
+the mathematics says they must.
+We now provide the formal analysis.
+
+The chain has 13 named joints, classified as follows.
+
+\smallskip
+\noindent\textbf{Theorem-joints} (mathematical necessities; no base rate applies):
+(J1)~$\mathrm{QR}(7)$ is a $(7,3,1)$ perfect difference set --- a consequence of
+quadratic-residue theory for $p\equiv 3\pmod{4}$ (no selection).
+(J2)~The 7 translates form a Fano plane --- forced by the $\lambda=1$ design parameter.
+(J3)~The canonical orientation yields $\mathbb{O}$ --- every $(7,3,1)$ perfect difference
+set in $\mathbb{Z}_7$ gives a normed division algebra under its canonical orientation
+(verified: 14 of 14 PDS subsets of $\mathbb{Z}_7$; the fraction $1/8$ characterises
+rarity among \emph{random} orientations, not the canonical-PDS construction).
+(J4--J6)~$G_2=\mathrm{Aut}(\mathbb{O})$ \cite{Cartan1925},
+$\mathrm{Stab}_{G_2}(\mathrm{apex})=\mathrm{SU}(3)$,
+tower termination at $\mathbb{O}$ \cite{Hurwitz1898} --- classical theorems.
+(J7)~$|\mathrm{PSL}(2,7)|=168$ --- determined by $p=7$ via $|\mathrm{PSL}(2,p)|=p(p^2-1)/2$;
+168 is not selected but derived.
+(J8--J11)~Pencil $=3=N_c$, $F_{21}\hookrightarrow G_2$,
+charge spectrum $Q=I_3+(B{-}L)/2$,
+Spin(8) triality $\to S_3\to 3$ generation slots $\to A_4$ --- all algebraic theorems.
+Across primes: $p=7$ is the unique prime with $\lambda=(p-3)/4=1$; no other prime
+yields a Fano plane via its quadratic residues (verified for all $p\leq 200$).
+
+\smallskip
+\noindent\textbf{Selection-joints} (quantifiable base rates):
+\begin{itemize}[noitemsep,topsep=2pt]
+\item \emph{Koide angle} (J12): $|\theta_{\mathrm{PDG}} - 2/9| = 7.4\times10^{-6}$~rad
+  (7~ppm).
+  Under a uniform null $\theta\sim\mathrm{Uniform}[0,\pi/3]$,
+  $P(|\theta-2/9|<7.4\times 10^{-6}) \approx 1.4\times 10^{-5}$.
+  This is the most statistically improbable joint in the chain.
+\item \emph{Eisenstein norm} (J13): $b_{\mathrm{gen}_1}=73=\mathcal{N}(9+\omega)$ is the
+  unique Eisenstein norm in $\{73,42,275\}$.
+  The density of Eisenstein norms in $[1,300]$ is approximately $31\%$, so
+  $P(b_{\mathrm{gen}_1}\text{ is an EN})\approx 31\%$ under a flat null --- not
+  statistically small.
+  The significance of J13 is structural: the norm property of~73 enables the
+  Frobenius fixed-point argument for $\mathrm{gen}_1\leftrightarrow V$
+  (Theorem~\ref{thm:G6}), not a numerical coincidence.
+\end{itemize}
+
+\noindent\textbf{Not quantifiable}:
+A frequentist base rate for a 13-step derivation from a 3-element arithmetic input
+does not exist; no reference ensemble of comparable chains is available.
+Probabilities across J12 and J13 are not multiplied (they are not independent).
+
+\noindent\textbf{Response to the ubiquity objection}:
+The groups 168, $A_4$, $G_2$, and $\mathrm{SU}(3)$ appear in the chain as
+\emph{derived consequences} of $\mathrm{QR}(7)$, not as elements selected from a menu.
+The derivation runs in one direction:
+$\mathrm{QR}(7)\to\mathrm{Fano}\to\mathbb{O}\to G_2\to\mathrm{SU}(3)$,
+with each arrow a theorem; the chain contains no step of the form
+``we require $\mathrm{SU}(3)$, so we find something that produces it.''
+The computational ground truth is a single script
+(\lean{octonion\_from\_qr7.py}) that takes $\{1,2,4\}$ as input and derives
+$\mathbb{O}$, $G_2$, $\mathrm{SU}(3)$, and $|\mathrm{Aut}(\mathrm{Fano})|=168$
+as output, with no choices made along the way.
+
+\noindent\textit{Script:} \lean{base\_rate\_analysis\_qr7\_chain.py}
+(pre-registered design; exits~0; all assertions pass~\CatA).
+\end{openprob}
+
+%=============================================================================
+\begin{appendices}
+%=============================================================================
+
+\section{Claim-to-Evidence Matrix}
+\label{app:matrix}
+
+Every claim is cross-referenced to a verification script or Lean theorem.
+``Clean'' means the script exited~0 with all assertions passing.
+``Exact'' means computations are performed over $\mathbb{Q}$ with no floating-point
+rounding.
+
+\small
+\begin{longtable}{@{}lP{5.2cm}P{5.2cm}l@{}}
+  \caption{Claim-to-Evidence Matrix.}
+  \label{tab:matrix}\\
+  \toprule
+  Claim & Content & Artifact & Status \\
+  \midrule
+  \endfirsthead
+  \toprule
+  Claim & Content & Artifact & Status \\
+  \midrule
+  \endhead
+  \bottomrule
+  \endfoot
+  %
+  A     & $(7,3,1)$ design, pencil~$=3$, multiplier~$=\mathrm{QR}$
+        & \lean{octonion\_from\_qr7.py} (A1--A3);
+          OSI-2..OSI-6 (\lean{OctonionShadowInterface.lean})
+        & \CatAL \\
+  B     & $\mathbb{O}$ from $D$; 480~$=$~one orbit; frame~1344
+        & \lean{octonion\_from\_qr7.py} (A4--A7)
+        & \CatA, exhaustive/exact \\
+  B$'$  & $\mathrm{sign}(e_xe_y) = [y{-}x\in\mathrm{QR}]$
+        & \lean{OctonionShadowInterface.lean} OSI-7a
+        & \CatAL \\
+  C     & $|H(2,3,7;4)| = 168$; $\mathrm{PSL}(2,7)\cong\mathrm{GL}(3,2)$;
+          duality
+        & \lean{psl27\_group\_layer.py} (B1--B4);
+          \lean{hurwitz\_coset\_enumeration.py} (+certificate);
+          \lean{HurwitzCosetCertificate.lean}
+        & \CatAL \\
+  D     & pencil $\to$ CAR $\to$ $Q = N/3$ $\to$ $\mathfrak{su}(3)$ fixing flag
+        & \lean{f21\_octonion\_interface\_verify.py} (I1--I8)
+        & \CatAL \\
+  D$'$  & $N_c = 3 =$ pencil count; \lean{Nc\_factorization}
+        & \lean{OctonionShadowInterface.lean} OSI-10
+        & \CatAL \\
+  E     & $\mathrm{der}(\mathbb{O}) = \mathfrak{g}_2$ (dim~14);
+          $\mathrm{Stab} = \mathfrak{su}(3)$ (dim~8);
+          capstones \lean{derivation\_algebra\_is\_g2\_certificate},
+          \lean{apex\_stabilizer\_is\_su3\_certificate}
+        & \lean{g2\_stabilizer\_derivation.py} (D1--D4);
+          \lean{g2\_stabilizer\_certificate\_export.py};
+          \lean{G2StabilizerCertificate.lean}
+        & \CatAL, 39 thms \\
+  F1--F3 & $\mathbb{H}$ rung; charge unit $= 1/\text{pencil}$;
+           $B{-}L = (2N{-}3)/3$
+        & \lean{quaternion\_electroweak\_shadow.py} (Q1--Q5)
+        & \CatA, exact \\
+  F4    & STS(15) persists; composition dies at~16; zero-divisor witness
+        & \lean{quaternion\_electroweak\_shadow.py}
+        & \CatA, witnesses \\
+  F5    & $Q = I_3 + (B{-}L)/2 = $ SM chiral multiset
+        & \lean{electroweak\_housing\_closure.py} (O1)
+        & \CatA, exact spectrum \\
+  O1$'$ & $Y = N/3$; $U(1)_Y$ Lie group; $[Y,T_A]=0$;
+          anomaly traces $\mathrm{tr}\,Y = 4$, $\mathrm{tr}\,Y^3 = 2$
+        & \lean{hypercharge\_group\_derivation.py};
+          \lean{hypercharge\_group\_derivation\_results.json}
+        & \CatA \\
+  G0    & Three generation no-gos (frame, pencil, orientation)
+        & \lean{generations\_triality\_nogo.py} (N1--N3)
+        & \CatA, exhaustive \\
+  G1    & Klein center $V_4$; bijection $Z\setminus\{1\}\leftrightarrow\{V,S^\pm\}$
+        & \lean{positive\_triality\_theorems.py} (P1);
+          \lean{TrialityInterface.lean} G1
+        & \CatAL \\
+  G2    & Triality $\cong S_3$; outer (trace witness)
+        & \lean{positive\_triality\_theorems.py} (P2--P3);
+          \lean{TrialityInterface.lean} G2
+        & \CatAL \\
+  G3    & Color inner; flavor outer;
+          UGP $\mathbb{Z}_3$ split $=$ inner/outer Spin(8)
+        & \lean{positive\_triality\_theorems.py} (P4);
+          \lean{TrialityInterface.lean} G3
+        & \CatAL \\
+  G4    & Eisenstein dict: $\mathbb{F}_4\cong Z(\mathrm{Spin}(8))$ equivariantly;
+          $U = \mathrm{Gal}(\mathbb{F}_4/\mathbb{F}_2)$
+        & \lean{positive\_triality\_theorems.py} (P5);
+          \lean{TrialityInterface.lean} G4
+        & \CatAL \\
+  G5    & $V_4\!\rtimes\!\mu_3\cong A_4\cong Z(\mathrm{Spin}(8))\!\rtimes\!\rho$
+        & \lean{positive\_triality\_theorems.py} (P6);
+          \lean{TrialityInterface.lean} G5
+        & \CatAL \\
+  G6    & Rigidity (conditional): $\mathrm{gen}_1\leftrightarrow V$;
+          exactly 2 identifications
+        & \lean{positive\_triality\_theorems.py} (P7);
+          \lean{triality\_identification\_discriminator.py};
+          \lean{TrialityInterface.lean} \lean{G6\_rigidity\_conditional}
+        & \CatAL (conditional) \\
+  SA    & $S_3$ sector action on kink species; 6 distinct permutations;
+          $\sigma =$ $\mathbb{Z}_2$ parity $Q_\varphi: 4\leftrightarrow 3$
+        & \lean{kink\_dirac\_index\_nogo.py};
+          \lean{kink\_sigma\_parity\_action.py};
+          \lean{KinkSectorTrialityAction.lean},
+          \lean{KinkSigmaParityAction.lean}
+        & \CatAL \\
+  CI    & Callias index~$= 0$; JR inapplicable to $\mathbb{Z}_7$ kinks;
+          gap ${\approx}0.206$
+        & \lean{kink\_dirac\_index\_nogo.py};
+          \lean{PhiMDLZeroModeIndex.lean}
+        & \CatAL + \CatA \\
+  Z3D   & Color-$\mathbb{Z}_3$ (inner $G_2$) $\neq$ flavor-$\mathbb{Z}_3$
+          (outer Spin(8))
+        & \lean{OctonionColor\-Flavor\-Disambiguation.lean}
+        & \CatAL \\
+  H1    & $G_2 = \mathrm{Fix}(\text{triality})$; gauge universality;
+          each slot carries $1\oplus3\oplus\bar{3}\oplus1$
+        & \lean{electroweak\_housing\_closure.py}
+        & \CatA, verified \\
+  H2    & Koide on triality orbit;
+          $|\delta\bmod 2\pi/3| = 2/9 + 7.4\times10^{-6}$
+        & \lean{electroweak\_housing\_closure.py};
+          \lean{triality\_pairing\_alternative\_test.py}
+        & \CatA, PDG \\
+  H3    & Frobenius chain $= \mathcal{N}(3^k{+}\omega)$;
+          $b_{\mathrm{gen}_{2,3}}$ not Eisenstein norms
+        & \lean{electroweak\_housing\_closure.py};
+          \lean{higher\_seeds\_cyclotomic\_norms.py}
+        & \CatA, exact (incl.\ negatives) \\
+  PMNS  & Charged lepton eigenstate labeling $V=e$, $S^+=\mu$, $S^-=\tau$;
+          $A_4$ TBM generator map $T\mapsto\rho$, $S\mapsto\sigma$;
+          neutrino pinning via seesaw $m_{\nu,k}\propto b_{R,k}^{29/9}$;
+          normal ordering from $b_{R,1}<b_{R,2}<b_{R,3}$
+        & \lean{pmns\_triality\_translation\_results.json};
+          \lean{NeutrinoSector.lean}
+          (\lean{pmns\_atm\_sin\_sq}, \lean{pmns\_reactor\_sin\_val});
+          \lean{rh\_neutrino\_pinning.py}
+          (\lean{SeesawNumericalCerts.lean},
+           \lean{braidB1}, \lean{braidB2}, \lean{braidB3});
+          \lean{SeesawTrialityPinning.lean}
+          (\lean{seesaw\_triality\_pinning\_bundle})
+        & \CatAD/\CatAL \\
+  SN    & Seeds negative: no bounded-grammar triality-orbit expression for
+          $b_{\mathrm{gen}_2}=42$ or $b_{\mathrm{gen}_3}=275$;
+          null tests on $41,43,274,276$ confirm comparable arithmetic density
+        & \lean{triality\_orbit\_seed\_scan\_results.json}
+        & \CatA, systematic scan \\
+  TE-no & Triple-exchange configuration space not $S_3$-equivariant:
+          $\sigma$ maps $Q_\varphi = 4$ (fermionic) to $Q_\varphi = 3$
+          (bosonic); equivariant subgroup $\mathbb{Z}_2 = \{e,\sigma\rho^2\}$
+        & \lean{triple\_exchange\_s3\_equivariance\_results.json};
+          \lean{braid\_phase\_equivariance\_certificate} (\CatAL);
+          \lean{gte\_triple\_kink\_exchange\_statistics} (\CatAL);
+          \lean{PhiMDLKinkQuantumNumbers.lean} (\CatAL)
+        & \CatAL \\
+  BR    & Base-rate analysis of QR(7) chain: 11 theorem-joints, 1
+          selection-joint (Koide $P\approx 1.4\times10^{-5}$, J12), 1
+          structural-enabler (Eisenstein density $31\%$, J13); ubiquity
+          objection refuted (168, $A_4$, $G_2$ are derived, not selected)
+        & \lean{base\_rate\_analysis\_qr7\_chain.py};
+          \lean{base\_rate\_analysis\_results.json}
+        & \CatA, pre-registered \\
+\end{longtable}
+
+\section{Lean Module Inventory}
+\label{app:lean}
+
+All modules are in the \texttt{ugp-lean} library, zero sorry.
+Sorry counts are verified by direct inspection of each source file.
+
+\small
+\begin{longtable}{@{}P{4.5cm}rrP{6cm}@{}}
+  \caption{Lean module inventory.}
+  \label{tab:lean}\\
+  \toprule
+  Module & Thms & Sorry & Key capstone theorems \\
+  \midrule
+  \endfirsthead
+  \toprule
+  Module & Thms & Sorry & Key capstone theorems \\
+  \midrule
+  \endhead
+  \bottomrule
+  \endfoot
+  %
+  \lean{OctonionShadowInterface} & 20 & 0
+    & \lean{weights\_card\_from\_pencil},
+      \lean{Nc\_factorization},
+      \lean{octProd\_sign\_eq\_QR},
+      \lean{singer\_preserves\_octProd},
+      \lean{doubling\_preserves\_octProd},
+      \lean{roots\_QR\_split} \\
+  \lean{HurwitzCosetCertificate} & 7 & 0
+    & \lean{hurwitz\_presentation\_order\_168},
+      \lean{coset\_table\_complete} \\
+  \lean{G2StabilizerCertificate} & 39 & 0
+    & \lean{derivation\_algebra\_is\_g2\_certificate},
+      \lean{apex\_stabilizer\_is\_su3\_certificate} \\
+  \lean{TrialityInterface} & 20 & 0
+    & \lean{G1\_klein\_center\_card},
+      \lean{G2\_s3\_perms\_realized},
+      \lean{G3\_color\_inner\_no\_slot\_permutation},
+      \lean{G4\_equivariant\_dictionary},
+      \lean{G5\_central\_triality\_order},
+      \lean{G6\_rigidity\_conditional} \\
+  \lean{OctonionColor\-Flavor\-Disambiguation} & 10 & 0
+    & \lean{z3\_color\_flavor\_disambiguation} \\
+  \lean{KinkSigmaParityAction} & 11 & 0
+    & \lean{winding\_parity\_on\_kink\_qphi},
+      \lean{gen1V\_spinor\_pair\_qphi\_parity} \\
+  \lean{KinkSectorTrialityAction} & 12 & 0
+    & \lean{s3\_sector\_six\_distinct\_permutations},
+      \lean{rho\_matches\_triality\_slot\_cycle} \\
+  \lean{PhiMDLZeroModeIndex} & 9 & 0
+    & \lean{callias\_index\_zero\_equal\_masses},
+      \lean{yukawa\_cos7\_boundary\_values\_equal} \\
+  \lean{BraidAtlasPhaseEquivariance} & 20 & 0
+    & \lean{sigma\_not\_equivariant\_with\_braid\_phase},
+      \lean{equivariant\_z2\_subgroup},
+      \lean{braid\_phase\_equivariance\_certificate} \\
+  \lean{SeesawNumericalCerts} & 10 & 0
+    & \lean{braidB1}, \lean{braidB2}, \lean{braidB3}
+      (RH seed values 5, 11, 19);
+      \lean{seesawAlpha} ($= 29/9$);
+      \lean{gteDeltaM21Sq}, \lean{gteDeltaM31Sq} (mass-squared splittings) \\
+  \lean{SeesawTrialityPinning} & 16 & 0
+    & \lean{rh\_seed\_unique\_eisenstein\_norm},
+      \lean{seesaw\_normal\_ordering\_from\_seed\_ordering},
+      \lean{neutrino\_slot\_pinning\_certificate},
+      \lean{seesaw\_triality\_pinning\_bundle} \\
+\end{longtable}
+
+Total: 174 theorems across 11 modules, zero sorry.
+
+\end{appendices}
+
+%=============================================================================
+\bibliographystyle{plain}
+\bibliography{../bib/Spivack_Papers_Bibliography}
+%=============================================================================
+
+\end{document}

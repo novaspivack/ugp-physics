@@ -1,0 +1,35 @@
+Improved 9-Term Nuclear Stability Law
+==================================================
+Model: LogisticRegression(C=1.0, max_iter=2000)
+Training accuracy: 96.97%
+5-fold CV accuracy: 87.55%
+
+Decision boundary: sum > 0 => stable
+Intercept: 3.827471
+
+Coefficients (on StandardScaler-transformed features):
+  f1_log_coulomb_N           +3.202404
+  f2_log_surface             +2.720638
+  f3_log_coulomb_Z           +1.882983
+  f4_asymmetry_sq            -1.896339
+  f5_exp_coulomb_Z           +7.738264
+  f6_exp_coulomb_N           +3.620083
+  pairing                    -0.002045
+  z_magic_dist               -0.017869
+  n_magic_dist               +0.230724
+
+Features (raw, before scaling):
+  f1 = log(N*(N-1)/A + 1)
+  f2 = log(A^(2/3) + 1)
+  f3 = log(Z*(Z-1)/A + 1)
+  f4 = ((N-Z)/A)^2
+  f5 = exp(-Z*(Z-1)/(100*A))
+  f6 = exp(-N*(N-1)/(100*A))
+  pairing = 0(even-even), 1(odd-A), 2(odd-odd)
+  z_magic_dist = min|Z - m| for m in [2, 8, 20, 28, 50, 82, 126]
+  n_magic_dist = min|N - m| for m in [2, 8, 20, 28, 50, 82, 126]
+
+OOD performance (N/Z outside [0.9, 1.5] exotic split):
+  Baseline (majority class): 73.3%
+  6-term law: 81.8% (+8.5pp)
+  9-term law: 87.7% (+14.4pp above baseline, +5.9pp over 6-term)

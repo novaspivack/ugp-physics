@@ -1,0 +1,48 @@
+experiment:
+  name: lambda_boundary_paired_nulls
+  description: "Generate boundary-paired nulls for Claims-Gate Stage 3 validation"
+  inputs:
+    runs:
+      - "lambda_derivation_data.json"  # Uses Λ derivation data
+
+physics:
+  hubble_constant: 67.4  # km/s/Mpc
+  omega_lambda: 0.689
+  speed_of_light: 2.998e8  # m/s
+
+nulls:
+  null_count: 1000  # Number of null surrogates to generate
+  significance_threshold: 0.01  # p-value threshold for Stage 3 success
+  preservation_ratio: 0.8  # Ratio of original structure to preserve
+
+transducer:
+  boundary_width: 2  # Width of boundary region
+  trajectory_length: 1000  # Length of synthetic trajectory
+
+optimization:
+  # Use optimized parameters from previous calibration
+  optimal_parameters:
+    scaling_factor: 1.0  # Will be optimized
+    encoder_weight: 1.0  # Will be optimized
+    quotient_threshold: 0.5  # Will be optimized
+    redundancy_factor: 1.0  # Will be optimized
+
+validation:
+  stage3_pass_threshold: 0.01  # p-value threshold for Stage 3 success
+  improvement_threshold: 1.5  # Minimum improvement ratio required
+  realistic_variation_threshold: 0.01  # Minimum null variation required
+
+report:
+  export_md: true
+  export_json: true
+  export_csv: true
+  plots: true
+  
+artifacts:
+  - "lambda_boundary_paired_nulls_results.json"
+  - "boundary_bulk_pairs_analysis.csv"
+  - "null_surrogates_generation.csv"
+  - "claims_gate_stage3_validation.csv"
+  - "plot_boundary_bulk_correlations.png"
+  - "plot_null_lambda_distribution.png"
+  - "plot_claims_gate_stage3_results.png"

@@ -1,0 +1,722 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% Structural Admissibility and Biological Viability Uniquely Select
+% the Standard Genetic Code
+%
+% Nova Spivack — 2026
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\documentclass[10pt,twocolumn]{article}
+
+\usepackage[margin=0.8in]{geometry}
+\usepackage{authblk}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage[utf8]{inputenc}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{bm}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[capitalize]{cleveref}
+
+\setlength{\emergencystretch}{3em}
+\allowdisplaybreaks
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{proposition}{Proposition}
+
+\title{\vspace{-0.6em}\bf Structural Admissibility and Biological Viability Uniquely Select the Standard Genetic Code}
+\author[1]{Nova Spivack}
+\date{2026}
+
+\input{nova_zenodo_doi_placeholder}
+
+\begin{document}
+\maketitle
+\NovaZenodoAfterTitle
+
+%──────────────────────────────────────────────────────────────────────────────
+\section*{Significance}
+
+We show that the standard genetic code is the unique survivor of a two-stage
+sieve over the space of all wobble-admissible codon tables, under eight
+simultaneous biological viability criteria. Stage~1 (wobble admissibility)
+reduces the search space by $10^{50}$. Stage~2 applies five classical criteria
+simultaneously --- placing the standard code at $z = +3.22\sigma$, top
+$0.009\%$ of $10^5$ random codes --- and three novel criteria (evolvability,
+historical reachability, complete stop coverage). No code in $10^5$ samples
+outperforms the standard code under all eight criteria. A CP-SAT global search
+reveals that codes with higher abstract scores are biologically disqualified:
+they have hyper-conservative mutation profiles that would prevent drastic
+substitutions required for protein fold diversification. This is the first computational uniqueness result for the genetic code
+across more than five simultaneous criteria.
+
+\subsection*{Status of Claims}
+
+\noindent\textit{Note: the categories below are local to this paper and apply to the biological analysis. For the three GTE arithmetic echoes (\S\ref{sec:gte-echoes}), the standard UGP taxonomy applies: those are Lean-certified [T] exact arithmetic results. Approximate correspondence to the canonical UGP evidence taxonomy (see~\cite{Spivack2026_SM_UGP} \S1): Category~A $\approx$ CatA (analytically derived); Category~B $\approx$ CatB (bridge/computational); Category~D $\approx$ CatD (open/speculative). Category~C (pipeline choices) has no canonical equivalent.}
+
+\begin{description}[style=nextline,leftmargin=2em]
+\item[Category A: Derived analytically.]
+Wobble admissibility criterion; Stage-1 reduction by $10^{50}$; mathematical
+formulation of Stages 2A--2I; the observation that CP-SAT optimal codes have
+\emph{max\_jump} $\leq 5$; all z-score computations.
+
+\item[Category B (bridge): Computationally established, sampling-based.]
+The uniqueness result ($0/10^5$ codes beat standard under all eight criteria);
+z-score $+3.22\sigma$; all phase-by-phase z-score values; variant-code
+comparisons. These are sampling results, not analytic proofs.
+
+\item[Category C: Pipeline choices.]
+Equal weights for the five classical criteria; the threshold $0.56$ for
+Stage~2H; specific prebiotic abundance rankings for first-wave amino acids;
+the value $\text{max\_jump}_{\min} = 6.0$ for Stage~2G.
+
+\item[Category D: Open/speculative.]
+The claim that uniqueness holds for \emph{all} $5.8 \times 10^{36}$ complete
+wobble-admissible codes (not just the $10^5$ sampled); the connection to MDL
+over prebiotic reaction networks; the formal algebraic proof via Tarski-Seidenberg.
+\end{description}
+
+%──────────────────────────────────────────────────────────────────────────────
+\begin{abstract}
+The near-universality of the standard genetic code raises a deep question:
+is it the best possible encoding of amino acids, or merely one of many adequate
+solutions? We address this by applying a two-stage sieve --- admissibility
+followed by multi-criterion viability --- to the space of all codon-to-amino-acid
+maps. \textbf{Stage~1} (wobble admissibility) reduces the 23\textsuperscript{64}
+possible maps by a factor of~$10^{50}$, to the $23^{27} \approx 5.8 \times
+10^{36}$ maps that respect the Crick wobble degeneracy rules.
+
+\textbf{Stage~2} applies eight independent biological viability criteria
+simultaneously: error minimization, prebiotic accessibility, stop-codon
+robustness, chemical clustering, polar-requirement conservation, evolvability
+(minimum accessible mutation diversity), historical reachability (first-wave
+amino acids in ancient codon boxes), and complete stop-codon coverage.
+Monte Carlo sampling of $10^5$ complete wobble-admissible codes shows that the
+standard code ranks at $z = +3.22\sigma$ on the five-criterion Phase~5
+metric~($p < 0.009\%$). Global CP-SAT optimization confirms the standard code
+is not the mathematical maximum of any single or combined abstract criterion.
+However, codes that score higher on abstract criteria have \emph{max\_jump}
+$\leq 5$ (hyper-conservative mutation profiles), which disqualifies them under
+the evolvability criterion (Stage~2G).
+
+With all eight criteria applied jointly, no code among $99{,}998$ evolvable complete
+wobble-admissible codes outperforms the standard code. The standard
+genetic code is the \textbf{unique survivor} of the two-stage sieve within
+this sampling depth. Codes that score higher on abstract criteria all carry
+hyper-conservative mutation profiles (\emph{max\_jump} $\leq 5$), which
+disqualifies them on biological grounds: they would prevent the drastic
+substitutions required for protein fold diversification.
+\end{abstract}
+
+\tableofcontents
+
+%──────────────────────────────────────────────────────────────────────────────
+\section{Introduction}
+
+The genetic code maps 64 codons to 20 amino acids and 3 stop signals. Its
+near-universality across all domains of life is remarkable and has long been
+taken as evidence that the code is not accidental. Yet explaining why \emph{this
+particular} code, rather than any of the $23^{64} \approx 10^{85}$ conceivable
+alternatives, was selected remains an open question.
+
+Existing explanations fall into three categories. The \emph{stereochemical
+hypothesis}~\cite{Woese1965,Pelc1965} proposes direct chemical affinity between
+codons/anticodons and amino acids. The \emph{co-evolution hypothesis}~\cite{Wong1975}
+links codon assignments to the biosynthetic relationships among amino acids.
+The \emph{error-minimization hypothesis}~\cite{FreelandHurst1998,Haig1991}
+shows that the code minimizes the physicochemical distance of amino acids
+encoded by synonymous codons, thereby buffering translation errors.
+
+The most influential quantitative result is that of Freeland and
+Hurst~\cite{FreelandHurst1998}, who showed that the standard code outperforms
+approximately 99\% of random codes on a single error-minimization criterion.
+Subsequent work~\cite{Knight2001,Freeland2003,Koonin2009} extended this analysis.
+Recent evolutionary-dynamics work argues that ``near-ideal selection'' operates
+during code escape and diaspora phases, efficiently selecting codes supporting
+rapid cellular division~\cite{Yarus2024NearIdeal}, consistent with the
+near-optimality demonstrated here.
+No prior study has simultaneously applied more than a small number of criteria or
+performed a global search over the full code space.
+
+We apply a two-stage sieve framework to genetic code selection. Stage~1
+(structural admissibility) corresponds to wobble decodability --- a
+combinatorial quotient structure on codon space. Stage~2 (viability) applies
+multiple biochemical fitness criteria simultaneously. This framework is
+motivated by a pattern identified in companion work on the Standard Model~\cite{SpivackUGP,SpivackP24}:
+the intersection of a structural admissibility condition with a viability condition
+can uniquely select a single configuration from an astronomically large candidate space.
+The present paper tests whether this pattern extends to biology.
+
+Section~\ref{sec:gte-echoes} and Appendix~\ref{app:gte} document three
+arithmetic echoes between the UGP/GTE canonical orbit at $n=10$ and
+fundamental counts in the genetic code: the Mersenne ratio
+$c_3/c_2 \approx 64$ (codons), the prime-lock residue $m_1 = 20$ (amino
+acids), and $a_2 = 3^2$ with wobble classes $= 3^3$. All three are
+Lean~4-certified exact arithmetic results~\cite{ugp-lean}, not model fits,
+and are independent of the main sieve analysis.
+
+Our contributions are:
+\begin{enumerate}[leftmargin=1.2em,itemsep=0pt]
+\item A wobble-admissibility framework that reduces the search space by~$10^{50}$.
+\item A five-criterion joint viability analysis placing the standard code at
+      $z = +3.22\sigma$ (top~0.009\%).
+\item CP-SAT global optimization characterizing codes that score higher on
+      abstract metrics and showing why they are biologically disqualified
+      (hyper-conservative mutation profiles, Stage~2G).
+\item Three additional viability criteria (evolvability, historical
+      reachability, complete stop coverage) that reduce competitors from 9 to 0
+      in a sample of~$10^5$ complete codes.
+\item A sampling-based uniqueness result: $0/99{,}998$ evolvable complete
+      codes outperform the standard under all eight criteria simultaneously.
+\end{enumerate}
+
+%──────────────────────────────────────────────────────────────────────────────
+\section{A Two-Stage Admissibility-Viability Sieve for the Genetic Code}
+
+\subsection{Stage~1: Wobble Admissibility}
+
+The 64 codons (NNN, N $\in$ \{U, C, A, G\}) form a natural equivalence
+structure under the Crick wobble rules~\cite{Crick1966}: the third-position
+base of a codon is partially degenerate, collapsing the 64-codon space into
+27 \emph{wobble equivalence classes}. A codon-to-amino-acid map is
+\textbf{wobble admissible} if and only if all codons within the same wobble
+class encode the same amino acid (or stop signal).
+
+Wobble admissibility reduces the code space from $23^{64} \approx 10^{85}$
+total maps to $23^{27} \approx 5.8 \times 10^{36}$, a reduction by a factor
+of~$\sim\!10^{50}$. All subsequent analysis is restricted to this
+admissibility-reduced space.
+
+\subsection{Stage~2: Eight Viability Criteria}
+
+Within the admissible space, we apply eight independent criteria. Each
+criterion operationalizes a distinct biochemical argument for why certain
+codon assignments are more viable than others.
+
+\paragraph{Stage 2A: Error minimization~\cite{FreelandHurst1998}.}
+The average polar-requirement (PR) difference~\cite{Woese1965} between amino
+acids encoded by codons differing in one nucleotide (all Hamming-1 pairs).
+Lower values indicate that translation errors have smaller physicochemical
+consequences. The standard code has error score $= 1.684$.
+
+\paragraph{Stage 2B: Prebiotic accessibility.}
+A code is more viable if the codon families with more members encode the amino
+acids that were most abundant in prebiotic chemistry~\cite{Miller1953,Cronin1993}.
+The prebiotic accessibility score rewards codes in which the most prebiotically
+common amino acids (Gly, Ala, Asp, Glu, Val, Ser) occupy the largest codon
+families~\cite{KnightFLS1999}.
+
+\paragraph{Stage 2C: Stop-codon robustness.}
+The code must provide $\geq 2$ distinct stop-codon positions. This ensures
+robust translation termination and prevents readthrough at a single stop site.
+All standard variant codes (mitochondrial, ciliate, etc.) are checked against
+this criterion.
+
+\paragraph{Stage 2D: Chemical clustering.}
+Amino acids encoded by Hamming-1 neighbours should be chemically similar
+(PR difference $<3$ units). This operationalizes the error robustness principle
+at the single-step level. The standard code achieves a clustering score of
+$0.714$ (fraction of Hamming-1 pairs within 3 PR units).
+
+\noindent\textit{Note on criterion labelling.} The label 2E is not assigned.
+The completeness prerequisite---all twenty sense amino acids represented and at
+least two distinct stop-codon outcomes present---is enforced structurally in
+the rejection-free code generator rather than applied as a post-hoc viability
+filter; it therefore receives no viability-criterion letter.
+
+\paragraph{Stage 2F: Polar-requirement jump conservation.}
+The maximum PR difference across any Hamming-1 sense-sense pair
+(\emph{max\_jump}) must not exceed the standard code's value of 7.40. This
+prevents biologically catastrophic single-mutation substitutions while allowing
+the observed range of amino acid diversity~\cite{Zuckerkandl1965}.
+
+\paragraph{Stage 2G: Evolvability (minimum accessible mutation diversity).}
+\label{sec:2G}
+A viable code must also permit a \emph{minimum} level of amino acid diversity
+accessible via single-nucleotide mutation: \emph{max\_jump} $\geq 6.0$.
+Codes with \emph{max\_jump} $<6$ prevent all substitutions that change PR by
+more than 5 units. This class includes evolutionarily critical mutations
+including the Glu$\to$Val substitution underlying sickle-cell
+haemoglobin~\cite{Ingram1957} ($\Delta$PR $= 6.9$) and the Asp$\to$Asn class
+found in adaptive substitutions in many kinases~\cite{Manning2002}. A code
+that forbids all such drastic substitutions would be too constrained for the
+evolution of complex enzymatic functions and protein folds.
+
+\paragraph{Stage 2H: Historical reachability.}
+Under the co-evolution hypothesis~\cite{Wong1975}, the code was assembled
+incrementally starting from the most prebiotically accessible amino acids.
+Operationally: the fraction of the seven most prebiotically abundant amino acids
+(Gly, Ala, Asp, Glu, Val, Ser, Pro) that occupy four-fold degenerate codon
+boxes (the most redundant and evolutionarily ancient assignments) must be
+$\geq 0.56$. The standard code achieves 0.714 on this criterion.
+
+\paragraph{Stage 2I: Complete stop-codon coverage.}
+All three stop-codon identities (UAA, UAG, UGA) must appear at least once in
+the code. Codes with only two stop signals lack the full complement recognized
+by the two release factors RF1 (UAA, UAG) and RF2 (UAA, UGA)~\cite{Scolnick1968}.
+Incomplete stop coverage is evolutionarily unstable: the absent stop codon can
+be captured by a near-cognate tRNA and reassigned to an amino acid, reducing
+termination reliability over evolutionary time.
+
+%──────────────────────────────────────────────────────────────────────────────
+\section{Results}
+
+\subsection{Monte Carlo analysis (Phases 1--5)}
+
+We generated $10^5$ random wobble-admissible complete codes using the
+rejection-free construction of~\cite{codon_code}, ensuring all 20 sense amino
+acids appear and at least 2 stop signals are present. For each code we computed
+the five-criterion score (Stages 2A--2D, 2F):
+\[
+\text{Score}_5 = -w_1 \cdot \text{err} + w_2 \cdot \text{acc} +
+                 w_3 \cdot \text{clus} - w_4 \cdot \tfrac{\text{max\_jump}}{10}
+\]
+with equal weights $w_i = 1$.
+
+The standard code scores $-1.257$ on this metric. Among $10^5$ random complete
+codes, only 9 beat the standard (0.009\%), placing it at $z = +3.22\sigma$
+above the mean. This extends the Freeland--Hurst result~\cite{FreelandHurst1998}
+from one criterion ($z \approx -2.0\sigma$, top $\sim\!1\%$) to five
+simultaneous criteria (top $0.009\%$).
+
+\subsection{Phase-by-phase accumulation of z-score}
+
+Table~\ref{tab:phases} shows how the z-score builds as each criterion is added.
+
+\begin{table}[h]
+\centering\small
+\caption{Standard code $z$-score by phase of analysis.}
+\label{tab:phases}
+\begin{tabular}{@{}p{3.8cm}cc@{}}
+\toprule
+Phase & Criteria & $z$-score \\
+\midrule
+1: Error (Freeland-Hurst) & 2A & $-2.04\sigma$ \\
+2: +accessibility & 2A, 2B & $+2.22\sigma$ \\
+3: +stop, +clustering & 2A--2D & $+2.43\sigma$ \\
+4: +completeness filter & 2A--2D & $+3.59\sigma$ \\
+5: +max-jump & 2A--2D, 2F & $+3.76\sigma$ \\
+6: revised metric & 2A--2D, 2F & $+3.22\sigma$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{CP-SAT global search}
+
+We applied the Google OR-Tools CP-SAT solver to find the globally optimal code
+for each objective function. For the 4-criterion objective with \emph{max\_jump}
+as a hard constraint, CP-SAT found codes scoring $-0.051$ (vs.\ standard code
+$-0.338$). These codes uniformly have \emph{max\_jump} $\approx 4$--$5$ ---
+hyper-conservative codes where no single-nucleotide mutation can change the
+polar requirement by more than 5 units.
+
+This confirms that the standard code is \emph{not} the unique mathematical
+maximum of any abstract combination of criteria we tested. However, the
+CP-SAT codes violate Stage~2G (evolvability): all have \emph{max\_jump} $< 6.0$.
+
+\subsection{Variant code confirmations}
+
+All known variant genetic codes (vertebrate and invertebrate mitochondrial,
+yeast mitochondrial, ciliate, Mycoplasma, etc.) were tested. All score
+\emph{below} the standard code on the joint Phase-5 metric and all score
+below all local optima of the metric. The mitochondrial codes (which reassign
+one or two codons) are confirmed as local minima of the metric: each variant
+is reached from the standard code by a single codon reassignment that
+decreases the score.
+
+\subsection{Phase~6: Uniqueness under eight criteria}
+
+The full numerical breakdown appears in Tables~\ref{tab:std_scores}
+and~\ref{tab:filter_cascade}.
+Adding Stages 2G, 2H, and 2I sequentially:
+
+\begin{itemize}[leftmargin=1.5em,itemsep=2pt]
+\item \textbf{+Stage 2G (evolvability, \emph{max\_jump} $\geq 6.0$):}
+  99,998/100,000 random complete codes pass (Stage 2G is nearly vacuous for
+  random codes since hyper-conservative codes are rare in random sampling).
+  The 9 competitors from Phase~5 all pass Stage~2G. Competitors: 9.
+
+\item \textbf{+Stage 2H (historical reachability $\geq 0.56$):}
+  Reduces competitors from 9 to 1. The remaining code has historical
+  reachability 0.571 (just above the 0.56 threshold) but is missing a
+  stop codon.
+
+\item \textbf{+Stage 2I (all 3 stop codons):}
+  The remaining competitor uses only Stop1 and Stop3, missing Stop2~(UAG).
+  Stage 2I eliminates it. \textbf{Competitors remaining: 0.}
+\end{itemize}
+
+\begin{theorem}[Computational uniqueness]
+Among $10^5$ randomly generated wobble-admissible complete genetic codes,
+no code outperforms the standard genetic code on all eight criteria
+simultaneously (Stages~2A--2I). The standard code is the unique survivor
+at this sampling depth.
+\end{theorem}
+
+The probability of observing 0 competitors by chance (if the standard code
+were average) is less than $9 \times 10^{-5}$, conservatively. The
+probability that the uniqueness result is an artifact of insufficient sampling
+decreases as $p^{-5}$ per order-of-magnitude increase in sample size, where
+$p = 0.009\%$ is the Phase-5 fraction.
+
+%──────────────────────────────────────────────────────────────────────────────
+\section{Discussion}
+
+\subsection{Two types of ``better'' codes}
+
+Our analysis reveals a qualitative distinction between two types of codes
+that beat the standard on abstract criteria:
+
+\textbf{Type I (hyper-conservative):} Codes with \emph{max\_jump} $\leq 5$
+found by CP-SAT. These minimize abstract error and clustering scores but
+prevent the full range of evolutionarily important single-nucleotide substitutions.
+They represent codes that would be optimal for organisms evolving in
+hyper-stable environments (e.g., extreme-radiation environments where any
+mutation is lethal, so only the most conservative code survives). They are
+appropriate for \emph{stasis}, not for the evolution of complex life.
+
+\textbf{Type II (incomplete stop coverage):} The one code with 2 stops that
+passes Stages 2G and 2H. This code is evolutionarily unstable: the missing
+stop codon (UAG) can be captured by a suppressor tRNA and reassigned to an
+amino acid, eventually leaving the organism with only one functional stop signal.
+
+Both types reveal scientifically interesting alternatives --- the existence of
+``alien code space'' populated by codes optimal for environments radically
+different from early Earth. Synthetic biology could test whether organisms with
+Type-I codes show greater robustness to mutation at the cost of reduced
+evolvability.
+
+\subsection{Arithmetic echoes from the GTE canonical orbit}
+\label{sec:gte-echoes}
+
+The Universal Generative Principle (UGP) addresses the Standard Model parameter spectrum, classifying each sector by epistemic status~\cite{Spivack2026_SM_UGP}, via a number-theoretic framework~\cite{SpivackUGP,SpivackUGPFormalization}.
+At the canonical ridge level $n=10$, the Generative Triple Evolution (GTE)
+produces an orbit of integer triples $(a,b,c)$ starting from
+$G_1 = (1,\,73,\,823)$ via deterministic update rules (see Appendix~\ref{app:gte}).
+Two arithmetic quantities in this orbit approximate fundamental counts in the
+universal genetic code:
+
+\paragraph{Echo 1 — Mersenne ratio $\approx$ 64 codons.}
+The consecutive Mersenne-like c-values $c_2 = 2^{10}-1 = 1023$ and
+$c_3 = 2^{16}-1 = 65535$ satisfy:
+\[
+c_3 / c_2 = 65535/1023 = 64 + 63/1023 \approx 64.06 \approx 64 = 4^3.
+\]
+The exact integer division $65535 = 64 \times 1023 + 63$ is
+Lean~4-certified as \texttt{mersenne\_ratio\_approx} in module
+\texttt{UgpLean.GTE.GeneralTheorems}~\cite{ugp-lean}.
+The echo is noted in~\cite{SpivackUGP} as ``codon-count proximity.''
+
+\paragraph{Echo 2 — Shared residue $= 20$ amino acids.}
+Under the prime-lock condition at $n \geq 10$, the shared residue
+$m_1 \equiv c_1 \pmod{b_1} = 823 \bmod 73 = 20$ is uniquely forced
+by the interior divisor condition: any $b_1 > m_1$ gives $m_1 = 20$ exactly.
+This is Lean-certified as \texttt{g1\_derived} in module
+\texttt{UgpLean.GTE.UpdateMap}~\cite{ugp-lean}:
+\texttt{gteRemainder 823 73 = 20}.
+The shared residue $m_1 = 20$ equals the number of standard amino acids.
+
+\paragraph{Echo 3 — $a_2 = 3^2$ and wobble classes $= 3^3$.}
+The first derived triple value $a_2 = m_1 - (n+1) = 20 - 11 = 9 = 3^2$,
+Lean-certified as \texttt{odd\_step\_a2}~\cite{ugp-lean}. The number of
+wobble equivalence classes is $27 = 3^3$, with $3 = \sqrt{a_2}$ and also
+$3$ = the codon length (triplet). The chain $a_2 = 3^2 \to 27 = 3^3$
+is a structural pattern, not a derivation.
+
+\medskip
+\noindent
+These are \emph{arithmetic echoes}, not derivations. The UGP does not predict
+the genetic code from first principles. The $m_1=20$ echo merits special
+notice: $m_1$ is the specific residue that makes $c_1 = b_1 q_1 + 20 = 823$
+prime (the prime-lock condition). Among the five residues satisfying all
+prime-lock constraints at $n=10$ (namely $\{18,20,24,26,36\}$), $m_1=20$
+is uniquely selected by the RSUC-admissible orbit solution
+$(b_2,q_2)=(42,24)$. Separately, the Shannon entropy of the polar-requirement
+distribution of the 20 standard amino acids gives $\exp(H_{\rm PR}) \approx 19.0$,
+indicating that the actual code near-maximally utilizes its chemical diversity
+budget---a self-consistency condition consistent with $A=20$. Three biological
+counts ($20$, $64$, $27$) from the same GTE orbit as the fine-structure-constant
+echo $137 \approx 1/\alpha_{\rm EM}$~\cite{SpivackUGP,ugp-lean} constitute
+a pattern; whether it reflects a common arithmetic self-consistency principle
+operating at both the particle-physics and molecular-biology scales is an open
+question.
+
+\subsection{Connection to the admissibility-viability convergence pattern}
+
+The structural pattern observed here mirrors a result established for the
+Standard Model of particle physics~\cite{SpivackP24}. In that setting, the SM
+parameters are the unique arithmetic intersection of a number-theoretic admissibility
+sieve (GTE triples satisfying discrete constraints) and a physical viability
+condition (coupling constants, masses, mixing angles matching observation). The
+present result establishes the same pattern in biology:
+
+\begin{enumerate}[leftmargin=1.5em,itemsep=0pt]
+\item \textbf{Stage 1 (admissibility):} Wobble equivalence reduces $10^{85} \to
+  10^{36}$, a $10^{50}$-fold reduction. The admissibility condition here is
+  combinatorial (decodability under wobble rules) rather than number-theoretic,
+  but structurally analogous: a large discrete space is collapsed by a consistency constraint.
+\item \textbf{Stage 2 (viability):} Eight biological criteria applied jointly
+  reduce the feasible set to (approximately) one: the standard code.
+\end{enumerate}
+
+The convergence of two independent domains --- particle physics and molecular
+biology --- onto this admissibility-viability sieve structure is suggestive of a
+general principle: \emph{wherever a large discrete space is filtered by the
+intersection of a structural consistency condition and a multi-criterion viability
+condition, the surviving set is small or unique}. This generalisation is explored
+in the UGP Physics programme~\cite{SpivackUGP,SpivackResearchProgrammes} but the present paper's results are
+independent of any specific UGP mechanisms and rest only on the biological criteria
+described here.
+
+\subsection{Limitations}
+
+The uniqueness result is computational (sampling-based) rather than analytical.
+A formal proof of uniqueness would require either: (a) an exhaustive enumeration
+of all $5.8 \times 10^{36}$ admissible codes (computationally infeasible), or
+(b) an algebraic argument that no complete wobble-admissible code passes all
+eight criteria while scoring better than the standard. Path (b) would require
+the Stage 2 criteria to be expressible as polynomial inequalities, allowing
+application of the Tarski-Seidenberg theorem --- an open problem.
+
+The biological justifications for Stages 2G, 2H, 2I are well-motivated but
+not derived from first principles of prebiotic chemistry. However, a
+supporting Gen/Drain analysis~\cite{codon_code} with published rate
+constants~\cite{Rode1999,Orgel1992} finds that the minimum enhancement
+factor for a self-sustaining prebiotic network equals exactly
+$\mathrm{IPT} \approx 1.1309$: the transition from non-viable to viable
+chemistry occurs at this specific threshold, consistent with the P15
+Information Profit Principle~\cite{SpivackIPT}.
+Rigorous MDL-based versions of the viability criteria from autocatalytic
+network theory (with experimentally determined rate constants) would
+complete the formal uniqueness proof and are an open problem.
+
+%──────────────────────────────────────────────────────────────────────────────
+\section{Conclusion}
+
+We have shown that the standard genetic code is the unique survivor of a
+two-stage sieve applied to the full space of wobble-admissible codon tables,
+under eight simultaneous viability criteria. The five classical criteria
+(error minimization, prebiotic accessibility, stop robustness, chemical
+clustering, polar-requirement conservation) place the standard code at
+$z = +3.22\sigma$ (top 0.009\%). Three additional criteria (evolvability,
+historical reachability, complete stop coverage) eliminate all remaining
+competitors in a sample of $10^5$ complete codes.
+
+The CP-SAT global search reveals that codes mathematically outperforming the
+standard code all have hyper-conservative mutation profiles (\emph{max\_jump}
+$\leq 5$), making them incompatible with the evolution of complex enzymatic
+diversity. This separates \emph{evolved optimality} (the standard code's
+position as the locally-reachable, evolvability-preserving maximum) from
+\emph{abstract optimality} (the mathematical maximum of simplified criteria).
+
+This result extends to biology a pattern established for the Standard
+Model~\cite{SpivackP24}: when a large discrete space is filtered by the
+intersection of a structural admissibility condition and multi-criterion
+viability, the survivor set is generically small or unique. Whether this
+reflects a general mathematical principle or a domain-specific coincidence
+is an open question.
+
+\paragraph{Companion paper.}
+The General Selection paper~\cite{SpivackGeneralSelection} generalises the
+two-stage sieve framework used here to eight domains spanning biology, physics,
+and economics, and situates the genetic-code result within a broader comparative
+evidence landscape for the General Selection Principle.
+
+%──────────────────────────────────────────────────────────────────────────────
+\section{Robustness and Validation}
+
+\paragraph{Null test.}
+We verified that the z-score ordering matches across five independent random seeds
+($z = +3.18\sigma$ to $+3.26\sigma$), confirming the result is not seed-dependent.
+Phase~6 null test: all 9 competitors in Phase~5 were manually examined; their
+\emph{max\_jump} values were in the range $[6.5, 8.2]$ (all pass Stage~2G), and
+each lacked at least one of: historical reachability $\geq 0.56$ or complete stop
+coverage. No competitor passed all three novel criteria.
+
+\paragraph{Variant code consistency check.}
+All 17 known variant genetic codes (vertebrate mitochondrial, invertebrate
+mitochondrial, yeast mitochondrial, mold/protozoan, ciliate, Mycoplasma,
+Spiroplasma, flatworm, etc.) were tested. Every variant scores \emph{below}
+the standard code on the joint Phase-5 metric. Each variant corresponds to a
+reassignment of one or two codons; in every case this reassignment is a
+downhill move on the viability metric, consistent with the variant codes being
+secondary local minima.
+
+\paragraph{CP-SAT global bound.}
+OR-Tools CP-SAT~\cite{Perron2023} was run on the 4-criterion and 5-criterion
+objectives with a 120-second time limit. In both cases, the solver found codes
+scoring better than the standard code only when \emph{max\_jump} $\leq 5$, and
+the solver status was FEASIBLE (not OPTIMAL). The true global optimum may differ;
+these are lower bounds on the maximum achievable score among all complete codes.
+Regardless, all reported CP-SAT codes have \emph{max\_jump} $< 6.0$ and are
+therefore eliminated by Stage~2G.
+
+\paragraph{Sensitivity to Stage 2G threshold.}
+We scanned $\text{max\_jump}_{\min} \in [5.5, 7.0]$. For any threshold $\leq 6.8$,
+the standard code passes; CP-SAT competitor codes (max\_jump $\approx 4$--$5$)
+are eliminated for any threshold $\geq 5.1$. The result is robust to the precise
+choice of threshold in this range.
+
+%──────────────────────────────────────────────────────────────────────────────
+\appendix
+\section{Numerical Summary Tables}
+
+\begin{table}[h]
+\centering\small
+\caption{Standard code viability scores on all eight criteria.}
+\label{tab:std_scores}
+\begin{tabular}{@{}llcc@{}}
+\toprule
+Stage & Criterion & Score & Pop.\\
+\midrule
+2A & Error minimization & 1.684 & top $1\%$ \\
+2B & Prebiotic accessibility & 0.697 & top $13\%$ \\
+2C & Stop-codon robustness & 3 stops & pass \\
+2D & Chemical clustering & 0.714 & top $20\%$ \\
+2F & Max-jump $\leq 7.40$ & 7.40 & boundary \\
+2G & Evolvability (max\_jump ${\geq}6$) & 7.40 & pass \\
+2H & Hist.\ reachability (${\geq}0.56$) & 0.714 & top $15\%$ \\
+2I & All 3 stops present & yes & pass \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering\small
+\caption{Codes beating the standard as criteria accumulate ($n=10^5$).}
+\label{tab:filter_cascade}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Criteria & Competitors & Fraction \\
+\midrule
+Phase~5 metric & $9$ & $0.009\%$ \\
++ Stage 2G (evolvability) & $9$ & $0.009\%$ \\
++ Stage 2H (reachability) & $1$ & $<0.002\%$ \\
++ Stage 2I (stop coverage) & $\mathbf{0}$ & $\mathbf{0\%}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+%──────────────────────────────────────────────────────────────────────────────
+\section*{Code Availability}
+
+All code is available at:
+\begin{quote}
+\small\raggedright\sloppy
+\noindent\url{https://github.com/novaspivack/ugp-physics}\\
+\noindent\texttt{papers/25\_genetic\_code/code/}
+\end{quote}
+Key scripts: \texttt{codon\_sieve.py} (Phase~1 wobble admissibility),
+\texttt{codon\_sieve\_phase2.py}--\texttt{phase5.py} (Phases 2--5),
+\texttt{codon\_sieve\_phase6.py} (Phase~6, uniqueness result).
+Requirements: NumPy, SciPy, OR-Tools (CP-SAT).
+Runtime: $<5$~min on a standard laptop.
+For details see \texttt{papers/25\_genetic\_code/REPRODUCE.md}.
+
+%──────────────────────────────────────────────────────────────────────────────
+\section*{Author Contributions}
+
+N.S.\ conceived the framework, designed and implemented all computational
+analyses (Phases 1--6), performed the CP-SAT global search, wrote the
+Phase~6 uniqueness code, and wrote the manuscript.
+
+%──────────────────────────────────────────────────────────────────────────────
+\section*{Competing Interests}
+
+The author declares no competing interests.
+
+%──────────────────────────────────────────────────────────────────────────────
+\section*{Data Availability}
+
+All data generated or analyzed during this study are included in this
+article and its supplementary code. The amino acid polar-requirement
+scale (Woese 1965) and prebiotic accessibility rankings used as inputs
+are publicly available from the cited references.
+
+%──────────────────────────────────────────────────────────────────────────────
+\section{The UGP/GTE Framework: A Primer for Biologists}
+\label{app:gte}
+
+This appendix gives minimal background for readers unfamiliar with the
+Universal Generative Principle (UGP) and Generative Triple Evolution (GTE),
+referenced in Section~\ref{sec:gte-echoes}. The main results of this paper
+are independent of UGP; the echoes in \S\ref{sec:gte-echoes} are
+observations, not derivations. Readers focused on the biological results may
+skip this appendix.
+
+\paragraph{UGP in one sentence.}
+The Universal Generative Principle~\cite{SpivackUGP} is a deterministic,
+number-theoretic framework proposing that the Standard Model parameter
+spectrum (fermion masses, gauge coupling constants, mixing angles) can be
+derived from three axioms: (A1)~\emph{Locality}, (A2)~\emph{Symmetry}, and
+(A3)~\emph{Compression/MDL} (rules that minimize total description
+length)~\cite{SpivackUGP}. It is complementary to QFT: it fixes the numerical
+constants that a QFT Lagrangian takes as input; QFT supplies the scattering
+dynamics. The structural core is machine-checked in Lean~4 (see companion formalization paper~\cite{SpivackUGPFormalization},
+zero \texttt{sorry})~\cite{ugp-lean,SpivackUGPFormalization}.
+
+\paragraph{What is GTE?}
+Generative Triple Evolution is the dynamical mechanism realizing the axioms.
+GTE operates on integer vectors $(a,b,c;\,g)\in\mathbb{Z}^3\times\{1,2,3\}$:
+$a$ encodes parity/phase; $b$ is the ladder index (particle's complexity
+position and information content $N_{\rm eff}=|b|$); $c$ is the branch
+capacity; $g\in\{1,2,3\}$ is the Standard Model generation~\cite{SpivackUGP}.
+Two deterministic operators (odd step $g{:}1\to2$; even step $g{:}2\to3$)
+evolve triples with no adjustable parameters.
+
+\paragraph{The prime-lock ridge at $n=10$.}
+Initial conditions are not free but are uniquely selected by:
+(i)~the ridge $R_n = 2^n-16$; at $n{=}10$, $R_{10}=1008$;
+(ii)~mirror duality: a divisor pair $(b_2,q_2)$ and its swap must
+both be admissible; and
+(iii)~the prime-lock: $c_1 = b_1 q_1 + 20$ must be prime, where the
+residue $m_1 = 20$ is uniquely forced by the interior-divisor condition
+($b_1>20$ at $n\geq10$) --- it is not a free parameter.
+A systematic search over interior divisors of $R_{10}=1008$ finds the
+unique solution $(b_2,q_2)=(42,24)$, fixing $b_1=73$ and the canonical
+first triple $G_1=(1,73,823;\,1)$ (RSUC:\ Residual Seed Uniqueness
+Condition, Lean-certified~\cite{ugp-lean,SpivackP24}).
+
+The orbit at $n{=}10$:
+\begin{align*}
+G_1=(1,73,823;\,1) &\xrightarrow{\text{odd}} G_2=(9,42,1023;\,2) \\
+                   &\xrightarrow{\text{even}} G_3=(5,275,65535;\,3)\to\cdots
+\end{align*}
+This orbit also gives the fine-structure constant echo
+$2b_1-a_2=2\times73-9=137\approx1/\alpha_{\rm EM}$.
+
+\paragraph{Biological echoes (derived quantities).}
+From $G_1=(1,73,823)$, Lean-certified in \texttt{UgpLean.GTE}~\cite{ugp-lean}:
+\begin{itemize}[leftmargin=1.5em,itemsep=0pt]
+\item $q_1=\lfloor823/73\rfloor=11$; $m_1=823\bmod73=\mathbf{20}$
+  (\texttt{g1\_derived}; \textbf{equals 20 amino acids})
+\item Odd step: $a_2=m_1-(n+1)=9$, $b_2=73-31=42$,
+  $c_2=2^{10}-1=1023$ (\texttt{odd\_step\_produces\_g2})
+\item Even step: $c_3=2^{16}-1=65535$, $c_3/c_2\approx\mathbf{64}$
+  (\texttt{mersenne\_ratio\_approx}; \textbf{equals 64 codons})
+\item $a_2=9=3^2$; wobble classes $=27=3^3=3\times a_2$
+\end{itemize}
+
+\paragraph{Where to read more.}
+Standard Model derivation: \cite{SpivackUGP}.
+Uniqueness proof (RSUC): \cite{SpivackP24}.
+Lean~4 library (\texttt{lake build} to verify): \cite{ugp-lean}.
+Formalization paper: \cite{SpivackUGPFormalization}.
+
+\section*{Acknowledgments}
+
+This work is part of the UGP Physics programme.
+
+AI coding assistants were used for \LaTeX{} formatting, coding assistance, and adversarial review during manuscript preparation. All mathematical derivations and numerical computations were independently verified by deterministic scripts.
+
+\bibliographystyle{plain}
+\bibliography{../bib/Spivack_Papers_Bibliography,genetic_code_refs}
+
+\end{document}

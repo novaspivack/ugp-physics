@@ -1,0 +1,38 @@
+experiment:
+  name: holographic_thermodynamics_refined
+  description: "Parameter optimization experiment for Generalized Second Law refinement."
+  inputs:
+    runs:
+      - "pr1_trajectory_data.json"  # Uses trajectory data
+
+analysis:
+  boundary_width: 2  # Number of cells to define as the "boundary"
+  trajectory_length: 1000  # Number of time steps to analyze
+
+optimization:
+  block_sizes: [1, 2, 3, 4]  # Different entropy calculation block sizes
+  scaling_constants: [0.001, 0.01, 0.1, 1.0, 10.0, 100.0, 1000.0]  # C values to test
+  combination_types: ["linear", "multiplicative", "exponential"]  # Information combination methods
+
+conservation_thresholds:
+  excellent_cv: 0.05  # CV threshold for "excellent" conservation
+  good_cv: 0.15       # CV threshold for "good" conservation
+  significant_trend: 0.05  # p-value threshold for significant trend
+  improvement_threshold: 1.5  # Minimum improvement ratio for support
+
+correlation_thresholds:
+  anti_correlation_threshold: -0.1  # Minimum correlation for anti-correlation
+  compensation_efficiency_threshold: 0.7  # Minimum efficiency for good compensation
+
+report:
+  export_md: true
+  export_json: true
+  export_csv: true
+  plots: true
+  
+artifacts:
+  - "holographic_thermodynamics_refined_results.json"
+  - "parameter_optimization_results.csv"
+  - "best_combination_analysis.csv"
+  - "plot_improvement_landscape.png"
+  - "plot_parameter_sensitivity.png"

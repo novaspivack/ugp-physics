@@ -1,0 +1,45 @@
+# Z7-KG SR test stub: drops a v=0.3 wave packet and tracks energy + tau_c.
+# Full SR scan over multiple velocities is the job of a dedicated experiment
+# script; this YAML reproduces the single-velocity slice and the field plot.
+
+model: z7_kg
+params:
+  N: 512
+  dt: 0.01
+  m: 0.5
+  N_sym: 7
+  spectral: true
+
+steps: 5000
+sample_every: 50
+
+initial_condition:
+  kind: vacuum
+
+injections:
+  - kind: wave_packet
+    position: 256
+    velocity: 0.3
+    params:
+      amplitude: 0.1
+      sigma: 25.0
+
+measurements:
+  - tau_c_mean
+  - binding_energy
+
+output:
+  data: z7_kg_sr_test.json
+  figures:
+    - type: field_1d
+      file: z7_kg_sr_test_field.png
+      params:
+        title: "Z7-KG wave packet — final phi(x) at v=0.3"
+    - type: tau_c_heatmap
+      file: z7_kg_sr_test_tau.png
+      params:
+        title: "tau_c proxy heatmap — moving wave packet"
+    - type: energy
+      file: z7_kg_sr_test_energy.png
+      params:
+        title: "Total energy E(t) — wave packet, v=0.3"
