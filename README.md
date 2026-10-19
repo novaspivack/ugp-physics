@@ -1,5 +1,7 @@
 # ugp-physics
 
+> **Programme status:** this is an active research programme, not a finished theory. The framework is currently being audited and revised; see [PROGRAM_STATUS.md](PROGRAM_STATUS.md).
+
 Companion repository for the **Universal Generative Principle (UGP)** physics paper series by Nova Spivack. This archive contains **peer-facing paper materials** (PDFs, LaTeX, figures, provenance) and **replication code** for the associated analyses.
 
 **Main Synthesis Monograph (Paper 48) — [The Complete GTE Framework](https://doi.org/10.5281/zenodo.20560550):** Standard Model, Gravity, Quantum Mechanics, and Cosmology from Φ_MDL. This is the primary reference for the full theory. DOI: [10.5281/zenodo.20560550](https://doi.org/10.5281/zenodo.20560550)
