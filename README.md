@@ -196,9 +196,9 @@ All tutorials follow a standardized format (series header, prerequisites/navigat
 
 `tutorials/interactive_explainer/` is a self-contained browser-based tutorial series covering the full UGP/GTE theory across 8 learning paths and 30 lessons.
 
-**Live:** https://novaspivack.github.io/ugp-physics/tutorials/interactive_explainer/
+**Public site (2026-11-26):** The GitHub Pages URL https://novaspivack.github.io/ugp-physics/tutorials/interactive_explainer/ currently shows a **temporary holding notice** while content is revised during the ongoing UGP Physics programme audit. See [PROJECT_STATUS.md](PROJECT_STATUS.md). Restored, updated lessons will return to that URL when the audit revision is complete.
 
-All 8 paths are complete. Lessons include KaTeX-rendered equations, SVG diagrams, and guided exercises. No installation required — runs in any modern browser. Each key result links directly to its Lean 4 machine proof on GitHub and its source paper on Zenodo.
+When live, lessons include KaTeX-rendered equations, SVG diagrams, and guided exercises. No installation required — runs in any modern browser. Each key result links directly to its Lean 4 machine proof on GitHub and its source paper on Zenodo.
 
 | Path | Topic | Lessons |
 |------|-------|---------|
