@@ -1,6 +1,10 @@
 # ugp-physics
 
-> **Programme status:** this is an active research programme, not a finished theory. The framework is currently being audited and revised; see [PROGRAM_STATUS.md](PROGRAM_STATUS.md).
+## ⚠️ Programme Status — November 2026
+
+This repository is part of an active research programme, **not a completed or validated theory**. A systematic internal audit of the papers and formalizations here — prompted by continued scrutiny and reader feedback — has identified significant, unresolved problems. Until they are resolved, **no paper, proof, derivation, or claim in this repository should be treated as final.** Some will be revised, qualified, or withdrawn.
+
+This is a normal part of theoretical work: ambitious programmes often require major revision, and some do not survive their own scrutiny. That possibility is being taken seriously here. See [`PROJECT_STATUS.md`](./PROJECT_STATUS.md) for detail. This notice will be updated as the audit progresses.
 
 Companion repository for the **Universal Generative Principle (UGP)** physics paper series by Nova Spivack. This archive contains **peer-facing paper materials** (PDFs, LaTeX, figures, provenance) and **replication code** for the associated analyses.
 
